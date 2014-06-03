@@ -1,0 +1,17 @@
+/images/blog_image
+/images/slider_images
+/images/categories
+/images/categories_footer
+/images/categories_info
+/images/categories_nav
+/images/categories_org
+/images/categories_promotion
+/images/content
+/images/manufacturers
+/images/product_options
+/images/product_options_thumb
+/images/products_movies
+/images/products_promotion
+/images/qr_images
+/images/product_images
+/media

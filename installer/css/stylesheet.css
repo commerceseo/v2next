@@ -1,0 +1,262 @@
+html {
+  -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+}
+body {
+  margin: 0;
+}
+body {
+width: 100%;
+margin: 0 auto;
+padding: 0;
+height: 100%;
+color: #6c6c6c;
+overflow: visible;
+background: #E1E1E1;
+font-size: 1em/1.5;
+font-family: "lucida grande",tahoma,verdana,arial,sans-serif;
+}
+
+header {
+width: 100%;
+color: #00a9e0;
+background: #ffffff;
+background: linear-gradient(to bottom,#ffffff 0%,#ededed 100%);
+padding: 10px 0;
+}
+
+
+footer {
+width: 100%;
+margin: 0 auto;
+color: #fff;
+background: #222;
+padding: 10px 0;
+font-size: 10px;
+text-align: center;
+}
+
+
+@media (min-width: 768px) {
+  #main {
+    width: 750px;
+  }
+}
+@media (min-width: 992px) {
+  #main {
+    width: 970px;
+  }
+}
+@media (min-width: 1200px) {
+  #main {
+    width: 1170px;
+  }
+}
+
+div.wrapper {
+width: 100%;
+height: 100%;
+margin: 0;
+padding: 0;
+}
+
+a {
+color: #9CCDE8;
+text-decoration: underline;
+}
+
+h1 {
+font-size: 24px;
+font-weight: bold;
+margin: 0 auto;
+letter-spacing: 2px;
+padding-top: 20px;
+}
+
+h2 {
+font-size: 18px;
+font-weight: bold;
+letter-spacing: 1px;
+}
+
+legend {
+font-size: 15px;
+color: #fff;
+}
+
+#main {
+border-radius: 4px;
+margin: 14px auto;
+position: relative;
+background: #fff;
+padding: 0;
+border: 1px solid #ddd;
+}
+
+#main .button {
+display: inline-block;
+color: #fff;
+text-decoration: none;
+border-radius: 4px;
+box-shadow: 1px 1px 1px rgba(0,0,0,0.5);
+position: relative;
+cursor: pointer;
+min-width: 230px;
+text-align: center;
+font-size: 16px;
+padding: 7px 14px 6px;
+font-weight: normal;
+border: 1px solid #363636;
+box-sizing: content-box;
+line-height: 19px;
+font-family: Tahoma, Helvetia, Verdana, sans-serif;
+overflow: hidden;
+height: 19px;
+background: rgb(89,89,89); 
+}
+
+#main .button:hover {
+background: rgb(61,61,61); 
+background: linear-gradient(to bottom, rgba(61,61,61,1) 0%,rgba(28,28,28,1) 100%); 
+}
+
+
+#main .green.button {
+border: 1px solid #56CD67;
+background: #56CD67;
+}
+
+#main .green.button:hover {
+background: #66C07A; 
+}
+
+#main .red.button, .installerdelete{
+border: 1px solid #B43C24;
+background: #B43C24; 
+}
+
+#main .red.button:hover	{
+background: #DF7160; 
+}
+
+
+
+
+#install_service{
+border: 1px solid #323A45;
+background: #323A45;
+padding: 10px;
+border-radius: 4px;
+margin-bottom: 40px;
+color: #fff;
+}
+
+
+.error_field {
+width: 728px;
+max-height: 200px;
+overflow: auto;
+padding: 10px;
+border: 1px solid #fff;
+background-color: #F4CAC8;
+border: 1px solid #F2E187;
+}
+
+.error {
+color: #832f2c;
+font-weight: bold;
+}
+
+.dir {
+display: inline;
+border: 0;
+background: none;
+text-decoration: underline;
+color: #9CCDE8;
+cursor: pointer;
+}
+
+fieldset {
+border: 1px solid #fff;
+background-color: #1D5072;
+}
+
+.input_error, #main .shop_data, #main .robots_data, #main .finish, #main .button.shop_data, #main .button.robots_data, #main .button.finish, .progress
+{
+display: none;
+}
+
+#import_sql, #run_config
+{
+cursor: pointer;
+}
+
+.input_field, .gm_class_input {
+border: 1px solid #cccccc;
+height: 32px;
+color:#335475;
+font-family: Arial,Helvetica,Sans-Serif;
+font-size: 16px;
+padding-left: 10px;
+width: 320px;
+line-height: 32px;
+}
+
+.input_field_short {
+border: 1px solid #cccccc;
+height: 32px;
+color: #335475;
+font-family: Arial,Helvetica,Sans-Serif;
+font-size: 16px;
+padding-left: 10px;
+width: 150px;
+line-height: 32px;
+}
+
+#main select {
+border: 1px solid #cccccc;
+height: 32px;
+color: #335475;
+font-family: Arial,Helvetica,Sans-Serif;
+font-size: 16px;
+width: 300px;
+padding: 5px 0 0 7px;
+}
+
+.block_head {
+border-bottom: 1px solid white;
+margin-bottom: 10px;
+padding-bottom: 4px;
+}
+
+.valid {
+background-color: #C5E6C5;
+}
+
+.invalid {
+background-color: #F4CAC8;
+}
+
+
+.progress-bar {
+display: inline-block;
+position: relative;
+right: 0;	
+text-align: center;
+font-size: 16px;
+font-weight: normal;
+line-height: 34px;
+width: 750px;
+height: 34px;
+color: #eee;
+border: 1px solid #56CD67;
+box-shadow: 1px 1px 3px rgba(0,0,0,0.5), inset -750px 0 #fff;	
+background: #56CD67; 
+}
+
+/* same width fix */
+input, select
+{
+box-sizing: border-box;
+}
+

@@ -74,8 +74,8 @@ INSERT INTO address_format VALUES (7, '$firstname $lastname$cr$streets, $city$cr
 INSERT INTO address_format VALUES (8, '$firstname $lastname$cr$streets$cr$city$cr$state$cr$postcode$cr$country','$postcode / $country');
 
 
-INSERT INTO admin_access VALUES (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-INSERT INTO admin_access VALUES ('groups', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 2, 4, 2, 2, 2, 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO admin_access VALUES (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO admin_access VALUES ('groups', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 2, 4, 2, 2, 2, 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 
 INSERT INTO configuration VALUES 
@@ -505,7 +505,7 @@ INSERT INTO configuration VALUES
 #configuration_group_id 333, Ajax Checkout
 INSERT INTO configuration VALUES
 (NULL, 'BOXLESS_CHECKOUT', 'true', 333, 1, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CHECKOUT_AJAX_STAT', 'false', 333, 2, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'CHECKOUT_AJAX_STAT', 'true', 333, 2, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_AJAX_PRODUCTS', 'false', 333, 3, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_MODULES', 'true', 333, 5, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_ADDRESS', 'true', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
@@ -612,6 +612,18 @@ INSERT INTO configuration VALUES
 (NULL, 'RANDOM_SPECIALS_START', 'true', 1000, 14, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'BLOG_START', 'true', 1000, 15, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'MODULE_PRODUCT_PROMOTION_STATUS', 'true', 1000, 16, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'), ");
+INSERT INTO configuration VALUES (NULL, 'BESTSELLER_START', 'false', 1000, 17, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
+INSERT INTO configuration VALUES (NULL, 'BLOG_MAIN_SORT', 'latest', 1000, 15, NULL, NOW(), '', "xtc_cfg_select_option(array('latest', 'oldest', 'random'),");
+INSERT INTO configuration VALUES (NULL, 'MAIN_BLOG_MAXVALUE', 5, 1000, 15, NULL, NOW(), NULL, NULL);
+INSERT INTO configuration VALUES (NULL, 'AJAXJQUERYUI', 'false', 1000, 18, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'AJAXCOLORBOX', 'true', 1000, 19, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'AJAXFLEXNAV', 'false', 1000, 20, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'AJAXJZOOM', 'false', 1000, 21, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'AJAXRESPTABS', 'false', 1000, 22, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'AJAXJYOUTUBE', 'false', 1000, 23, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'AJAXRESPSLIDE', 'true', 1000, 24, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'AJAXUNSLIDER', 'false', 1000, 25, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'AJAXBOOTSTRAP', 'true', 1000, 26, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 
 #configuration_group_id 1001, Twitterbox ab 2.1
 INSERT INTO configuration VALUES 
@@ -664,9 +676,6 @@ INSERT INTO configuration VALUES
 (NULL, 'PRODUCT_INFO_QR', 'false', 1002, 29, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
 INSERT INTO configuration VALUES (NULL, 'PRODUCT_DETAILS_TAB_SHORT_DESCRIPTION', 'false', 1002, 11, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
 INSERT INTO configuration VALUES (NULL, 'PRODUCT_DETAILS_SPECIALS_COUNTER', 'false', 1002, 30, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
-
-
-
 
 INSERT INTO configuration_group VALUES 
 ('1', 'Mein Shop', 'Generelle Einstellungen für den Shop', '1', '1'),
@@ -985,6 +994,7 @@ INSERT INTO configuration VALUES (NULL, 'ADDSPECIALSSHOPTITLE', 'true', 16, 4, N
 INSERT INTO configuration VALUES (NULL, 'ADDNEWSSHOPTITLE', 'true', 16, 4, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'ADDSEARCHSHOPTITLE', 'true', 16, 4, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'ADDOTHERSSHOPTITLE', 'true', 16, 4, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'ADDPAGINATION', 'true', 16, 4, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 
 
 INSERT INTO configuration VALUES (NULL, 'TREEPODIAACTIVE', 'false', 1004, 1, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
@@ -1016,10 +1026,8 @@ INSERT INTO orders_pdf_profile ( id , languages_id , pdf_key , pdf_value , type 
 INSERT INTO orders_pdf_profile ( id , languages_id , pdf_key , pdf_value , type ) VALUES (NULL , '0', 'LAYOUT_EINZELPREIS_LEN', '28', 'layout');
 INSERT INTO orders_pdf_profile ( id , languages_id , pdf_key , pdf_value , type ) VALUES (NULL , '0', 'LAYOUT_PREIS_LEN', '28', 'layout');
 
-
 INSERT INTO configuration VALUES (NULL, 'GOOGLE_PLUS_AUTHOR_ID', '', 16, 17, NULL , NOW(), NULL , NULL);
 INSERT INTO configuration VALUES (NULL, 'DISPLAY_MORE_CAT_DESC', 'true', 8, 10, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
-
 
 INSERT INTO configuration VALUES (NULL, 'FACEBOOK_URL', '', 16, 18, NULL , NOW(), NULL , NULL);
 INSERT INTO configuration VALUES (NULL, 'XING_URL', '', 16, 19, NULL , NOW(), NULL , NULL);
@@ -1030,8 +1038,6 @@ INSERT INTO configuration VALUES (NULL, 'YOUTUBE_URL', '', 16, 23, NULL , NOW(),
 INSERT INTO configuration VALUES (NULL, 'TUMBLR_URL', '', 16, 24, NULL , NOW(), NULL , NULL);
 INSERT INTO configuration VALUES (NULL, 'BING_VERIFY', '', 16, 16, NULL , NOW(), NULL , NULL);
 
-
-
 INSERT INTO cseo_antispam (id, question, answer, language_id) VALUES(NULL, 'What color is grass?', 'green', 1);
 INSERT INTO cseo_antispam (id, question, answer, language_id) VALUES(NULL, 'Welche Farbe hat Rasen?', 'grün', 2);
 INSERT INTO cseo_antispam (id, question, answer, language_id) VALUES(NULL, 'What color is sun?', 'yellow', 1);
@@ -1041,11 +1047,6 @@ INSERT INTO configuration VALUES (NULL, 'MASTER_SLAVE_FUNCTION', 'false', 155, 1
 
 INSERT INTO configuration (configuration_key, configuration_value, configuration_group_id, sort_order) VALUES ('CHECKOUT_BOX_ORDER', 'modules|addresses|comments|legals|wd|ds|products', 334, 12);
 INSERT INTO configuration (configuration_key, configuration_value, configuration_group_id, sort_order) VALUES ('MAIN_BOX_ORDER', 'promo|text1|cat|upc|newp|randp|rands|best|blog|text2', 335, 12);
-
-INSERT INTO configuration VALUES (NULL, 'BESTSELLER_START', 'false', 1000, 17, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
-
-INSERT INTO configuration VALUES (NULL, 'BLOG_MAIN_SORT', 'latest', 1000, 15, NULL, NOW(), '', "xtc_cfg_select_option(array('latest', 'oldest', 'random'),");
-INSERT INTO configuration VALUES (NULL, 'MAIN_BLOG_MAXVALUE', 5, 1000, 15, NULL, NOW(), NULL, NULL);
 
 INSERT INTO configuration (configuration_id, configuration_key, configuration_value, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function) VALUES ('', 'STOCK_LEVEL_SHIPPINGTIME', 'False', 9, 13, NULL, '0000-00-00 00:00:00', NULL, 'xtc_cfg_select_option(array(''True'', ''False''),');
 INSERT INTO configuration (configuration_id, configuration_key, configuration_value, configuration_group_id, sort_order, last_modified, date_added, use_function, set_function) VALUES ('', 'STOCK_LEVEL_SHIPPINGTIME_ID', '3', 9, 14, NULL, '2011-08-02 14:17:52', NULL, NULL);
@@ -1122,197 +1123,6 @@ INSERT INTO configuration VALUES (NULL, 'CSS_FRONTEND_BACKGROUND_2', '', 23, 33,
 INSERT INTO configuration VALUES (NULL, 'CSS_FRONTEND_BOX_HEADER_BACKGROUND', '', 23, 34, NULL, NOW(), NULL, NULL);
 
 
-INSERT INTO configuration VALUES (NULL, 'ADDPAGINATION', 'true', 16, 4, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-
-INSERT INTO configuration VALUES (NULL, 'AJAXJQUERYUI', 'true', 1000, 18, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXCOLORBOX', 'true', 1000, 19, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXFLEXNAV', 'true', 1000, 20, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXJZOOM', 'true', 1000, 21, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXRESPTABS', 'false', 1000, 22, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXJYOUTUBE', 'false', 1000, 23, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXRESPSLIDE', 'true', 1000, 24, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXUNSLIDER', 'false', 1000, 25, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXBOOTSTRAP', 'true', 1000, 26, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-ALTER TABLE blog_items ADD date_release DATETIME NULL;
-ALTER TABLE blog_items ADD date_out DATETIME NULL;
-ALTER TABLE products_attributes ADD options_values_scale_price VARCHAR(128) NOT NULL AFTER options_values_price;
-
-DROP TABLE IF EXISTS orders_products_properties;
-CREATE TABLE IF NOT EXISTS orders_products_properties (
-  orders_products_properties_id int(10) unsigned NOT NULL auto_increment,
-  orders_products_id int(10) unsigned default NULL,
-  products_properties_combis_id int(10) unsigned default NULL,
-  properties_name varchar(255) NOT NULL,
-  values_name varchar(255) NOT NULL,
-  properties_price_type varchar(8) NOT NULL,
-  properties_price decimal(16,4) NOT NULL,
-  PRIMARY KEY  (orders_products_properties_id)
-);
-
-DROP TABLE IF EXISTS products_properties_admin_select;
-CREATE TABLE  products_properties_admin_select (
-  products_properties_admin_select_id int(11) NOT NULL auto_increment,
-  products_id int(11) NOT NULL,
-  properties_id int(11) NOT NULL,
-  properties_values_id int(11) NOT NULL,
-  PRIMARY KEY  (products_properties_admin_select_id),
-  KEY products_id (products_id)
-);
-
-DROP TABLE IF EXISTS products_properties_combis;
-CREATE TABLE products_properties_combis (
-  products_properties_combis_id int(10) unsigned NOT NULL auto_increment,
-  products_id int(10) unsigned NOT NULL,
-  sort_order int(10) unsigned NOT NULL,
-  combi_model varchar(64) NOT NULL,
-  combi_quantity_type enum('','plus','minus','fix') NULL,
-  combi_quantity int(10) unsigned NOT NULL,
-  combi_shipping_status_id int(11) NOT NULL,
-  combi_weight decimal(15,4) NOT NULL,
-  combi_price_type enum('plus','minus','fix') NOT NULL,
-  combi_price decimal(15,4) NOT NULL,
-  combi_image varchar(255) NOT NULL,
-  products_vpe_id int(11) NOT NULL,
-  vpe_value decimal(16,4) NOT NULL,
-  PRIMARY KEY  (products_properties_combis_id),
-  KEY products_properties_combis_id (products_properties_combis_id,products_id,sort_order),
-  KEY products_id (products_id,sort_order)
-);
-
-DROP TABLE IF EXISTS products_properties_combis_values;
-CREATE TABLE products_properties_combis_values (
-  products_properties_combis_values_id int(10) unsigned NOT NULL auto_increment,
-  products_properties_combis_id int(10) unsigned NOT NULL,
-  properties_values_id int(10) unsigned default NULL,
-  PRIMARY KEY  (products_properties_combis_values_id),
-  KEY products_properties_combis_values_id (products_properties_combis_values_id,products_properties_combis_id,properties_values_id),
-  KEY products_properties_combis_id (products_properties_combis_id,properties_values_id),
-  KEY properties_values_id (properties_values_id,products_properties_combis_id)
-);
-
-DROP TABLE IF EXISTS products_properties_index;
-CREATE TABLE IF NOT EXISTS products_properties_index (
-  products_id int(10) NOT NULL,
-  language_id int(10) NOT NULL,
-  properties_id int(10) NOT NULL,
-  products_properties_combis_id int(10) default '0',
-  properties_values_id int(10) default NULL,
-  properties_name varchar(255) default NULL,
-  properties_sort_order int(10) NOT NULL,
-  values_name varchar(255) default NULL,
-  value_sort_order int(10) default NULL,
-  KEY products_id (products_id,language_id,products_properties_combis_id),
-  KEY products_id_2 (products_id,language_id,properties_id)
-);
-
-DROP TABLE IF EXISTS properties;
-CREATE TABLE properties (
-  properties_id int(10) unsigned NOT NULL auto_increment,
-  sort_order int(10) unsigned NOT NULL,
-  PRIMARY KEY  (properties_id),
-  KEY properties_id (properties_id,sort_order)
-);
-
-DROP TABLE IF EXISTS properties_description;
-CREATE TABLE properties_description (
-  properties_description_id int(10) unsigned NOT NULL auto_increment,
-  properties_id int(10) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  properties_name varchar(255) NOT NULL,
-  properties_admin_name varchar(255) NOT NULL,
-  PRIMARY KEY  (properties_description_id),
-  KEY properties_id (properties_id,language_id)
-);
-
-DROP TABLE IF EXISTS properties_values;
-CREATE TABLE properties_values (
-  properties_values_id int(10) unsigned NOT NULL auto_increment,
-  properties_id int(10) unsigned NOT NULL,
-  sort_order int(10) unsigned NOT NULL,
-  value_model varchar(64) NOT NULL,
-  value_price_type enum('plus','minus','fix') NOT NULL,
-  value_price decimal(9,4) NOT NULL,
-  PRIMARY KEY  (properties_values_id),
-  KEY properties_values_id (properties_values_id,properties_id,sort_order),
-  KEY properties_id (properties_id,sort_order)
-);
-
-DROP TABLE IF EXISTS properties_values_description;
-CREATE TABLE properties_values_description (
-  properties_values_description_id int(10) unsigned NOT NULL auto_increment,
-  properties_values_id int(10) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  values_name varchar(255) NOT NULL,
-  values_image varchar(255) NOT NULL,
-  PRIMARY KEY  (properties_values_description_id),
-  KEY properties_values_description_id (properties_values_description_id,properties_values_id,language_id),
-  KEY properties_values_id (properties_values_id,language_id)
-);
-
-
-DROP TABLE IF EXISTS rma;
-CREATE TABLE rma (
-rma_id int(11) NOT NULL auto_increment,
-customers_id int(11) NOT NULL default '0',
-orders_id int(11) NOT NULL default '0',
-products_id int(11) NOT NULL default '0',
-products_ean varchar(20) default NULL,
-reason_id int(11) NOT NULL default '0',
-description longtext NOT NULL,
-rma_date datetime NOT NULL default '0000-00-00 00:00:00',
-pickup smallint(1) default NULL,
-shipping_time varchar(10) default NULL,
-rma_status_id tinyint(1) NOT NULL default '1',
-cost_estimate smallint(1) default NULL,
-PRIMARY KEY (rma_id)
-);
-DROP TABLE IF EXISTS rma_comments;
-CREATE TABLE rma_comments (
-rma_comments_id int(11) NOT NULL auto_increment,
-rma_id int(11) NOT NULL default '0',
-rma_status_id tinyint(2) NOT NULL default '0',
-comments text NOT NULL,
-edit_date datetime NOT NULL default '0000-00-00 00:00:00',
-PRIMARY KEY (rma_comments_id)
-);
-DROP TABLE IF EXISTS rma_reason;
-CREATE TABLE rma_reason (
-rma_reason_id int(11) NOT NULL default '0',
-language_id int(11) NOT NULL default '1',
-rma_reason_name varchar(64) NOT NULL default '',
-PRIMARY KEY (rma_reason_id,language_id),
-KEY idx_rma_reason_name (rma_reason_name)
-);
-INSERT INTO rma_reason VALUES (1, 1, 'Product defectively'), (1, 2,
-'Ware defekt'),
-(2, 1, 'Wrong delivery'),
-(2, 2, 'Falschlieferung');
-
-
-DROP TABLE IF EXISTS rma_status;
-CREATE TABLE rma_status (
-rma_status_id int(11) NOT NULL default '0',
-language_id int(11) NOT NULL default '1',
-rma_status_name varchar(64) NOT NULL default '',
-PRIMARY KEY (rma_status_id,language_id),
-KEY idx_rma_status_name (rma_status_name)
-);
-INSERT INTO rma_status VALUES (1, 1, 'Open'),
-(1, 2, 'Offen'),
-(2, 1, 'In Processing'),
-(2, 2, 'In Bearbeitung'),
-(3, 1, 'Sent'),
-(3, 2, 'Versendet');
-
-DROP TABLE IF EXISTS rma_templates;
-CREATE TABLE rma_templates (
-rma_template_id int(11) NOT NULL default '0',
-language_id int(11) NOT NULL default '1',
-rma_template_name varchar(64) NOT NULL default '',
-rma_template_text TEXT NOT NULL default '',
-PRIMARY KEY (rma_template_id,language_id),
-KEY idx_rma_template_name (rma_template_name)
-);
 INSERT INTO rma_templates VALUES 
 (1, 2, 'Vorlage1', 'Das ist mein Text ...'),
 (1, 1, 'Template1', 'Das ist mein Text ...'),
@@ -1321,7 +1131,18 @@ INSERT INTO rma_templates VALUES
 (3, 2, 'Vorlage3', 'Das ist mein Text Numero 4 ...'),
 (3, 1, 'Template3', 'Das ist mein Text Numero 4 ...');
 
-ALTER TABLE  products ADD  products_maxorder INT( 5 ) NULL AFTER  products_minorder ;
+INSERT INTO rma_status VALUES (1, 1, 'Open'),
+(1, 2, 'Offen'),
+(2, 1, 'In Processing'),
+(2, 2, 'In Bearbeitung'),
+(3, 1, 'Sent'),
+(3, 2, 'Versendet');
+
+INSERT INTO rma_reason VALUES (1, 1, 'Product defectively'), (1, 2,
+'Ware defekt'),
+(2, 1, 'Wrong delivery'),
+(2, 2, 'Falschlieferung');
+
 INSERT INTO configuration ( configuration_id , configuration_key , configuration_value , configuration_group_id , sort_order , last_modified , date_added , use_function , set_function ) 
 VALUES ('','RMA_CHOOSE_PRODUCTS_OBLIGATION', 'true', 1005, 5, NULL, '0000-00-00 00:00:00', NULL, 'xtc_cfg_select_option(array(''true'', ''false''),'), 
 ('','ENTRY_RMA_ERROR_MESSAGE_MIN_LENGTH', '50', 1005, 9, NULL, '0000-00-00 00:00:00', NULL, NULL), 
@@ -1333,58 +1154,22 @@ VALUES ('','RMA_CHOOSE_PRODUCTS_OBLIGATION', 'true', 1005, 5, NULL, '0000-00-00 
 ('','RMA_PICK_UP_SHOW', 'true', 1005, 14, NULL, '0000-00-00 00:00:00', NULL, 'xtc_cfg_select_option(array(''true'', ''false''),'), 
 ('','RMA_COST_ESTIMATE_SHOW', 'true', 1005, 16, NULL, '0000-00-00 00:00:00', NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 
-
 INSERT INTO configuration ( configuration_id , configuration_key , configuration_value , configuration_group_id , sort_order , last_modified , date_added , use_function , set_function ) 
 VALUES (NULL, 'PRODUCT_IMAGE_NO_ENLARGE_UNDER_DEFAULT', 'false', '4', 1, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(\'true\', \'false\'), ');
 
-ALTER TABLE admin_access ADD cseo_rma INT( 1 ) NOT NULL DEFAULT '0';
-UPDATE admin_access SET cseo_rma = 1;
-
-INSERT INTO admin_navigation VALUES(NULL, 'cseo_rma', 'Wiederrufsanfragen', 'customers', 'cseo_rma.php', NULL, 2, NULL, 11);
-INSERT INTO admin_navigation VALUES(NULL, 'cseo_rma', 'Wiederrufsanfragen', 'customers', 'cseo_rma.php', NULL, 1, NULL, 11);
-
-ALTER TABLE admin_access ADD COLUMN specials_gratis INT(1) NOT NULL DEFAULT '0';
-UPDATE admin_access SET specials_gratis=1 WHERE  customers_id='1' LIMIT 1;
-
-DROP TABLE IF EXISTS specials_gratis;
-CREATE TABLE specials_gratis (
-  specials_gratis_id int(11) NOT NULL AUTO_INCREMENT,
-  products_id int(11) NOT NULL DEFAULT '0',
-  specials_gratis_quantity int(15) NOT NULL DEFAULT '0',
-  specials_gratis_new_products_price decimal(15,4) NOT NULL DEFAULT '0.0000',
-  specials_gratis_min_price decimal(15,4) NOT NULL DEFAULT '0.0000',
-  specials_gratis_max_value int(11) NOT NULL DEFAULT '1',
-  specials_gratis_ab_value int(11) NOT NULL DEFAULT '1',
-  categories_id int(11) NOT NULL DEFAULT '1',
-  manufacturers_id int(1) NOT NULL DEFAULT '1',
-  specials_gratis_date_added datetime DEFAULT NULL,
-  specials_gratis_last_modified datetime DEFAULT NULL,
-  expires_date datetime DEFAULT NULL,
-  date_status_change datetime DEFAULT NULL,
-  status int(3) NOT NULL DEFAULT '1',
-  PRIMARY KEY (specials_gratis_id),
-  KEY products_id (products_id,status,specials_gratis_date_added),
-  KEY status (status,expires_date)
-);
-
-DROP TABLE IF EXISTS specials_gratis_description;
-CREATE TABLE specials_gratis_description (
-  specials_gratis_id INT DEFAULT '0' NOT NULL,
-  specials_gratis_description text NOT NULL,
-  language_id int(11) NOT NULL,
-  FULLTEXT (specials_gratis_description)
-);
-
-INSERT INTO admin_navigation (id, name, title, subsite, filename, gid, languages_id, nav_set, sort) VALUES (NULL, 'specials_gratis', 'Gratisartikel', 'products', 'specials_gratis.php', NULL, 2, NULL, 5);
-INSERT INTO admin_navigation (id, name, title, subsite, filename, gid, languages_id, nav_set, sort) VALUES (NULL, 'specials_gratis', 'Specials-Free', 'products', 'specials_gratis.php', NULL, 1, NULL, 5);
 INSERT INTO configuration VALUES (NULL, 'CHECKOUT_ATTACH', 'false', 333, 30, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
 INSERT INTO configuration VALUES (NULL, 'CHECKOUT_ATTACH_FILE1', '', 333, 31, NULL, NOW(), NULL, NULL);
 INSERT INTO configuration VALUES (NULL, 'CHECKOUT_ATTACH_FILE2', '', 333, 32, NULL, NOW(), NULL, NULL);
 INSERT INTO configuration VALUES (NULL, 'PARTNER_SELLER_ACTIVE', 'false', 19, 100, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
-INSERT INTO configuration VALUES (NULL, 'PARTNER_SELLER_PATH', '', 19, 101, NULL, NOW( ) , NULL, NULL);
-INSERT INTO configuration VALUES (NULL, 'PARTNER_SELLER_PWD', '', 19, 102, NULL, NOW( ) , NULL, NULL);
-INSERT INTO configuration VALUES (NULL, 'PARTNER_SELLER_CHK', '', 19, 103, NULL, NOW( ) , NULL, NULL);
-INSERT INTO configuration VALUES (NULL, 'GRATISARTIKEL_OPTION', 'select', 17, 100, NULL, NOW(), NULL, "xtc_cfg_select_option(array('select', 'radio'),");
-#database Version
-INSERT INTO database_version VALUES ('commerce:SEO v2next 2.5.4 CE');
+INSERT INTO configuration VALUES (NULL, 'PARTNER_SELLER_PATH', '', 19, 101, NULL, NOW() , NULL, NULL);
+INSERT INTO configuration VALUES (NULL, 'PARTNER_SELLER_PWD', '', 19, 102, NULL, NOW() , NULL, NULL);
+INSERT INTO configuration VALUES (NULL, 'PARTNER_SELLER_CHK', '', 19, 103, NULL, NOW() , NULL, NULL);
 
+INSERT INTO configuration VALUES (NULL, 'GRATISARTIKEL_OPTION', 'select', 17, 100, NULL, NOW(), NULL, "xtc_cfg_select_option(array('select', 'radio'),");
+INSERT INTO configuration VALUES (NULL, 'LISTINGHTML', 'true', 8, 11, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
+INSERT INTO configuration VALUES (NULL, 'WRCHECKOUT', 'false', 333, 33, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
+INSERT INTO configuration VALUES (NULL, 'WRCHECKOUTFILE', '', 333, 34, NULL, NOW(), NULL, NULL);
+
+
+#database Version
+INSERT INTO database_version VALUES ('commerce:SEO v2next 2.5.5 CE');

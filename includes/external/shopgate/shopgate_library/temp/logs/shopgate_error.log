@@ -1,0 +1,6 @@
+01-10-2013 08:03:07: 10 - invalid value in configuration - Additional information: "customer_number,shop_number,apikey"
+	ShopgateConfig::validate() in configuration.php:567
+	ShopgateConfig::saveFile() in configuration.php:501
+	ShopgateConfigModified::saveFileForLanguage() in shopgate_config.php:178
+	Unknown class - include_once() in shopgate.php:42
+	

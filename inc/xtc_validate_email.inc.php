@@ -15,9 +15,20 @@
 
 function xtc_validate_email($email) {
     $valid_address = true;
-    if (strpos($email, "\0") !== false) {
-        return false;
-    }
+
+    // sql injection fix 16.02.2011
+    if (strpos($email,"\0")!==false) {return false;}
+    if (strpos($email,"\x00")!==false) {return false;}
+    if (strpos($email,"\u0000")!==false) {return false;}
+    if (strpos($email,"\000")!==false) {return false;}
+	
+	// added invalid characters ", ', <, >, =
+    if (strpos($email,'"')!==false) {return false;}
+    if (strpos($email,"'")!==false) {return false;}
+    if (strpos($email,'<')!==false) {return false;}
+    if (strpos($email,'>')!==false) {return false;}
+    if (strpos($email,'=')!==false) {return false;}
+	
     $mail_pat = '^(.+)@(.+)$';
     $valid_chars = "[^] \(\)<>@,;:\.\\\"\[]";
     $atom = "$valid_chars+";

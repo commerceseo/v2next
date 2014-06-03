@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: application_top.php 934 2014-04-02 15:40:06Z akausch $
+ * 	$Id: application_top.php 1080 2014-05-28 09:26:39Z svvario $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -230,8 +230,11 @@ if (file_exists(DIR_FS_LANGUAGES . $_SESSION['language'] . '/admin/' . $current_
 // write customers status in session
 require('../' . DIR_WS_INCLUDES . 'write_customers_status.php');
 
-if (file_exists($current_page) == false || $_SESSION['customers_status']['customers_status_id'] !== '0') {
-    xtc_redirect(xtc_href_link(FILENAME_LOGIN));
+if( !defined( 'SUPPRESS_REDIRECT' ) ){
+
+	if (file_exists($current_page) == false || $_SESSION['customers_status']['customers_status_id'] !== '0') {
+		xtc_redirect(xtc_href_link(FILENAME_LOGIN));
+	}
 }
 
 // for tracking of customers
@@ -314,13 +317,17 @@ if (!defined('DEFAULT_LANGUAGE')) {
 // for Customers Status
 xtc_get_customers_statuses();
 
-$pagename = strtok($current_page, '.');
-if (!isset($_SESSION['customer_id'])) {
-    xtc_redirect(xtc_href_link(FILENAME_LOGIN));
-}
+if( !defined( 'SUPPRESS_REDIRECT' ) ){
 
-if (xtc_check_permission($pagename) == '0') {
-    xtc_redirect(xtc_href_link(FILENAME_LOGIN));
+	$pagename = strtok($current_page, '.');
+
+	if (!isset($_SESSION['customer_id'])) {
+		xtc_redirect(xtc_href_link(FILENAME_LOGIN));
+	}
+
+	if (xtc_check_permission($pagename) == '0') {
+		xtc_redirect(xtc_href_link(FILENAME_LOGIN));
+	}
 }
 
 //Ist Tabelle da?

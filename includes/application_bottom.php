@@ -12,6 +12,12 @@
 * 	Released under the GNU General Public License
 * ---------------------------------------------------------------*/
 $browser = new Browser();
+if($browser->getBrowser() == Browser::BROWSER_IPHONE) {
+echo '
+<!-- Shopsoftware commerce:SEO v2 by www.commerce-seo.de based on xt:Commerce 3 - The Shopsoftware is redistributable under the GNU General Public License (Version 2) [http://www.gnu.org/licenses/gpl-2.0.html] -->
+</body>
+</html>';
+}
 
 echo '<script src="'.DIR_WS_CATALOG.'shopscripte/head.min.js"></script>';
 
@@ -25,8 +31,16 @@ echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery-migrate.min.js",';
 echo '"//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js",';
 
 }
-echo '"'.DIR_WS_CATALOG.'shopscripte/js/bootstrap.min.js",';
-echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.colorbox-min.js",';
+if (AJAXBOOTSTRAP == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/bootstrap.min.js",';
+}
+if (AJAXCOLORBOX == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.colorbox-min.js",';
+}
+if (AJAXFLEXNAV == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.flexnav.min.js",';
+}
+echo '"'.DIR_WS_CATALOG.'shopscripte/js/ajaxsuggest.js",';
 echo '"'.DIR_WS_CATALOG.'shopscripte/js/formsizecheck.js",';
 echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.rating.pack.js",';
 $ticker_query = xtc_db_query("SELECT ticker_text FROM news_ticker WHERE language_id = '".(int)$_SESSION['languages_id']."' AND status = '1' ");
@@ -34,12 +48,13 @@ $boxda = xtc_db_query("SELECT box_name FROM boxes WHERE box_name = 'news_ticker'
 if(xtc_db_num_rows($boxda) && xtc_db_num_rows($ticker_query)){
 	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.tickertype.js",';
 }
-echo '"'.DIR_WS_CATALOG.'shopscripte/js/responsiveslides.min.js",';
-
+if (AJAXRESPSLIDE == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/responsiveslides.min.js",';
+}
 if (file_exists('templates/'.CURRENT_TEMPLATE.'/javascript/template.js')) {
 	echo '"'.DIR_WS_CATALOG.'templates/'.CURRENT_TEMPLATE.'/javascript/template.js",';
 }
-
+echo '"'.DIR_WS_CATALOG.'includes/xajax/xajax_js/xajax.min.js",';
 if(is_dir(DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/plugins')) {
 	$cseo_plugin_js_path = DIR_WS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/plugins/js/';
 	$cseo_path_pattern = DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/plugins/js/*.js';
@@ -52,10 +67,19 @@ if(is_dir(DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/plugins')) {
 	}
 }
 
+if (AJAXJQUERYUI == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery-ui-1.10.3.custom.min.js",';
+}
 //Seitenspezifische JS
-if (PRODUCT_ID > 0 && strpos($PHP_SELF, FILENAME_SHOPPING_CART) === false) {
-	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.jqzoom.js",';
-
+if(strstr($_REQUEST['linkurl'], substr(FILENAME_CHECKOUT, 0, -5)) || strstr($_REQUEST['linkurl'], substr('checkout.php', 0, -5)) || strstr($PHP_SELF, substr(FILENAME_CHECKOUT, 0, -5)) || strstr($PHP_SELF, substr('checkout.php', 0, -5))) {
+	echo '"'.DIR_WS_CATALOG.'cache/xajax_checkout.js",';
+} elseif(strstr($_REQUEST['linkurl'], substr(FILENAME_SHOPPING_CART, 0, -5)) || strstr($_REQUEST['linkurl'], substr('shopping_cart.php', 0, -5)) || strstr($PHP_SELF, substr(FILENAME_SHOPPING_CART, 0, -5)) || strstr($PHP_SELF, substr('shopping_cart.php', 0, -5))) {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/ButtonGratisHandler.js",';
+} elseif (PRODUCT_ID > 0 && strpos($PHP_SELF, FILENAME_SHOPPING_CART) === false) {
+	echo '"'.DIR_WS_CATALOG.'cache/xajax.js",';
+	if (AJAXJZOOM == 'true') {
+		echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.jqzoom.js",';
+	}
 	if ($_SESSION['SPECIAL_DATE'] != '' && PRODUCT_DETAILS_SPECIALS_COUNTER == 'true') { 
 		echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.countdown.js",';
 	}
@@ -67,11 +91,20 @@ if (PRODUCT_ID > 0 && strpos($PHP_SELF, FILENAME_SHOPPING_CART) === false) {
 		echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.socialshareprivacy.min.js",';
 	}
 } else {
+	echo '"'.DIR_WS_CATALOG.'cache/xajax.js",';
 	if (PRODUCT_DETAILS_SOCIAL == 'true') {
 		echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.socialshareprivacy.min.js",';
 	}
 }
-
+if (AJAXRESPTABS == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.responsiveTabs.min.js",';
+}
+if (AJAXUNSLIDER == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/unslider.min.js",';
+}
+if (AJAXJYOUTUBE == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jyuotube.js",';
+}
 echo '"'.DIR_WS_CATALOG.'shopscripte/js/main.js"';
 echo ');
 </script>';
@@ -81,6 +114,10 @@ require_once ('templates/shopscripte/shopscript.php');
 
 if(TRACKING_PIWIK_ACTIVE == 'true') {
 	include('includes/piwik.js.php');
+}
+
+if(ETRACKER_CODE !='' && ETRACKER_ON == 'true') {
+	include('includes/etracker_analytics.js.php');
 }
 
 $t_products_id = 0;
@@ -112,11 +149,12 @@ if (DISPLAY_PAGE_PARSE_TIME == 'true') {
 	echo '<div id="parsetime">Parse Time: ' . $parse_time . 's</div>';
 }
 include('templates/admin/admin.php');
+if($browser->getBrowser() != Browser::BROWSER_IPHONE) {
 echo '
 <!-- Shopsoftware commerce:SEO v2 by www.commerce-seo.de based on xt:Commerce 3 - The Shopsoftware is redistributable under the GNU General Public License (Version 2) [http://www.gnu.org/licenses/gpl-2.0.html] -->
 </body>
 </html>';
-
+}
 if((GZIP_COMPRESSION == 'true') && ($ext_zlib_loaded == 1) && ($ini_zlib_output_compression < 1) ){
 	require(DIR_FS_INC.'xtc_gzip_output.inc.php');
 	xtc_gzip_output(GZIP_LEVEL);

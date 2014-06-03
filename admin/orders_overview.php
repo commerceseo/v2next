@@ -215,15 +215,6 @@ require(DIR_WS_INCLUDES . 'header.php');
                         </a>
                     </th>
                     <th class="dataTableHeadingContent" align="center">
-                        Versandart
-                        <a href="<?php echo basename($_SERVER['SCRIPT_NAME']) . '?versandart=up' . $get_monat . $get_jahr; ?>">
-                            <img src="images/up.gif" alt="" title="" />
-                        </a>
-                        <a href="<?php echo basename($_SERVER['SCRIPT_NAME']) . '?versandart=down' . $get_monat . $get_jahr; ?>">
-                            <img src="images/down.gif" alt="" title="" />
-                        </a>
-                    </th>
-                    <th class="dataTableHeadingContent" align="center">
                         Status
                         <a href="<?php echo basename($_SERVER['SCRIPT_NAME']) . '?status=up' . $get_monat . $get_jahr; ?>">
                             <img src="images/up.gif" alt="" title="" />
@@ -232,6 +223,16 @@ require(DIR_WS_INCLUDES . 'header.php');
                             <img src="images/down.gif" alt="" title="" />
                         </a>
                     </th>
+                    <th class="dataTableHeadingContent" align="center">
+                        Versandart
+                        <a href="<?php echo basename($_SERVER['SCRIPT_NAME']) . '?versandart=up' . $get_monat . $get_jahr; ?>">
+                            <img src="images/up.gif" alt="" title="" />
+                        </a>
+                        <a href="<?php echo basename($_SERVER['SCRIPT_NAME']) . '?versandart=down' . $get_monat . $get_jahr; ?>">
+                            <img src="images/down.gif" alt="" title="" />
+                        </a>
+                    </th>
+
                     <th class="dataTableHeadingContent" align="right">
                         Brutto
                     </th>

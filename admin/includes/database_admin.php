@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: database_admin.php 1002 2014-05-05 15:14:06Z akausch $
+ * 	$Id: database_admin.php 1080 2014-05-28 09:26:39Z svvario $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -145,3 +145,12 @@ define('TABLE_RMA_COMMENTS','rma_comments');
 define('TABLE_RMA_TEMPLATES','rma_templates');
 define('TABLE_SPECIALS_GRATIS','specials_gratis');
 define('TABLE_SPECIALS_GRATIS_DESCRIPTION','specials_gratis_description');
+
+define('TABLE_PROPERTIES', 'properties');
+define('TABLE_PROPERTIES_DESCRIPTION', 'properties_description');
+define('TABLE_PROPERTIES_VALUES', 'properties_values');
+define('TABLE_PROPERTIES_VALUES_DESCRIPTION', 'properties_values_description');
+define('TABLE_PRODUCTS_PROPERTIES_COMBIS', 'products_properties_combis');
+define('TABLE_PRODUCTS_PROPERTIES_INDEX', 'products_properties_index');
+define('TABLE_PRODUCTS_PROPERTIES_COMBIS_VALUES', 'products_properties_combis_values');
+define('TABLE_ORDERS_PRODUCTS_PROPERTIES', 'orders_products_properties');

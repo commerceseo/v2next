@@ -35,7 +35,6 @@
                     {$module_data.PRODUCTS_QTY} 
                     <a href="{$module_data.PLUS_LINK}" title="{$txt.text_add}"><img src="{$tpl_path}img/cart_plus.gif"></a>
                 </div>
-
                 <div class="fl wk5">
                     {$module_data.PRODUCTS_SINGLE_PRICE}
                     {if $module_data.PRODUCTS_VPE}<br>{$module_data.PRODUCTS_VPE}{/if}
@@ -43,15 +42,11 @@
                 <div class="fl wk6">
                     {$module_data.PRODUCTS_PRICE}
                 </div>
-
                 <div class="fl wk7">
                     <a href="{$module_data.DEL_LINK}" title="{$txt.text_delete}"><img src="{$tpl_path}img/cart_delete.png"></a>
                 </div>
-
             </div>
             {/foreach}
-<!-- Indiv-Style gratisartikel begin-->
-
 			{foreach name=gratart item=module_gratis from=$special_gratis}
 			 {if $module_gratis.products_name}   
 			  {assign var="z" value="`$z+1`"}
@@ -67,14 +62,13 @@
 			  </div>
 			{/if} 
 		   {/foreach}
-
-<!-- gratisartikel end-->
         </div>
     </div>
 </div>
 <hr />
+<br style="clear:both">
 <div class="row">
-    <div class="col-xs-12 text-right">
+    <div class="col-xs-12 text-right ar">
         {if $SELECT_COUNTRY}{$txt.text_country} {$SELECT_COUNTRY}<br><br>{/if}
         {$TOTAL_CONTENT_NETTO}
         {if $UST_CONTENT}{$UST_CONTENT}{/if}

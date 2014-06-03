@@ -1,0 +1,35 @@
+{$FORM}
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="modal-title">{$txt.TEXTBEARB}</h4>
+		</div>	
+		<div class="modal-body">
+			<b>{$txt.POSITION}</b>
+
+			{$TPOS}
+			<br><br>
+			<b>{$txt.TABLE_HEADING_DESCRIPTION}</b>
+			<br>
+			{foreach name=catedit item=module_item from=$ITEM_EDIT}
+					<b>{$module_item.langname}</b>
+					{$module_item.field_mydesc}
+					{if $module_item.field_sdesc_wy == '1'}
+					<script type="text/javascript">
+						var newCKEdit = CKEDITOR.replace(emydesc_{$module_item.langid});
+						CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');		
+					</script>
+					<br><br>
+					{/if}
+			{/foreach}
+			<input type="hidden" value="Text" name="safe" />
+			<input type="hidden" value="{$oldid}" name="oldid" />
+			<input type="hidden" value="{$cat}" name="cat" />
+			<input type="hidden" value="{$ITEM}" name="item_id" />
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-default" data-dismiss="modal">{$txt.BUTTON_CANCEL}</button>
+			<button type="submit" class="btn btn-success">{$txt.BUTTON_SAVE}</button>
+		</div>
+	</div>
+{$FORM_END}

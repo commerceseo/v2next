@@ -1,0 +1,100 @@
+{$FORM}
+<div class="row">
+  <hr>
+</div>
+<div class="panel panel-info">
+  <div class="panel-heading">
+    <h3>{$txt.HEADING_COMMENT}</h3>
+  </div>
+  <div class="panel-body">	
+    {foreach name=blogkey item=module_key from=$blogkey}
+    <div id="comid{$module_key.comid}" class="panel panel-info">	
+      <div class="panel-body">
+        <b>
+	
+          <a data-toggle="modal" href="#" data-target="#Modal{$module_key.comid}">
+            <button title="entfernen" type="button" class="btn btn-danger btn-sm float_right w60">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>	
+          </a>
+          <a data-toggle="modal" href="blog_edit_block.php?updatecomment={$module_key.comid}" data-target="#Modale{$module_key.comid}">
+            <button title="antworten" type="button" class="btn btn-success btn-sm float_right w60">
+              <span class="glyphicon glyphicon-share-alt"></span>
+            </button>
+          </a>				
+          {$module_key.blogentry_name}&nbsp;&nbsp;/&nbsp;&nbsp;{$txt.HEADING_RATING}:&nbsp;{$module_key.wert}&nbsp;&nbsp;{$module_key.reviews_image}
+          &nbsp;&nbsp;/&nbsp;&nbsp;{$txt.HEADING_STATUS}:&nbsp;{$module_key.button4}<br>
+          {$txt.HEADING_DATE_ADDED}&nbsp;{$module_key.date}
+        </b><br>
+        {$module_key.reviews_text|truncate:100:'...'}
+        {if $module_key.mycomments}
+        <div class="panel-body">
+          <form id="comdelete" name="comdelete" action="blog_edit_block.php" method="post">
+          {foreach name=blogkey item=module_com from=$module_key.mycomments}
+          <p>
+          <button title="entfernen" type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Kommentar wirklich l&ouml;schen???')"><span class="glyphicon glyphicon-remove-circle"></span></button>
+          {$module_com.date}
+          {$module_com.desc}
+          <input type="hidden" name="com_id" value="{$module_com.id}"/>
+          <input type="hidden" name="deletmycomments" value="delete"/>
+          </p>
+          {/foreach}
+          </form>
+        </div>
+        {/if}
+      </div>
+    </div>
+    <div class="modal fade" id="Modale{$module_key.comid}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="Modal{$module_key.comid}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">{$txt.BENTF}</h4>
+          </div>	
+          <div class="modal-body">
+            <p>{$txt.BENTFTEXT}</p>
+          </div>										
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" data-dismiss="modal">{$txt.BUTTON_CANCEL}</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" id="delete{$module_key.comid}">{$txt.BUTTON_BCANCEL}</button>
+          </div>
+        </div>
+      </div>
+    </div>	
+    {literal}
+    <script type="text/javascript">
+      $(document).ready(function() {
+
+        $("#delete{/literal}{$module_key.comid}{literal}").bind("click", function() {
+          $.ajax({
+            url: "blog_edit_block.php?action=comments&page={/literal}{literal}&rdID={/literal}{$module_key.comid}{literal}&actionset=deleteconfirm",
+            type: "GET",
+            async: false,
+            timeout: 2000,
+            error: function() {
+              //if (fb)
+                console.log('error');
+            },
+            success: function() {
+              //if (fb)
+                console.log('success');
+              $("#comid{/literal}{$module_key.comid}{literal}").remove();
+            }
+          });
+          return true;
+        });
+      });
+    </script>
+    {/literal}
+
+    {/foreach}
+  </div>
+</div>
+{$FORM_END}

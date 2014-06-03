@@ -1,0 +1,384 @@
+{$FORM}
+<div class="row">
+	<hr>
+</div>
+<div class="row">
+	<div class ="col-md-12 col-xs-12 col-lg-12 col-sm-12">
+		<h3>{$txt.HEADING_BEITRAEGE_EDIT}</h3>
+	</div>
+</div>
+<div class="row">
+	<div class ="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-right">
+		<input class="btn btn-success" type="submit" value="{$txt.BUTTON_SAVE}" />
+		<a class="btn btn-default" href="blog.php">{$txt.BUTTON_CANCEL}</a>
+	</div>
+</div>
+<div class="row">
+	<div class ="col-md-12 col-xs-12 col-lg-12 col-sm-12">
+		<ul class="nav nav-pills">
+			<li class="active"><a Daten-Toggle="Register" href="#{$txt.TABLE_HEADING_DEFAULT}" data-toggle="tab">{$txt.TABLE_HEADING_DEFAULT}</a></li>
+			{foreach name=itemedit item=module_item from=$ITEM_EDIT}
+			<li><a Daten-Toggle="Register" href="#{$module_item.langname}" data-toggle="tab">{$module_item.langname}</a></li>
+			{/foreach}
+			{if $ITEMEX == 'true'}
+			<li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Blockverwaltung<span class="caret"></span> </a>
+				<ul class="dropdown-menu">
+					<li><a Daten-Toggle="Register" href="#Block" data-toggle="tab">&Uuml;bersicht</a></li>
+					<li class="divider"></li>
+					<li><a Daten-Toggle="Register" href="#Text" data-toggle="tab">{$txt.HEADING_TEXT}</a></li>
+					<li><a Daten-Toggle="Register" href="#Images" data-toggle="tab">{$txt.HEADING_IMG}</a></li>
+					<li><a Daten-Toggle="Register" href="#Artikel" data-toggle="tab">{$txt.HEADING_ART}</a></li>
+					<li><a Daten-Toggle="Register" href="#Kategorie" data-toggle="tab">{$txt.HEADING_KAT}</a></li>
+					<li><a Daten-Toggle="Register" href="#Blogitem" data-toggle="tab">{$txt.HEADING_BLOG_I}</a></li>
+				</ul>
+			</li>
+			{/if}
+		</ul>
+	</div>
+</div>
+<div class="row">
+	<div class="tab-content">
+		<div class="tab-pane fade in active" id="{$txt.TABLE_HEADING_DEFAULT}">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.CHOOSE_CATEGORIE}</b></b>
+				</div>
+				<div class="panel-body">{$ITEMEDIT}</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_NEWCATEGORIE_POSITION}</b></b>
+				</div>
+				<div class="panel-body">{$position}</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_DATE}</b></b>
+				</div>
+				<div class="panel-body">{$date}</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_DATE_UPDATE}</b></b>
+				</div>
+				<div class="panel-body">{$date_update}</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_DATE_RELEASE}</b></b>
+				</div>
+				<div class="panel-body">{$date_release}</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_DATE_OUT}</b></b>
+				</div>
+				<div class="panel-body">{$date_out}</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.FOOTER_STATUS}</b></b>
+				</div>
+				<div class="panel-body">{$status}</div>
+			</div>
+			{if $GRUPPE}
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<b class="panel-title"><b>{$KGRUPPE}</b></b>
+					</div>
+					<div class="panel-body">
+						{foreach name=catedit item=module_grp from=$GRUPPE}
+						{$module_grp.KGRUPPE}
+						{/foreach}
+					</div>
+				</div>
+			{/if}
+		</div> 
+
+		{foreach name=catedit item=module_item from=$ITEM_EDIT}
+		<div class="tab-pane fade in" id="{$module_item.langname}">
+			<div class ="row">
+				<div class ="col-md-12 col-xs-12 col-lg-12 col-sm-12">
+					<b>{$module_item.lang_images}&nbsp;{$module_item.langname}</b> 
+				</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_NEWITEM_TITLE}</b></b>
+				</div>
+				<div class="panel-body">
+					{$module_item.fieldname}
+				</div>
+			</div>
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_NEWITEM_NAME}</b></b>
+				</div>
+				<div class="panel-body">
+					{$module_item.fieldtitle}
+				</div>
+			</div>
+
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_META_TITLE}</b></b>
+				</div>
+				<div class="panel-body">
+					{$module_item.field_mtitle}
+				</div>
+			</div>
+
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_META_DESCRIPTION}</b></b>
+				</div>
+				<div class="panel-body">
+					{$module_item.field_mdesc}
+				</div>
+			</div>
+
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.HEADING_META_KEYWORDS}</b></b>
+				</div>
+				<div class="panel-body">
+					{$module_item.field_mkeys}
+				</div>
+			</div>
+
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.TABLE_HEADING_SHORT_DESCRIPTION}</b></b>
+				</div>
+				<div class="panel-body">
+					{$module_item.field_sdesc}
+					{if $module_item.field_sdesc_wy == '1'}
+					<script type="text/javascript">
+						var newCKEdit = CKEDITOR.replace(shortdesc_{$module_item.langid});
+						CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');		
+					</script>
+					{/if}            
+				</div>
+			</div>        
+
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b class="panel-title"><b>{$txt.TABLE_HEADING_DESCRIPTION}</b></b>
+				</div>
+				<div class="panel-body">
+					{$module_item.field_ldesc}
+					{if $module_item.field_sdesc_wy == '1'}
+					<script type="text/javascript">
+						var newCKEdit = CKEDITOR.replace(description_{$module_item.langid});
+						CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');		
+					</script>
+					{/if}
+				</div>
+			</div>
+
+		</div>
+		{/foreach}    
+		{if $ITEMEX == 'true'}
+		<div class="tab-pane fade in" id="Block">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b>{$txt.HEADING_BLOCK}</b>
+				</div>		
+				<div class="panel-body">
+					{foreach name=cateditbl item=module_bl from=$BLOECKE}
+					<div class="panel panel-info" id="{$module_bl.typ}{$module_bl.tblock_id}">
+						<div class="panel-heading" ><b>Typ:{$module_bl.typ}&nbsp;&nbsp;{$module_bl.tblock_id}</b></div>
+						<div class="panel-body">
+							<b>Pos.:&nbsp{$module_bl.position}</b>
+							{if $module_bl.typ == 'SlideShow'}
+							&nbsp;&nbsp;&nbsp;&nbsp;<img src="{$module_bl.description}" />
+							{else}
+							&nbsp;&nbsp;/&nbsp;&nbsp;Desc:{$module_bl.description|truncate:60}	
+							{/if}
+
+							<a data-toggle="modal" href="#" data-target="#Modal{$module_bl.typ}{$module_bl.tblock_id}">
+								<button type="button" class="btn btn-danger btn-sm float_right w60">
+										<span class="glyphicon glyphicon-trash"></span>
+								</button>	
+							</a>
+							<a data-toggle="modal" href="blog_edit_block.php?updateblock={$module_bl.tblock_id}&typ={$module_bl.typ}&cat={$smarty.get.cat}" data-target="#Modale{$module_bl.typ}{$module_bl.tblock_id}">
+								<button type="button" class="btn btn-success btn-sm float_right w60">
+									<span class="glyphicon glyphicon-pencil"></span>
+								</button>
+							</a>
+						</div>
+					</div>
+							<div class="modal fade" id="Modale{$module_bl.typ}{$module_bl.tblock_id}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+								<div class="modal-dialog modal-lg">
+									<div class="modal-content">
+										
+									</div>
+								</div>
+							</div>
+					
+							<div class="modal fade" id="Modal{$module_bl.typ}{$module_bl.tblock_id}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+								<div class="modal-dialog modal-sm">
+									<div class="modal-content">
+											<div class="modal-header">
+											  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+											  <h4 class="modal-title">{$txt.BLOCKENF}</h4>
+											</div>	
+												<div class="modal-body">
+												  <p>{$txt.BLOCKENTFTEXT}</p>
+												</div>										
+										      <div class="modal-footer">
+												<button type="button" class="btn btn-default" data-dismiss="modal">{$txt.BUTTON_CANCEL}</button>
+												<button type="button" class="btn btn-danger" data-dismiss="modal" id="delete{$module_bl.typ}{$module_bl.tblock_id}">{$txt.BLOCKENF}</button>
+											  </div>
+									</div>
+								</div>
+							</div>					
+					{literal}
+						<script type="text/javascript">
+							$(document).ready(function(){
+
+								$("#delete{/literal}{$module_bl.typ}{$module_bl.tblock_id}{literal}").bind("click", function(){
+									$.ajax({
+										url: 		"blog_edit_block.php?item={/literal}{$myitem}{literal}&typ={/literal}{$module_bl.typ}{literal}&deleteblock={/literal}{$module_bl.tblock_id}{literal}",
+										type: 		"GET",
+										async:		false,
+										timeout: 	2000,
+										error: 		function(){ console.log('error'); },
+										success: 	function(){ 
+														console.log('success'); 
+														$("#{/literal}{$module_bl.typ}{$module_bl.tblock_id}{literal}").remove();
+													}
+									});
+									return true;
+								});
+							});
+						</script>
+						{/literal}					
+					{/foreach}
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade in" id="Text">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b>{$txt.POSITION}</b>
+				</div>
+				<div class="panel-body">
+					{$TPOS}
+				</div>
+				<div class="panel-heading">
+					<b>{$txt.HEADING_TEXT}</b>
+				</div>	
+				{foreach name=catedit item=module_item from=$ITEM_EDIT2}				
+				<div class="panel-body">
+					<b>{$module_item.langname}</b>
+					{$module_item.field_mydesc}
+					{if $module_item.field_sdesc_wy == '1'}
+					<script type="text/javascript">
+						var newCKEdit = CKEDITOR.replace(mydesc_{$module_item.langid});
+						CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');		
+					</script>
+					{/if}            
+				</div>				
+				{/foreach}
+			</div>
+		</div>
+
+		<div class="tab-pane fade in" id="Images">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b>{$txt.HEADING_IMG}</b>
+				</div>		
+				<div class="panel-body">
+
+					<b>{$txt.SLIDERCONF}</b><br>
+					<div class="panel panel-info">
+						<div class="panel-heading">{$txt.BREITE}:</div>
+						<div class="panel-body">{$BILDER2.width}</div>
+					</div>
+					<div class="panel panel-info">
+						<div class="panel-heading">{$txt.HOHE}:</div>
+						<div class="panel-body">{$BILDER2.height}</div>
+					</div>
+					<div class="panel panel-info">
+						<div class="panel-heading">{$txt.FLOAT}:</div>
+						<div class="panel-body">{$BILDER2.floating}</div>
+					</div>
+					<div class="panel panel-info">
+						<div class="panel-heading">{$txt.POSITION}:</div>
+						<div class="panel-body">{$BILDER2.position}</div>
+					</div>					
+				<b>{$txt.SLIDBILD}</b><br>
+				{foreach name=bilder item=module_img from=$BILDER}
+				<div class="panel panel-info">
+					<div class="panel-heading">{$module_img.bildfeld1}</div>
+					<div class="panel-body">
+						<input type="file" name="{$module_img.bildfeld3}" />
+
+					</div>
+				</div>
+				{/foreach}		
+				</div>
+			</div>
+		</div>
+
+		<div class="tab-pane fade in" id="Artikel">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b>{$txt.POSITION}</b>
+				</div>
+				<div class="panel-body">
+					{$APOS}
+				</div>
+				<div class="panel-heading">
+					<b>{$txt.HEADING_ART}</b>
+				</div>		
+				<div class="panel-body">	
+					{$MEART}
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane fade in" id="Kategorie">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b>{$txt.POSITION}</b>
+				</div>
+				<div class="panel-body">
+					{$KPOS}
+				</div>
+				<div class="panel-heading">
+					<b>{$txt.HEADING_KAT}</b>
+				</div>		
+				<div class="panel-body">	
+					{$MEKATS}
+				</div>
+			</div>
+		</div>
+		<div class="tab-pane fade in" id="Blogitem">
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<b>{$txt.POSITION}</b>
+				</div>
+				<div class="panel-body">
+					{$BIPOS}
+				</div>
+				<div class="panel-heading">
+					<b>{$txt.HEADING_BLOG_I}</b>
+				</div>		
+				<div class="panel-body">	
+					{$MEBART}
+				</div>
+			</div>
+		</div>
+		{/if}
+	</div>
+</div>
+{$action}{$item}
+<div class="row">
+	<div class ="col-md-12 col-xs-12 col-lg-12 col-sm-12 text-right">
+		<input class="btn btn-success" type="submit" value="{$txt.BUTTON_SAVE}" />
+		<a class="btn btn-default" href="blog.php">{$txt.BUTTON_CANCEL}</a>
+	</div>
+</div>
+{$FORM_END}

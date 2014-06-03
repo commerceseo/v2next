@@ -1,0 +1,34 @@
+
+<IfModule mod_expires.c>
+  ExpiresActive on
+
+# Perhaps better to whitelist expires rules? Perhaps.
+  ExpiresDefault                          "access plus 0 seconds"
+
+  ExpiresByType text/cache-manifest       "access plus 0 seconds"
+  ExpiresByType text/html                 "access plus 0 seconds"
+  ExpiresByType text/xml                  "access plus 0 seconds"
+  ExpiresByType application/xml           "access plus 0 seconds"
+  ExpiresByType application/json          "access plus 0 seconds"
+  ExpiresByType image/gif                 "access plus 0 seconds"
+  ExpiresByType image/png                 "access plus 0 seconds"
+  ExpiresByType image/jpg                 "access plus 0 seconds"
+  ExpiresByType image/jpeg                "access plus 0 seconds"
+  ExpiresByType text/css                  "access plus 1 year"
+  ExpiresByType application/javascript    "access plus 1 year"
+  ExpiresByType application/x-javascript  "access plus 1 year"
+
+  
+  <IfModule mod_headers.c>
+    Header append Cache-Control "public"
+  </IfModule>
+  
+</IfModule>
+
+# BEGIN Cache-Control Headers
+<ifmodule mod_headers.c>
+	<filesmatch "\\.(ico|jpe?g|png|gif|swf)$">
+		Header set Cache-Control "max-age=0, public"
+	</filesmatch>
+</ifmodule>
+

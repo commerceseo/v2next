@@ -1,0 +1,67 @@
+<table class="outerTable">
+    <tr>
+        <td width="100%">
+            <h1>{$HEADING_TITLE}</h1>
+        </td>
+    </tr>
+    <tr>
+        <td width="100%">
+            Welche Sprache soll installiert werden?
+            {$lang_button}
+        </td>
+    </tr>
+    <tr>
+        <td width="100%">
+            &nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td width="100%">
+            <table>
+                <tr>
+                    <td width="75%" valign="top">
+                        <table class="dataTable">
+                            <tr class="dataTableHeadingRow">
+                                <th class="dataTableHeadingContent">&nbsp;</th>
+                                <th class="dataTableHeadingContent">{$TABLE_HEADING_LANGUAGE_NAME}</th>
+                                <th class="dataTableHeadingContent">{$TABLE_HEADING_LANGUAGE_CODE}</th>
+                                <th class="dataTableHeadingContent">{$TABLE_HEADING_LANGUAGE_STATUS}</th>
+                                <th class="dataTableHeadingContent">{$TABLE_HEADING_LANGUAGE_STATUS_ADMIN}</th>
+                                <th class="dataTableHeadingContent" align="right">{$TABLE_HEADING_ACTION}</th>
+                            </tr>
+                            {foreach name=aussen item=module_data from=$languagearray}
+                            {$module_data.LANG_TR}
+                            <td class="dataTableContent">{$module_data.LANG_ICON}</td>
+                            <td class="dataTableContent">{$module_data.TD_ROW_LANG}</td>
+                            <td class="dataTableContent">{$module_data.TD_ROW_CODE}</td>
+                            <td class="dataTableContent">{$module_data.TD_ROW_STATUS_LANG}</td>
+                            <td class="dataTableContent">{$module_data.TD_ROW_STATUS_ADMIN_LANG}</td>
+                            <td class="dataTableContent" align="right">{$module_data.TD_ROW_ACTION}</td>
+                </tr>
+                {/foreach}
+            </table>
+            <table>
+                <tr>
+                    <td class="smallText" valign="top"><i>{$DISPLAY_NUMBER}</i></td>
+                    <td class="smallText" align="right"><i>{$DISPLAY_SITE}</i></td>
+                </tr>
+            </table>
+            <table>
+                <tr>
+                    <td class="smallText" valign="top">{$NEW_BUTTON}</td>
+                </tr>
+            </table>
+        </td>
+        <td width="25%" valign="top">
+            <table>
+                <tr>
+                    <td>{$SITE_BOX}</td>
+                </tr>
+            </table>
+        </td>
+        </td>
+    </tr>
+</table>
+</tr>
+
+</table>

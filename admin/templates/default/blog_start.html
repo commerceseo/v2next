@@ -1,0 +1,103 @@
+{$FORM}
+<div class="row">
+	<div class ="col-xs-12">
+		<h3>{$txt.HEADING_TBLOG_START}</h3>
+	</div>
+</div>
+<div class="row">
+	<div class ="col-xs-12 text-right">
+		<input class="btn btn-success" type="submit" value="{$txt.BUTTON_SAVE}" />
+		<a class="btn btn-default" href="blog.php">{$txt.BUTTON_CANCEL}</a>
+	<hr>
+	</div>
+</div>
+<div class="row">
+	<div class ="col-xs-12">
+		<ul class="nav nav-pills">
+			{foreach name=catedit item=module_cat from=$START_EDIT}
+			<li {if $module_cat.langid == '2'} class="active"{/if}><a href="#{$module_cat.langname}" data-toggle="tab">{$module_cat.langname}</a></li>
+			{/foreach}
+			<li><a Daten-Toggle="Register"href="#gallery" data-toggle="tab">{$txt.BILDERGAL}</a></li>
+		</ul>
+	</div>
+</div>
+<div class="row">
+	<div class="tab-content">
+		{foreach name=catedit item=module_cat from=$START_EDIT}
+		<div class="tab-pane fade in{if $module_cat.langid == '2'} active{/if}" id="{$module_cat.langname}">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">META-{$txt.TABLE_HEADING_DESCRIPTION}</h3>
+					</div>					
+					<div class="panel-body">
+						<div class="myspan"><b>{$txt.HEADING_META_TITLE}:&nbsp;</b></div>{$module_cat.field_mtitle}
+					</div>
+					<div class="panel-body">
+						<div class="myspan"><b>{$txt.HEADING_META_DESCRIPTION}:&nbsp;</b></div>{$module_cat.field_mdesc}
+					</div>
+					<div class="panel-body">
+						<div class="myspan"><b>{$txt.HEADING_META_KEYWORDS}:&nbsp;</b></div>{$module_cat.field_mkeys}
+					</div>
+				</div>
+				{if $module_cat.langid == '2' && $KGRUPPE}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title"><b>{$KGRUPPE}</b></h3>
+					</div>
+					<div class="panel-body">
+						{foreach name=catedit item=module_grp from=$GRUPPE}
+							{$module_grp.KGRUPPE}
+						{/foreach}
+					</div>
+				</div>
+				{/if}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title">{$txt.TABLE_HEADING_DESCRIPTION}</h3>
+					</div>		
+				<div class="panel-body">
+					{$module_cat.field_ldesc}
+					{if $module_cat.field_sdesc_wy == '1'}
+					<script type="text/javascript">
+						var newCKEdit = CKEDITOR.replace(description_{
+							$module_cat.langid
+						}
+						);
+						CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
+					</script>
+					{/if}
+				</div>		
+			</div>
+		</div>
+		{/foreach}
+		<div class="tab-pane fade in" id="gallery">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h3>{$txt.BILDERGAL}</h3>
+				</div>		
+				<div class="panel-body">	
+					{foreach name=bilder item=module_img from=$BILDER}
+					<b>{$module_img.bildfeld1}</b><br>
+							{if $module_img.bildfeld0 !=''}
+							{$module_img.bildfeld2}
+							{$module_img.bildfeld3}<br>
+							{$module_img.bildfeld4}
+							{else}
+							{$module_img.bildfeld5}
+							{/if}
+							<hr>
+					{/foreach}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{$HIDDEN}
+<div class="row">
+	<div class ="col-xs-12 text-right">
+		<input class="btn btn-success" type="submit" value="{$txt.BUTTON_SAVE}" />
+		<a class="btn btn-default" href="blog.php">{$txt.BUTTON_CANCEL}</a>
+	<hr>
+	</div>
+</div>
+{$FORM_END}

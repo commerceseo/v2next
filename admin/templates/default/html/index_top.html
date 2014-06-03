@@ -1,0 +1,27 @@
+<div id="head" class="ac">&nbsp;</div>
+<nav>
+	<ul class="headnav">
+		<li class="fl ac p_lr_5">
+			<a href="{$home}" title="{#link_startpage#}">Home</a>
+		</li>
+		<li class="fl ac p_lr_5">
+			{if $account}<a href="{$account}">{#link_account#}</a>{/if}
+		</li>
+		<li class="fl ac p_lr_5">
+			{if $logoff != ''}
+				<a rel="nofollow" href="{$logoff}" title="{#link_logoff#}">{#link_logoff#}</a>
+			{else}
+				<a rel="nofollow" href="{$login}" title="{#link_login#}">{#link_login#}</a>
+			{/if}
+		</li>
+		<li class="fl ac p_lr_5">
+			<a rel="nofollow" href="{$wish_list}" title="{#link_wish_list#}">{#link_wish_list#}</a>{if $wish_list_count > 0}<b class="counter">{$wish_list_count}</b>{/if} 
+		</li>
+		<li class="fl ac p_lr_5">
+			<a href="{$cart}">{#link_cart#}</a>{if $cart_count > 0}<b class="counter">{$cart_count}</b>{/if}
+		</li>
+		<li id="suchebutton" class="fr">
+		{$BOXES_nav_search}
+		</li>
+	</ul>
+</nav>

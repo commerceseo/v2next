@@ -1,0 +1,45 @@
+<?php
+
+define('MODULE_SHIPPING_TRANSOFLEX_TEXT_TITLE', 'Transo Flex');
+define('MODULE_SHIPPING_TRANSOFLEX_TEXT_DESCRIPTION', 'Versandmodul');
+define('MODULE_SHIPPING_TRANSOFLEX_TEXT_WAY', 'Versand nach');
+define('MODULE_SHIPPING_TRANSOFLEX_TEXT_UNITS', 'kg');
+define('MODULE_SHIPPING_TRANSOFLEX_INVALID_ZONE', 'Es ist leider kein Versand in dieses Land m&ouml;glich');
+define('MODULE_SHIPPING_TRANSOFLEX_UNDEFINED_RATE', 'Die Versandkosten k&ouml;nnen im Moment nicht errechnet werden');
+
+define('MODULE_SHIPPING_TRANSOFLEX_STATUS_TITLE' , 'Transo Flex');
+define('MODULE_SHIPPING_TRANSOFLEX_STATUS_DESC' , 'Wollen Sie den Versand &uuml;ber Transo Flex anbieten?');
+define('MODULE_SHIPPING_TRANSOFLEX_HANDLING_TITLE' , 'Handling Fee');
+define('MODULE_SHIPPING_TRANSOFLEX_HANDLING_DESC' , 'Bearbeitungsgeb&uuml;hr f&uuml;r diese Versandart in Euro');
+define('MODULE_SHIPPING_TRANSOFLEX_TAX_CLASS_TITLE' , 'Steuersatz');
+define('MODULE_SHIPPING_TRANSOFLEX_TAX_CLASS_DESC' , 'W&auml;hlen Sie den MwSt.-Satz f&uuml;r diese Versandart aus.');
+define('MODULE_SHIPPING_TRANSOFLEX_ZONE_TITLE' , 'Versand Zone');
+define('MODULE_SHIPPING_TRANSOFLEX_ZONE_DESC' , 'Wenn Sie eine Zone ausw&auml;hlen, wird diese Versandart nur in dieser Zone angeboten.');
+define('MODULE_SHIPPING_TRANSOFLEX_SORT_ORDER_TITLE' , 'Reihenfolge der Anzeige');
+define('MODULE_SHIPPING_TRANSOFLEX_SORT_ORDER_DESC' , 'Niedrigste wird zuerst angezeigt.');
+define('MODULE_SHIPPING_TRANSOFLEX_ALLOWED_TITLE' , 'Einzelne Versandzonen');
+define('MODULE_SHIPPING_TRANSOFLEX_ALLOWED_DESC' , 'Geben Sie <b>einzeln</b> die Zonen an, in welche ein Versand m&ouml;glich sein soll. zb AT,DE');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_1_TITLE' , 'Transo Flex Zone 1 Countries');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_1_DESC' , 'Comma separated list of two character ISO country codes that are part of Zone 1');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_1_TITLE' , 'Transo Flex Zone 1 Shipping Table');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_1_DESC' , 'Shipping rates to Zone 1 destinations based on a range of order weights. Example: 0-3:8.50,3-7:10.50,... Weights greater than 0 and less than or equal to 3 would cost 14.57 for Zone 1 destinations.');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_2_TITLE' , 'Transo Flex Zone 2 Countries');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_2_DESC' , 'Comma separated list of two character ISO country codes that are part of Zone 2');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_2_TITLE' , 'Transo Flex Zone 2 Shipping Table');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_2_DESC' , 'Shipping rates to Zone 2 destinations based on a range of order weights. Example: 0-3:8.50,3-7:10.50,... Weights greater than 0 and less than or equal to 3 would cost 23.78 for Zone 2 destinations.');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_3_TITLE' , 'Transo Flex Zone 3 Countries');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_3_DESC' , 'Comma separated list of two character ISO country codes that are part of Zone 3');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_3_TITLE' , 'Transo Flex Zone 3 Shipping Table');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_3_DESC' , 'Shipping rates to Zone 3 destinations based on a range of order weights. Example: 0-3:8.50,3-7:10.50,... Weights greater than 0 and less than or equal to 3 would cost 26.84 for Zone 3 destinations.');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_4_TITLE' , 'Transo Flex Zone 4 Countries');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_4_DESC' , 'Comma separated list of two character ISO country codes that are part of Zone 4');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_4_TITLE' , 'Transo Flex Zone 4 Shipping Table');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_4_DESC' , 'Shipping rates to Zone 4 destinations based on a range of order weights. Example: 0-3:8.50,3-7:10.50,... Weights greater than 0 and less than or equal to 3 would cost 32.98 for Zone 4 destinations.');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_5_TITLE' , 'Transo Flex Zone 5 Countries');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_5_DESC' , 'Comma separated list of two character ISO country codes that are part of Zone 5');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_5_TITLE' , 'Transo Flex Zone 5 Shipping Table');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_5_DESC' , 'Shipping rates to Zone 5 destinations based on a range of order weights. Example: 0-3:8.50,3-7:10.50,... Weights greater than 0 and less than or equal to 3 would cost 32.98 for Zone 5 destinations.');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_6_TITLE' , 'Transo Flex Zone 6 Countries');
+define('MODULE_SHIPPING_TRANSOFLEX_COUNTRIES_6_DESC' , 'Comma separated list of two character ISO country codes that are part of Zone 6');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_6_TITLE' , 'Transo Flex Zone 6 Shipping Table');
+define('MODULE_SHIPPING_TRANSOFLEX_COST_6_DESC' , 'Shipping rates to Zone 6 destinations based on a range of order weights. Example: 0-3:8.50,3-7:10.50,... Weights greater than 0 and less than or equal to 3 would cost 5.62 for Zone 6 destinations.');

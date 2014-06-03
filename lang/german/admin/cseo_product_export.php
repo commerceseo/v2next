@@ -1,0 +1,48 @@
+<?php
+define('HEADING_TITLE', 'Artikelexport');
+define('HEADING_SUB_TITLE','commerce:SEO v2');
+define('MODULE_NAME' , '<b>Anbieter</b>');
+define('MODULE_TYPE' , '<b>Typ</b>');
+define('MODULE_INFO' , '<b>Informationen</b>');
+define('MODULE_FILE_TITLE' , '<b>Dateiname</b>');
+define('MODULE_FILE_DESC' , 'Geben Sie einen Dateinamen ein, unter welchem die Exportadatei auf Ihrem Server gespeichert werden soll.<br>(Verzeichnis export/)');
+define('MODULE_STATUS_DESC','Modulstatus');
+define('MODULE_STATUS_TITLE','Status');
+define('MODULE_CURRENCY_TITLE','Währung');
+define('MODULE_CURRENCY_DESC','Welche Währung soll exportiert werden?');
+define('EXPORT_YES','speichern und herunterladen');
+define('EXPORT_NO','speichern');
+define('CURRENCY','<b>Währung</b>');
+define('CURRENCY_DESC','Währung in der Exportdatei');
+define('EXPORT','Bitte den Sicherungsprozess AUF KEINEN FALL unterbrechen. Dieser kann einige Minuten in Anspruch nehmen.');
+define('EXPORT_TYPE','<b>Speicherart</b>');
+define('EXPORT_STATUS_TYPE','<b>Kundengruppe</b>');
+define('EXPORT_STATUS','Bitte wählen Sie die Kundengruppe, die Basis für den Exportierten Preis bildet. (Falls Sie keine Kundengruppenpreise haben, wählen Sie <i>Gast</i>):</b>');
+define('CAMPAIGNS','<b>Kampagnen</b>');
+define('CAMPAIGNS_DESC','Mit Kampagne zur Nachverfolgung verbinden.');
+define('DATE_FORMAT_EXPORT', '%d.%m.%Y'); 
+define('SHIPPING_COSTS_DESC', 'Pauschale (z. B. 2.90)');
+define('SHIPPING_COSTS_TITLE', '<b>Versandkosten</b>');
+define('SHIPPING_COSTS_FREE_DESC', 'geben Sie an, ab welchem Warenwert der Versand kostenfrei erfolgen soll');
+define('SHIPPING_COSTS_FREE_TITLE', '<b>Versandkostenfrei</b>');
+define('EXPORT_ATTRIBUTES', '<b>Attributexport</b>');
+define('EXPORT_ATTRIBUTES_DESC', 'Jede Artikelvariation wird als eigenständiger Artikel exportiert');
+define('CRONJOB', '<b>Automatik-Export</b>');
+define('CRONJOB_DESC', 'ja, Modul für zeitgesteuerten Export (Cronjob) freigeben');
+define('STOCK', '<b>Lagerbestand</b>');
+define('STOCK_DESC', 'exportieren, wenn Lagerbestand >= Eingabe ist; bei "0" als Eingabe alle Artikel');
+define('XML', '<b>XML-Export</b>');
+define('XML_DESC', 'ja, auch eine XML Datei erzeugen');
+ 
+define('ADD_VPE_TO_NAME', 'Grundpreis im Namen');
+define('ADD_VPE_TO_NAME_NO', 'nein');
+define('ADD_VPE_TO_NAME_PREFIX', 'davor');
+define('ADD_VPE_TO_NAME_SUFFIX', 'danach');
+define('ADD_VPE_TO_NAME_DESC', 'Soll der Grundpreis an den Artikelnamen angehängt werden?');
+
+define('CSEO_PRODUCT_EXPORT_OFFERER', 'Anbieter');
+define('CSEO_PRODUCT_EXPORT_COMPARISON', 'Preisvergleiche');
+define('CSEO_PRODUCT_EXPORT_SHOPPING_PORTALS', 'Shopping Portale');
+define('CSEO_PRODUCT_EXPORT_MORE_INFORMATION', 'weitere Informationen');
+define('CSEO_PRODUCT_EXPORT_SUCCESS', 'CSV-Export erfolgreich erstellt: ');
+define('CSEO_PRODUCT_SAVE_SUCCESS', 'Konfiguration gespeichert.');

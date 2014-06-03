@@ -1,0 +1,31 @@
+{if $dl neq ''}
+{config_load file="lang/$language/lang_$language.conf" section="downloads_module"}
+
+<div id="downloads">
+	<h1>{#heading_download#}</h1>
+
+	{if $dl_prevented eq 'true'}
+	{#download_not_allowed#}<br><br>
+
+
+	{/if}
+
+	{foreach name=aussen item=dl_data from=$dl}
+	<div class="downloads">			
+	{if $dl_data.pic_link}<div class="dl_pic"><a href="{$dl_data.pic_link}"><img src="{$tpl_path}img/download.png" alt="" border="0" height="50" /></a></div>
+	{else}
+	<div class="dl_pic"><img src="{$tpl_path}img/download_locked.png" height="50" alt="" /></div>{/if}
+	<br>
+	<div class="dl_link">{$dl_data.download_link}</div>
+	<div class="dl_heading_date">{#table_heading_download_date#}</div>
+	<div class="dl_date">{$dl_data.date} </div>
+	<div class="dl_count"><strong>{$dl_data.count}</strong>&nbsp;{#table_heading_download_count#}</div>
+	</div>		
+	
+	
+	
+	{/foreach}
+	{/if}
+
+
+</div>

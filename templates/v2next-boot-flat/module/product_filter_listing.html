@@ -1,0 +1,89 @@
+{config_load file="lang/$language/lang_$language.conf" section="index"}
+{config_load file="lang/$language/lang_filter_$language.conf" section="product_filter"}
+{if $filter_request}
+	<h1>{#you_search#} <em>{$filter_request}</em></h1>
+{/if}
+
+{if $CATEGORIES_IMAGE !='' || $CATEGORIES_DESCRIPTION !='' || $CATEGORIES_HEADING_TITLE !=''}
+	{if $CATEGORIES_IMAGE}
+		<img src="{$CATEGORIES_IMAGE}" alt="{$CATEGORIES_IMAGE_ALT}" {$CATEGORIES_IMAGE_DIMENSION} title="{$CATEGORIES_NAME}" class="fl p10" /><br>
+	{/if}
+	{if $CATEGORIES_HEADING_TITLE !=''}<h1>{$CATEGORIES_HEADING_TITLE}</h1><br>{/if}
+	{if $CATEGORIES_DESCRIPTION}{$CATEGORIES_DESCRIPTION}<br><br>{/if}
+	<br class="clearfix">
+{/if}
+
+{if $MANUFACTURER_DROPDOWN || $MULTISORT_DROPDOWN}
+	{$MANUFACTURER_DROPDOWN}
+	{$MULTISORT_DROPDOWN}
+	<br class="clearfix"><br>
+{/if}
+
+{if $PRODUCTS_PER_SITE || $PRODUCTS_SORTBY || $PRODUCTS_VIEW_AS}
+	<div class="float_wrapper clearfix">
+		{$PRODUCTS_PER_SITE} {$PRODUCTS_SORTBY} {$PRODUCTS_VIEW_AS}
+	</div>
+{/if}
+
+
+<ul id="product_listing" class="product_listing_gallery">
+          {foreach name=aussen item=module_data from=$module_content}
+          <li style="width: 98%;" class="last_li only_one">
+	            {if $module_data.PRODUCTS_NAME}
+					<h2 class="listing_h2">
+						<a href="{$module_data.PRODUCTS_LINK}" title="{$module_data.PRODUCTS_NAME}">
+							{$module_data.PRODUCTS_NAME}
+						</a>
+					</h2>
+				{/if}
+				<div class="product_listing_gallery_image">
+					<a href="{$module_data.PRODUCTS_LINK}" title="{$module_data.PRODUCTS_NAME}">
+						<img class="img_border box_shadow" src="{$module_data.PRODUCTS_IMAGE}" {$module_data.PRODUCTS_IMAGE_DIMENSION} alt="{$module_data.PRODUCTS_NAME}" title="{$module_data.PRODUCTS_NAME}" />
+					</a>
+				</div>
+
+				{if $module_data.PRODUCTS_DESCRIPTION}
+					<div class="product_listing_gallery_detail_cat">
+						{$module_data.PRODUCTS_DESCRIPTION}
+					</div>
+				{/if}
+				{if $module_data.CATEGORIES_NAME}
+					<div class="ac">
+						{#text_category#}<a href="{$module_data.CATEGORIES_LINK}">{$module_data.CATEGORIES_NAME}</a><br>
+					</div>
+				{/if}
+				<div class="product_listing_gallery_price">
+					{if $module_data.PRODUCTS_STOCK_IMG}<span class="fs85">{#text_stock#} {$module_data.PRODUCTS_STOCK_IMG}</span>{/if}
+					{if $module_data.PRODUCTS_PRICE}<div class="product_listing_price">{$module_data.PRODUCTS_PRICE}</div>
+					{if $module_data.PRODUCTS_VPE}<span class="fs85">{#text_vpe#} {$module_data.PRODUCTS_VPE}</span><br>{/if}
+					{if $module_data.PRODUCTS_MODEL}<span class="fs85">{#text_model#} {$module_data.PRODUCTS_MODEL}</span><br>{/if}
+					<span class="fs85">{$module_data.PRODUCTS_TAX_INFO}{$module_data.PRODUCTS_SHIPPING_LINK}</span><br>{/if}
+					{$module_data.PRODUCTS_BUTTON_DETAILS} {$module_data.PRODUCTS_BUTTON_BUY_NOW} {$module_data.PRODUCTS_BUTTON_WISHLIST}
+	          	{php} if($_POST['verbinder'] == 'false') { {/php}
+	               
+		                <table border="0" style="border: 1px solid #ccc" cellpadding="4">
+			                <tr>
+				                {foreach name=aussen item=search from=$FILTER_SEARCH}
+				                	<td align="center" style="border-bottom: 1px solid #ccc">
+				                		<strong><nobr>{$search.title}</nobr></strong>
+				                	</td>
+				                {/foreach}
+				            </tr>
+				            <tr>
+				                {foreach name=aussen item=search from=$FILTER_SEARCH}
+				                	<td align="center">
+				                		{if $search.id|in_array:$module_data.FILTER_IDS}
+				                			<img src="{$tpl_path}img/ja.gif" alt="" />
+				                		{else}
+				                			<img src="{$tpl_path}img/nein.gif" alt="" />
+				                		{/if}
+				                	</td>
+				                {/foreach}
+			                </tr>
+		                </table><br>
+
+	            {php} } {/php}				
+				</div>
+
+
+          {/foreach} 

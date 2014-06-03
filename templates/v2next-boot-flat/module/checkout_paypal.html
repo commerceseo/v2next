@@ -1,0 +1,136 @@
+{config_load file="lang/$language/lang_$language.conf" section="product_info"}
+{config_load file="lang/$language/lang_$language.conf" section="checkout_payment"}
+{config_load file="lang/$language/lang_$language.conf" section="checkout_confirmation"}
+{config_load file="lang/$language/lang_$language.conf" section="checkout_paypal"}
+<div class="product_info_name">
+	<h2>{#heading_checkout#}</h2>
+</div>
+{if $info_message!=''}
+	<div class="headerError">{$info_message}</div>
+{/if}
+
+{if $error!=''}
+	<div class="headerError">{$error}</div>
+{/if}
+
+{if $IP_LOG=='true'}
+	<b>{#text_ip#}</b> <span class="inputRequirement"><b>{$CUSTOMERS_IP}</b></span>
+{/if}
+
+<div class="w48p fl">
+	<b>{#title_payment_address#}:</b>
+	<br>{$ADDRESS_PAYMENT_LABEL}<br>
+	{$BUTTON_PAYMENT_ADDRESS}
+</div>
+<div class="w48p fr">
+<b>{#title_shipping_address#}:</b><br>
+{$ADDRESS_SHIPPING_LABEL}<br>
+{$BUTTON_SHIPPING_ADDRESS}
+</div>
+<br class="clearfix">
+<h3>{#title_shipping#}</h3>
+<br>
+{$FORM_SHIPPING_ACTION}
+<p>{#text_shipping#}</p>
+<p>{$SHIPPING_BLOCK}</p>
+{$PAYMENT_HIDDEN}
+{$FORM_END}
+
+
+{if $PAYMENT_INFORMATION!=''}
+	<h3>{#text_payment_info#}</h3>
+	{foreach name=aussen item=payment from=$payment_info}
+		<p><b>{$payment.TITLE}</b> {$payment.FIELD}</p><br>
+	{/foreach}
+{/if}
+
+<h3>{#title_comments#}</h3>
+{$CHECKOUT_FORM}
+<p class="checkoutcomment">{$COMMENTS}</p>
+<fieldset class="checkout_payment">
+	<legend><b>{#title_agb#}</b></legend>
+	{$AGB_LINK} {$BUTTON_PRINT_AGB} {$AGB_PDF_LINK}<br>
+	<span class="textarea">{$AGB}</span><br><br>
+	{*if $AGB_CHECKBOX == 'true'*}
+		<div class="red_agb border_radius_6" id="agb">
+			{$AGB_checkbox} <b>{#text_accept_agb#}</b>
+		</div>
+		<div class="red border_radius_6" id="agb">
+			{$ADR_checkbox} <b>{#text_accept_adr#}</b>
+		</div>
+	{*/if*}
+</fieldset>	
+{if $REVOCATION_ON_CHECKOUT == 'true'}
+<fieldset class="checkout_payment">	
+	<legend><b>{#title_wd#}</b></legend>
+	{$WD_LINK} {$BUTTON_PRINT_WD} {$WD_PDF_LINK}<br>
+	<span class="textarea">{$WD}</span>
+	{if $REVOCATION_CHECKBOX == 'true'}
+	<br><br>
+		<div class="red_wd border_radius_6" id="wd">
+	     	{$WD_checkbox} <b>{#text_accept_wd#}</b>
+	    </div>
+	{/if}
+</fieldset>
+{/if}
+
+{if $DATENSCHUTZ_ON_CHECKOUT == 'true'}
+<fieldset class="checkout_payment">	
+	<legend><b>{#title_ds#}</b></legend>
+	{$DS_LINK} {$BUTTON_PRINT_DS} {$DS_PDF_LINK}<br><br>
+	<span class="textarea">{$DS}</span>
+	{if $DSG_CHECKBOX == 'true'}
+		<br><br>
+		<div class="red_ds border_radius_6" id="wd">
+	     	{$DS_checkbox} <b>{#text_accept_ds#}</b>
+	    </div>
+	{/if}
+</fieldset>
+{/if}
+
+<fieldset class="checkout_payment">	
+<legend><b>{#text_products#}</b></legend>
+	<div class="fl chkt_bild wkhead" style="width: 10%; font-weight: 900;">&nbsp;</div>
+	<div class="fl chkt_beschr wkhead" style="width: 45%; font-weight: 900;">{#text_products#}</div>
+	<div class="fl chkt_qty wkhead" style="width: 15%; font-weight: 900;">{#text_qty#}</div>
+	<div class="fl chkt_sprice wkhead" style="width: 15%; font-weight: 900;">{#text_sprice#}</div>
+	<div class="fl chkt_sum wkhead" style="width: 15%; font-weight: 900;">{#text_fprice#}</div>
+	<br style="clear:both">
+	{foreach name=aussen item=data from=$products_data}
+		<div class="fl chkt_bild" style="width: 10%">
+			{$data.image}
+		</div>
+		<div class="fl chkt_beschr" style="width: 45%; overflow: hidden;">
+			<b>{$data.name}</b>
+ 				<br>{$data.products_short_description}<br>
+ 				{foreach key=a_data item=attrib_data from=$data.attributes}
+ 					{$attrib_data.option} : {$attrib_data.value}
+ 				{/foreach}
+ 			<br><b>{#text_model#} : {$data.model}</b>
+		</div>
+ 		<div class="fl chkt_qty" style="width: 15%">{$data.qty}</div>
+ 		<div class="fl chkt_sprice" style="width: 15%">{$data.price_formated}<br>{$data.vpe}</div>
+ 		<div class="fl chkt_sum" style="width: 15%">{$data.final_price_formated}</div>
+
+	{/foreach}
+	<br class="clearfix">
+</fieldset>
+
+<fieldset class="checkout_payment">	
+<legend><b>{#text_total#}</b></legend>
+	{foreach name=total_data item=total from=$total_block}
+		<div class="fr ar"><b>{$total.text}</b></div>
+		<div class="fr ar">{$total.title}&nbsp;</div>
+		<br class="clearfix">
+	{/foreach}
+</fieldset>
+
+
+{if $SZI}
+	<p>{$SZI}</p>
+{/if}
+<br class="clearfix" />
+<div class="ar fr"> {if $MODULE_BUTTONS!=''} {$MODULE_BUTTONS}<br>{/if} {$CHECKOUT_BUTTON}</div>
+<br class="clearfix" />
+
+{$FORM_END}

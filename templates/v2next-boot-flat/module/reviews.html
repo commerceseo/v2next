@@ -1,0 +1,30 @@
+{config_load file="lang/$language/lang_$language.conf" section="reviews"}
+<h2>{#heading_reviews#}</h2>
+{foreach name=aussen item=module_data from=$module_content}
+<div itemprop="review" itemscope itemtype="http://schema.org/Review">
+	<div style="width:100%" class="{cycle values='id,ih'}">
+		<div style="float:left; width:30%">
+			<a href="{$module_data.PRODUCTS_LINK}">
+				<img class="img_border" src="{$module_data.PRODUCTS_IMAGE}" alt="{$module_data.PRODUCTS_NAME}" />
+			</a>
+		</div>
+		<div style="float:right; width:69.8%">
+			<div itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+				<meta itemprop="worstRating" content = "0">
+				<b>{#text_product#} </b><a itemprop="url" href="{$module_data.PRODUCTS_LINK}"><span itemprop="name">{$module_data.PRODUCTS_NAME}</span></a><br>
+				<b>{#text_author#}</b> <span itemprop="author">{$module_data.AUTHOR|truncate:10}</span><br><br>
+				<b>{#text_text#}</b><br>
+				<span itemprop="description">{$module_data.TEXT}</span><br><br>
+				<b>{#text_rating#}</b> {$module_data.RATING}  
+				(<span class="fs85" itemprop="ratingValue">{$module_data.RATINGNUM}</span>/<span class="fs85" itemprop="bestRating">5</span>)
+			</div>
+		</div>
+		<br style="clear:both" />
+	</div><br>
+</div>
+{/foreach}
+<br>
+
+{$NAVIGATION}
+<br><br>
+{$BUTTON_BACK}

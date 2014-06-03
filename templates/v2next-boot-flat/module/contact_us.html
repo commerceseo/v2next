@@ -1,0 +1,56 @@
+{config_load file="lang/$language/lang_$language.conf" section="contact_us"}
+{config_load file="lang/$language/lang_$language.conf" section="antispam"}
+<div class="product_pad">
+<h1>{$CONTACT_HEADING}</h1>
+
+{if $error_message != ''}
+	<div class="headerError">{$error_message}</div>
+	<br>
+{/if}
+{if $success == '1'}
+	<div class="headerSuccess">{#text_success#}</div>
+	<br>
+{/if}
+
+
+	{if $success!='1'}
+		{$FORM_ACTION}
+			{$CONTACT_CONTENT}<br>
+			<b class="inputRequirement">{#text_must#}</b><br><br>
+			<dl>
+				<dt class="w24p"><b class="inputRequirement">*</b> {#text_name#}</dt>
+				<dd>{$INPUT_NAME}</dd>
+			</dl>
+			<dl>
+				<dt class="w24p"><b class="inputRequirement">*</b> {#text_email#}</dt>
+				<dd>{$INPUT_EMAIL}</dd>
+			</dl>
+			<dl>
+				<dt class="w24p"><b class="inputRequirement">*</b> {#text_message#}</dt>
+				<dd>{$INPUT_TEXT}</dd>
+			</dl>
+			{if $ANTISPAMCODEACTIVE == 'true'}
+				<b>{#text_antispam#}</b>
+				<dl>
+					<dt class="w24p">&nbsp;</dt>
+					<dd>{$ANTISPAMCODEQUESTION}</dd>
+				</dl>
+				<dl>
+					<dt class="w24p"><b class="inputRequirement">*</b> {#text_antispam_input#}</dt>
+					<dd>{$INPUT_ANTISPAMCODE}</dd>
+					<dd>{$ANTISPAMCODEID}</dd>
+				</dl>
+			{/if}
+			<br style="clear:both" />
+			<div class="red" id="ds">
+				{$DATENSG_checkbox} <strong>{#text_accept_datensg#}</strong>
+			</div><br>
+			<div class="ar">{$BUTTON_SUBMIT}</div>
+
+		{$FORM_END}
+	{else}
+	 <br>
+		<div class="ar">{$BUTTON_CONTINUE}</div>
+	{/if}
+</div>
+

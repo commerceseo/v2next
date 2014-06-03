@@ -1,0 +1,7 @@
+<div class="contcont w97">
+    {foreach name=aussen item=module_data from=$blog_items}
+    <h3><a href="{$module_data.blog_link}">{$module_data.name}</a></h3>
+    <div>{$module_data.shortdesc}</div>
+    <span class="ar fs85">{if $module_data.date_update ==''}{#wrote_on#} {$module_data.date}{else}{#update_on#} {$module_data.date_update}{/if}</span>
+    {/foreach}
+</div>

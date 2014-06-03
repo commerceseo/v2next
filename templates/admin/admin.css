@@ -1,0 +1,985 @@
+.head_admin {
+	float: right;
+	opacity: 1;
+	padding: 1%;
+	background: none repeat scroll 0 0 rgba(100, 120, 140, 0.4);
+	right: 10px;
+	top: 10px;
+	z-index: 1001;
+	border-radius: 8px;
+	text-align: center;
+}
+
+@media (max-width: 768px) {
+.head_admin {
+	position: bottom;
+	width: 100%;
+}
+}
+@media (min-width: 768px) {
+.head_admin {
+	position: fixed;
+	width: 145px;
+}
+}
+
+
+.head_admin_left {width: 23%; float: left; text-align: left; margin: 0;}
+.head_admin_center {}
+.head_admin_right {
+	float: right;
+	padding: 0.6%;
+	text-align: center;
+	width: 148px;
+}
+.head_admin_right ul {width: 100%; float: right; margin: 0;}
+.head_admin_right li {float: right; list-style: none; margin: 0 0 4px;}
+.head_admin_center ul {width: 100%; float: left; margin: 0 0 20px 0;}
+.head_admin_center li {color: #FFFFFF;float: left;list-style: none outside none;padding: 9% 0 0;text-align: right;width: 86%;}
+.head_admin_center li:last-child {border-right: 0 solid transparent;}
+
+.admindropdown-menu li {color: #000 !important;}
+
+[class^="adminicon-"],
+[class*=" adminicon-"] {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  vertical-align: text-top;
+  background-image: url("glyphicons-halflings.png");
+  background-position: 14px 14px;
+  background-repeat: no-repeat;
+}
+
+.adminicon-white {
+  background-image: url("glyphicons-halflings-white.png");
+}
+
+.adminicon-glass {
+  background-position: 0      0;
+}
+
+.adminicon-music {
+  background-position: -24px 0;
+}
+
+.adminicon-search {
+  background-position: -48px 0;
+}
+
+.adminicon-envelope {
+  background-position: -72px 0;
+}
+
+.adminicon-heart {
+  background-position: -96px 0;
+}
+
+.adminicon-star {
+  background-position: -120px 0;
+}
+
+.adminicon-star-empty {
+  background-position: -144px 0;
+}
+
+.adminicon-user {
+  background-position: -168px 0;
+}
+
+.adminicon-film {
+  background-position: -192px 0;
+}
+
+.adminicon-th-large {
+  background-position: -216px 0;
+}
+
+.adminicon-th {
+  background-position: -240px 0;
+}
+
+.adminicon-th-list {
+  background-position: -264px 0;
+}
+
+.adminicon-ok {
+  background-position: -288px 0;
+}
+
+.adminicon-remove {
+  background-position: -312px 0;
+}
+
+.adminicon-zoom-in {
+  background-position: -336px 0;
+}
+
+.adminicon-zoom-out {
+  background-position: -360px 0;
+}
+
+.adminicon-off {
+  background-position: -384px 0;
+}
+
+.adminicon-signal {
+  background-position: -408px 0;
+}
+
+.adminicon-cog {
+  background-position: -432px 0;
+}
+
+.adminicon-trash {
+  background-position: -456px 0;
+}
+
+.adminicon-home {
+  background-position: 0 -24px;
+}
+
+.adminicon-file {
+  background-position: -24px -24px;
+}
+
+.adminicon-time {
+  background-position: -48px -24px;
+}
+
+.adminicon-road {
+  background-position: -72px -24px;
+}
+
+.adminicon-download-alt {
+  background-position: -96px -24px;
+}
+
+.adminicon-download {
+  background-position: -120px -24px;
+}
+
+.adminicon-upload {
+  background-position: -144px -24px;
+}
+
+.adminicon-inbox {
+  background-position: -168px -24px;
+}
+
+.adminicon-play-circle {
+  background-position: -192px -24px;
+}
+
+.adminicon-repeat {
+  background-position: -216px -24px;
+}
+
+.adminicon-refresh {
+  background-position: -240px -24px;
+}
+
+.adminicon-list-alt {
+  background-position: -264px -24px;
+}
+
+.adminicon-lock {
+  background-position: -287px -24px;
+}
+
+.adminicon-flag {
+  background-position: -312px -24px;
+}
+
+.adminicon-headphones {
+  background-position: -336px -24px;
+}
+
+.adminicon-volume-off {
+  background-position: -360px -24px;
+}
+
+.adminicon-volume-down {
+  background-position: -384px -24px;
+}
+
+.adminicon-volume-up {
+  background-position: -408px -24px;
+}
+
+.adminicon-qrcode {
+  background-position: -432px -24px;
+}
+
+.adminicon-barcode {
+  background-position: -456px -24px;
+}
+
+.adminicon-tag {
+  background-position: 0 -48px;
+}
+
+.adminicon-tags {
+  background-position: -25px -48px;
+}
+
+.adminicon-book {
+  background-position: -48px -48px;
+}
+
+.adminicon-bookmark {
+  background-position: -72px -48px;
+}
+
+.adminicon-print {
+  background-position: -96px -48px;
+}
+
+.adminicon-camera {
+  background-position: -120px -48px;
+}
+
+.adminicon-font {
+  background-position: -144px -48px;
+}
+
+.adminicon-bold {
+  background-position: -167px -48px;
+}
+
+.adminicon-italic {
+  background-position: -192px -48px;
+}
+
+.adminicon-text-height {
+  background-position: -216px -48px;
+}
+
+.adminicon-text-width {
+  background-position: -240px -48px;
+}
+
+.adminicon-align-left {
+  background-position: -264px -48px;
+}
+
+.adminicon-align-center {
+  background-position: -288px -48px;
+}
+
+.adminicon-align-right {
+  background-position: -312px -48px;
+}
+
+.adminicon-align-justify {
+  background-position: -336px -48px;
+}
+
+.adminicon-list {
+  background-position: -360px -48px;
+}
+
+.adminicon-indent-left {
+  background-position: -384px -48px;
+}
+
+.adminicon-indent-right {
+  background-position: -408px -48px;
+}
+
+.adminicon-facetime-video {
+  background-position: -432px -48px;
+}
+
+.adminicon-picture {
+  background-position: -456px -48px;
+}
+
+.adminicon-pencil {
+  background-position: 0 -72px;
+}
+
+.adminicon-map-marker {
+  background-position: -24px -72px;
+}
+
+.adminicon-adjust {
+  background-position: -48px -72px;
+}
+
+.adminicon-tint {
+  background-position: -72px -72px;
+}
+
+.adminicon-edit {
+  background-position: -96px -72px;
+}
+
+.adminicon-share {
+  background-position: -120px -72px;
+}
+
+.adminicon-check {
+  background-position: -144px -72px;
+}
+
+.adminicon-move {
+  background-position: -168px -72px;
+}
+
+.adminicon-step-backward {
+  background-position: -192px -72px;
+}
+
+.adminicon-fast-backward {
+  background-position: -216px -72px;
+}
+
+.adminicon-backward {
+  background-position: -240px -72px;
+}
+
+.adminicon-play {
+  background-position: -264px -72px;
+}
+
+.adminicon-pause {
+  background-position: -288px -72px;
+}
+
+.adminicon-stop {
+  background-position: -312px -72px;
+}
+
+.adminicon-forward {
+  background-position: -336px -72px;
+}
+
+.adminicon-fast-forward {
+  background-position: -360px -72px;
+}
+
+.adminicon-step-forward {
+  background-position: -384px -72px;
+}
+
+.adminicon-eject {
+  background-position: -408px -72px;
+}
+
+.adminicon-chevron-left {
+  background-position: -432px -72px;
+}
+
+.adminicon-chevron-right {
+  background-position: -456px -72px;
+}
+
+.adminicon-plus-sign {
+  background-position: 0 -96px;
+}
+
+.adminicon-minus-sign {
+  background-position: -24px -96px;
+}
+
+.adminicon-remove-sign {
+  background-position: -48px -96px;
+}
+
+.adminicon-ok-sign {
+  background-position: -72px -96px;
+}
+
+.adminicon-question-sign {
+  background-position: -96px -96px;
+}
+
+.adminicon-info-sign {
+  background-position: -120px -96px;
+}
+
+.adminicon-screenshot {
+  background-position: -144px -96px;
+}
+
+.adminicon-remove-circle {
+  background-position: -168px -96px;
+}
+
+.adminicon-ok-circle {
+  background-position: -192px -96px;
+}
+
+.adminicon-ban-circle {
+  background-position: -216px -96px;
+}
+
+.adminicon-arrow-left {
+  background-position: -240px -96px;
+}
+
+.adminicon-arrow-right {
+  background-position: -264px -96px;
+}
+
+.adminicon-arrow-up {
+  background-position: -289px -96px;
+}
+
+.adminicon-arrow-down {
+  background-position: -312px -96px;
+}
+
+.adminicon-share-alt {
+  background-position: -336px -96px;
+}
+
+.adminicon-resize-full {
+  background-position: -360px -96px;
+}
+
+.adminicon-resize-small {
+  background-position: -384px -96px;
+}
+
+.adminicon-plus {
+  background-position: -408px -96px;
+}
+
+.adminicon-minus {
+  background-position: -433px -96px;
+}
+
+.adminicon-asterisk {
+  background-position: -456px -96px;
+}
+
+.adminicon-exclamation-sign {
+  background-position: 0 -120px;
+}
+
+.adminicon-gift {
+  background-position: -24px -120px;
+}
+
+.adminicon-leaf {
+  background-position: -48px -120px;
+}
+
+.adminicon-fire {
+  background-position: -72px -120px;
+}
+
+.adminicon-eye-open {
+  background-position: -96px -120px;
+}
+
+.adminicon-eye-close {
+  background-position: -120px -120px;
+}
+
+.adminicon-warning-sign {
+  background-position: -144px -120px;
+}
+
+.adminicon-plane {
+  background-position: -168px -120px;
+}
+
+.adminicon-calendar {
+  background-position: -192px -120px;
+}
+
+.adminicon-random {
+  background-position: -216px -120px;
+}
+
+.adminicon-comment {
+  background-position: -240px -120px;
+}
+
+.adminicon-magnet {
+  background-position: -264px -120px;
+}
+
+.adminicon-chevron-up {
+  background-position: -288px -120px;
+}
+
+.adminicon-chevron-down {
+  background-position: -313px -119px;
+}
+
+.adminicon-retweet {
+  background-position: -336px -120px;
+}
+
+.adminicon-shopping-cart {
+  background-position: -360px -120px;
+}
+
+.adminicon-folder-close {
+  background-position: -384px -120px;
+}
+
+.adminicon-folder-open {
+  background-position: -408px -120px;
+}
+
+.adminicon-resize-vertical {
+  background-position: -432px -119px;
+}
+
+.adminicon-resize-horizontal {
+  background-position: -456px -118px;
+}
+
+.adminicon-hdd {
+  background-position: 0 -144px;
+}
+
+.adminicon-bullhorn {
+  background-position: -24px -144px;
+}
+
+.adminicon-bell {
+  background-position: -48px -144px;
+}
+
+.adminicon-certificate {
+  background-position: -72px -144px;
+}
+
+.adminicon-thumbs-up {
+  background-position: -96px -144px;
+}
+
+.adminicon-thumbs-down {
+  background-position: -120px -144px;
+}
+
+.adminicon-hand-right {
+  background-position: -144px -144px;
+}
+
+.adminicon-hand-left {
+  background-position: -168px -144px;
+}
+
+.adminicon-hand-up {
+  background-position: -192px -144px;
+}
+
+.adminicon-hand-down {
+  background-position: -216px -144px;
+}
+
+.adminicon-circle-arrow-right {
+  background-position: -240px -144px;
+}
+
+.adminicon-circle-arrow-left {
+  background-position: -264px -144px;
+}
+
+.adminicon-circle-arrow-up {
+  background-position: -288px -144px;
+}
+
+.adminicon-circle-arrow-down {
+  background-position: -312px -144px;
+}
+
+.adminicon-globe {
+  background-position: -336px -144px;
+}
+
+.adminicon-wrench {
+  background-position: -360px -144px;
+}
+
+.adminicon-tasks {
+  background-position: -384px -144px;
+}
+
+.adminicon-filter {
+  background-position: -408px -144px;
+}
+
+.adminicon-briefcase {
+  background-position: -432px -144px;
+}
+
+.adminicon-fullscreen {
+  background-position: -456px -144px;
+}
+
+.dropup,
+.admindropdown {
+  position: relative;
+}
+
+.admindropdown-toggle:active,
+.open .admindropdown-toggle {
+  outline: 0;
+}
+
+.caret {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: top;
+  border-top: 4px solid #000000;
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+  content: "";
+  opacity: 0.3;
+}
+
+.admindropdown .caret {
+  margin-top: 8px;
+  margin-left: 2px;
+}
+
+.admindropdown:hover .caret,
+.open .caret {
+  opacity: 1;
+}
+
+.admindropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 9px;
+  margin: 1px 0 0;
+  list-style: none;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  -webkit-border-radius: 5px;
+          border-radius: 5px;
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+          box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  -webkit-background-clip: padding-box;
+          background-clip: padding-box;
+}
+
+.admindropdown-menu.pull-right {
+  right: 0;
+  left: auto;
+}
+
+.admindropdown-menu .divider {
+  height: 1px;
+  margin: 8px 1px;
+  overflow: hidden;
+  background-color: #e5e5e5;
+  border-bottom: 1px solid #ffffff;
+}
+
+
+.open > .admindropdown-menu {
+  display: block;
+}
+
+.pull-right > .admindropdown-menu {
+  right: auto;
+  left: 0;
+  color: #000;
+}
+
+.dropup .caret,
+.navbar-fixed-bottom .admindropdown .caret {
+  border-top: 0;
+  border-bottom: 4px solid #000000;
+  content: "\2191";
+}
+
+.dropup .admindropdown-menu,
+.navbar-fixed-bottom .admindropdown .admindropdown-menu {
+  top: auto;
+  bottom: 100%;
+  margin-bottom: 1px;
+}
+
+
+.fade {
+  opacity: 0;
+  -webkit-transition: opacity 0.15s linear;
+          transition: opacity 0.15s linear;
+}
+
+.fade.in {
+  opacity: 1;
+}
+
+.collapse {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  -webkit-transition: height 0.35s ease;
+          transition: height 0.35s ease;
+}
+
+.collapse.in {
+  height: auto;
+}
+
+.adminbtn {
+  display: inline-block;
+  padding: 4px 10px 4px;
+  margin-bottom: 0;
+  font-size: 13px;
+  line-height: 27px;
+  color: #fff;
+  width:112px;
+  text-align: center;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.75);
+  vertical-align: middle;
+  cursor: pointer;
+  background: #45484D;
+background: linear-gradient(to bottom, #45484D 0%, #000000 100%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+  background-repeat: repeat-x;
+  font-size: 12px;
+  border: 1px solid #cccccc;
+  border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+  border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+  border-bottom-color: #b3b3b3;
+  -webkit-border-radius: 4px;
+          border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.adminbtn:hover,
+.adminbtn:active,
+.adminbtn.active,
+.adminbtn.disabled,
+.adminbtn[disabled] {
+  background: #444444;
+}
+a.adminbtn {
+  color: #fff;
+}
+
+
+
+.adminbtn:hover {
+  text-decoration: none;
+  background-color: #444444;
+  background-position: 0 -15px;
+  -webkit-transition: background-position 0.1s linear;
+          transition: background-position 0.1s linear;
+}
+
+.adminbtn:focus {
+  outline: thin dotted #333;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+
+
+.adminbtn-group {
+  position: relative;
+}
+
+.adminbtn-group:before,
+.adminbtn-group:after {
+  display: table;
+  content: "";
+}
+
+.adminbtn-group:after {
+  clear: both;
+}
+
+.adminbtn-group + .adminbtn-group {
+  margin-left: 5px;
+}
+
+.adminbtn-group > .adminbtn {
+  position: relative;
+  float: left;
+  margin-left: -1px;
+  -webkit-border-radius: 0;
+          border-radius: 0;
+}
+
+.adminbtn-group > .adminbtn:first-child {
+  margin-left: 0;
+  -webkit-border-bottom-left-radius: 4px;
+          border-bottom-left-radius: 4px;
+  -webkit-border-top-left-radius: 4px;
+          border-top-left-radius: 4px;
+}
+
+.adminbtn-group > .adminbtn:last-child,
+.adminbtn-group > .admindropdown-toggle {
+  -webkit-border-top-right-radius: 4px;
+          border-top-right-radius: 4px;
+  -webkit-border-bottom-right-radius: 4px;
+          border-bottom-right-radius: 4px;
+}
+
+.adminbtn-group > .adminbtn.large:first-child {
+  margin-left: 0;
+  -webkit-border-bottom-left-radius: 6px;
+          border-bottom-left-radius: 6px;
+  -webkit-border-top-left-radius: 6px;
+          border-top-left-radius: 6px;
+}
+
+.adminbtn-group > .adminbtn.large:last-child,
+.adminbtn-group > .large.admindropdown-toggle {
+  -webkit-border-top-right-radius: 6px;
+          border-top-right-radius: 6px;
+  -webkit-border-bottom-right-radius: 6px;
+          border-bottom-right-radius: 6px;
+}
+
+.adminbtn-group > .adminbtn:hover,
+.adminbtn-group > .adminbtn:focus,
+.adminbtn-group > .adminbtn:active,
+.adminbtn-group > .adminbtn.active {
+  z-index: 2;
+}
+
+.adminbtn-group .admindropdown-toggle:active,
+.adminbtn-group.open .admindropdown-toggle {
+  outline: 0;
+}
+
+.adminbtn-group > .admindropdown-toggle {
+  padding-right: 8px;
+  padding-left: 8px;
+  -webkit-box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.125), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 1px 0 0 rgba(255, 255, 255, 0.125), inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.adminbtn-group > .adminbtn-mini.admindropdown-toggle {
+  padding-right: 5px;
+  padding-left: 5px;
+}
+
+
+.adminbtn-group > .adminbtn-large.admindropdown-toggle {
+  padding-right: 12px;
+  padding-left: 12px;
+}
+
+.adminbtn-group.open .admindropdown-toggle {
+  background-image: none;
+  -webkit-box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+          box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.adminbtn-group.open .adminbtn.admindropdown-toggle {
+  background-color: #e6e6e6;
+}
+
+.adminbtn-group.open .adminbtn-primary.admindropdown-toggle {
+  background-color: #0055cc;
+}
+
+.adminbtn-group.open .adminbtn-warning.admindropdown-toggle {
+  background-color: #f89406;
+}
+
+.adminbtn-group.open .adminbtn-danger.admindropdown-toggle {
+  background-color: #bd362f;
+}
+
+.adminbtn-group.open .adminbtn-success.admindropdown-toggle {
+  background-color: #51a351;
+}
+
+.adminbtn-group.open .adminbtn-info.admindropdown-toggle {
+  background-color: #2f96b4;
+}
+
+.adminbtn-group.open .adminbtn-inverse.admindropdown-toggle {
+  background-color: #222222;
+}
+
+.adminbtn .caret {
+  margin-top: 11px;
+  margin-left: 5px;
+}
+
+.adminbtn:hover .caret,
+.open.adminbtn-group .caret {
+  opacity: 1;
+}
+
+.adminbtn-mini .caret {
+  margin-top: 5px;
+}
+
+.adminbtn-small .caret {
+  margin-top: 6px;
+}
+
+.adminbtn-large .caret {
+  margin-top: 6px;
+  border-top-width: 5px;
+  border-right-width: 5px;
+  border-left-width: 5px;
+}
+
+.dropup .adminbtn-large .caret {
+  border-top: 0;
+  border-bottom: 5px solid #000000;
+}
+
+.adminbtn-primary .caret,
+.adminbtn-warning .caret,
+.adminbtn-danger .caret,
+.adminbtn-info .caret,
+.adminbtn-success .caret,
+.adminbtn-inverse .caret {
+  border-top-color: #ffffff;
+  border-bottom-color: #ffffff;
+  opacity: 0.75;
+}
+
+/*
+.pull-right {
+  float: right;
+}
+*/
+
+.pull-left {
+  float: left;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.admindropdown-menu li {white-space: nowrap;}
+
+.ar {text-align: right;}
+.ac {text-align: center;}
+.al {text-align: left;}
+
+.ccgalerie div {margin: 5px;}
+.ccgalerie {width: 100%; display: block; float: left;}

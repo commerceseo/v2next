@@ -1,0 +1,22 @@
+{if !$empty}
+{config_load file="lang/$language/lang_$language.conf" section="boxes"}
+<div class="box box_product_filter">
+	{include file="$html_tpl_path/box.html" name=product_filter class=product_filter}
+	<div class="boxcontent boxcontent_product_filter">
+	
+	
+	<h4 class="name_filter">Produktfilter</h4>
+	
+	
+		{foreach name=cats item=cat from=$categories}
+			<div class="cat_titel">{$cat.CATEGORIE_TITLE}</div>
+			<div class="cat_items">
+				{foreach name=items item=data from=$cat.ITEMS}
+					<a href="{$data.ITEM_LINK}">{$data.ITEM_TITLE}</a>
+				{/foreach}
+			</div>
+		{/foreach}
+		<div class="productfilterlink">{$ADVANCED_LINK}</div>
+	</div>
+</div>
+{/if}

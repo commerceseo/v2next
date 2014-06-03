@@ -1,0 +1,35 @@
+{strip}
+<div class="col-xs-6">
+	<ul class="pagination">
+		{if $LINKS.first_page}
+			<li><a href="{$LINKS.first_page.href}" title="{$LINKS.first_page.title}">|<</a></li>
+		{/if}
+		{if $LINKS.previous_button.href}
+			<li><a rel="prev" href="{$LINKS.previous_button.href}" title="{$LINKS.previous_button.title}">«</a></li>
+		{else}
+			<li class="disabled"><a rel="prev" href="{$LINKS.previous_button.href}" title="{$LINKS.previous_button.title}">«</a></li>
+		{/if}
+
+		{foreach from=$LINKS.pages item=page}
+			{if $page.href}
+				<li><a href="{$page.href}" title="{$page.title}">{$page.name}</a></li>
+			{else}
+				<li class="active"><a href="#">{$page.name}</a></li>
+			{/if}
+		{/foreach}
+
+		{if $LINKS.next_button.href}
+			<li><a rel="next" href="{$LINKS.next_button.href}" title="{$LINKS.next_button.title}">»</a></li>
+		{else}
+			<li class="disabled"><a rel="next" href="{$LINKS.next_button.href}" title="{$LINKS.next_button.title}">»</a></li>
+		{/if}
+		
+		{if $LINKS.last_page}
+			<li><a href="{$LINKS.last_page.href}" title="{$LINKS.last_page.title}">>|</a></li>
+		{/if}
+	</ul>
+</div>
+<div class="col-xs-6 text-right pt5">
+	{$COUNT}
+</div>
+{/strip}

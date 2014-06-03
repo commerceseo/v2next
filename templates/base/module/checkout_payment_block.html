@@ -1,0 +1,36 @@
+{assign var="z" value=0}
+{foreach name=aussen item=module_data from=$module_content} 
+	{if $module_data.module!= ''}
+		{if $module_data.error !=''}
+			{$module_data.error}
+		{else}
+			{$save_button}
+			{if $module_data.fields == ''}
+				<div class="{if $module_data.checked}moduleRowSelected{else}moduleRow{/if}" id="prow_{$module_data.value_id}" onclick="updatePaymentModule(this, {$module_data.radio_buttons}), selectRowEffect(this, {$module_data.radio_buttons})">
+			{else}
+				<div class="{if $module_data.checked}moduleRowSelected{else}moduleRow{/if}" id="prow_{$module_data.value_id}" onclick="selectRowEffect(this, {$module_data.radio_buttons})">
+			{/if}
+				<div class="radio">	
+					{$module_data.selection}<input type="hidden" name="pmodule" value="{$z}" />
+				</div>
+				<div class="checkout_payment_list">
+					<b>	
+						{if $module_data.module_cost}
+						<span class="right">{$module_data.module_cost}</span>
+						{/if}
+						{$module_data.module}
+					</b><br>
+					{if $module_data.description}
+						{$module_data.description}<br><br>
+					{/if}
+					{foreach name=aussen item=method_data from=$module_data.fields}
+						{$method_data.title}
+						{$method_data.field}<br>
+					{/foreach}
+				</div>
+				<br style="clear:both">
+			</div>
+			{assign var="z" value="`$z+1`"}
+		{/if}
+	{/if}
+{/foreach}			

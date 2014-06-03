@@ -1,0 +1,14 @@
+<div class="row">
+<div class="col-xs-12">
+{if $CONTENT_HEADING}
+<h1>{$CONTENT_HEADING}</h1>
+{/if}
+{if $file}
+   {$file}
+{else}
+    {$CONTENT_BODY}
+{/if}
+</div>
+<div class="col-xs-12 text-right">{$BUTTON_CONTINUE}</div>
+</div>
+

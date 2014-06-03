@@ -1,0 +1,386 @@
+{strip}
+{config_load file="lang/$language/lang_$language.conf" section="index"}
+{config_load file="lang/$language/lang_$language.conf" section="product_filter"}
+
+{if $error!=''}
+	<div class="col-xs-12 danger">
+		{$error}
+	</div>
+{/if}
+{if $KEYWORDS}
+	<h1>
+		{$KEYWORDS}
+	</h1>
+{/if}
+{if $filter_request}
+	<h1>
+		{#you_search#} <em>{$filter_request}</em>
+	</h1>
+{/if}
+
+{if $TITLE}
+	<br><b>{$TITLE}</b><br>
+{/if}
+
+{if $CATEGORY_LINK}
+	<h3>{#category_found_search#}</h3>
+	<hr>
+	<ul>
+		{foreach name=aussen item=category_data from=$CATEGORY_LINK}
+			<li>
+				<a href="{$category_data.CATEGORIES_LINK}">
+				<img src="{$category_data.CATEGORIES_IMAGE}" /> <br>
+				{$category_data.CATEGORIES_NAME}
+				</a>
+			</li>
+		{/foreach}
+	</ul>
+	<hr>
+{/if}
+{$TAG_COUNT}
+{if $CATEGORIES_IMAGE !='' || $CATEGORIES_DESCRIPTION !='' || $CATEGORIES_HEADING_TITLE !=''}
+	{if $CATEGORIES_HEADING_TITLE !=''}
+			<h1>{$CATEGORIES_HEADING_TITLE}</h1>
+	{/if}
+	{if $CATEGORIES_IMAGE}
+		{$CATEGORIES_IMAGE}
+	{/if}
+
+	{if $CATEGORIES_DESCRIPTION}
+			{$CATEGORIES_DESCRIPTION}
+	{/if}
+	
+
+{/if}
+
+{if $MANUFACTURERS_DESCRIPTION !=''}
+		{if $MANUFACTURERS_IMAGE != ''}
+			{$MANUFACTURERS_IMAGE}
+		{/if}
+		{if $MANUFACTURERS_NAME != ''}
+			<h1>{$MANUFACTURERS_NAME}</h1>
+		{/if}
+		{$MANUFACTURERS_DESCRIPTION}
+{/if}
+
+{if $MANUFACTURER_DROPDOWN}
+	<div class="row">
+		{$MANUFACTURER_DROPDOWN}
+	</div>
+{/if}
+
+{if $PRODUCTS_PER_SITE || $PRODUCTS_VIEW_AS || $MULTISORT_DROPDOWN}
+	<hr>
+	<div class="row">
+		{if $PRODUCTS_PER_SITE && $PRODUCTS_VIEW_AS && $MULTISORT_DROPDOWN}
+			{assign var="col" value=4}
+			{assign var="vat" value="text-center"}
+		{elseif $PRODUCTS_PER_SITE && $PRODUCTS_VIEW_AS == '' && $MULTISORT_DROPDOWN || $PRODUCTS_PER_SITE == '' && $PRODUCTS_VIEW_AS && $MULTISORT_DROPDOWN || $PRODUCTS_PER_SITE && $PRODUCTS_VIEW_AS && $MULTISORT_DROPDOWN == ''}
+			{assign var="col" value=6}
+			{assign var="vat" value="text-right"}
+		{else}
+			{assign var="col" value=12}
+			{assign var="vat" value="text-right"}
+		{/if}
+
+		{if $MULTISORT_DROPDOWN}
+			<div class="col-xs-{$col}">
+			{$MULTISORT_DROPDOWN}
+			</div>
+		{/if}
+		{if $PRODUCTS_VIEW_AS}
+			<div class="col-xs-{$col} {$vat}">
+			{$PRODUCTS_VIEW_AS}
+			</div>
+		{/if}
+		{if $PRODUCTS_PER_SITE}
+			<div class="col-xs-{$col} text-right">
+			{$PRODUCTS_PER_SITE}
+			</div>
+		{/if}
+	</div>
+	<hr>
+	{if $NAVIGATION}
+		<div class="row">
+		{$NAVIGATION}
+		</div>
+		<hr>
+	{/if}
+{/if}
+
+
+{if !$cross_selling}
+<div class="row">
+	{foreach name=aussen item=module_data from=$module_content}
+		<div class="{if $module_data.COL_WIDTH == 'w98p'}col-xs-12{elseif $module_data.COL_WIDTH == 'w474p'}col-lg-6 col-md-6 col-sm-6 col-xs-12 text-center{elseif $module_data.COL_WIDTH == 'w303p'}col-lg-4 col-md-4 col-sm-6 col-xs-12 text-center{elseif $module_data.COL_WIDTH == 'w223p'}col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center{/if}" itemscope itemtype="http://schema.org/Product">
+			<div class="{if $module_data.COL_WIDTH == 'w98p'}product_box_list{else}product_box{/if}">
+			<div class="pimg{if $module_data.COL_WIDTH == 'w98p'} col-lg-3 col-md-3 col-sm-12 col-xs-12{/if}">
+				<a href="{$module_data.PRODUCTS_LINK}" title="{$module_data.PRODUCTS_NAME_ALT}">
+					{$module_data.PRODUCTS_IMAGE}
+				</a>
+			</div>
+			
+			<div {if $module_data.COL_WIDTH == 'w98p'}class="col-lg-9 col-md-9 col-sm-12 col-xs-12"{/if}>
+				<h3 itemprop="name">
+					<a itemprop="url" href="{$module_data.PRODUCTS_LINK}" title="{$module_data.PRODUCTS_NAME_ALT}">{$module_data.PRODUCTS_NAME}</a>
+				</h3>
+
+				{if $module_data.PRODUCTS_NAME}
+					{if $module_data.PRODUCTS_PROXIMITY !=''}
+						<div class="text-center" style="background-color:{$module_data.PRODUCTS_PROXIMITY_COLOR}">
+							{#text_proximity#}{$module_data.PRODUCTS_PROXIMITY}
+						</div>
+					{/if}
+					
+					{if $module_data.PRODUCTS_REVIEWS}
+						<div class="product_reviews">
+							{$module_data.PRODUCTS_REVIEWS}
+						</div>
+					{/if}
+				{/if}
+					
+				{if $module_data.PRODUCTS_DESCRIPTION || $module_data.PRODUCTS_MANUFACTURER_IMG || $module_data.PRODUCTS_MANUFACTURER_NAME}
+					<div class="pdesc">
+						<p itemprop="description">
+						{$module_data.PRODUCTS_DESCRIPTION}
+						</p>
+						<hr>
+						
+						{if $module_data.PRODUCTS_MANUFACTURER_IMG || $module_data.PRODUCTS_MANUFACTURER_NAME}
+							{if $module_data.PRODUCTS_MANUFACTURER_URL}
+								<a href="{$module_data.PRODUCTS_MANUFACTURER_URL}" target="_blank" title="{$module_data.PRODUCTS_MANUFACTURER_NAME}">{/if}
+							{if $module_data.PRODUCTS_MANUFACTURER_IMG}
+									{$module_data.PRODUCTS_MANUFACTURER_IMG}<br>
+							{/if}
+								{$module_data.PRODUCTS_MANUFACTURER_NAME}
+							{if $module_data.PRODUCTS_MANUFACTURER_URL}</a>{/if}
+						{/if}
+						
+						{if $module_data.BUY_IN_LISTING == 'true'}
+							{$module_data.FORM_ACTION}
+						{/if}
+						{section name=module_data_attributes loop=$module_data.PRODUCTS_ATTRIBUTES} 
+							{if $module_data.PRODUCTS_ATTRIBUTES_TEMPLATE == 'dropdown'}
+							<fieldset>
+								<dl>
+								<dt class="w126"><b>{$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].NAME}</b>:</dt>
+								<dd>
+									<select name="id[{$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].ID}]" class="option" onchange="return xajax_ListingPrice(this.value, {$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].ID}, {$module_data.PRODUCTS_ID})">
+									{foreach key=key_data item=item_data from=$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].DATA}
+										<option value="{$item_data.ID}">{$item_data.TEXT} {if $item_data.PRICE !='' }{$item_data.PREFIX} {$item_data.PRICE}{/if} {if $item_data.VPE}/ {$item_data.VPE}{/if}</option>
+									{/foreach}
+									</select>
+								</dd>
+								</dl>
+							</fieldset> 
+							{else}
+							<fieldset>
+								<dl>
+								<dt class="w126"><b>{$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].NAME}</b>:</dt>
+								<dd>
+									{assign var="n" value=0}
+									{foreach key=key_data item=item_data from=$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].DATA}
+										<input class="option" type="radio" name="id[{{$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].ID}}]" value="{$item_data.ID}" {if $n == 0}checked="checked"{/if} n="{$n}" />
+										{assign var="n" value="`$n+1`"}
+										{$item_data.TEXT} {$item_data.STOCK} <br>{if $item_data.PRICE!=''}( {$item_data.PREFIX}{$item_data.PRICE} {if $item_data.VPE} / {$item_data.VPE}{/if}){/if}  <br>
+									{/foreach}
+									</select>
+								</dd>
+								</dl>
+							</fieldset> 					
+							{/if}
+						{/section}
+					</div>
+				{/if}
+				
+				{if $module_data.CATEGORIES_NAME}
+					<div class="text-center">
+						{#text_category#}<a href="{$module_data.CATEGORIES_LINK}">{$module_data.CATEGORIES_NAME}</a><br>
+					</div>
+				{/if}
+				<div class="pprice">
+					{if $module_data.PRODUCTS_UVP_PRICE}<div>{$module_data.TEXT_UVP}{$module_data.PRODUCTS_UVP_PRICE}</div>{/if}
+					{if $module_data.PRODUCTS_PRICE}<div class="price" id="p{$module_data.PRODUCTS_ID}">{$module_data.PRODUCTS_PRICE}</div>
+					<div class="fs85">{$module_data.PRODUCTS_TAX_INFO}{$module_data.PRODUCTS_SHIPPING_LINK}</div>{/if}
+				
+					{section name=module_data_staffel loop=$module_data.PRODUCTS_STAFFEL} 
+						{$module_data.PRODUCTS_STAFFEL[module_data_staffel].QUANTITY} {#unit#}<br>
+						{#pieces#} {$module_data.PRODUCTS_STAFFEL[module_data_staffel].PRICE}<br>
+						{$module_data.PRODUCTS_STAFFEL[module_data_staffel].PRODUCTS_STAFFEL}<br>
+					{/section}
+					{if $module_data.PRODUCTS_STOCK_IMG}<div id="verfuegbar{$module_data.PRODUCTS_ID}">{#text_stock#} {$module_data.PRODUCTS_STOCK_IMG}<br>{#text_shippingtime#}: {if $module_data.PRODUCTS_SHIPPING_IMAGE}{$module_data.PRODUCTS_SHIPPING_IMAGE}{/if}{$module_data.PRODUCTS_SHIPPING_NAME}</div>{/if}
+					{if $module_data.PRODUCTS_VPE}{#text_vpe#} {$module_data.PRODUCTS_VPE}<br>{/if}
+					{if $module_data.PRODUCTS_MODEL}{#text_model#} {$module_data.PRODUCTS_MODEL}<br>{/if}
+					{if $module_data.PRODUCTS_WEIGHT !=0}<div class="weight">{#text_weight#}{$module_data.PRODUCTS_WEIGHT} KG</div>{/if}
+				</div>
+				 <div class="pbuy">
+					{if $module_data.BUY_IN_LISTING == 'true'}
+						<input type="text" name="products_qty" class="products_qty" id="{$module_data.QTY_ID}" value="{$module_data.QTY_VALUE}" />
+						<input type="hidden" name="products_id" value="{$module_data.PRODUCTS_ID}" />
+					{/if}
+					 {$module_data.PRODUCTS_BUTTON_BUY_NOW}
+					 {$module_data.PRODUCTS_BUTTON_WISHLIST}
+					 {$module_data.PRODUCTS_BUTTON_DETAILS}
+				 </div>
+					{if $module_data.BUY_IN_LISTING == 'true'}
+						</form>
+					{/if}
+			</div>
+		</div>
+		</div>
+	{/foreach}
+	</div>
+{/if}
+
+{if $cross_selling}
+	<div class="row">
+	{foreach name=aussen item=group_data from=$module_content}
+		{if $group_data.GROUP}
+			<h2>{$group_data.GROUP}</h2>
+		{/if}
+		{foreach name=innen item=module_data from=$group_data.PRODUCTS}
+		<div class="{if $module_data.COL_WIDTH == 'w98p'}col-lg-12 col-md-12 col-sm-12 col-xs-12{elseif $module_data.COL_WIDTH == 'w474p'}col-lg-6 col-md-6 col-sm-12 col-xs-12 text-center{elseif $module_data.COL_WIDTH == 'w303p'}col-lg-4 col-md-4 col-sm-12 col-xs-12 text-center{elseif $module_data.COL_WIDTH == 'w223p'}col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center{/if}" itemscope itemtype="http://schema.org/Product">
+			<div class="{if $module_data.COL_WIDTH == 'w98p'}product_box_list{else}product_box{/if}">
+			<div {if $module_data.COL_WIDTH == 'w98p'}class="col-lg-2 col-md-3 col-sm-12 col-xs-12"{/if}>
+				<a href="{$module_data.PRODUCTS_LINK}" title="{$module_data.PRODUCTS_NAME_ALT}">
+					{$module_data.PRODUCTS_IMAGE}
+				</a>
+			</div>
+			
+			<div {if $module_data.COL_WIDTH == 'w98p'}class="col-lg-10 col-md-9 col-sm-12 col-xs-12"{/if}>
+				<h3 itemprop="name">
+					<a itemprop="url" href="{$module_data.PRODUCTS_LINK}" title="{$module_data.PRODUCTS_NAME_ALT}">{$module_data.PRODUCTS_NAME}</a>
+				</h3>
+
+				{if $module_data.PRODUCTS_NAME}
+					{if $module_data.PRODUCTS_PROXIMITY !=''}
+						<div class="text-center" style="background-color:{$module_data.PRODUCTS_PROXIMITY_COLOR}">
+							{#text_proximity#}{$module_data.PRODUCTS_PROXIMITY}
+						</div>
+					{/if}
+					
+					{if $module_data.PRODUCTS_REVIEWS}
+						<div class="product_reviews">
+							{$module_data.PRODUCTS_REVIEWS}
+						</div>
+					{/if}
+				{/if}
+					
+				{if $module_data.PRODUCTS_DESCRIPTION || $module_data.PRODUCTS_MANUFACTURER_IMG || $module_data.PRODUCTS_MANUFACTURER_NAME}
+					<div>
+						<p itemprop="description">
+						{$module_data.PRODUCTS_DESCRIPTION}
+						</p>
+						
+						{if $module_data.PRODUCTS_MANUFACTURER_IMG || $module_data.PRODUCTS_MANUFACTURER_NAME}
+							{if $module_data.PRODUCTS_MANUFACTURER_URL}
+								<a href="{$module_data.PRODUCTS_MANUFACTURER_URL}" target="_blank" title="{$module_data.PRODUCTS_MANUFACTURER_NAME}">{/if}
+							{if $module_data.PRODUCTS_MANUFACTURER_IMG}
+									<img title="{if $module_data.PRODUCTS_MANUFACTURERS_DESCRIPTION != ''}{$module_data.PRODUCTS_MANUFACTURERS_DESCRIPTION}{else}{$module_data.PRODUCTS_MANUFACTURER_NAME}{/if}" src="{$module_data.PRODUCTS_MANUFACTURER_IMG}" alt="{$module_data.PRODUCTS_MANUFACTURER_NAME}" /><br>
+							{/if}
+								{$module_data.PRODUCTS_MANUFACTURER_NAME}
+							{if $module_data.PRODUCTS_MANUFACTURER_URL}</a>{/if}
+						{/if}
+						
+						{if $module_data.BUY_IN_LISTING == 'true'}
+							{$module_data.FORM_ACTION}
+						{/if}
+						{section name=module_data_attributes loop=$module_data.PRODUCTS_ATTRIBUTES} 
+							{if $module_data.PRODUCTS_ATTRIBUTES_TEMPLATE == 'dropdown'}
+							<fieldset>
+								<dl>
+								<dt class="w126"><b>{$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].NAME}</b>:</dt>
+								<dd>
+									<select name="id[{$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].ID}]" class="option">
+									{foreach key=key_data item=item_data from=$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].DATA}
+										<option value="{$item_data.ID}">{$item_data.TEXT} {if $item_data.PRICE !='' }{$item_data.PREFIX} {$item_data.PRICE}{/if} {if $item_data.VPE}/ {$item_data.VPE}{/if}</option>
+									{/foreach}
+									</select>
+								</dd>
+								</dl>
+							</fieldset> 
+							{else}
+							<fieldset>
+								<dl>
+								<dt class="w126"><b>{$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].NAME}</b>:</dt>
+								<dd>
+									{assign var="n" value=0}
+									{foreach key=key_data item=item_data from=$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].DATA}
+										<input class="option" type="radio" name="id[{{$module_data.PRODUCTS_ATTRIBUTES[module_data_attributes].ID}}]" value="{$item_data.ID}" {if $n == 0}checked="checked"{/if} n="{$n}" />
+										{assign var="n" value="`$n+1`"}
+										{$item_data.TEXT} {$item_data.STOCK} <br>{if $item_data.PRICE!=''}( {$item_data.PREFIX}{$item_data.PRICE} {if $item_data.VPE} / {$item_data.VPE}{/if}){/if}  <br>
+									{/foreach}
+									</select>
+								</dd>
+								</dl>
+							</fieldset> 					
+							{/if}
+						{/section}
+					</div>
+				{/if}
+				
+				{if $module_data.CATEGORIES_NAME}
+					<div class="text-center">
+						{#text_category#}<a href="{$module_data.CATEGORIES_LINK}">{$module_data.CATEGORIES_NAME}</a><br>
+					</div>
+				{/if}
+				{if $module_data.PRODUCTS_PRICE}<div class="price" id="p{$module_data.PRODUCTS_ID}">{$module_data.PRODUCTS_PRICE}</div>
+				<div class="product_shipping_link">{$module_data.PRODUCTS_TAX_INFO}{$module_data.PRODUCTS_SHIPPING_LINK}</div>{/if}
+			
+				{section name=module_data_staffel loop=$module_data.PRODUCTS_STAFFEL} 
+					{$module_data.PRODUCTS_STAFFEL[module_data_staffel].QUANTITY} {#unit#}<br>
+					{#pieces#} {$module_data.PRODUCTS_STAFFEL[module_data_staffel].PRICE}<br>
+					{$module_data.PRODUCTS_STAFFEL[module_data_staffel].PRODUCTS_STAFFEL}<br>
+				{/section}
+				{*if $module_data.PRODUCTS_STOCK_IMG}{#text_stock#} <div class="product_stock_img">{$module_data.PRODUCTS_STOCK_IMG}</div>{/if*}
+				{if $module_data.PRODUCTS_STOCK_IMG}<div id="verfuegbar{$module_data.PRODUCTS_ID}">{#text_stock#} {$module_data.PRODUCTS_STOCK_IMG}<br>{#text_shippingtime#}: {if $module_data.PRODUCTS_SHIPPING_IMAGE}{$module_data.PRODUCTS_SHIPPING_IMAGE}{/if}{$module_data.PRODUCTS_SHIPPING_NAME}</div>{/if}
+				{if $module_data.PRODUCTS_VPE}{#text_vpe#} {$module_data.PRODUCTS_VPE}<br>{/if}
+				{if $module_data.PRODUCTS_MODEL}{#text_model#} {$module_data.PRODUCTS_MODEL}<br>{/if}
+				{if $module_data.PRODUCTS_WEIGHT !=0}<div class="weight">{#text_weight#}{$module_data.PRODUCTS_WEIGHT} KG</div>{/if}
+				 <div class="buttons_liste">
+				{if $module_data.BUY_IN_LISTING == 'true'}
+					<input type="text" name="products_qty" class="products_qty" id="{$module_data.QTY_ID}" value="{$module_data.QTY_VALUE}" />
+					<input type="hidden" name="products_id" value="{$module_data.PRODUCTS_ID}" />
+				{/if}
+				 {$module_data.PRODUCTS_BUTTON_BUY_NOW}
+				 {$module_data.PRODUCTS_BUTTON_WISHLIST}
+				 {$module_data.PRODUCTS_BUTTON_DETAILS}
+				 </div>
+				{if $module_data.BUY_IN_LISTING == 'true'}
+					</form>
+				{/if}
+			</div>
+		</div>
+		</div>
+		{/foreach}
+	{/foreach}
+	</div>
+{/if}
+
+
+{if $CATEGORIES_DESCRIPTION_FOOTER}
+	<div class="row">
+	{if $CATEGORIES_FOOTER_IMAGE}
+		<div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+		{$CATEGORIES_FOOTER_IMAGE}
+		</div>
+	{/if}
+		{if $CATEGORIES_FOOTER_IMAGE}
+		<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+		{else}
+		<div class="col-xs-12">
+		{/if}
+			{$CATEGORIES_DESCRIPTION_FOOTER}
+		</div>
+	</div>
+{/if}
+
+{if $NAVIGATION}
+	<hr>
+	<div class="row">
+	{$NAVIGATION}
+	</div>
+	<hr>
+{/if}
+
+{/strip}

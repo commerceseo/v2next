@@ -1,0 +1,30 @@
+{if $FREE_SHIPPING}
+    <strong>{$FREE_SHIPPING_TITLE}</strong>&nbsp;{$FREE_SHIPPING_ICON}<br>
+    {$FREE_SHIPPING_DESCRIPTION}
+{else}
+	{assign var="z" value=0}
+    {foreach name=aussen item=module_data from=$module_content}
+    	{if $module_data.error != ''}
+            {$module_data.error}
+        {else} 
+            {foreach name=aussen item=method_data from=$module_data.methods}
+				<div class="{if $method_data.checked}moduleRowSelected{else}moduleRow{/if}"  onclick="updateShippingModule(this, {$method_data.radio_buttons})" id="srow{$z}">
+	            	{$module_data.icon} <b>{$module_data.module}</b>
+		            <div style="float:left;">
+		                <div class="left mr5">
+		                    {$method_data.radio_field}<input type="hidden" name="smodule" value="{$z}" />
+		                </div>
+		                <div class="left mt3">
+		                    {$method_data.title}
+		                </div>
+		                <div style="float:left; width:80px; text-align:center;">
+		                    <strong>{$method_data.price}</strong>
+		                </div>
+		                <br style="clear:both" />
+		            </div>
+		        </div>
+            {/foreach}
+        {/if}
+	{assign var="z" value="`$z+1`"}
+    {/foreach}
+{/if}

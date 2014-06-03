@@ -1,0 +1,59 @@
+{config_load file="lang/$language/lang_$language.conf" section="boxes"}
+{config_load file="lang/$language/lang_$language.conf" section="index"}
+{config_load file="lang/$language/lang_$language.conf" section="account"}
+{config_load file="lang/$language/lang_$language.conf" section="create_account"}
+<ul class="dropdown-menu">
+    {if $LOGGEDIN}
+    <li>
+        <div class="row">
+            {$FORM_ACTION}
+            <div class="col-xs-12 text-center">
+				{#text_email#} {$FIELD_EMAIL}
+			</div>
+            <div class="col-xs-12 text-center">
+				{#text_pwd#}: {$FIELD_PWD}
+			</div>
+			<hr>
+            <div class="col-xs-12 text-center">
+				{$BUTTON}
+            </div>
+            {$FORM_END}
+		</div>
+		
+    </li>
+    <li class="divider"></li>
+    <li><a href="{$LINK_LOST_PASSWORD}" title="{#text_password_forgotten#}">{#text_password_forgotten#}</a></li>
+    <li class="divider"></li>
+    <li>
+        <a href="{$LINK_LOGIN}">{#heading_create_account#}</a>
+    </li>
+    {else}
+    <li>
+        <a href="{$LINK_LOGOFF}" title="{#link_logoff#}">{#link_logoff#}</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+        <a href="{$LINK_ACCOUNT}" title="{#link_account#}">{#link_account#}</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+        <a href="{$LINK_EDIT}" title="{#text_edit#}">{#text_edit#}</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+        <a href="{$LINK_ADDRESS}" title="{#text_address#}">{#text_address#}</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+        <a href="{$LINK_PASSWORD}" title="{#text_password#}">{#text_password#}</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+        <a href="{$LINK_ORDERS}" title="{#title_orders#}">{#title_orders#}</a>
+    </li>
+    <li class="divider"></li>
+    <li>
+        <a href="{$LINK_NEWSLETTER}" title="{#text_newsletter#}">{#text_newsletter#}</a>
+    </li>
+    {/if}
+</ul>

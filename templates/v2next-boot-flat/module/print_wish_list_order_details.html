@@ -1,0 +1,43 @@
+{config_load file="lang/$language/lang_$language.conf" section="shopping_cart"}
+<p><strong>{#heading_wish_list_title#}</strong></p>
+<table width="100%">
+	<tr>
+		<td width="14%">Menge</td>
+		<td width="70%">{#text_article#}</td>
+		<td width="14%">{#text_total#}</td>
+	</tr>
+{foreach name=aussen item=module_data from=$module_content}
+	<tr>
+		<td width="14%" align="center">
+			<table>
+				<tr>
+					<td height="25" width="30">{$module_data.PRODUCTS_QTY}</td>
+				</tr>
+			</table>
+		</td>
+		<td width="70%">
+			{if $module_data.PRODUCTS_IMAGE!=''}<img class="img_border" src="{$module_data.PRODUCTS_IMAGE}" alt="{$module_data.IMAGE_ALT}" style="width:60px" />{/if}
+			<strong>
+				{$module_data.PRODUCTS_NAME}
+			</strong><br>
+			{if $module_data.PRODUCTS_SHIPPING_TIME neq ""}
+				<span class="fs85"><em>{#text_shippingtime#} {$module_data.PRODUCTS_SHIPPING_TIME}</em></span>
+			{/if}
+			{if $module_data.ATTRIBUTES!=''}
+			  	<br>
+				{foreach key=key_data item=item_data from=$module_data.ATTRIBUTES} 
+					<span class="fs85">{$item_data.NAME}: <em>{$item_data.VALUE_NAME}</em></span><br>
+				{/foreach}
+			{/if}
+			{if $module_data.PRODUCTS_MODEL!=''}
+			  	<br><span class="fs85"><em>Art.-Nr.: {$module_data.PRODUCTS_MODEL} </em></span>
+			{/if}
+		</td>		
+		<td width="18%">
+			{$module_data.PRODUCTS_PRICE} <strong class="inputRequirement">*</strong><br>
+			{if $module_data.PRODUCTS_VPE !=''}<em>{#text_vpe#}<br>{$module_data.PRODUCTS_VPE}</em><br>{/if}
+			{if $module_data.PRODUCTS_WEIGHT !=0}<em>{#weight#} {$module_data.PRODUCTS_WEIGHT}</em><br>{/if}
+		</td>
+	</tr>
+{/foreach}
+</table>

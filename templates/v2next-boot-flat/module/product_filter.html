@@ -1,0 +1,53 @@
+{config_load file="lang/$language/lang_$language.conf" section="product_filter"}
+{if $filter_search_items !=''}
+{if $PRODUCTS_PER_SITE || $PRODUCTS_SORTBY || $PRODUCTS_VIEW_AS}
+        <div class="float_wrapper clearfix">
+                {$PRODUCTS_PER_SITE} {$PRODUCTS_SORTBY} 
+        </div>
+		<br class="clearfix">
+{/if}
+	<div class="product_pad">
+	<h3>{#heading_productfilter#}</h3>
+	<form id="filter_terms">
+		
+	{$VERBINDER}
+		
+		
+		{*{$VERBINDER}			
+				Treffer: <select name="per_site" onchange="javascript:searchResults();"><option value="10">10</option><option value="20">20</option><option value="50">50</option><option value="100">100</option><option value="all">alle</option></select><br>
+				<input name="type" type="radio" value="gallery" checked="" onclick="javascript:searchResults();" /> Gallerie<br>
+				<input name="type" type="radio" value="liste" onclick="javascript:searchResults();" /> Liste
+		*}
+		<br><br>
+		{foreach name=aussen item=module_data from=$filter_search_items}
+			<div class="product_pad">
+			<h4>{$module_data.CATEGORIE_TITLE}</h4><br>
+			<ul class="product_filter">
+				{foreach name=aussen item=data from=$module_data.ITEMS}
+				<li class="fl w48p">
+					<input type="checkbox" name="filter[]"{if $data.checkbox_checked} checked="" {/if}value="{$data.checkbox_id}" onclick="javascript:searchResults();" /> {$data.text}
+				</li>
+				{/foreach}
+			</ul></div>
+		{/foreach}
+		<br style="clear:both" /><br>
+	</form>
+{/if}
+<div id="loadingMessage" style="display:none;" class="ac">
+	<img src="images/ajax-loader.gif" alt="Lade..." />
+</div>
+<h2 id="results" class="fwb ac"></h2>
+<div id="filter_result" class="ac">W&auml;hlen Sie die gew&uuml;nschten Kriterien</div>
+{literal}
+<script type="text/javascript">
+	<!--
+	function searchResults() {
+		jQuery('#loadingMessage').show();
+		jQuery('#results').hide();
+		jQuery('#filter_result').hide();
+		xajax_getFilterItems(xajax.getFormValues('filter_terms'));
+	}
+	//-->
+</script>
+{/literal}
+</div>

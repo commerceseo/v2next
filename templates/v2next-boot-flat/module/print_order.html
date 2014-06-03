@@ -1,0 +1,114 @@
+{config_load file="lang/$language/lang_$language.conf" section="print_order"} 
+{config_load file="lang/$language/lang_$language.conf" section="product_info"}
+{$HEADER}
+<title>{#title#} {$oID}</title>
+</head>
+<body onload="window.print()">
+<div style="width:100%">
+	<div style="float:left;width:40%">
+		{$address_label_customer}<br>
+		<br>{if $csID}<b>{#csID#}</b>{$csID}<br>{/if}
+		{if $PAYMENT_METHOD}<b>{#payment#}</b> {$PAYMENT_METHOD}<br>{/if}
+		<b>{#order#}</b> {$oID}<br>
+		<b>{#date#}</b> {$DATE}<br>
+	</div>
+	<div style="float:right; width:59%" align="right">
+		<img src="{$tpl_path}img/logo.gif" alt="{$store_name}" />
+	</div>
+	<br style="clear:both" />
+</div>
+<br><br>
+{if $PAYMENT_INFO_HTML}<b>{#paymentorder#}</b> {$PAYMENT_INFO_HTML}<br>{/if}
+<br><br>
+<div style="width:100%">
+	<div style="float:left; width:48%;background:#DDDDDD; padding:5px"> 
+		<b>{#shipping_address#}</b>
+	</div>
+	{if $address_label_payment}
+		<div style="float:right; width:48%;background:#DDDDDD; padding:5px">
+			<b>{#payment_address#}</b>
+		</div>
+	{else}
+		<br style="clear:both" />
+	{/if}
+	<br style="clear:both" />
+</div>
+<div style="width:100%">	
+	<div style="float:left; width:48%;background:#DDDDDD; padding:5px"> 
+		{$address_label_shipping}
+	</div>
+	{if $address_label_payment}
+		<div style="float:right; width:48%;background:#DDDDDD; padding:5px">
+			{$address_label_payment}
+		</div>
+	{else}
+		<br style="clear:both" />
+	{/if}
+	<br style="clear:both" />
+</div>
+<br><br><br>
+<b style="font-size:larger">{#heading_products#}</b>
+<div style="width:100%">
+	<div style="float:left; width:10%;border-right: 2px solid; border-bottom: 2px solid; border-color: #ffffff;" align="left">
+		<b>&nbsp;</b>
+	</div>
+	<div style="float:left; width:8%;border-right: 2px solid; border-bottom: 2px solid; border-color: #ffffff;" align="left">
+		<b>{#head_units#}</b>
+	</div>
+	<div style="float:left; width:19.9%;border-right: 2px solid; border-bottom: 2px solid; border-color: #ffffff;">
+		<b>{#head_products#}</b>
+	</div>
+	<div style="float:left; width:19.9%;border-right: 2px solid; border-bottom: 2px solid; border-color: #ffffff;">
+		<b>{#head_artnr#}</b>
+	</div>
+	<div style="float:left; width:19.9%;border-right: 2px solid; border-bottom: 2px solid; border-color: #ffffff;">
+		<b>{#head_single_price#}</b>
+	</div>
+	<div style="float:right; width:20%;border-right: 2px solid; border-bottom: 2px solid; border-color: #ffffff;" align="right">
+		<b>{#head_price#}</b>
+	</div>
+	<br style="clear:both" />
+</div>
+{foreach name=aussen item=order_values from=$order_data} 
+<div style="width:100%"> 
+	<div style="float:left; width:10%; text-align: left;">
+		<div>{$order_values.PRODUCTS_IMAGE}</div>
+	</div>
+	<div style="float:left; width:8%;">
+		<div>{$order_values.PRODUCTS_QTY} x</div>
+	</div>
+	<div style="float:left; width:19.9%;">
+		<b>{$order_values.PRODUCTS_NAME}</b><em>{$order_values.PRODUCTS_ATTRIBUTES}</em>
+		<br>{$order_values.PRODUCTS_ORDER_DESCRIPTION}
+		{if $order_values.PRODUCTS_SHIPPING_TIME neq ''}<br>
+		{#text_shippingtime#} {$order_values.PRODUCTS_SHIPPING_TIME}<br>{/if}
+	</div>
+	<div style="float:left; width:19.9%;">
+		{$order_values.PRODUCTS_MODEL}
+		<em>{$order_values.PRODUCTS_ATTRIBUTES_MODEL}</em>&nbsp;
+	</div>
+	<div style="float:left; width:19.9%;">
+		{$order_values.PRODUCTS_SINGLE_PRICE}
+	</div>
+	<div style="float:right; width:19.9%;">
+		<div align="right">{$order_values.PRODUCTS_PRICE}</div>
+	</div>
+	<br style="clear:both" />
+ </div>
+{/foreach}
+<br><br>
+
+{foreach name=aussen2 item=order_total_values from=$order_total}
+<div style="width:100%;" align="right">
+	{$order_total_values.TITLE} {$order_total_values.TEXT}<br>
+</div>
+
+{/foreach}
+{if $SZI}
+	<br>
+	<div style="width:100%;">
+	{$SZI}
+	</div>
+{/if}
+</body>
+</html>

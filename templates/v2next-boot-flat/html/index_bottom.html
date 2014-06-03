@@ -1,0 +1,75 @@
+{*if $BOXES_footer}
+<div class="box_bottom border_radius_6">
+    {if $BOXES_footer_count==1}
+    <div class="bottom_box_1">
+        {elseif $BOXES_footer_count==2}
+        <div class="bottom_box_2">
+            {else}
+            <div class="bottom_box_3">
+                {/if}
+                {$BOXES_footer}
+            </div>
+        </div>
+        {/if*}
+
+
+        <footer>
+			<div class="container">
+            <div class="row">
+            <div class="{if $BOXES_footer_count==1}bottom_box_1{elseif $BOXES_footer_count==2}bottom_box_2{else}bottom_box_3{/if} col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                {$BOXES_footer}
+
+                {if $FACEBOOK_URL || $TWITTER_URL || $GOOGLEPLUS_URL || $XING_URL || $PINTEREST_URL || $YOUTUBE_URL || $TUMBLR_URL}
+				<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <div class="social">
+                    {if $FACEBOOK_URL}
+                    <div class="social_icon">
+                        <a href="{$FACEBOOK_URL}" target="_blank" title="{$STORE_NAME} on Facebook"><img alt="Facebook" title="Facebook {$STORE_NAME}" width="42" height="42" src="{$tpl_path}img/fb_icon.png" /></a>
+                    </div>
+                    {/if}
+                    {if $TWITTER_URL}
+                    <div class="social_icon">
+                        <a href="{$TWITTER_URL}" target="_blank" title="{$STORE_NAME} on Twitter"><img alt="Twitter" title="Twitter {$STORE_NAME}" width="42" height="42" src="{$tpl_path}img/twitter_icon.png" /></a>
+                    </div>
+                    {/if}
+                    {if $GOOGLEPLUS_URL}
+                    <div class="social_icon">
+                        <a href="{$GOOGLEPLUS_URL}" target="_blank" title="{$STORE_NAME} on Google+"><img alt="Google+" title="Google {$STORE_NAME}" width="42" height="42" src="{$tpl_path}img/g_icon.png" /></a>
+                    </div>
+                    {/if}
+                    {if $XING_URL}
+                    <div class="social_icon">
+                        <a href="{$XING_URL}" target="_blank" title="{$STORE_NAME} on Xing"><img alt="Xing" width="42" title="Xing {$STORE_NAME}" height="42" src="{$tpl_path}img/xing_icon.png" /></a>
+                    </div>
+                    {/if}
+                    {if $PINTEREST_URL}
+                    <div class="social_icon">
+                        <a href="{$PINTEREST_URL}" target="_blank" title="{$STORE_NAME} on Pinterest"><img alt="Pinterest" title="Pinterest {$STORE_NAME}" width="42" height="42" src="{$tpl_path}img/pinterest_icon.png" /></a>
+                    </div>
+                    {/if}
+                    {if $YOUTUBE_URL}
+                    <div class="social_icon">
+                        <a href="{$YOUTUBE_URL}" target="_blank" title="{$STORE_NAME} on Youtube"><img alt="Youtube" title="Youtube {$STORE_NAME}" width="42" height="42" src="{$tpl_path}img/youtube_icon.png" /></a>
+                    </div>
+                    {/if}
+                    {if $TUMBLR_URL}
+                    <div class="social_icon">
+                        <a href="{$TUMBLR_URL}" target="_blank" title="{$STORE_NAME} on Tumblr"><img alt="Tumblr" title="Tumblr {$STORE_NAME}" width="42" height="42" src="{$tpl_path}img/tumblr_icon.png" /></a>
+                    </div>
+                    {/if}
+                </div>
+                </div>
+                {/if}
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    {$copyright}
+                </div>
+                {if $BANNER}<div id="banner" class="ac">{$BANNER}</div>{/if}
+            </div>
+            </div>
+            </div>
+
+        </footer>
+{*
+<a href="#" id="scrollToTop">
+	<i class="glyphicon glyphicon-arrow-up"></i>
+</a>*}

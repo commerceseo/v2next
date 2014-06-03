@@ -1,0 +1,19 @@
+{config_load file="$language/lang_$language.conf" section="boxes"}
+{html file=box_top.html name=trusted_shop}
+{html file=box_name.html name=trusted_shop}
+	<div id="tsBox" style="font-size:80%">
+		{$FORM_ACTION}
+			<div style="background-color:#FFFFFF;vertical-align:middle;width:174px;padding:2px;" id="tsInnerBox">
+				<div style="text-align:center;width:170px;float:left; border:0px solid; padding:2px;" id="tsSeal">
+					{$IMG}
+				</div>
+				<div style="text-align:center;line-height:125%;width:170px;float:left;border:0px solid; padding:2px;" id="tsText">
+					<a title="{#text_trusted_shop_more#}" href="https://www.trustedshops.com/shop/certificate.php?shop_id={$SHOP_ID}" target="_blank">
+						{$SHOP_NAME} {#text_trusted_shop_link#}
+					</a>
+				</div>
+		    	<div style="clear:both;"></div>
+			</div>
+		{$FORM_END}
+	</div>
+{html file=box_bottom.html}

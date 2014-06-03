@@ -1,0 +1,43 @@
+{config_load file="lang/$language/lang_$language.conf" section="login"}
+{config_load file="lang/$language/lang_$language.conf" section="create_account"}
+{config_load file="lang/$language/lang_$language.conf" section="antispam"}
+{if $info_message != ''}
+	<div class="headerError bg-danger">
+		{$info_message|replace:'<font color="#ff0000"><b>ACHTUNG:</b></font>':''|replace:'<font color="#ff0000"><b>FEHLER:</b></font>':''}
+	</div>
+{/if}
+{if $error != ''}
+	<div class="headerError bg-danger">{$error}</div>
+{/if}
+
+<div class="login_pad">
+<h2>{#heading_login#}</h2>
+{if $account_option=='account' or $account_option=='both'}
+	<b>{#title_returning#}</b><br>
+	{$FORM_LOGIN_ACTION}
+		<br>
+		{if $ANTISPAMCODEACTIVE == 'true'}
+			<b>{#text_antispam#}</b>{$ANTISPAMCODEQUESTION}<br>
+			<b>{#text_antispam_input#}</b>  {$INPUT_ANTISPAMCODE}
+			{$ANTISPAMCODEID}
+			<br>
+		{/if}
+		{#text_email#}<br>
+		{$INPUT_MAIL}<br>
+		{#text_password#}<br>
+		{$INPUT_LOGIN_PASSWORD}<br>
+		{$BUTTON_LOGIN}<br><br>
+		<a href="{$LINK_LOST_PASSWORD}">{#text_lost_password#}</a>
+		
+	{$FORM_LOGIN_END}
+	<hr>
+{/if}
+{if $account_option=='both' or $account_option=='guest'}
+	<b>{#title_guest#}</b><br><br>
+	{#text_guest#}<br><br>
+	{$BUTTON_GUEST}
+	<hr>
+{/if}
+</div>
+
+{$create_account_content}

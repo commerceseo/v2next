@@ -1,0 +1,29 @@
+{config_load file="lang/$language/lang_$language.conf" section="newsletter"}
+{config_load file="lang/$language/lang_$language.conf" section="antispam"}
+{if $info_message!=''}<div class="bg-danger">{$info_message}</div>{/if}
+{if !$box_activation}
+	<h1>{#heading_title#}</h1>
+	{$FORM_ACTION}
+		<fieldset class="account">
+			<dl>
+				<dt class="col-lg-4 col-sm-12">{#text_email#}</dt>
+				<dd class="col-lg-8 col-sm-12">{$INPUT_EMAIL}</dd>
+				<dt class="col-lg-4 col-sm-12">&nbsp;</dt>
+				<dd class="col-lg-8 col-sm-12">{$CHECK_INP} {#text_in#}</dd>
+				<dt class="col-lg-4 col-sm-12">&nbsp;</dt>
+				<dd class="col-lg-8 col-sm-12">{$CHECK_DEL} {#text_out#}</dd>
+			{if $ANTISPAMCODEACTIVE == 'true'}
+				<b>{#text_antispam#}</b><br>
+					<dt class="col-lg-4 col-sm-12">&nbsp;</dt>
+					<dd class="col-lg-8 col-sm-12">{$ANTISPAMCODEQUESTION}</dd>
+					<dt class="col-lg-4 col-sm-12"><b class="inputRequirement">*</b> {#text_antispam_input#}</dt>
+					<dd class="col-lg-8 col-sm-12">{$INPUT_ANTISPAMCODE} {$ANTISPAMCODEID}</dd>
+				<br>
+			{/if}
+			</dl>
+		</fieldset><br>
+		<div align="right">
+			<span class="small">{$BUTTON_SEND}</span>
+		</div>
+	{$FORM_END}
+{/if}

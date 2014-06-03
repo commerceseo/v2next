@@ -1,0 +1,27 @@
+{config_load file="lang/$language/lang_$language.conf" section="advanced_search"}
+{if $error!=''}
+<div class="headerError bg-danger">{$error}</div>
+{/if}
+<h1>{#heading_search#}</h1>
+{$FORM_ACTION}
+<div class="col-xs-12 text-right">
+	<a href="{$HELP_LINK}"> + {#text_help#}</a>
+</div>
+<div class="row">
+	<div class="col-xs-6 text-right"><b>{#title_keywords#}</b></div>
+	<div class="col-xs-6 text-left"><input type="text" name="keywords" style="width:250px" /></div>
+	<div class="col-xs-6 text-right"><b>{#text_categories#}</b></div>
+	<div class="col-xs-6 text-left">{$SELECT_CATEGORIES}</div>
+	<div class="col-xs-6 text-right"><b>{#text_subkategories#}</b></div>
+	<div class="col-xs-6 text-left">{$ENTRY_SUBCAT}</div>
+	<div class="col-xs-6 text-right"><b>{#text_manufacturer#}</b></div>
+	<div class="col-xs-6 text-left">{$SELECT_MANUFACTURERS}</div>
+	<div class="col-xs-6 text-right"><b>{#text_min#}</b></div>
+	<div class="col-xs-6 text-left">{$SELECT_PFROM}</div>
+	<div class="col-xs-6 text-right"><b>{#text_max#}</b></div>
+	<div class="col-xs-6 text-left">{$SELECT_PTO}</div>
+
+	<div class="col-xs-6 text-right">&nbsp;</div>
+	<div class="col-xs-6 text-left">{$BUTTON_SUBMIT}</div>
+</div>
+{$FORM_END}

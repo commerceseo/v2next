@@ -1,0 +1,49 @@
+{config_load file="lang/$language/lang_$language.conf" section="address_book"}
+{if $error!=''}
+<div class="headerError bg-danger">{$error}</div>
+{/if}
+<div class="row">
+    <h1>{#heading_address#}</h1>
+    <div class="adress_book col-md-12">
+        {$FORM_ACTION}
+        <b>{#title_standard#}</b>
+        <br><br>
+    </div>
+    <div class="adress_book col-md-12">
+        {$ADDRESS_DEFAULT}<br>
+        {#text_standard#}
+    </div>
+
+    <div class="adress_book col-md-12">
+
+        <h2>{#title_addresses#}</h2>
+        <br class="clear"><br>
+    </div>
+
+
+    {foreach name=aussen item=addresses from=$addresses_data}
+    <div class="adress_book col-md-12">
+        <b>{$addresses.NAME}</b>
+        {if $addresses.PRIMARY=='1'}
+        <em>({#title_standard#})</em>
+        {/if}<br>
+        {$addresses.BUTTON_EDIT} 
+        {$addresses.BUTTON_DELETE}
+        <br>
+        {$addresses.ADDRESS}
+        <br>
+        <br>
+    </div>
+    {/foreach}
+    <br style="clear:both"><br>
+
+    <div class="adress_book col-md-12">
+        {$ADDRESS_COUNT}
+        <br><br>
+        {$BUTTON_BACK}
+        {$BUTTON_NEW}
+    </div>
+
+
+
+</div>

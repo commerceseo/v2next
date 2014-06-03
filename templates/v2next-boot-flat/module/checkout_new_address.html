@@ -1,0 +1,40 @@
+{config_load file="lang/$language/lang_$language.conf" section="checkout_new_address"}
+<h2>{#title_new_address#}</h2>
+<p>{#text_new_address#}</p>
+<div class="headerError bg-danger">{#text_must#}</div><br>
+<fieldset class="account">
+<dl>
+	{if $gender=='1'}
+		<dt class="col-lg-4 col-sm-12">{#text_gender#}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_MALE} | {$INPUT_FEMALE}</dd>
+	{/if}
+		<dt class="col-lg-4 col-sm-12">{#text_firstname#}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_FIRSTNAME}</dd>
+		<dt class="col-lg-4 col-sm-12">{#text_lastname#}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_LASTNAME}</dt>
+	{if $company=='1'}
+		<dt class="col-lg-4 col-sm-12">{#text_company#}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_COMPANY}</dt>
+	{/if}
+		<dt class="col-lg-4 col-sm-12">{#text_street#}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_STREET}</dt>
+	{if $suburb=='1'}
+		<dt class="col-lg-4 col-sm-12">{#text_suburb#}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_SUBURB}</dt>
+	{/if}
+	<dt class="col-lg-4 col-sm-12">{#text_code#}</dt>
+	<dd class="col-lg-8 col-sm-12">{$INPUT_CODE}</dt>
+	<dt class="col-lg-4 col-sm-12">{#text_city#}</dt>
+	<dd class="col-lg-8 col-sm-12">{$INPUT_CITY}</dt>
+	<dt class="col-lg-4 col-sm-12">{#text_country#}</dt>
+	<dd class="col-lg-8 col-sm-12" class="dropdown">{$SELECT_COUNTRY}</dt>
+	{if $state == '1'}
+		<dt class="col-lg-4 col-sm-12">{#text_state#}</dt>
+		<dd class="col-lg-8 col-sm-12" id="checkout_states_row">{$INPUT_STATE}</dt>
+	{/if}
+	{if $new=='1'}
+		<dt class="col-lg-4 col-sm-12">&nbsp;</dt>
+		<dd class="col-lg-8 col-sm-12">{$CHECKBOX_PRIMARY} {#text_standard#}</dt>
+	{/if}
+</dl>
+</fieldset>

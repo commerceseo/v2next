@@ -1,0 +1,25 @@
+{config_load file="lang/$language/lang_$language.conf" section="popup_coupon_help"} 
+{$SCRIPT_INLINE}
+
+<div id="gift_infos">
+
+<h1>{#title_help#}</h1>
+
+<p>{$TEXT_HELP}</p>
+
+<p><strong>{#text_coupon_type#}</strong> {$COUPON_TYPE}</p>
+<p><strong>{#text_coupon_code#}</strong> {$COUPON_CODE}</p>
+<p><strong>{#text_coupon_amount#}</strong> {$COUPON_AMOUNT}</p>
+{if $COUPON_NAME neq ''}<p><strong>{#text_coupon_name#}</strong> {$COUPON_NAME}</p>{/if}
+{if $COUPON_DESCRIPTION neq ''}<p><strong>{#text_coupon_desc#}</strong> {$COUPON_DESCRIPTION}</p>{/if}
+{if $COUPON_START_DATE neq ''}<p><strong>{#text_coupon_start#}</strong> {$COUPON_START_DATE}</p>{/if}
+{if $COUPON_FINISH_DATE neq ''}<p><strong>{#text_coupon_finish#}</strong> {$COUPON_FINISH_DATE}</p>{/if}
+{if $COUPON_MINIMUM_ORDER neq ''}<p><strong>{#text_coupon_minimum#}</strong> {$COUPON_MINIMUM_ORDER}</p>{/if}
+{if $COUPON_USES_PER_USER neq ''}<p><strong>{#text_uses_per_user_1#}</strong> {$COUPON_USES_PER_USER}, {#text_uses_per_user_2#} {$COUPON_CUSTOMERS_USES_DONE}, {#text_uses_per_user_3#} {$COUPON_CUSTOMERS_USES_LEFT}</p>{/if}
+{if $COUPON_USES_PER_COUPON neq ''}<p><strong>{#text_uses_per_coupon_1#}</strong> {$COUPON_USES_PER_COUPON}, {#text_uses_per_coupon_2#} {$COUPON_USES_DONE}, {#text_uses_per_coupon_3#} {$COUPON_USES_LEFT}</p>{/if}	
+{if $COUPON_CATEGORIES_LIST neq ''}<p><strong>{#text_coupon_categories_restriction#}</strong> {$COUPON_CATEGORIES_LIST}{/if}</p>
+{if $COUPON_PRODUCTS_LIST neq ''}<p><strong>{#text_coupon_products_restriction#}</strong> {$COUPON_PRODUCTS_LIST}{/if}</p>
+
+<p><a href="#gift_infos" onclick="javascript:show_coupon_infos(); return false;" title="{#text_close#}">{#text_close#}</a></p>
+
+</div>

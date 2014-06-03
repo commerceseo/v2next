@@ -1,0 +1,64 @@
+{config_load file="lang/$language/lang_$language.conf" section="checkout_payment_address"}
+{if $error!=''}
+	<div class="headerError bg-danger">{$error}</div>
+{/if}
+<h2>{#heading_address#}</h2>
+<div class="row text-center">
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarCurrent">{#text_shipping_info#}</div>
+	</div>	
+	<div class="col-sm-3">
+		<div class="checkout_line"><img src="{$tpl_path}img/checkout_bullet.gif" alt="Bullet" /></div>
+		<div class="checkoutBarTo"><b>{#text_payment_info#}</b></div>
+	</div>
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{#text_confirm#}</div>
+	</div>	
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{#text_finished#}</div>
+	</div>
+</div>
+{$FORM_ACTION}
+<div class="row">
+	<div class="col-md-6 col-sm-12">
+		<b>{#title_current_address#}</b><br><br>
+		{#text_current_address#}
+	</div>
+	<div class="col-md-6 col-sm-12 bg-info">
+		{$ADDRESS_LABEL}
+	</div>
+</div>
+<hr />
+
+{if $BLOCK_ADDRESS}	
+	<div class="row">
+		<b>{#title_old_addresses#}</b><br><br>
+		<div>{#text_old_addresses#}<br><br>{$BLOCK_ADDRESS}<br></div>
+		<hr />
+	</div>
+{/if}
+{if $MODULE_new_address}
+	<div class="row">
+	{$MODULE_new_address}
+	<hr />
+	</div>
+{/if}
+<div class="row">
+	<div class="col-sm-12">
+		<b>{#title_continue#}</b><br>
+		{#text_continue#}<br>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-6 text-left">
+		{$BUTTON_BACK}
+	</div>
+	<div class="col-sm-6 text-right">
+		{$BUTTON_CONTINUE}<br><br>
+	</div>
+</div>
+{$FORM_END}

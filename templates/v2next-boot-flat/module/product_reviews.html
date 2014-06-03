@@ -1,0 +1,20 @@
+{config_load file="lang/$language/lang_$language.conf" section="reviews"}<br>
+<h2>{#heading_reviews#} {$PRODUCTS_NAME}</h2>
+<br>
+<div style="width:100%">
+	<div style="float:left; width:12%; border-bottom: 1px solid; border-color: #cccccc;"><strong>{#title_nr#}</strong></div>
+	<div style="float:left; width:27%; border-bottom: 1px solid; border-color: #cccccc;"><strong>{#title_author#}</strong></div>
+	<div style="float:left; width:27%; border-bottom: 1px solid; border-color: #cccccc;"><strong>{#title_rating#}</strong></div>
+	<div style="float:left; width:33%; border-bottom: 1px solid; border-color: #cccccc;"><div align="right"><strong>{#title_date#}</strong></div></div>
+	<br style="clear:both" />
+</div>
+{foreach name=aussen item=module_data from=$module_content} 
+	<div style="width:100%">
+		<div style="float:left; width:12%;">{$module_data.ID}</div>
+		<div style="float:left; width:27%;">{$module_data.AUTHOR}</div>
+		<div style="float:left; width:27%;"><div align="left">{$module_data.RATING}</div></div>
+		<div style="float:left; width:33%;"><div align="right">{$module_data.DATE}</div></div>
+	</div>
+	<br style="clear:both" />
+{/foreach}
+

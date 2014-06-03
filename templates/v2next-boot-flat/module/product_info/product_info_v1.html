@@ -1,0 +1,274 @@
+{config_load file="lang/$language/lang_$language.conf" section="product_info"}
+{config_load file="lang/$language/lang_$language.conf" section="tabs"}
+<div class="row" itemscope itemtype="http://schema.org/Product">
+{$PRODUCT_NAVIGATOR}
+{if $error}<div class="headerError">{$error}</div>{/if}
+    <div class="col-xs-12">
+	<h1 itemprop="name">{$PRODUCTS_NAME}</h1>
+	</div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        {if $img_path_info !=''}
+        <div id="product_images">
+            <a href="{$img_path_popup}" title="{$img_alt}" class="group2">
+                {*<img itemprop="image" src="{$img_path_info}" alt="{$img_alt}" rel="{$img_path_popup}" class="jqzoom" title="{$img_alt}" {$img_dimension} />*}
+                <img itemprop="image" src="{$img_path_info}" alt="{$img_alt}" rel="{$img_path_popup}" title="{$img_alt}" {$img_dimension} />
+            </a>
+        </div>
+        {if $more_image}
+        <div class="product_more_images">
+            {foreach item=img name=aussen from=$images}
+            <a href="{$img.path_popup}" title="{$img.alt}" class="group2">
+                <img src="{$img.path_mini}" alt="{$img.alt}" title="{$img.alt}" {$img.dimension} />
+            </a>
+            {/foreach}
+        </div>
+        {/if}
+        {else}
+        {$NO_IMAGE}
+        {/if}
+		{if $PRODUCTS_QR}
+			{$PRODUCTS_QR}
+		{/if}
+    </div>
+    {if $PRODUCTS_FLASH}
+    {$PRODUCTS_FLASH}
+    {/if}
+    {if $MODULE_products_master_slave}
+    {else}
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+        <fieldset class="product_info">
+		<div class="col-xs-12 text-right product_info_price">
+            <div id="product_info_price">{$PRODUCTS_PRICE}</div>
+			<div class="product_info_tax_shipping">{$PRODUCTS_TAX_INFO} {if $PRODUCTS_SHIPPING_LINK}{$PRODUCTS_SHIPPING_LINK}{/if}</div>
+        </div>
+        
+		<dl>
+		{if $PRODUCTS_MODEL}
+        <dt class="col-xs-6">{#model#}</dt>
+        <dd class="col-xs-6"><span itemprop="model">{$PRODUCTS_MODEL}</span></dd>
+		{/if}
+        {if $PRODUCTS_MANUFACTURERS_MODEL}
+        <dt class="col-xs-6">{#manufacturers_model#}</dt>
+        <dd class="col-xs-6">{$PRODUCTS_MANUFACTURERS_MODEL}</dd>
+        {/if}
+        {if $PRODUCTS_DISCOUNT}
+        <dt class="col-xs-6">{#discount#}</dt>
+        <dd class="col-xs-6">{$PRODUCTS_DISCOUNT}</dd>
+        {/if}
+        {if $PRODUCTS_EAN}
+        <dt class="col-xs-6">{#ean#}</dt>
+        <dd class="col-xs-6"><meta itemprop="productID" content="{$PRODUCTS_EAN}"/>{$PRODUCTS_EAN}</dd>
+        {/if}
+        {if $PRODUCTS_DATE_AVIABLE}
+        <dt class="col-xs-6">{#verfuegbar#}</dt>
+        <dd class="col-xs-6">{$PRODUCTS_DATE_AVIABLE}</dd>
+        {/if}
+        {if $SHIPPING_NAME}
+        <dt class="col-xs-6">{#text_shippingtime#}</dt>
+        <dd class="col-xs-6"><span id="shippingtime">{if $SHIPPING_IMAGE}<img src="{$SHIPPING_IMAGE}" alt="{$SHIPPING_NAME}" />{/if} {$SHIPPING_NAME}</span></dd>
+        {/if}
+        {if $PRODUCTS_STOCK_IMG}
+        <dt class="col-xs-6">{#verfuegbar#}</dt>
+        <dd class="col-xs-6"><span id="stock">{$PRODUCTS_STOCK_IMG}</span></dd>
+        {/if}
+        {if $PRODUCTS_VPE}
+        <dt class="col-xs-6">{#vpe#}</dt>
+        <dd class="col-xs-6"><span id="produtc_vpe">{$PRODUCTS_VPE}</span></dd>
+        {/if}
+        {if $PRODUCTS_WEIGHT !=0}
+        <dt class="col-xs-6">{#weight#}</dt>
+        <dd class="col-xs-6"><span id="prod_weight">{$PRODUCTS_WEIGHT}</span></dd>
+        {/if}
+        {if $SPERRGUT}
+        <dt class="col-xs-6">{#sperrgut#}</dt>
+        <dd class="col-xs-6">{$SPERRGUT}</dd>
+        {/if}
+        {if $PRODUCTS_PRINT}
+        <dt class="col-xs-6">{#print#}</dt>
+        <dd class="col-xs-6">{$PRODUCTS_PRINT}</dd>
+        {/if}
+        {$JAVASCRIPT_FORM_ACTION}
+        {$FORM_ACTION}
+        {if $ADD_WISHLIST_BUTTON}
+        <dt class="col-xs-6">{#wish#}</dt>
+        <dd class="col-xs-6">{$ADD_WISHLIST_BUTTON}</dd>
+        {/if}
+		</dl>
+
+        {if $MODULE_product_options !=''}
+		<div class="col-xs-12">
+        {$MODULE_product_options}
+		</div>
+        {/if}
+
+        {if $MODULE_graduated_price !=''}
+        <div class="col-xs-12">
+			{$MODULE_graduated_price}
+		</div>
+        {/if}
+
+		</fieldset>
+		<hr>
+		{if $ADD_CART_BUTTON !=''}
+			<div class="row">
+			<div class="col-xs-12 text-right">
+				{$BUTTON_MINUS} {$ADD_QTY} {$BUTTON_PLUS}
+				{$ADD_CART_BUTTON}
+			</div>
+			</div>
+        {/if}
+	{/if}
+
+    </div>
+</div>
+<div class="row">
+	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+	{if $PRODUCTS_SPECIAL_DATE == 'true'}
+	<div id="clock">
+		<div class="block"><span id="weeks"></span>Wochen</div>
+		<div class="space">&nbsp;</div>
+
+		<div class="block"><span id="daysLeft"></span>Tage</div>
+		<div class="space">&nbsp;</div>
+
+		<div class="block"><span id="hours"></span>Stunden</div>
+		<div class="space">&nbsp;</div>
+
+		<div class="block"><span id="minutes"></span>Minuten</div>
+		<div class="space">&nbsp;</div>
+
+		<div class="block"><span id="seconds"></span>Sekunden</div>
+	</div>
+	{/if}
+
+	{$MODULE_products_master_slave}
+		<ul class="nav nav-tabs">
+			{if $PRODUCTS_DESCRIPTION !=''}
+			<li class="active"><a href="#desc" data-toggle="tab">{#description#}</a></li>
+			{/if}
+			{if $PRODUCTS_DESCRIPTION_ADD !=''}
+			<li><a href="#desc_add" data-toggle="tab">{#description_add#}</a></li>
+			{/if}
+			{if $PRODUCTS_DESCRIPTION_PRODUCT !=''}
+			<li><a href="#desc_product" data-toggle="tab">{#description_product#}</a></li>
+			{/if}
+			{if $MODULE_accessories !=''}
+			<li><a href="#acc" data-toggle="tab">{#accessories#}</a></li>
+			{/if}
+			{if $MODULE_products_parameters}
+			<li><a href="#param" data-toggle="tab">{#parameters#}</a></li>
+			{/if}
+			{if $MODULE_cross_selling != ''}
+			<li><a href="#cs" data-toggle="tab">{#cross_selling#}</a></li>
+			{/if}
+			{if $MODULE_products_media != ''}
+			<li><a href="#pm" data-toggle="tab">{#media#}</a></li>
+			{/if}
+			{if $MODULE_also_purchased != ''}
+			<li><a href="#ap" data-toggle="tab">{#also_purchased#}</a></li>
+			{/if}
+			{if $MODULE_reverse_cross_selling != ''}
+			<li><a href="#rcs" data-toggle="tab">{#reverse_cross_selling#}</a></li>
+			{/if}
+			{if $MODULE_products_ask_a_question != ''}
+			<li><a href="#paq" data-toggle="tab">{#ask_a_question#}</a></li>
+			{/if}
+			{if $PRODUCTS_MANUFACTURERS_DESC !=''}
+			<li><a href="#mandesc" data-toggle="tab">{#manufacturers#}</a></li>
+			{/if}
+			{if $MODULE_products_reviews !=''}
+			<li><a href="#rev" data-toggle="tab">{#reviews#}</a></li>
+			{/if}
+		</ul>
+		
+		<div class="tab-content">
+			{if $PRODUCTS_DESCRIPTION !=''}
+			<div class="tab-pane fade in active" id="desc">
+				<article itemprop="description">
+					{$PRODUCTS_DESCRIPTION}
+				</article>
+			</div>
+			{/if}
+			{if $PRODUCTS_DESCRIPTION_ADD !=''}
+			<div class="tab-pane fade" id="desc_add">
+				{$PRODUCTS_DESCRIPTION_ADD}
+			</div>
+			{/if}
+			{if $PRODUCTS_DESCRIPTION_PRODUCT !=''}
+			<div class="tab-pane fade" id="desc_product">
+				{$PRODUCTS_DESCRIPTION_PRODUCT}
+			</div>
+			{/if}
+			{if $MODULE_accessories != ''}
+			<div class="tab-pane fade" id="acc">
+				{$MODULE_accessories}
+			</div>
+			{/if}
+			{$FORM_END}
+			{if $MODULE_products_parameters}
+			<div class="tab-pane fade" id="param">
+				{$MODULE_products_parameters}
+			</div>
+			{/if}
+
+			{if $MODULE_cross_selling != ''}
+			<div class="tab-pane fade" id="cs">
+				{$MODULE_cross_selling}
+			</div>
+			{/if}
+			{if $MODULE_products_media != ''}
+			<div class="tab-pane fade" id="pm">
+				{$MODULE_products_media}
+			</div>
+			{/if}
+			{if $MODULE_also_purchased != ''}
+			<div class="tab-pane fade" id="ap">
+				{$MODULE_also_purchased}
+			</div>
+			{/if}
+			{if $MODULE_reverse_cross_selling != ''}
+			<div class="tab-pane fade" id="rcs">
+				{$MODULE_reverse_cross_selling}
+			</div>
+			{/if}
+			{if $MODULE_products_ask_a_question != ''}
+			<div class="tab-pane fade" id="paq">
+				{$MODULE_products_ask_a_question}
+			</div>
+			{/if}
+			{if $PRODUCTS_MANUFACTURERS_DESC !=''}
+			<div class="tab-pane fade" id="mandesc">
+				{$PRODUCTS_MANUFACTURERS_IMG}<br>
+				{$PRODUCTS_MANUFACTURERS_DESC}
+			</div>
+			{/if}
+
+			{if $MODULE_products_reviews != ''}
+			<div class="tab-pane fade" id="rev">
+				{$MODULE_products_reviews}
+			</div>
+			{/if}
+		</div>
+	</div>
+</div>
+
+{if $PRODUCTS_TAGS}
+<div class="product_tags">
+    Tags:
+    {foreach name=aussen item=module_data from=$PRODUCTS_TAGS}
+    {$module_data.tagcloud}&nbsp;
+    {/foreach}
+
+</div>
+{/if}
+
+{if $MODUL_product_related_cat}
+	{$MODUL_product_related_cat}
+{/if}
+
+{if $PRODUCTS_SOCIAL == 'true'}
+<div class="product_pad2">
+    <div id="socialshareprivacy"></div>
+</div>
+{/if}

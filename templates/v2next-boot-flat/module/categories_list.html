@@ -1,0 +1,31 @@
+{config_load file="lang/$language/lang_$language.conf" section="categorie_listing"}
+{if $module_content !=''}
+<div class="row">
+<div class="col-xs-12">
+<br><b>{#heading_more_categories#}</b><br>
+</div>
+	{foreach name=aussen item=module_data from=$module_content}
+		<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 text-center">
+		<div class="cat_box">
+			{if $module_data.CATEGORY_IMAGE}
+			<div class="pimg">
+					<a href="{$module_data.CATEGORY_LINK}" title="{$module_data.CATEGORY_NAME}">
+						{$module_data.CATEGORY_IMAGE}
+					</a>
+			</div>
+			{/if}
+			<h3>
+				<a href="{$module_data.CATEGORY_LINK}" title="{$module_data.CATEGORY_NAME}">{$module_data.CATEGORY_NAME}</a>
+			</h3>
+			<hr>
+			{if $module_data.CATEGORY_DESCRIPTION}
+			<div class="pdesc">
+				{$module_data.CATEGORY_DESCRIPTION}
+			</div>
+			{/if}
+		</div>
+		</div>
+	{/foreach}
+</div>
+
+{/if}

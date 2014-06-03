@@ -1,0 +1,69 @@
+{config_load file="lang/$language/lang_$language.conf" section="checkout_payment"}
+{config_load file="lang/$language/lang_$language.conf" section="checkout_amazon"}
+
+<div id="checkout_shipping" class="checkout">
+
+
+{$FORM_ACTION}
+
+		<h1>
+			{#heading_checkout#}
+		</h1>
+		<p>{#heading_checkout_description#}</p>
+
+	<div id="agbWidget">
+            {if $WITHDRAWAL}
+
+
+                <div class="rm_slide_header cba_header">{#withdrawal_text#}<span style="font-size:10px;">{#open_text#}</span></div>
+
+                <div class="rm_slide_content" style="display:none;">{$WITHDRAWAL}</div>
+            {/if}
+
+            {if $CHECKBOX_WITHDRAWAL}
+		<div class="accept_box"><div class="accept_box_checkbox">{$CHECKBOX_WITHDRAWAL}</div><div class="accept_box_text">{#text_accept_withdrawal#}</div></div>
+	{/if}
+	<div style="clear:both;"></div>
+	{if $AGB}
+
+
+                <div class="rm_slide_header cba_header">{#agb_text#}<span style="font-size:10px;">{#open_text#}</span></div>
+
+
+	<div class="rm_slide_content" style="display:none;">{$AGB}</div>
+	{/if}
+
+	{if $CHECKBOX_AGB}
+		<div class="accept_box"><div class="accept_box_checkbox">{$CHECKBOX_AGB}</div><div class="accept_box_text">{#text_accept_agb#}</div></div>
+	{/if}
+           <div style="clear:both;"></div>
+
+        </div>
+
+	<div style="float:left; width:405px;" id="AmazonPartLeft">
+		<div id="AmazonAddressWidget"></div>
+		<div id="AmazonWalletWidget" style="display:none;"></div>
+	</div>
+	<div style="float:right; width:410px;" id="AmazonPartRight">
+		<div class="cba_header">{#cart_text#}</div>
+		<div id="AmazonProducts"></div>
+    <div class="cba_header">{#shipping_text#}</div>
+		<div id="AmazonShipping"></div>
+    <div class="cba_header">{#positions_text#}</div>
+		<div id="AmazonOrderTotals"><input type="hidden" name="cba_select_totals" id="cba_select_totals" value="0" /></div>
+    <div class="cba_header">{#total_text#}</div>
+		<div id="AmazonTotalPrice" style="font-weight:bold; text-align:right;"></div>
+	</div>
+	<div  style="clear:both;"></div>
+
+	<div style="border:none; margin-top:10px;">
+		<div style="float:left; width: 45%; text-align:left;">{$BUTTON_BACK}</div>
+		<div style="float:right;display:none;" id="loading_image" ><img src="https://images-na.ssl-images-amazon.com/images/G/01/cba/images/global/Loading._V192259297_.gif" style="vertical-align:middle" />{#submitted_text#}</div>
+		<div style="float:right; width: 45%; text-align:right; display:none;" id="amazon_button" >{$BUTTON_CONTINUE}</div>
+    <div style="clear:both;"></div>
+	</div>
+	{$FORM_END}
+
+
+</div>
+

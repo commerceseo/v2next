@@ -1,0 +1,36 @@
+{config_load file="lang/$language/lang_$language.conf" section="boxes"}
+{if $deny_cart neq 'true'}
+	{if $empty=='false'}
+		<ul class="dropdown-menu">
+			<li class="ac">{$PRODUCTS} {#text_products#}</li>
+			<li class="divider"></li>
+			{foreach name=aussen item=products_data from=$products}
+				<li>
+					<div class="fl ac mr5 w50p">
+					{$products_data.IMAGE}
+					</div>
+					<div class="fl al">
+					{$products_data.QTY} x 
+					<a href="{$products_data.LINK}" title="{$products_data.NAME}">{$products_data.NAME|truncate:20:"...":true}</a>
+					</div>
+					<div class="fr ar">
+					{$products_data.SINGLE_PRICE}
+					</div>
+				</li>
+				<li class="divider"></li>
+			{/foreach}
+			
+			<li class="ar">{#text_total#} {$TOTAL}</li>
+			<li class="ar">{if $SHIPPING_INFO}<span class="fs85 db">{$SHIPPING_INFO}</span>{/if}</li>
+			<li class="divider"></li>
+			<li class="ac"><a href="{$LINK_CART}" title="{#to_cart#}">{$NEWS_BUTTON}</a></li>
+		</ul>
+	{else}
+		<ul class="dropdown-menu">
+			<li>{#text_empty_cart#}</li>
+			<li class="divider"></li>
+			<li>&nbsp;</li>
+		</ul>
+	{/if}
+
+{/if}

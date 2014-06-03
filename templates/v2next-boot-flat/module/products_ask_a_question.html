@@ -1,0 +1,50 @@
+{config_load file="lang/$language/lang_$language.conf" section="product_ask_a_question"}
+{config_load file="lang/$language/lang_$language.conf" section="antispam"}
+{if $ALL_OK !=''}
+	<br><br>
+	<div class="headerSuccess">{$ALL_OK}</div><br>
+{else}
+	{if $error_message !=''}
+		<div class="headerError">{$error_message}</div>
+	{/if}
+	{$FORM_START}
+	<h2>{#heading_ask_a_question#}</h2><br>
+	
+	
+	
+	
+	<dl>
+		<dt class="w24p">{#subject#}</dt>
+		<dd>{$FROM_SUBJECT}</dd>
+	</dl>
+	<dl>
+		<dt class="w24p">{#customer_name#}</dt>
+		<dd>{$FROM_NAME}</dd>
+	</dl>
+	<dl>
+		<dt class="w24p">{#customer_mail#}</dt>
+		<dd>{$FROM_EMAIL}</dd>
+	</dl>
+	<dl>
+		<dt class="w24p">{#customer_msg#}</dt>
+		<dd>{$TEXTFIELD}</dd>
+	</dl>
+	{if $ANTISPAMCODEACTIVE == 'true'}
+	<dl>
+		<dt class="w24p"><b>{#text_antispam#}</b></dt>
+		<dd>{$ANTISPAMCODEQUESTION}</dd>
+	</dl>
+	<dl>
+		<dt class="w24p">{#text_antispam_input#}</dt>
+		<dd>{$INPUT_ANTISPAMCODE}</dd>
+		<dd>{$ANTISPAMCODEID}</dd>
+	</dl>
+	{/if}
+<br>	
+	<dl>
+		<dt class="w24p">&nbsp;</dt>
+		<dd>{$BUTTON_SEND}</dd>
+	</dl>	
+
+	{$FORM_END}
+{/if}

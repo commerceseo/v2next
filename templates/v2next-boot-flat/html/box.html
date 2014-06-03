@@ -1,0 +1,17 @@
+{strip}
+{if $BOX_CONTENT}
+	<div class="box box_{$box_class_name}">
+	{if $box_name}
+		<div class="box-heading">{box_name name=$box_name class=$box_class_name}</div>
+	{/if}
+		<div class="boxcontent boxcontent_{$box_class_name}">
+			{$BOX_CONTENT}
+			{if $link}<br><a href="{$link}">{#text_more#}</a>{/if}
+		</div>
+	</div>
+{else}
+	{if $box_name}
+		<div class="box-heading">{box_name name=$box_name class=$box_class_name}</div>
+	{/if}
+{/if}
+{/strip}

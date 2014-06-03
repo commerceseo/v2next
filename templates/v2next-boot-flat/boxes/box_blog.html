@@ -1,0 +1,25 @@
+{config_load file="lang/$language/lang_$language.conf" section="boxes"}
+{if $categories}
+<div class="box box_blog">
+	{include file="$html_tpl_path/box.html" name=blog class=blog}
+	<div class="boxcontent boxcontent_blog">
+	<ul>
+	{foreach name=cats item=cat from=$categories}
+		{assign var=CATEGORIE_bevor value=$cat.CATEGORIE_ID}
+			<li>
+				<a href="{$cat.CATEGORIE_LINK}" class="active" title="{$cat.CATEGORIE_TITLE}">{$cat.CATEGORIE_TITLE}</a>
+			{if $cat.ITEMS}
+			<ul>
+				{foreach name=items item=data from=$cat.ITEMS}
+					{if $data.ITEM_TITLE}
+						<li><a class="{$data.ITEM_ACTIVE}" href="{$data.ITEM_LINK}" title="{$data.ITEM_TITLE}">{$data.ITEM_TITLE}</a></li>
+					{/if}
+				{/foreach}
+			</ul>
+			{/if}
+			</li>
+	{/foreach}
+	</ul>
+</div>
+</div>
+{/if}

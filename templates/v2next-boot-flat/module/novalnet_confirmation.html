@@ -1,0 +1,26 @@
+
+<div class="centerColumn" id="checkoutConfirmDefault">
+		<form action="https://payport.novalnet.de/pci_payport" name="frm" id="frm" method="POST" target="nn_iframe">
+			
+			{foreach from=$nniframearray key=k item=v}
+			<input type='hidden' name="{$k}" value="{$v}" >
+			{/foreach}
+				
+			
+			<iframe height="450" width="100%" id="nn_iframe" name="nn_iframe" style="border:none;margin:auto;" src="http://www.novalnet.de/img/novalnet-loading-icon.gif" >
+			 <p>Your browser does not support iframes.</p> 
+			</iframe>
+		</form>
+</div>
+
+{literal}
+<script language="javascript">
+ window.onload = function(){document.forms["frm"].submit()}
+ </script>
+ 
+ {/literal}
+
+
+
+
+

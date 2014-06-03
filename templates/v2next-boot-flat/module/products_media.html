@@ -1,0 +1,32 @@
+{config_load file="lang/$language/lang_$language.conf" section="products_media"} 
+<div style="width:100%">
+	<div class="infoBoxHeading dp">
+		<div class="left w60p"> 
+			{#file#}
+		</div>
+		<div class="right ar">
+			{#size#}
+		</div>
+		<br style="clear:both" />
+	</div>
+	{foreach name=aussen item=module_data from=$module_content}
+		<div style="padding: 4px 0;" class="w98_8p {cycle values="row1,row2"}">
+			<div class="left w4p">
+				{$module_data.ICON}
+			</div>
+			<div class="left w60p">	
+				<strong>{$module_data.FILENAME}</strong><br>
+				{$module_data.DESCRIPTION}
+			</div>
+			<div class="left w15p">
+				{$module_data.FILESIZE}
+			</div>
+			<div class="left w18p ar">
+				{$module_data.BUTTON}
+			</div>
+			<br style="clear:both" />
+		</div>	
+	{/foreach}
+</div>
+<br style="clear:both" />
+

@@ -1,0 +1,52 @@
+{config_load file="lang/$language/lang_$language.conf" section="shopping_cart"} 
+{$HEAD_INFO}
+
+        <div class="fl wk_table">
+		<div class="fl wkhead wl wl1">{#text_pic#}Bild</div>
+		<div class="fl wkhead wl wl2">{#text_article#}</div>
+		<div class="fl wkhead wl wl3">{#text_qty#}</div>
+		<div class="fl wkhead wl wl4">{#text_total#}</div>
+		<div class="fl wkhead wl wl5">{#text_delete#}</div>
+
+		
+{assign var="z" value=0}
+{foreach name=aussen item=module_data from=$module_content}
+	{$module_data.FORM_WISHLIST}
+	<div class="fl order_details{if $z%2 == 0} dunkel{/if}">
+		<div class="fl wl1">
+		{if $module_data.PRODUCTS_IMAGE!=''}
+		<img src="{$module_data.PRODUCTS_IMAGE}" alt="{$module_data.IMAGE_ALT}" />
+		{/if}
+		</div>
+		
+		<div class="fl wl2"><a href="{$module_data.PRODUCTS_LINK}">{$module_data.PRODUCTS_NAME}</a>
+						{if $module_data.PRODUCTS_SHIPPING_TIME neq ""}
+					<br>{$module_data.PRODUCTS_SHIPPING_TIME}<br><br>
+				{/if}
+				{if $module_data.ATTRIBUTES!=''}
+					{foreach key=key_data item=item_data from=$module_data.ATTRIBUTES} 
+						<span class="fs85">{$item_data.NAME}: <em>{$item_data.VALUE_NAME} {$item_data.PREFIX}{$item_data.PRICE}</em></span><br>
+					{/foreach}
+				{/if}
+		</div>
+		<div class="fl wl3">
+				<a href="{$module_data.PRODUCTS_MINUS}"><img src="{$tpl_path}img/cart_minus.gif"></a>
+				{$module_data.PRODUCTS_QTY}
+				<a href="{$module_data.PRODUCTS_PLUS}"><img src="{$tpl_path}img/cart_plus.gif"></a>
+		</div>
+				
+		<div class="fl wl4">
+				{$module_data.PRODUCTS_PRICE} <strong class="inputRequirement">*</strong><br>
+				{if $module_data.PRODUCTS_VPE !=''}<em>{#text_vpe#}<br>{$module_data.PRODUCTS_VPE}</em><br>{/if}
+				{if $module_data.PRODUCTS_WEIGHT !=0}<em>{#weight#} {$module_data.PRODUCTS_WEIGHT}</em><br>{/if}
+				{$module_data.BUY_NOW}
+		</div>
+		<div class="fl wl5">
+			
+				<a href="{$module_data.PRODUCTS_DELETE}"><img src="{$tpl_path}img/cart_delete.png"></a>
+		</div>	
+		</form>
+		</div>
+{assign var="z" value="`$z+1`"}
+{/foreach}
+    </div>

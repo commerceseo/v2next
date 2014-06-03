@@ -1,0 +1,17 @@
+{if $module_content_display == true}
+	<div>
+		<h3>Technische Daten</h3>
+		{foreach item=module_data_group from=$module_content_group}
+			<h4>{$module_data_group.GROUPS_NAME}</h4>
+	            {assign var="name" value=$module_data_group.GROUPS_NAME}
+	            {foreach item=ii from=$module_content_value.$name}
+					{foreach key=key item=module_data_value from=$ii}
+						<dl {cycle values="class='dunkel',"}>
+							<dt class="w250 pl5">{$key}</dt>
+							<dd>{$module_data_value}</dd>
+						</dl>
+					{/foreach}
+	            {/foreach}<br>
+		{/foreach}
+	</div><br class="clearfix">
+{/if}

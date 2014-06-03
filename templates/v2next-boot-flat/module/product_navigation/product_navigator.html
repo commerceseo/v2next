@@ -1,0 +1,20 @@
+{config_load file="lang/$language/lang_$language.conf" section="product_navigator"}
+{if $FIRST || $PREVIOUS || $NEXT || $LAST}
+<div class="col-xs-6">
+	<ul class="pagination">
+		{if $FIRST || $PREVIOUS}
+			{if $FIRST}<li><a href="{$FIRST}" title="{$LINKS.first_page.title}">|<</a></li>{/if}
+			{if $PREVIOUS}<li><a rel="prev" href="{$PREVIOUS}" title="{$LINKS.previous_button.text}">«</a></li>{/if}
+		{/if}
+		{if $NEXT || $LAST}
+			{if $NEXT}<li><a rel="next" href="{$NEXT}" title="{$LINKS.next_button.title}">»</a></li>{/if}
+			{if $LAST}<li><a href="{$LAST}" title="{$LINKS.last_page.title}">>|</a></li>{/if}
+
+		{/if}
+	</ul>
+</div>
+<div class="col-xs-6 text-right pt5">
+	{#total#} <b>{$ACTUAL_PRODUCT} von {$PRODUCTS_COUNT}</b> {#total2#}
+</div>
+	
+{/if}

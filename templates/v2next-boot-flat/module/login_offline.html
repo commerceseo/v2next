@@ -1,0 +1,45 @@
+{config_load file="lang/$language/lang_$language.conf" section="login"}
+{config_load file="lang/$language/lang_$language.conf" section="antispam"}
+{if $info_message!=''}
+	<div class="headerError">
+		{$info_message|replace:'<font color="#ff0000"><b>ACHTUNG:</b></font>':''}
+	</div>
+{/if}
+
+<div id="offline_container">
+	<div id="offline_inner" class="white_box">
+		<h2 align="center">{$HEADER_OFFLINE}</h2>
+		<div class="ac">
+			{$CONTENT_OFFLINE}
+			<br><br>
+			{$FORM_ACTION}
+				<fieldset>
+					{#text_returning#}
+					{if $ANTISPAMCODEACTIVE == 'true'}
+					<dl>
+						<dt class="was200"><b>{#text_antispam#}</b></dt>
+						<dd>{$ANTISPAMCODEQUESTION}</dd>
+					</dl>
+					<dl>
+						<dt class="was200"><b class="inputRequirement">*</b> {#text_antispam_input#}</dt>
+						<dd>{$INPUT_ANTISPAMCODE}</dd>
+						<dd>{$ANTISPAMCODEID}</dd>
+					</dl>
+					{/if}
+					<dl>
+						<dt class="was200">{#text_email#}</dt>
+						<dd>{$INPUT_MAIL}</dd>
+					</dl>
+					<dl>
+						<dt class="was200">{#text_password#}</dt>
+						<dd>{$INPUT_PASSWORD}</dd>
+					</dl><br><br>
+					<dl>
+						<dt class="was200">{$BUTTON_LOGIN}</dt>
+						<dd>&nbsp;</dd>
+					</dl>  
+				</fieldset>			
+			{$FORM_END}
+		</div>
+	</div>
+</div>

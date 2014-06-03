@@ -1,0 +1,30 @@
+{config_load file="lang/$language/lang_$language.conf" section="index"}
+{if $DEVMODE == 'true'}
+{debug}
+{/if}
+{strip}
+<header>
+    {include file="$html_tpl_path/shop_nav.html"}
+</header>
+
+{$slider_content}
+<section>
+    <div class="container">
+        <div class="row">
+            {bootstrapContainer}
+				<div class="navtrail_custname">
+					<div class="navtrail">{$navtrail}</div>
+					<hr>
+				</div>
+
+				<div id="main" class="main_content">
+					{$main_content}
+				</div>
+        </div>
+        {index_html file='index_left.html' type=left}
+    </div>
+</div>
+</section>
+
+{index_html file='index_bottom.html' type=bottom}
+{/strip}	

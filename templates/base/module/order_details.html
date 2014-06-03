@@ -1,0 +1,89 @@
+{load_language_text section="order_details_cart"}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="fl wk_table">
+            <div class="fl wkhead wk wk1">{$txt.text_pos}</div>
+            <div class="fl wkhead wk wk2">{$txt.text_pic}</div>
+            <div class="fl wkhead wk wk3">{$txt.text_article}</div>
+            <div class="fl wkhead wk wk4">{$txt.text_qty}</div>
+            <div class="fl wkhead wk wk5">{$txt.text_single}</div>
+            <div class="fl wkhead wk wk6">{$txt.text_total}</div>
+            <div class="fl wkhead wk wk7">{$txt.text_delete}</div>
+
+            {assign var="z" value=0}
+            {foreach name=aussen item=module_data from=$module_content}
+            {assign var="z" value="`$z+1`"}
+            <div class="fl order_details{if $z%2 == 0} dunkel{/if}">
+                <div class="fl wk1">{$module_data.PRODUCTS_POS}</div>
+                <div class="fl wk2">{if $module_data.PRODUCTS_IMAGE!=''}<img src="{$module_data.PRODUCTS_IMAGE}" alt="{$module_data.IMAGE_ALT}" />{/if}</div>
+                <div class="fl wk3"><a href="{$module_data.PRODUCTS_LINK}">{$module_data.PRODUCTS_NAME}</a><br>
+                    {$module_data.PRODUCTS_SHORT_DESCRIPTION}<br>
+                    {if $module_data.PRODUCTS_SHIPPING_TIME neq ""}
+                    {$txt.text_shippingtime} {$module_data.PRODUCTS_SHIPPING_TIME}
+                    {/if}
+                    {if $module_data.ATTRIBUTES!=''}
+                    {foreach key=key_data item=item_data from=$module_data.ATTRIBUTES}
+                    <div class="col-xs-12">
+                        <em>{$item_data.NAME}: {$item_data.VALUE_NAME}</em>
+                        <em>{$item_data.PREFIX} {$item_data.PRICE}</em>
+                    </div>
+                    {/foreach}
+                    {/if}
+                </div>
+                <div class="fl wk4">
+                    <a href="{$module_data.MINUS_LINK}" title="{$txt.text_one_remove}"><img src="{$tpl_path}img/cart_minus.gif"></a> 
+                    {$module_data.PRODUCTS_QTY} 
+                    <a href="{$module_data.PLUS_LINK}" title="{$txt.text_add}"><img src="{$tpl_path}img/cart_plus.gif"></a>
+                </div>
+
+                <div class="fl wk5">
+                    {$module_data.PRODUCTS_SINGLE_PRICE}
+                    {if $module_data.PRODUCTS_VPE}<br>{$module_data.PRODUCTS_VPE}{/if}
+                </div>
+                <div class="fl wk6">
+                    {$module_data.PRODUCTS_PRICE}
+                </div>
+
+                <div class="fl wk7">
+                    <a href="{$module_data.DEL_LINK}" title="{$txt.text_delete}"><img src="{$tpl_path}img/cart_delete.png"></a>
+                </div>
+
+            </div>
+            {/foreach}
+<!-- Indiv-Style gratisartikel begin-->
+
+			{foreach name=gratart item=module_gratis from=$special_gratis}
+			 {if $module_gratis.products_name}   
+			  {assign var="z" value="`$z+1`"}
+			  <div class="fl order_details{if $z%2 == 0} dunkel{/if}">
+				  <div class="fl wk1"> - </div>
+				  <div class="fl wk2"><a href="{$module_gratis.product_link}">{$module_gratis.gratis_image}</a></div>
+				  <div class="fl wk3"><b>{$txt.text_gratis_detail}</b><a href="{$module_gratis.product_link}">{$module_gratis.products_name}</a>
+					  <br />{$module_gratis.specials_gratis_description} </div>
+				  <div class="fl wk4">{$module_gratis.specials_gratis_max_value}</div>
+				  <div class="fl wk5"> --- </div>
+				  <div class="fl wk6">{$module_gratis.select} {$txt.text_bestellen}</div>
+				  <div class="fl wk7">{$module_gratis.specials_gratis_new_products_price}</div>
+			  </div>
+			{/if} 
+		   {/foreach}
+
+<!-- gratisartikel end-->
+        </div>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-xs-12 text-right">
+        {if $SELECT_COUNTRY}{$txt.text_country} {$SELECT_COUNTRY}<br><br>{/if}
+        {$TOTAL_CONTENT_NETTO}
+        {if $UST_CONTENT}{$UST_CONTENT}{/if}
+        <u>{$TOTAL_CONTENT}</u><br>
+        {foreach name=aussen item=shipping_data from=$shipping_content}
+        {$shipping_data.NAME}: {$shipping_data.VALUE}<br>
+        {/foreach}
+        {if $total}
+        <strong>{$txt.text_total}: {$total}</strong>
+        {/if}
+    </div>
+</div>

@@ -1,0 +1,14 @@
+{config_load file="lang/$language/shopbewertung_$language.conf" section="shopbewertung"}
+{config_load file="lang/$language/lang_$language.conf" section="boxes"}
+<div class="box box_votingbox">
+	{include file="$html_tpl_path/box.html" name=votingbox class=votingbox}
+	<div class="boxcontent ac boxcontent_votingbox">
+		<!-- <a href="{$LINK}" title="{#shopbewertunglesen#}"><img src="{$tpl_path}img/shopwertung/shopvoteimg_{$language}.png" height="120" width="120" alt="{#shopbewertunglesen#}" title="{#shopbewertunglesen#}" /></a>-->
+		<a href="{$LINK}" title="{#shopbewertunglesen#}"><img src="{$tpl_path}img/shopwertung/shopvotestar_in_box_{$language}.png" width="82" height="82"  alt="{#shopbewertunglesen#}" title="{#shopbewertunglesen#}" /></a>
+		<p class="textdurchschnitt">{$BEWERTUNG_GESAMT_DURCHSCHNITT} / 5.00</p>
+		<div class="starbox b1 border_radius_6">
+		{$GESAMT_STERNE}
+		</div>
+		<p class="bewerttext">{if $TEXTLEN > 0} <a href="{$LINK}" title="{$TEXT}">{$TEXT|truncate:75:"...":true}</a>{else}<span class="littlegrey">{#keinebewertung#}</span>{/if}</p>
+	</div>
+</div>

@@ -1,0 +1,79 @@
+{load_language_text section="order_details_cart"}
+<div class="row">
+    <div class="col-xs-12">
+        <div class="fl wk_table" id="checkout_products_standart">
+            <div class="fl chkt_bild wkhead" style="width: 10%; font-weight: 900;">{$txt.text_pic}</div>
+            <div class="fl chkt_beschr wkhead" style="width: 45%; font-weight: 900;">{$txt.text_article}</div>
+            <div class="fl chkt_qty wkhead" style="width: 15%; font-weight: 900;">{$txt.text_qty}</div>
+            <div class="fl chkt_sprice wkhead" style="width: 15%; font-weight: 900;">{$txt.text_single}</div>
+            <div class="fl chkt_sum wkhead" style="width: 15%; font-weight: 900;">{$txt.text_total}</div>
+			{*$module_content|@print_r*}
+            {assign var="z" value=0}
+            {foreach name=aussen item=module_data from=$module_content}
+            {assign var="z" value="`$z+1`"}
+            <div class="fl order_details{if $z%2 == 0} dunkel{/if}">
+                <div class="fl chkt_bild" style="width: 10%">{$module_data.PRODUCTS_IMAGE}</div>
+				<div class="fl chkt_beschr" style="width: 45%; overflow: hidden;">
+					<a class="shipping" href="{$module_data.PRODUCTS_LINK}"><b>{$module_data.PRODUCTS_NAME}</b></a><br>
+                    {$module_data.PRODUCTS_SHORT_DESCRIPTION}
+                    {if $module_data.PRODUCTS_SHIPPING_TIME}
+						<br><span class="fs85"><em>{$txt.text_shippingtime} {$module_data.PRODUCTS_SHIPPING_TIME}</em></span>
+                    {/if}
+				
+                    {if $module_data.ATTRIBUTES != ''}
+						{foreach key=key_data item=item_data from=$module_data.ATTRIBUTES}
+						<div class="col-xs-12">
+							<em><span class="fl mr5">{$item_data.NAME}:</span> <span id="atta_{$item_data.ATTRIBUTE_ID}"><span id="attt_{$item_data.ATTRIBUTE_ID}">{$item_data.VALUE_NAME}</span></span>{$item_data.ATTRIBUTE_EDIT}</em>
+							<em>{$item_data.PREFIX} {$item_data.PRICE}</em>
+							{if $item_data.ATTRIBUTE_HIDDEN}
+							<span id="attd_{$item_data.ATTRIBUTE_ID}" style="display:none;">
+								{$item_data.ATTRIBUTE_HIDDEN}
+							</span>
+							{/if}
+						</div>
+						{/foreach}
+                    {/if}
+                </div>
+                <div class="fl chkt_qty" style="width: 15%">
+                    <span id="qty_{$module_data.PRODUCTS_ID}">{$module_data.PRODUCTS_QTY}</span>
+                    {if $module_data.PRODUCTS_UPDATE} 
+						<div class="chkt_update_qty">
+						{$module_data.PRODUCTS_UPDATE}
+						</div>
+						
+					{/if}
+                </div>
+
+                <div class="fl chkt_sprice" style="width: 15%">
+                    <span id="single_price_{$module_data.PRODUCTS_ID}">{$module_data.PRODUCTS_SINGLE_PRICE}</span>
+                    {if $module_data.PRODUCTS_VPE}<br>{$module_data.PRODUCTS_VPE}{/if}
+                </div>
+                <div class="fl chkt_sum" style="width: 15%">
+                    <span id="price_{$module_data.PRODUCTS_ID}">{$module_data.PRODUCTS_PRICE}</span>
+                    {if $module_data.PRODUCTS_MWST}
+						<br><span class="fs85"><em>{$module_data.PRODUCTS_MWST}</em></span>
+					{/if}
+                </div>
+            </div>
+            {/foreach}
+
+			{foreach name=gratart item=module_gratis from=$gratis_gratis}
+				{if $module_gratis.products_name}
+				{assign var="z" value="`$z+1`"}
+					<div class="fl order_details{if $z%2 == 0} dunkel{/if}">
+						<div class="fl chkt_bild" style="width: 10%">{$module_gratis.gratis_image}</div>
+						<div class="fl chkt_beschr" style="width: 45%; overflow: hidden;">
+							<b><a class="shipping" href="{$module_gratis.product_link}">{$module_gratis.products_name}</a></b>
+							<br>{$module_gratis.specials_gratis_description}
+						</div>
+						<div class="fl chkt_qty" style="width: 15%">{$module_gratis.specials_gratis_max_value}</div>
+						<div class="fl chkt_sprice" style="width: 15%">{$txt.text_gratis}</div>
+						<div class="fl chkt_sum" style="width: 15%">{$txt.text_gratis}</div>
+					</div>
+				{/if}
+			{/foreach}
+			
+        </div>
+		<br style="clear:both"><hr>
+    </div>
+</div>

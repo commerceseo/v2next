@@ -1,0 +1,46 @@
+{config_load file="lang/$language/lang_$language.conf" section="reviews"}
+{config_load file="lang/$language/lang_$language.conf" section="antispam"}
+
+{if $SUCCESS_MSG}
+	<div class="headerSuccess">{$SUCCESS_MSG}</div>
+{elseif $ERROR_MSG}
+	<div class="headerError">{$ERROR_MSG}</div>
+{else}
+	<div itemprop="review" itemscope itemtype="http://schema.org/Review">
+	<h2><span class="fr fs85">{$AVERAGE}</span>{#heading_reviews#}</h2> 
+	{foreach name=aussen item=module_data from=$module_content} 
+	<meta itemprop="author" content="{$module_data.AUTHOR}">
+	<div itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+	<meta itemprop="worstRating" content = "0">
+	<meta itemprop="ratingValue" content = "{$module_data.RATINGNUM}">
+	<meta itemprop="bestRating" content = "5">
+		<div><b>{#text_author#}</b> {$module_data.AUTHOR} ({$module_data.DATE})</div>
+		<b>{#text_rating#}</b> {$module_data.RATING} ({$module_data.RATINGNUM}/5)<br>
+		<span itemprop="description">{#text_text#} {$module_data.TEXT}</span>
+		<br><br>
+	</div>
+	{/foreach}<br>
+	</div>
+{/if}
+{if $FORM_ACTION_REVIEW !=''}
+	{$FORM_ACTION_REVIEW}
+		<strong>{#text_author#}</strong> {$AUTHOR}<br><br>
+		<strong>{#text_input#}</strong><br>
+		{$INPUT_TEXT}<br>
+		<div class="fs85">{#text_note#}</div><br>
+		<strong class="left">{#text_rating#}</strong> 
+		<br>
+		<div class="votingstarsrev">{$INPUT_RATING}</div>
+		<br>
+		{if $ANTISPAMCODEACTIVE == 'true'}
+			<b>{#text_antispam#}</b>
+			{$ANTISPAMCODEQUESTION}<br>
+			<b>{#text_antispam_input#}</b>
+			{$INPUT_ANTISPAMCODE}
+			{$ANTISPAMCODEID}
+			<br>
+		{/if}
+		{$BUTTON_SUBMIT}
+	{$FORM_END}
+	{$JS_REVIEW}
+{/if}

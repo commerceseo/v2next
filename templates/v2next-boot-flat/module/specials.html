@@ -1,0 +1,38 @@
+{config_load file="lang/$language/lang_$language.conf" section="specials"}
+{config_load file="lang/$language/lang_$language.conf" section="index"}
+<div class="product_info_name"><h2>{#heading_text#}</h2></div>
+
+<div class="product_pad">
+<ul class="product_listing_gallery_cat">
+	{foreach name=aussen item=module_data from=$module_content}
+	   {php} $col++; {/php}
+	    <li>
+	        <h2><a href="{$module_data.PRODUCTS_LINK}" title="{$module_data.PRODUCTS_NAME}">{$module_data.PRODUCTS_NAME}</a></h2>
+	            {if $module_data.PRODUCTS_IMAGE}
+					<div align="center">
+	                    <a href="{$module_data.PRODUCTS_LINK}" title="{$module_data.PRODUCTS_NAME}">
+	                        <img class="img_border" src="{$module_data.PRODUCTS_IMAGE}" alt="{$module_data.PRODUCTS_NAME}" title="{$module_data.PRODUCTS_NAME}" />
+	                    </a>
+	                </div>
+				{/if}
+					<br>
+			<div class="product_listing_gallery_detail_cat">
+				{$module_data.PRODUCTS_SHORT_DESCRIPTION}<br>
+			</div>
+			<div class="product_listing_gallery_price_cat">
+				<strong>
+					{$module_data.PRODUCTS_PRICE}
+				</strong>
+				<br>
+				<span class="popup_link_cat">
+					{$module_data.PRODUCTS_TAX_INFO}
+					{$module_data.PRODUCTS_SHIPPING_LINK}
+				</span>
+				<br><br>
+				{$module_data.PRODUCTS_BUTTON_BUY_NOW}
+			</div>
+		</li>
+	{/foreach}
+</ul>
+</div>
+<br style="clear:both" />{$NAVBAR}

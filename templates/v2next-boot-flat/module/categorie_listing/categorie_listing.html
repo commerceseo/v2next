@@ -1,0 +1,68 @@
+{config_load file="lang/$language/lang_$language.conf" section="categorie_listing"}
+<div class="row">
+	{if $CATEGORIES_HEADING_TITLE}
+		<div class="col-xs-12">
+			<h1>{$CATEGORIES_HEADING_TITLE}</h1>
+		</div>
+	{/if}
+	{if $CATEGORIES_IMAGE}
+		<div class="col-lg-4 col-sm-6 col-xs-12">
+		{$CATEGORIES_IMAGE}
+		</div>
+	{/if}
+	{if $CATEGORIES_DESCRIPTION}
+		{if $CATEGORIES_IMAGE}
+			<div class="col-lg-8 col-sm-6 col-xs-12">
+		{else}
+			<div class="col-xs-12">
+		{/if}
+		{$CATEGORIES_DESCRIPTION}
+		</div>
+	{/if}
+</div>
+
+{if $module_content !=''}
+	<div class="row">
+		<div class="col-xs-12">
+			<br><b>{#heading_more_categories#}</b><br>
+		</div>
+		{foreach name=aussen item=module_data from=$module_content}
+			<div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 text-center">
+				<div class="cat_box">
+					<h3><a href="{$module_data.CATEGORIES_LINK}" title="{$module_data.CATEGORIES_IMAGE_TITLE}">{$module_data.CATEGORIES_NAME}</a></h3>
+					{if $module_data.CATEGORIES_IMAGE}
+					<div class="pimg">
+						<a href="{$module_data.CATEGORIES_LINK}" title="{$module_data.CATEGORIES_IMAGE_TITLE}">
+							{$module_data.CATEGORIES_IMAGE}
+						</a>
+					</div>
+					{/if}
+					{if $module_data.CATEGORIES_DESCRIPTION}
+						<div class="pdesc">
+							{$module_data.CATEGORIES_DESCRIPTION}
+						</div>
+					{/if}
+				</div>
+			</div>
+		{/foreach}
+	</div>
+{/if}
+
+{$MODULE_new_products}
+
+{if $CATEGORIES_DESCRIPTION_FOOTER}
+	<div class="row">
+		{if $CATEGORIES_FOOTER_IMAGE}
+			<div class="col-lg-4 col-sm-6 col-xs-12">
+				{$CATEGORIES_FOOTER_IMAGE}
+			</div>
+		{/if}
+		{if $CATEGORIES_FOOTER_IMAGE}
+			<div class="col-lg-8 col-sm-6 col-xs-12">
+		{else}
+			<div class="col-xs-12">
+		{/if}
+		{$CATEGORIES_DESCRIPTION_FOOTER}
+		</div>
+	</div>
+{/if}

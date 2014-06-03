@@ -1,0 +1,62 @@
+{config_load file="lang/$language/shopbewertung_$language.conf" section="shopbewertung"}
+{if $ERROR}<div class="error">{$ERROR}</div>{/if}
+{$FORMSTART}
+<div class="product_info_name"><h1>{#shopbewertung#}</h1></div>
+
+<div class="product_pad">
+    
+	<div class="votingbox">
+
+   <!-- <img src="{$tpl_path}img/shopwertung/shopvoteimg_{$language}.png" width="120" height="120" alt="Shop Voting" title="Shop Voting" /> -->
+		<img src="{$tpl_path}img/shopwertung/shopvotestar_{$language}.png" width="149" height="142" alt="Shop Voting" title="Shop Voting" />
+		<div class="voting">&nbsp;</div>
+		
+		<div class="votinboxstarbox">
+			<div class="votingtext"><b>{#bewertunggesamt#}</b><br><span class="rquired">*{#pflicht#}</span></div>
+			<div class="votingstarsrev">{$OPTFIELD_SHOP}</div>   
+		</div> 			
+   <span class="votetopic">{#kriterienbewertung#}</span> <span class="fs85">{#unabhaengig#}</span>
+</div>	
+		
+
+
+<div class="klickbox">	
+<h2>Optionalfeld</h2><br>
+<div class="kriterium">{#ware#}</div><div class="stars">{$OPTFIELD_WARE}</div><div class="kritik"> {#kritware#}</div>
+<div class="kriterium">{#versand#}</div><div class="stars">{$OPTFIELD_VERSAND}</div><div class="kritik"> {#kritversand#}</div>
+<div class="kriterium">{#service#}</div><div class="stars">{$OPTFIELD_SERVICE}</div><div class="kritik"> {#kritservice#}</div>
+<div class="kriterium">{#seite#}</div><div class="stars">{$OPTFIELD_SEITE}</div><div class="kritik"> {#kritseite#}</div>
+</div>
+<br>
+		
+       <!-- {#optional#} -->
+
+
+<div class="label"><label><div class="labeloptionen"><b>{#vorname#}</b></div>{if $NAME_CHECK == 1}<span class="rquired">*</span>{/if} <input type="text" name="firstname" value="{$VORNAME_POST}" size="15" /></label></div>
+<div class="label"><label><div class="labeloptionen"><b>{#nachname#}</b></div>{if $NAME_CHECK == 1}<span class="rquired">*</span>{/if} <input type="text" name="lastname" value="{$NACHNAME_POST}" size="15" />	</label></div>
+<div class="label"><!--{#optionalname#}--><div class="labeloptionen"><b>{#email#}</b></div><input type="text" name="email" size="37" value="{$EMAIL_POST}"  /><span class="rquired">**</span></div>
+
+	{if $ORDERS_ID_CHECK == 1}
+		<br><br>
+		<b>{#orderid#}</b> <span class="rquired">**</span><br>
+		<input type="text" name="orders_id" size="20" value="{$ORDERS_ID_POST}"  />
+	{/if}
+
+	<br><br><br><h2>{#kommentarzeichen1#}{$ZEICHEN}{#kommentarzeichen2#} {if $COMMENT_CHECK == 1}<span class="rquired">*</span>{/if}</h2><br>
+	<textarea class="textarea_commtens" name="kommentar" cols="8" rows="4" onkeydown="textcounter(document.bewertungschreiben.kommentar, document.bewertungschreiben.verbleibende_zeichen_1, {$ZEICHEN})" onkeyup="textcounter(document.bewertungschreiben.kommentar, document.bewertungschreiben.verbleibende_zeichen_1, {$ZEICHEN})">{$KOMMENTAR}</textarea><br/>
+	<input type="text" name="verbleibende_zeichen_1" size="3" maxlength="3" value="{$ZEICHEN}" readonly="readonly"/> {#verbleibend#}<br/>
+
+	<br>
+	<br class="clear">
+	{if $CAPTCHACHECK == 'captcha'}
+	<img src="{$VVIMG}" alt="Captcha" /><br>
+	<b>{#codeeingabe#}</b> {$INPUT_CODE}
+	{/if}
+	<br><br><span class="rquired">{#pflichtanzeige#}<br>{#pflichtkeineanzeige#}</span>
+
+<br>
+<div class="fl">{$BUTTON_BACK}</div>
+<div class="fr">{$IMG_PATH_BUTTON}</div>
+
+</form>
+</div>    

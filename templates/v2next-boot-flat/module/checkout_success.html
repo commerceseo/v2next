@@ -1,0 +1,88 @@
+{config_load file="lang/$language/lang_$language.conf" section="checkout_success"}
+<h2>{#heading_success#}</h2>
+<div class="row text-center">
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarCurrent">{#text_shipping_info#}</div>
+	</div>	
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{#text_payment_info#}</div>
+	</div>
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{#text_confirm#}</div>
+	</div>	
+	<div class="col-sm-3">
+		<div class="checkout_line"><img src="{$tpl_path}img/checkout_bullet.gif" alt="Bullet" /></div>
+		<div class="checkoutBarTo"><b>{#text_finished#}</b></div>
+	</div>
+</div>
+<hr />
+
+{if $INFOTEXT_1}
+	<div class="row">
+		{$INFOTEXT_1}
+		<hr />
+	</div>
+{/if}
+
+{if $MODULE_trusted_shops}
+	<div class="row">
+		{$MODULE_trusted_shops}
+		<hr />
+	</div>
+{/if}
+
+{if $AMAZON_BLOCK}
+	<div class="row">
+		{$AMAZON_BLOCK}
+		<hr />
+	</div>
+{/if}	
+
+{$FORM_ACTION}
+
+<div class="row">
+	<div class="col-md-4 col-sm-12 text-left">
+		<img src="{$tpl_path}img/checkout_success.png" alt="Success" />   
+	</div>
+	<div class="col-md-8 col-sm-12 text-right">
+		{#text_success#}
+		<br><br>
+		{#text_printorder#}<br><br>
+		{$BUTTON_PRINT}<br><br>
+		{#text_thankyou#}
+	</div>
+	<hr />
+</div>
+
+{if $GV_SEND_LINK}
+<div class="row">
+	{#gv_has_vouchera#} {$GV_SEND_LINK} {#gv_has_voucherb#}
+	<hr />
+</div>
+{/if}
+
+<div class="row">
+	<div class="col-xs-12 text-right">
+		{$BUTTON_CONTINUE}
+	</div>
+</div>
+<hr>
+
+{if $google_tracking}
+	{*Google Conversion-tracking start*}
+	{$tracking_code}
+{/if}
+
+{if $downloads_content}
+	<div class="row">
+		<div class="col-xs-12">
+			{$downloads_content}
+		</div>
+	</div>
+{/if}
+{$FORM_END}
+  
+

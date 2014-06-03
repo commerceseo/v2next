@@ -1,0 +1,17 @@
+{config_load file="lang/$language/lang_$language.conf" section="boxes"}
+<div class="box box_add_a_quickie">
+	{include file="$html_tpl_path/box.html" name=add_a_quickie class=add_a_quickie}
+	<div class="boxcontent boxcontent_add_a_quickie">
+		{#text_quickie#}
+		{$FORM_ACTION}
+		<div class="row">
+			<div class="col-xs-6">
+				{$INPUT_FIELD}
+			</div>
+			<div class="col-xs-6">
+				{$SUBMIT_BUTTON}
+			</div>
+		</div>
+		{$FORM_END}
+	</div>
+</div>

@@ -1,0 +1,157 @@
+<div itemscope itemtype="http://schema.org/Article" class="product_pad2">
+    {if $BLOG == 'true'}
+    <div class="buttonback">
+        <a class="button_blue button_set" href="javascript:history.back(1)"><span class="button-outer"><span class="button-inner">{$txt.button_back}</span></span></a>
+    </div>
+    <br />
+    {if $blog_cat_name}
+    <h2 itemprop="name">{$blog_cat_name}</h2>
+    {/if}
+    {if $cat_description}
+    <p itemprop="description">{$cat_description}</p><hr>
+    {/if}
+    {if $blog_subcats}
+    <br>
+    <div>
+
+        <h2>{$txt.HEADING_UKATTITLE}</h2>
+        {foreach name=cats item=cat from=$blog_subcats}
+        {assign var=CATEGORIE_bevor value=$cat.CATEGORIE_ID}
+
+        <div class="blog_bei">
+            <div class="blog_kat"><h3><a href="{$cat.CATEGORIE_LINK}" class="active">{$cat.CATEGORIE_TITLE|truncate:25:"...":true}</a></h3></div>
+        </div>
+
+        {/foreach}
+    </div>
+    <hr>
+    {/if}
+    <div class="slider_container">
+        <ul class="rslides" id="bslider">
+            {foreach name=imgBig item=img_array from=$IMAES_SLIDER}
+            <li>
+                {if $img_array.image_area_array|@sizeof > 0}   
+                <img usemap="#map2_{$smarty.foreach.imgBig.index+1}" class="slideImgControl" id="slideImgControl2_{$smarty.foreach.imgBig.index+1}" src="images/slider_images/{$img_array.image_large}" alt="{$img_array.image_alt_text}" />
+                <map name="map2_{$smarty.foreach.imgBig.index+1}">
+                    {foreach item=area_array from=$img_array.image_area_array}
+                    <area id="area2_{$area_array.image_area_id}" shape="{$area_array.image_area_shape}" coords="{$area_array.image_area_coords}" href="{$area_array.image_area_link_url}" alt="{$area_array.image_area_title}" title="{$area_array.image_area_title}" target="{$area_array.image_area_link_target}" />
+                    {/foreach}
+                </map>
+                {elseif $img_array.link_url}
+                <a href="{$img_array.link_url}" target="{$img_array.link_target}">
+                    <img class="slideImgControl" id="slideImgControl2_{$smarty.foreach.imgBig.index+1}" src="images/blog_image/popup_images/{$img_array.image_large}" title="{$img_array.image_title_text}" alt="{$img_array.image_alt_text}" />
+                </a>
+                {else}
+                <img class="slideImgControl" id="slideImgControl2_{$smarty.foreach.imgBig.index+1}" src="images/blog_image/popup_images/{$img_array.image_large}" title="{$img_array.image_title_text}" alt="{$img_array.image_alt_text}" />
+                {/if}
+            </li>
+            {/foreach}        
+        </ul>
+
+    </div>
+    <div>
+        {foreach name=aussen item=module_data from=$blog_items}
+        <div class="product_pad">
+            <div class="datum">
+                <p>
+                    <span class="monat">{$module_data.monat}</span>
+                    <span class="tag">{$module_data.tag}</span>
+                    <span class="jahr">{$module_data.jahr}</span>
+                </p>
+            </div>
+            <h2 itemprop="name">
+                <a itemprop="url" href="{$module_data.blog_link}">{$module_data.name}</a>
+            </h2>
+            <p itemprop="description">{$module_data.shortdesc}</p>
+
+        </div>
+        <br>
+        {/foreach}
+    </div>
+    {else}
+    <h1 itemprop="name">{$NAME}</h1>
+    <div class="buttonback">
+        <a class="button_blue button_set" href="javascript:history.back(1)"><span class="button-outer"><span class="button-inner">{$txt.button_back}</span></span></a>
+    </div>
+    <br />
+    <div class="datum">
+        <p>
+            <span class="monat">{$MONAT}</span>
+            <span class="tag">{$TAG}</span>
+            <span class="jahr">{$JAHR}</span>
+        </p>
+    </div>
+    <div class="blog_text">
+        <div itemprop="description">{$TEXT}</div>
+        {if $BLOECKE}
+        {literal}
+        <script type='text/javascript'>
+            mycount = "";
+        </script>
+        {/literal}
+        {/if}
+        {foreach name=aussen item=module_block from=$BLOECKE}
+        {if $module_block.typ == 'SlideShow'}
+        <div class="slider_container2" style='width:{$module_block.width}; height:{$module_block.height}; float:{$module_block.floating};'>
+            <ul class="rslides" id="bslider{$module_block.tblock_id}">
+                {foreach name=aussen item=module_image from=$module_block.description}
+                <img usemap="#map2_{$smarty.foreach.imgBig.index+1}" class="slideImgControl" id="slideImgControl2_{$smarty.foreach.imgBig.index+1}" src="images/blog_image/popup_images/{$module_image.image}" alt="{$module_image.image}" />	
+                {/foreach}
+            </ul>	
+            {literal}
+            <script type='text/javascript'>
+                mycount += "{/literal} {$module_block.tblock_id}{literal}";
+            </script>
+            {/literal}		
+
+        </div>
+
+        {else}
+        {$module_block.description}
+        {/if}
+        {/foreach}
+
+    </div>
+    <div class="clearfix"></div>
+    {if $ERROR_MSG}
+    <div class="headerError">{$ERROR_MSG}</div>
+    {/if}
+    {$MODULE_products_reviews}
+    <br />
+    <div id="socialshare">
+        {if $TWITTER_ON}
+        <div class="social_counter">{$TWITTER_COUNT}</div>
+        <div id="twitt"></div>
+        <div class="twitt"><a href="https://twitter.com/intent/tweet?text={$PRODUCTS_NAME}&url={$SHARE_URL}&via={$TWITTER_ACCOUNT}" target="_blank">Tweet</a></div>
+        {/if}
+        {if $FACEBOOK_ON}
+        <div class="social_counter">{$FACEBOOK_COUNT}</div>
+        <div id="faceb"></div>
+        <div class="faceb"><a href="https://www.facebook.com/sharer/sharer.php?u={$SHARE_URL}" target="_blank">Like</a></div>
+        {/if}
+        {if $GOOGLE_ON}
+        <div class="social_counter">{$GOOGLE_COUNT}</div>
+        <div id="googlep"></div>
+        <div class="googlep"><a href="https://plus.google.com/share?url={$SHARE_URL}" target="_blank">Share</a></div>
+        {/if}
+        {if $PINTEREST_ON}
+        <div class="social_counter">{$PINTEREST_COUNT}</div>
+        <div id="pint"></div>
+        <div class="pint"><a href="http://pinterest.com/pin/create/button/?url={$SHARE_URL}&description={$PRODUCTS_NAME}&media={$SHARE_IMAGE}" target="_blank">Pin it</a></div>
+        {/if}
+        {*if $LINKEDIN_ON}
+        <div class="social_counter">{$LINKEDIN_COUNT}</div>
+        <div id="linkd"></div>
+        <div class="linkd"><a href="http://pinterest.com/pin/create/button/?url={$SHARE_URL}&description={$PRODUCTS_NAME}&media={$SHARE_IMAGE}" target="_blank">Pin it</a></div>
+        {/if}
+        {if $XING_ON}
+        <div class="social_counter">{$XING_COUNT}</div>
+        <div id="xin"></div>
+        <div class="xin"><a href="http://pinterest.com/pin/create/button/?url={$SHARE_URL}&description={$PRODUCTS_NAME}&media={$SHARE_IMAGE}" target="_blank">Pin it</a></div>
+        {/if*}
+    </div>
+    <div class="buttonback">
+        <a class="button_blue button_set" href="javascript:history.back(1)"><span class="button-outer"><span class="button-inner">{$txt.button_back}</span></span></a>
+    </div>
+    {/if}
+</div>

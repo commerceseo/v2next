@@ -1,0 +1,55 @@
+/* -----------------------------------------------------------------------------------------
+   $Id: stylesheet2.css,v 1.1 2010/09/08 10:58:55 akausch Exp $   
+
+   XT-Commerce - community made shopping
+   http://www.xt-commerce.com
+
+   Copyright (c) 2003 XT-Commerce
+   -----------------------------------------------------------------------------------------
+   based on: 
+   (c) 2000-2001 The Exchange Project  (earlier name of osCommerce)
+   (c) 2002-2003 osCommerce(login.php,v 1.79 2003/05/19); www.oscommerce.com 
+   (c) 2003      nextcommerce (login.php,v 1.13 2003/08/17); www.nextcommerce.org
+
+   Released under the GNU General Public License 
+   ---------------------------------------------------------------------------------------*/
+
+body {background:#fff;padding:10px;}
+
+a:link, a:visited { text-decoration: none; color: #078FC9 }
+
+a:hover, #navigation a:hover { color: #000000 }
+
+dd { line-height: 22px }
+
+.contentsTopics{font-family: "Myriad Pro","Lucida Grande","Lucida Sans Unicode",Helvetica,Arial,Verdana,sans-serif;margin-bottom:0.5em;font-size:2em;font-weight:normal;line-height:1.4;}
+
+h2 {font-family: "Myriad Pro","Lucida Grande","Lucida Sans Unicode",Helvetica,Arial,Verdana,sans-serif;margin:0.6em 0 0.4em 0;font-size:1.6em;font-weight:normal;line-height:1.2;}
+
+ul, ol {margin-left: 22px;}
+
+div.inputRequirement,
+dd.inputRequirement { color: #CC0000 }
+
+.fs85 {font-size: 85%}
+
+
+/* ==|== print styles =======================================================
+   Print styles.
+   Inlined to avoid required HTTP connection: h5bp.com/r
+   ========================================================================== */
+ 
+@media print {
+  * { background: transparent !important; color: black !important; text-shadow: none !important; filter:none !important; -ms-filter: none !important; font-size: 14px;} /* Black prints faster: h5bp.com/s */
+  a, a:visited { text-decoration: underline; }
+  a[href]:after { content: " (" attr(href) ")"; }
+  abbr[title]:after { content: " (" attr(title) ")"; }
+  .ir a:after, a[href^="javascript:"]:after, a[href^="#"]:after { content: ""; }  /* Don't show links for images, or javascript/internal links */
+  pre, blockquote { border: 1px solid #999; page-break-inside: avoid; }
+  thead { display: table-header-group; } /* h5bp.com/t */
+  tr, img { page-break-inside: avoid; }
+  img { max-width: 100% !important; }
+  @page { margin: 0.5cm; }
+  p, h2, h3 { orphans: 3; widows: 3; }
+  h2, h3 { page-break-after: avoid; }
+}

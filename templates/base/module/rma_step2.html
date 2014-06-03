@@ -1,0 +1,58 @@
+{load_language_text section="account"}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr>
+		<td class="moduleHeading" align="left">{$txt.heading_rma}</td>
+	</tr>
+</table>
+
+{$FORM_ACTION}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="main">{$txt.text_step2_first}</td>
+  </tr>
+  <tr>
+    <td class="main">
+<br />
+<fieldset class="rma_choose_body">
+<legend class="rma_choose">{#text_choose#}</legend>
+{$CHOOSE_ORDER_ID}<br />
+{$BUTTON_SUBMIT}
+</fieldset>		
+		</td>
+  </tr>
+  <tr>
+    <td class="main"><br />{#text_info#}</td>
+  </tr>
+</table>
+{$FORM_END}
+
+<br />
+<br />
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+    <td class="main">
+<fieldset class="rma_choose_body">
+<legend class="rma_choose">{#text_heading_success_rma#}</legend>
+
+<table width="100%" border="0" cellspacing="1" cellpadding="0">
+  <tr>
+    <td class="rma_table_heading" width="10%">{#text_rma_number#}</td>
+		<td class="rma_table_heading">{#text_rma_date#}</td>
+		<td class="rma_table_heading">{#text_rma_status#}</td>
+		<td class="rma_table_heading" width="20%">{#text_rma_action#}</td>
+  </tr>
+{foreach name=rma item=data from=$rma_content} 	
+  <tr>
+    <td class="rma_table_content">{$data.RMA_ID}</td>
+		<td class="rma_table_content">{$data.RMA_DATE}</td>
+		<td class="rma_table_content">{$data.RMA_STATUS}</td>
+		<td class="rma_table_content" width="20%">{*{$data.RMA_ACTION}*}</td>
+  </tr>
+{/foreach}	
+</table>	
+
+</fieldset>
+		</td>
+  </tr>
+</table>		

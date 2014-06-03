@@ -1,0 +1,91 @@
+{config_load file="lang/$language/lang_$language.conf" section="gv_send"}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+	<tr valign="top"> 
+		<td class="contentsTopics">{#heading_gvsend#}</td>
+	</tr>
+</table>
+
+{if $error!=''}
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+  	<tr>
+    	<td>{$error}</td>
+  	</tr>
+</table>
+{/if}
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+
+<!-- EMAIL VERSCHICKT -->
+{if $action eq 'process'}
+	<tr>
+    	<td align="right">{#text_success#}</td>
+  	</tr>
+  	<tr>
+    	<td align="right">{$LINK_DEFAULT}</td>
+  	</tr>
+
+<!-- VORSCHAU -->
+{elseif $action eq 'send'}
+
+  	<tr>
+    	<td>
+			{$FORM_ACTION}
+			<table border="0" width="100%" cellspacing="0" cellpadding="2">
+       			<tr>
+         			<td class="main">{$MAIN_MESSAGE}</td>
+       			</tr>
+       			{if $POST_MESSAGE neq ''}
+       			<tr>
+         			<td class="main">{$PERSONAL_MESSAGE}</td>
+       			</tr>
+       			<tr>
+         			<td class="main">{$POST_MESSAGE}</td>
+       			</tr>
+       			{/if}
+	   			{$HIDDEN_FIELDS}
+	   			<tr>
+	     			<td class="main">{$LINK_BACK}</td>
+	     			<td align="right"><br>{$LINK_SUBMIT}</td>
+       			</tr>
+     		</table>
+			{$FORM_END}
+		</td>
+  	</tr>
+  
+ <!-- FORMULAR -->
+{else if $action eq ''}
+   	<tr>
+     	<td class="main">{#heading_text#}</td>
+   	</tr>
+   	<tr>
+     	<td class="main">{#text_gv_amount#} <b>{$GV_AMOUNT}</b></td>
+   	</tr>
+   	<tr>
+     	<td>
+			{$FORM_ACTION}
+			<table border="0" width="100%" cellspacing="0" cellpadding="2">
+       			<tr>
+         			<td class="main">{#entry_name#}<br>{$INPUT_TO_NAME}</td>
+       			</tr>
+       			<tr>
+         			<td class="main">{#entry_email#}<br>{$INPUT_EMAIL} {if $error_email neq ''}{$ERROR_EMAIL}{/if}</td>
+       			</tr>
+       			<tr>
+         			<td class="main">{#entry_amount#}<br>{$INPUT_AMOUNT} {if $error_amount neq ''}{$ERROR_AMOUNT}{/if}</td>
+       			</tr>
+       			<tr>
+         			<td class="main">{#entry_message#}<br>{$TEXTAREA_MESSAGE}</td>
+       			</tr>
+     		</table>
+     		<table border="0" width="100%" cellspacing="0" cellpadding="2">
+       			<tr>
+         			<td class="main" align="right">{$LINK_SUBMIT}</td>
+       			</tr>
+     		</table>
+			{$FORM_END}
+		</td>
+   	</tr>
+{/if}
+
+</table>

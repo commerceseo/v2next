@@ -1,0 +1,28 @@
+{config_load file="lang/$language/lang_$language.conf" section="trustedshops"}
+<br><br>
+
+<table width="100%" border="0" align="center" cellpadding="4" cellspacing="0" bgcolor="#f1f1f1"> 
+	<tr> 
+		<td width="90"> 
+			<form name="formSiegel" method="post" action="https://www.trustedshops.com/shop/certificate.php" target="_blank"> 
+			<input type="image" border="0" src="{$tpl_path}img/{#ts_seal_guarantee#}" alt="{#ts_click_seal#}" title="{#ts_click_seal#}"> 
+			<input name="shop_id" type="hidden" value="{$TrID}">
+			</form>
+		</td>
+		<td align="justify">
+			<form name="formGuarantee" method="post" action="https://www.trustedshops.com/shop/protection.php" target="_blank">
+			<input type="hidden" name="_charset_">
+			<input name="shop_id" type="hidden" value="{$TrID}">
+			<input name="email" type="hidden" value="{$email}">
+			<input name="amount" type="hidden" value="{$amount}">
+			<input name="curr" type="hidden" value="{$curr}">
+			<input name="payment" type="hidden" value="{$payment}">
+			<input name="kdnr" type="hidden" value="{$KDNR}">
+			<input name="ordernr" type="hidden" value="{$ORDERNR}">
+			{#ts_protection_text#}<br><br>
+			<input type="submit" id="btnProtect" name="btnProtect" value="{#ts_protection_button#}">
+			</form>
+		</td>
+	</tr>
+</table>
+<br>

@@ -1,0 +1,46 @@
+{config_load file="lang/$language/lang_$language.conf" section="index"}
+{$MODULE_error}
+
+{foreach from=$SORTING item=box}
+	{if $box=='text1'}
+		{if $title}<h1>{$title}</h1>{/if}
+		{$text}
+	{elseif $box=='promo'}
+		{$MODULE_products_promotion}
+	{elseif $box=='cat'}	
+		{if $CATEGORIES_LIST}
+			{$CATEGORIES_LIST}
+		{/if}
+	{elseif $box=='upc'}
+		{if $MODULE_upcoming_products}
+			{$MODULE_upcoming_products}
+		{/if}
+	{elseif $box=='newp'}
+		{if $MODULE_new_products}
+			{$MODULE_new_products}
+		{/if}
+	{elseif $box=='randp'}
+		{if $MODULE_random_products}
+			{$MODULE_random_products}
+		{/if}
+	{elseif $box=='rands'}
+		{if $MODULE_random_specials}
+			{$MODULE_random_specials}
+		{/if}
+	{elseif $box=='best'}
+		{if $MODULE_main_bestseller}
+			{$MODULE_main_bestseller}
+		{/if}
+	{elseif $box=='blog'}
+		{if $MODULE_main_blog}
+			{$MODULE_main_blog}
+		{/if}
+	{elseif $box=='text2'}
+		{if $text_footer}
+			{if $title_footer}<h2>{$title_footer}</h2>{/if}
+			{$text_footer}
+		{/if}
+	{/if}
+{/foreach}
+
+

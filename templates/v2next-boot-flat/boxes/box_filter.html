@@ -1,0 +1,28 @@
+{config_load file="lang/$language/lang_$language.conf" section="boxes"}
+<div class="box box_filter">
+	{include file="$html_tpl_path/box.html" name=filter class=filter}
+	<div class="boxcontent boxcontent_filter">
+	<span id="fb_loader"><img src="images/wait.gif" border="0" width="16" height="16" /></span>
+	{$FORM_ACTION}
+	<fieldset>
+	<legend class="cat_legend">{#heading_manufacturers#}</legend>
+	<div id="c_select_manufacturer">
+	<span id="select_manufacturer">{$SEL_MANUFACTURER}</span>
+	</div>
+	</fieldset><br>
+	{foreach name=aussen item=cat_data from=$cat_content}
+	<fieldset id="c_select_category_{$cat_data.id}" title="{$cat_data.name}" style="display:none;">
+	<legend class="cat_legend">{$cat_data.name}</legend>
+	<div id="c_select_subcategory_{$cat_data.id}">
+	<span class="select_line" id="text_subcategory_{$cat_data.id}">{#text_subcat#}</span><br>
+	<span id="select_subcategory_{$cat_data.id}">{$sel_dummy}</span>
+	</div>
+	<div id="c_select_options_{$cat_data.id}" style="display:none;">
+	</div>
+	<div id="button_{$cat_data.id}" style="display:none;"><br>{$BUTTON_SUBMIT}</div>
+	</fieldset>
+	{/foreach}
+	<br>
+	{$FORM_END}
+</div>
+</div>

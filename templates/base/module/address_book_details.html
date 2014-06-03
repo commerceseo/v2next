@@ -1,0 +1,60 @@
+{config_load file="lang/$language/lang_$language.conf" section="address_book_process"}
+<div class="product_pad">
+{#text_must#}
+	<fieldset class="account">
+		<legend><b>{#title_address#}</b></legend>
+		{if $gender=='1'}
+		<dl>
+			<dt class="w200">{#text_gender#}</dt>
+			<dd>{$INPUT_MALE} | {$INPUT_FEMALE}</dd>
+		</dl>
+		{/if} 
+		<dl>
+			<dt class="w200">{#text_firstname#}</dt>
+			<dd>{$INPUT_FIRSTNAME}</dd>
+		</dl>
+		<dl>
+			<dt class="w200">{#text_lastname#}</dt>
+			<dd>{$INPUT_LASTNAME}</dd>
+		</dl>
+		{if $company=='1'}
+		<dl>
+			<dt class="w200">{#text_company#}</dt>
+			<dd>{$INPUT_COMPANY}</dd>
+		</dl>
+		{/if}
+		<dl>
+			<dt class="w200">{#text_street#}</dt>
+			<dd>{$INPUT_STREET}</dd>
+		</dl>
+		{if $suburb=='1'}
+		<dl>
+			<dt class="w200">{#text_suburb#}</dt>
+			<dd>{$INPUT_SUBURB}</dd>
+		</dl>
+		{/if}
+		<dl>
+			<dt class="w200">{#text_code#}</dt>
+			<dd>{$INPUT_CODE}</dd>
+		</dl>
+		<dl>
+			<dt class="w200">{#text_city#}</dt>
+			<dd>{$INPUT_CITY}</dd>
+		</dl>
+		<dl>
+			<dt class="w200">{#text_country#}</dt>
+			<dd>{$SELECT_COUNTRY}</dd>
+		</dl>
+		{if $state=='1'}
+		<dl>
+			<dt class="w200">{#text_state#}</dt>
+			<dd><span id="state">{$INPUT_STATE}</span></dd>
+		</dl>
+		{/if}
+
+		{if $new=='1'}<br>{/if}
+	</fieldset>
+	{if $new=='1'}
+		<br class="clear">{$CHECKBOX_PRIMARY} {#text_standard#}
+	{/if}
+</div>

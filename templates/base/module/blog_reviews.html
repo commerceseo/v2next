@@ -1,0 +1,95 @@
+{if $COMMENTS == 'true'}
+<div id="meinebew" class="bewertungen">
+    {if $KOMINFO == 'true2'}
+    <div class="add_success">{$txt.KOMMENTHIN}</div><br />
+    {/if}
+    {if $KOMINFO == 'true'}
+    <div class="add_success">{$txt.BEWERTHIN}</div><br />
+    {/if}
+    {if $RATE == 'true'}
+    <h2>{$txt.heading_reviews}</h2>
+    {if $REVIEWS_COUNT != '0'}
+    <h3>{$txt.revval} {$REVIEWS_VAL} aus {$REVIEWS_COUNT} abgegebenen Bewertungen</h3>
+    {/if}
+    {/if}
+    <div itemscope itemtype="http://schema.org/Product">
+        <meta itemprop="name" content="Blogbewertung" />
+        <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+            <meta itemprop="ratingValue" content="{$REVIEWS_VAL}" >
+            <meta itemprop="reviewCount" content="{$REVIEWS_COUNT}">
+            <meta itemprop="worstRating" content = "0">
+        </div>
+        {if $COMMENTS == 'true' && $NEW_COMMENT == 'true' && $NEW_RATE == 'true'}
+        {$FORM_ACTION_REVIEW}
+        <br>
+        {if $NEW_RATE == 'true'}
+        <b class="left">{$txt.text_bew}</b> 
+        <div class="votingstarsrev">{$INPUT_RATING}</div><br><br>
+        {/if}
+        <h3>{$txt.text_bewert}</h3>
+        {$TEXT}
+        {if $VALIDATION_ACTIVE == 'true'}
+
+        {if $ANTISPAMCODEACTIVE == 'true'}
+        <h4>{$txt.label_captcha}</h4>
+        <fieldset class="account">
+            <dl>
+                <dt class="w200 col-lg-4 col-sm-12">{$ANTISPAMCODEQUESTION}</dt>
+                <dd class="col-lg-8 col-sm-12">&nbsp;</dd>
+                <dt class="w200 col-lg-4 col-sm-12">{$INPUT_ANTISPAMCODE}{$ANTISPAMCODEID}</dt>
+                <dd class="col-lg-8 col-sm-12">{$BUTTON_SUBMIT}</dd>
+            </dl>
+        </fieldset>
+        <br>
+        {/if}
+        {/if}
+
+        {$FORM_END}
+        {else}
+        {if $NEW_RATE == 'false'}
+        <div class="error">{$txt.new_rate_txt}</div>
+        {/if}
+        {if $NEW_COMMENT == 'false'}
+        <div class="error">{$txt.new_comment_txt}</div>
+        {/if}
+        {/if}
+        {if $SUCCESS_MSG}
+        <div class="messageStackSuccess">{$SUCCESS_MSG}</div>
+        {elseif $ERROR_MSG}
+        <div class="headerError">{$ERROR_MSG}</div>
+        {else}
+        {if $module_content2 && $NEW_RATE == 'true'}
+        <h2>{$txt.bewertungenliste}</h2><br>
+        <div itemprop="review" itemscope itemtype="http://schema.org/Review">
+            <span class="fr fs85">{$AVERAGE}</span>{#heading_reviews#}
+            {foreach name=aussen item=module_data from=$module_content2} 
+            <div class="bewcontainer" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                <meta itemprop="worstRating" content = "1">
+                <div> <span>{$module_data.name}</span> ({$module_data.date})</div>
+                <span class="fs85" itemprop="ratingValue">{$module_data.rating}</span>{$module_data.RATINGIMG}<br>
+                <span itemprop="description"> {$module_data.kommentar}</span>
+                {if $module_data.mycom}
+                {foreach name=innen item=module_com from=$module_data.mycom}
+                <div class="antwort">
+                    <b>{$txt.antwort} {$module_com.datec}:</b>{$module_com.desc}
+                </div>
+                {/foreach}
+                {else}
+                <br><br>
+                {/if}
+            </div>
+
+            {/foreach}<br>
+        </div>
+        {/if}
+        {/if}
+
+        <br>
+        {if $module_content2 && $NEW_RATE == 'true'}
+        {$NAVBAR}
+        <br><br>
+        {/if}
+        {$BUTTON_BACK}
+    </div>
+</div>
+{/if}

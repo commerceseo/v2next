@@ -1,0 +1,17 @@
+<div class="categorie_listing">
+	
+		{if $CATEGORIES_HEADING_TITLE || $CATEGORIES_NAME}
+		<h2><a href='{$CATEGORIES_LINK}'>{$CATEGORIES_HEADING_TITLE|default:$CATEGORIES_NAME}</a></h2>
+		{/if}
+        {if $CATEGORIES_DESCRIPTION || $CATEGORIES_IMAGE}
+		<div class="categories_description">
+			{if $CATEGORIES_IMAGE}
+			{$CATEGORIES_IMAGE}
+			{/if}
+			{if $CATEGORIES_DESCRIPTION}
+			{$CATEGORIES_DESCRIPTION}
+			{/if}					
+		</div>
+        {/if}
+	
+</div>

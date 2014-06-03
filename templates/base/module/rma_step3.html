@@ -1,0 +1,80 @@
+{load_language_text section="account"}
+<h1>{$txt.heading_rma}</h1>
+{if $error!=''}<div class="headerError bg-danger">{$error}</div>{/if}
+
+{if $success != 1}
+{$FORM_ACTION}
+{$ORDER_ID}
+<table class="table table-bordered table-striped">
+  <tr>
+	<td class="inputRequirement">{$txt.text_must}</td>
+  </tr>
+</table>
+    <h2>{$txt.text_step3_first}</h2>
+<table class="table table-bordered table-striped">
+	<tr>
+		<td class="main">{$txt.text_products}</td>
+		<td class="main">{$CHOOSE_PRODUCTS_ID}</td>
+	</tr>
+{if $EAN}	
+	<tr>
+		<td class="main">{$txt.text_ean}</td>
+		<td class="main">{$EAN}</td>
+	</tr>	
+{/if}	
+
+  <tr>
+    <td>{$txt.text_reason}</td>
+    <td>{$CHOOSE_REASON}</td>
+  </tr>	
+	
+{if $ERROR_MESSAGE} 	
+  <tr>
+    <td>{$txt.text_error_message}</td>
+    <td>{$ERROR_MESSAGE}</td>
+  </tr>
+{/if}
+</table>
+<h2>{$txt.options}</h2>
+<table class="table table-bordered table-striped">		
+
+{if $PICK_UP}	
+	<tr>
+	  <td>{$txt.pick_up}</td>
+	  <td>{$PICK_UP_YES} {$txt.pick_up_yes}&nbsp;&nbsp;&nbsp;{$PICK_UP_NO} {$txt.pick_up_no}</td>
+  </tr>
+{/if}		
+	<tr>
+	  <td>{$txt.shipping_time}</td>
+	  <td>{$SHIPPING_TIME}</td>
+	</tr>
+{if $COST_ESTIMATE}
+	<tr>
+		<td>{$txt.cost_estimate}</td>
+		<td>{$COST_ESTIMATE_YES} {$txt.cost_estimate_yes}&nbsp;&nbsp;&nbsp;{$COST_ESTIMATE_NO} {$txt.cost_estimate_no}</td>
+	</tr>	
+{/if}		
+</table>
+
+<table class="table">
+  <tr>
+    <td class="text-right ar">{$BUTTON_SUBMIT}</td>
+  </tr>
+  <tr>
+    <td>{$txt.text_info}</td>
+  </tr>
+</table>
+{$FORM_END}
+
+{else}
+
+<table class="table">
+  <tr>
+    <td>{$txt.text_rma_success}</td>
+	</tr>
+  <tr>
+    <td>{$RMA_OVERVIEW}</td>
+	</tr>	
+</table>
+
+{/if}

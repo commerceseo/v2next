@@ -1,0 +1,75 @@
+{config_load file="lang/$language/shopbewertung_$language.conf" section="shopbewertung"}
+{if $BEWERTUNG == 'ok'}<div class="green">{#bewertungok#}</div><br>{/if}
+{if $BEWERTUNG == 'free'}<div class="green">{#bewertungfree#}</div><br>{/if}
+<div itemprop="review" itemscope itemtype="http://schema.org/Review">
+	<h1>{#shopbewertung#}</h1>	
+	<div class="votingbox">
+		<div itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+			<meta itemprop="worstRating" content = "0">
+			<img src="{$tpl_path}img/shopwertung/shopvotestar_{$language}.png" width="82" height="82" alt="Shop Voting" title="Shop Voting" />
+			<div class="voting">
+				<span itemprop="ratingValue">{$BEWERTUNG_GESAMT_DURCHSCHNITT}</span> /  <span itemprop="bestRating">5.00</span>
+			</div>
+			<div class="votinboxstarbox">
+				<div class="votingstars">{$GESAMT_STERNE}</div>
+				<div class="votingtext">{#aus#}<br>{$BEWERTUNG_GESAMT} {if $BEWERTUNG_GESAMT == 1}{#bewertung1#}{else}{#bewertungen#}{/if}</div>
+			</div>
+		</div>
+	</div>
+		
+	<div class="klickbox">
+		<span class="votetopic">{#kriterienbewertung#}</span> <span class="fs85">{#unabhaengig#}</span><br><br>
+		<div class="kriterium">{#ware#}</div><div class="stars">{$WARE_STERNE}</div><div class="kritik">{$BEWERTUNG_WARE} | <span class="fs85">({$BEWERTUNG_GESAMT_WARE} Bewertungen)</span></div>
+		<div class="kriterium">{#versand#}</div><div class="stars">{$VERSAND_STERNE}</div><div class="kritik">{$BEWERTUNG_VERSAND} | <span class="fs85">({$BEWERTUNG_GESAMT_VERSAND} Bewertungen)</span></div>
+		<div class="kriterium">{#service#}</div><div class="stars">{$SERVICE_STERNE}</div><div class="kritik">{$BEWERTUNG_SERVICE} | <span class="fs85">({$BEWERTUNG_GESAMT_SERVICE} Bewertungen)</span></div>
+		<div class="kriterium">{#seite#}</div><div class="stars">{$SEITE_STERNE}</div><div class="kritik">{$BEWERTUNG_SEITE} | <span class="fs85">({$BEWERTUNG_GESAMT_SEITE} Bewertungen)</span></div>
+	</div>
+	<div class="votebutton">{$OPINION_LINK}</div>
+		
+	<div class="viewbox">
+		<ul>
+			<li class="alle">
+				<a href="{$LINK_ALLE}" class="{if $AKTIVE_CLASS == 'alle'}bactive{else}bnonactive{/if}">{#alle#} ({$BEWERTUNG_GESAMT})<br>100.00%</a>
+			</li>
+			<li class="positive">
+				<a href="{$LINK_POSITIV}" class="{if $AKTIVE_CLASS == 'positive'}bactive{else}bnonactive{/if}">{#positive#}({$BEWERTUNG_POSITIV})
+				<br>{$BEWERTUNG_POSITIV_PROZENTE}%</a>
+			</li>
+			<li class="neutrale">
+				<a href="{$LINK_NEUTRAL}" class="{if $AKTIVE_CLASS == 'neutrale'}bactive{else}bnonactive{/if}">{#neutrale#} ({$BEWERTUNG_NEUTRAL})
+				<br>{$BEWERTUNG_NEUTRAL_PROZENTE}%</a>
+			</li>
+			<li class="negative">
+				<a href="{$LINK_NEGATIV}" class="{if $AKTIVE_CLASS == 'negative'}bactive{else}bnonactive{/if}">{#negative#} ({$BEWERTUNG_NEGATIV})
+				<br>{$BEWERTUNG_NEGATIV_PROZENTE}%</a>
+			</li>        
+		</ul>
+	 </div>
+
+	{foreach name=aussen item=module_data from=$module_content}
+	<div class="votinglist">
+	<h3>{#bewertung#} {$module_data.DATUM}</h3>
+		
+			<div class="votestar">
+				{$module_data.RATING}<br><br>
+				{#autor#}<br><span itemprop="author">{$module_data.AUTHOR}{if $module_data.AUTHORLST > 0}.{/if}</span>
+			</div>
+			<div class="votingcontent">
+			  {#kommentar#}<br>
+			  {if $module_data.TEXT}<span itemprop="description">{$module_data.TEXT}</span>{else}<em>{#keinebewertung#}</em>{/if}<br>
+				{if $module_data.KOMMENTAR}
+					<div class="admincomment">
+						<b>{#adminkommentar#}</b>
+						<br>
+						{$module_data.KOMMENTAR}
+					</div>
+				{/if}
+			</div>
+		
+	</div>
+
+   {/foreach}
+  
+{$NAVBAR}
+
+</div>

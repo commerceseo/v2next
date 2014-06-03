@@ -1,0 +1,84 @@
+{strip}
+<div id="nav_top" class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <nav id="nav_top_nav" class="navbar navbar-default" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#usernav">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{$home}" title="{$store_name}"><i class="glyphicon glyphicon-home"></i></a>
+                </div>
+
+                <div class="navbar-collapse collapse" id="usernav">
+                    <ul class="nav navbar-nav">
+                        <li>
+                            <a href="shop_content.php?coID=4">{#link_imprint#}</a>
+                        </li>
+                        <li>
+                            <a href="shop_content.php?coID=7">{#link_contact#}</a>
+                        </li>
+                        <li class="dropdown menu">
+                            <a href="{$cart}" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-shopping-cart"></i> {#link_cart#} {$cart_count}<b class="caret"></b></a>
+                            {$BOX_header_cart}
+                        </li>	
+
+                        <li>
+                            <a href="{$wish_list}" id="wishButton" title="{#link_wish_list#}"><i class="glyphicon glyphicon-star"></i> {#link_wish_list#}</a>
+                            {*if $wish_list_count > 0}
+                            <b class="counter">{$wish_list_count}</b>
+                            {/if*} 
+                        </li>
+
+                        <li class="dropdown accountmenu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-user"></i> {#link_account#} <b class="caret"></b></a>
+                            {$BOX_header_loginbox}
+                        </li>
+                    </ul>
+						{if $customer_name}
+						<ul class="nav navbar-nav navbar-right">
+						<li class="navbar-brand">
+						{$customer_name}
+						</li>
+						</ul>
+						{/if}
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12" id="logo">
+            <a href="{$home}">{$logo}</a>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            {$BOXES_nav_search}
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12">
+            <nav class="navbar navbar-inverse" role="navigation">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#catnav">
+                        <span class="sr-only">Produkte</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="collapse navbar-collapse" id="catnav">
+                    {$BOX_cat_nav}
+                </div>
+            </nav>
+        </div>
+    </div>
+</div>
+{/strip}

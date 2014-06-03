@@ -1,0 +1,89 @@
+{*debug*}
+<div class="buttonback">
+	<a class="button_blue button_set" href="javascript:history.back(1)">
+		<span class="button-outer">
+			<span class="button-inner">{$txt.ZURUECK}</span>
+		</span>
+	</a>
+</div>
+<br />
+<div class="contcont w97">
+    <a href="blog_rss.php">
+		<img src="images/logos/rss.jpg" />
+	</a>  
+	<div>
+		{$starttext}
+	</div>
+    <br />
+
+    <hr>
+
+	<div>
+		<h2 class="blog_h2">{$txt.BLOCKKAT}</h2>
+		{foreach name=cats item=cat from=$blogs}
+
+		{assign var=CATEGORIE_bevor value=$cat.CATEGORIE_ID}
+
+		<div class="blog_bei">
+			<div class="blog_kat"><a href="{$cat.CATEGORIE_LINK}" class="blog_link">{$cat.CATEGORIE_TITLE|truncate:20:"...":true}</a></div>
+		</div>
+
+		{/foreach}
+
+	</div>
+    <hr> 
+	<div class="slider_container">
+		<ul class="rslides" id="bslider">
+			{foreach name=imgBig item=img_array from=$IMAES_SLIDER}
+			<li>
+				{if $img_array.image_area_array|@sizeof > 0}   
+				<img usemap="#map2_{$smarty.foreach.imgBig.index+1}" class="slideImgControl" id="slideImgControl2_{$smarty.foreach.imgBig.index+1}" src="images/slider_images/{$img_array.image_large}" alt="{$img_array.image_alt_text}" />
+				<map name="map2_{$smarty.foreach.imgBig.index+1}">
+					{foreach item=area_array from=$img_array.image_area_array}
+					<area id="area2_{$area_array.image_area_id}" shape="{$area_array.image_area_shape}" coords="{$area_array.image_area_coords}" href="{$area_array.image_area_link_url}" alt="{$area_array.image_area_title}" title="{$area_array.image_area_title}" target="{$area_array.image_area_link_target}" />
+					{/foreach}
+				</map>
+				{elseif $img_array.link_url}
+				<a href="{$img_array.link_url}" target="{$img_array.link_target}">
+					<img class="slideImgControl" id="slideImgControl2_{$smarty.foreach.imgBig.index+1}" src="images/blog_image/popup_images/{$img_array.image_large}" title="{$img_array.image_title_text}" alt="{$img_array.image_alt_text}" />
+				</a>
+				{else}
+				<img class="slideImgControl" id="slideImgControl2_{$smarty.foreach.imgBig.index+1}" src="images/blog_image/popup_images/{$img_array.image_large}" title="{$img_array.image_title_text}" alt="{$img_array.image_alt_text}" />
+				{/if}
+			</li>
+			{/foreach}        
+		</ul>
+
+	</div>
+	{if $blog_items}
+	<hr>
+	<h2 class="blog_h2">{$txt.BLOGNEWS}</h2>
+
+	{foreach name=cats item=module_data from=$blog_items}
+	<div class="contcont w97">
+        <div>
+			<div class="datum">
+				<p>
+					<span class="monat">{$module_data.monat}</span>
+					<span class="tag">{$module_data.tag}</span>
+					<span class="jahr">{$module_data.jahr}</span>
+				</p>
+			</div> 
+			<div class="bcont">
+				<h3><a href="{$module_data.blog_link}">{$module_data.title}</a></h3>
+                {$module_data.shortdesc}
+			</div>
+        </div>       
+	</div>
+	<br />        
+	{/foreach}
+	{/if}
+</div>
+<br />
+<div class="buttonback">
+	<a class="button_blue button_set" href="javascript:history.back(1)">
+		<span class="button-outer">
+			<span class="button-inner">{$txt.ZURUECK}</span>
+		</span>
+	</a>
+</div>

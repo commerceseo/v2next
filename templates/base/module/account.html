@@ -1,0 +1,54 @@
+{load_language_text section="account"}
+{if $error_message!=''}
+<div class="headerError bg-danger">{$error_message}</div>
+{/if}
+{if $error!=''}
+<div class="headerError bg-danger">{$error}</div>
+{/if}
+<h1>{$txt.heading_account}</h1>
+<div class="product_pad">
+{$txt.text_welcome}<br>
+{if $LINK_LOGIN}
+	<br>
+	<ul class="account_ul">
+		<li class="btn btn-primary"><a href="{$LINK_LOGIN}">{$txt.text_login}</a></li>
+	</ul>
+{/if}
+<br>
+<h2>{$txt.title_account}</h2>
+<br>
+<ul class="account_ul">
+	<li class="btn btn-primary"><a href="{$LINK_EDIT}">{$txt.text_edit}</a></li>
+	<li class="btn btn-primary"><a href="{$LINK_ADDRESS}">{$txt.text_address}</a></li>
+	<li class="btn btn-primary"><a href="{$LINK_PASSWORD}">{$txt.text_password}</a></li>
+	<li class="btn btn-primary"><a href="{$LINK_DELETE}">{$txt.text_delete}</a></li>
+</ul>
+<br>
+<h2>{$txt.title_notification}</h2>
+<br>
+<ul class="account_ul">
+	<li class="btn btn-primary"><a href="{$LINK_NEWSLETTER}">{$txt.text_newsletter}</a></li>
+</ul>
+</div>
+
+{if $order_content}
+	<div class="product_pad">
+		<h2>{$txt.title_orders}</h2>
+		<a href="{$LINK_ALL}">{$txt.text_all}</a>
+		<br>
+		{foreach name=aussen item=order_data from=$order_content}
+			<fieldset class="account_history">
+				<legend ><a href="{$order_data.ORDER_LINK}">{$order_data.ORDER_DATE}</a>&nbsp;&nbsp;{$txt.order_nr}{$order_data.ORDER_ID}</legend>
+				{$txt.order_total}{$order_data.ORDER_TOTAL}<br>
+				{$txt.order_status}{$order_data.ORDER_STATUS}<br>
+				{$order_data.ORDER_BUTTON}
+			</fieldset>
+		{/foreach}
+	</div>
+{/if}
+
+{if $MODULE_products_history}
+<div class="product_pad">
+{$MODULE_products_history}
+</div>
+{/if}

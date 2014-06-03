@@ -1,0 +1,17 @@
+{if $options!=''}
+	<fieldset class="productinfooption">
+		<dl>
+		{foreach name=outer item=options_data from=$options}
+			<dt class="w126"><b>{$options_data.NAME}</b>:</dt>
+				<dd>
+					{assign var="n" value=0}
+					{foreach key=key_data item=item_data from=$options_data.DATA}
+					<input class="option" type="radio" name="id[{$options_data.ID}]" value="{$item_data.ID}" {if $n == 0}checked="checked"{/if} n="{$n}" />
+					{assign var="n" value="`$n+1`"}
+					{$item_data.TEXT} {$item_data.STOCK} <br>{if $item_data.PRICE!=''}( {$item_data.PREFIX}{$item_data.PRICE} {if $item_data.VPE} / {$item_data.VPE}{/if}){/if}  <br>
+					{/foreach}
+				</dd>
+		{/foreach}
+		</dl>
+	</fieldset> 
+{/if}

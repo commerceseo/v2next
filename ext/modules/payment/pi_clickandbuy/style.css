@@ -1,0 +1,96 @@
+div#infoBoxRight {
+	position: relative;
+}
+
+div#infoBoxRight a {
+	display: block;
+	text-decoration:none;
+}
+
+div#infoBoxRight a:hover {
+	background: #F6F6F6;
+}
+
+div#infoBoxRight a span {
+	display: none;
+}
+
+div#infoBoxRight a:hover span {
+	display: block; 
+	color:#000000;
+	text-decoration:none;
+	position: absolute; top: 0px; left: 25px; width: 250px;
+	padding: 5px; 
+	border:1px solid #B3BAC5;
+	margin: 4px; 
+	z-index: 100; 
+	background: #F6F6F6;
+}
+
+div#infoBoxLeft {
+	position: relative;
+}
+
+div#infoBoxLeft a {
+	display: block;
+	text-decoration:none;
+}
+
+div#infoBoxLeft a:hover {
+	background: #F6F6F6;
+}
+
+div#infoBoxLeft a span {
+	display: none;
+}
+
+div#infoBoxLeft a:hover span {
+	display: block; 
+	color:#000000;
+	text-decoration:none;
+	position: absolute; top: 0px; right: 25px; width: 250px;
+	padding: 5px; 
+	border:1px solid #B3BAC5;
+	margin: 4px; 
+	z-index: 100; 
+	background: #F6F6F6;
+}
+
+div#infoBoxMMS {
+	position: relative;
+}
+
+div#infoBoxMMS a {
+	display: block;
+	text-decoration:none;
+}
+
+div#infoBoxMMS a:hover {
+	background: #F6F6F6;
+}
+
+div#infoBoxMMS a span {
+	display: none;
+}
+
+div#infoBoxMMS a:hover span {
+	display: block; 
+	color:#000000;
+	text-decoration:none;
+	position: absolute; top: 0px; right: 0px; width: 420px;
+	padding: 5px; 
+	border:1px solid #B3BAC5;
+	margin: 4px; 
+	z-index: 100; 
+	background: #F6F6F6;
+}
+
+input.submit {
+	font-size: 13px;
+}
+
+textarea.infoBox {
+	width: 420px;
+	font-size: 11px;
+	background: #F6F6F6;
+}

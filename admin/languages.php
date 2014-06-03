@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: languages.php 873 2014-03-25 16:42:10Z akausch $
+ * 	$Id: languages.php 1072 2014-05-27 08:38:11Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -363,15 +363,15 @@ while ($languages = xtc_db_fetch_array($languages_query)) {
 
 
     if ($languages['status'] == 1) {
-        $td_row_status_lang = xtc_image(DIR_WS_IMAGES . 'icon_status_green.gif', IMAGE_ICON_STATUS_GREEN, 10, 10, 'style="margin-left: 5px;"') . '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setlflag&flag=0&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '">' . xtc_image(DIR_WS_IMAGES . 'icon_status_red_light.gif', IMAGE_ICON_STATUS_RED_LIGHT, 10, 10, 'style="margin-left: 5px;"') . '</a>';
+        $td_row_status_lang = '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setlflag&flag=0&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '"><button class="btn btn-success btn-xs">Online</button></a>';
     } else {
-        $td_row_status_lang = '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setlflag&flag=1&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '">' . xtc_image(DIR_WS_IMAGES . 'icon_status_green_light.gif', IMAGE_ICON_STATUS_GREEN_LIGHT, 10, 10, 'style="margin-left: 5px;"') . '</a>' . xtc_image(DIR_WS_IMAGES . 'icon_status_red.gif', IMAGE_ICON_STATUS_RED, 10, 10, 'style="margin-left: 5px;"');
+        $td_row_status_lang = '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setlflag&flag=1&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '"><button class="btn btn-danger btn-xs">Offline</button></a>';
     }
 
     if ($languages['status_admin'] == '1') {
-        $td_row_status_admin_lang = xtc_image(DIR_WS_IMAGES . 'icon_status_green.gif', IMAGE_ICON_STATUS_GREEN, 10, 10, 'style="margin-left: 5px;"') . '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setaflag&flag=0&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '">' . xtc_image(DIR_WS_IMAGES . 'icon_status_red_light.gif', IMAGE_ICON_STATUS_RED_LIGHT, 10, 10, 'style="margin-left: 5px;"') . '</a>';
+        $td_row_status_admin_lang = '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setaflag&flag=0&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '"><button class="btn btn-success btn-xs">Online</button></a>';
     } else {
-        $td_row_status_admin_lang = '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setaflag&flag=1&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '">' . xtc_image(DIR_WS_IMAGES . 'icon_status_green_light.gif', IMAGE_ICON_STATUS_GREEN_LIGHT, 10, 10, 'style="margin-left: 5px;"') . '</a>' . xtc_image(DIR_WS_IMAGES . 'icon_status_red.gif', IMAGE_ICON_STATUS_RED, 10, 10, 'style="margin-left: 5px;"');
+        $td_row_status_admin_lang = '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setaflag&flag=1&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '"><button class="btn btn-danger btn-xs">Offline</button></a>';
     }
 
     if ((is_object($lInfo)) && ($languages['languages_id'] == $lInfo->languages_id)) {
@@ -404,7 +404,6 @@ $contents = array();
 switch ($_GET['action']) {
     case 'new':
         $heading[] = array('text' => '<b>' . TEXT_INFO_HEADING_NEW_LANGUAGE . '</b>');
-
         $contents = array('form' => xtc_draw_form('languages', FILENAME_LANGUAGES, 'action=insert'));
         $contents[] = array('text' => TEXT_INFO_INSERT_INTRO);
         $contents[] = array('text' => '<br />' . TEXT_INFO_LANGUAGE_NAME . '<br />' . xtc_draw_input_field('name'));
@@ -421,7 +420,6 @@ switch ($_GET['action']) {
 
     case 'edit':
         $heading[] = array('text' => '<b>' . TEXT_INFO_HEADING_EDIT_LANGUAGE . '</b>');
-
         $contents = array('form' => xtc_draw_form('languages', FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id . '&action=save'));
         $contents[] = array('text' => TEXT_INFO_EDIT_INTRO);
         $contents[] = array('text' => '<br />' . TEXT_INFO_LANGUAGE_NAME . '<br />' . xtc_draw_input_field('name', $lInfo->name));
@@ -435,22 +433,20 @@ switch ($_GET['action']) {
         if (DEFAULT_LANGUAGE != $lInfo->code)
             $contents[] = array('text' => '<br />' . xtc_draw_checkbox_field('default') . ' ' . TEXT_SET_DEFAULT);
 
-        $contents[] = array('align' => 'center', 'text' => '<br /><input type="submit" class="button" onClick="this.blur();" value="' . BUTTON_UPDATE . '"/> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id) . '">' . BUTTON_CANCEL . '</a>');
+        $contents[] = array('align' => 'center', 'text' => '<br /><button type="submit" class="btn btn-primary">' . BUTTON_UPDATE . '</button> <a href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id) . '"><button type="button" class="btn btn-default">' . BUTTON_CANCEL . '</button></a>');
         break;
 
     case 'delete':
         $heading[] = array('text' => '<b>' . TEXT_INFO_HEADING_DELETE_LANGUAGE . '</b>');
-
         $contents[] = array('text' => TEXT_INFO_DELETE_INTRO);
         $contents[] = array('text' => '<br /><b>' . $lInfo->name . '</b>');
-        $contents[] = array('align' => 'center', 'text' => '<br />' . (($remove_language) ? '<a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id . '&action=deleteconfirm') . '">' . BUTTON_DELETE . '</a>' : '') . ' <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id) . '">' . BUTTON_CANCEL . '</a>');
+        $contents[] = array('align' => 'center', 'text' => '<br />' . (($remove_language) ? '<a href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id . '&action=deleteconfirm') . '"><button type="button" class="btn btn-danger">' . BUTTON_DELETE . '</button></a>' : '') . ' <a href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id) . '"><button type="button" class="btn btn-default">' . BUTTON_CANCEL . '</button></a>');
         break;
 
     default:
         if (is_object($lInfo)) {
-            $heading[] = array('text' => '<b><strong>' . $lInfo->name . '</strong></b>');
-
-            $contents[] = array('align' => 'center', 'text' => '<a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id . '&action=edit') . '">' . BUTTON_EDIT . '</a> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id . '&action=delete') . '">' . BUTTON_DELETE . '</a>');
+            $heading[] = array('text' => '<b><b>' . $lInfo->name . '</b></b>');
+            $contents[] = array('align' => 'center', 'text' => '<a href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id . '&action=edit') . '"><button type="button" class="btn btn-primary">' . BUTTON_EDIT . '</button></a> <a href="' . xtc_href_link(FILENAME_LANGUAGES, 'page=' . $_GET['page'] . '&lID=' . $lInfo->languages_id . '&action=delete') . '"><button type="button" class="btn btn-danger">' . BUTTON_DELETE . '</button></a>');
             $contents[] = array('text' => '<br />' . TEXT_INFO_LANGUAGE_NAME . ' ' . $lInfo->name);
 
             if ($lInfo->status == 1) {

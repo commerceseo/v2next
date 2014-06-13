@@ -55,4 +55,5 @@ $module_smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
 $module_smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $module_smarty->caching = false;
 $module = $module_smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/downloads.html', USE_TEMPLATE_DEVMODE));
+$smarty->assign('dl', $dl);
 $smarty->assign('downloads_content', $module);

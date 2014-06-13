@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: order_details_cart.php 1045 2014-05-13 12:09:48Z akausch $
+ * 	$Id: order_details_cart.php 1096 2014-06-12 14:47:41Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -20,8 +20,8 @@ $module_smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
 unset($_SESSION['shipping']);
 
 require_once (DIR_FS_INC . 'xtc_check_stock.inc.php');
-require_once (DIR_FS_INC . 'xtc_get_products_stock.inc.php');
-require_once (DIR_FS_INC . 'xtc_remove_non_numeric.inc.php');
+// require_once (DIR_FS_INC . 'xtc_get_products_stock.inc.php');
+// require_once (DIR_FS_INC . 'xtc_remove_non_numeric.inc.php');
 require_once (DIR_FS_INC . 'xtc_format_price.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_attributes_model.inc.php');
 require_once (DIR_FS_INC . 'xtc_check_stock_special.inc.php');
@@ -94,11 +94,13 @@ for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
 	} else {
 		$description = cseo_truncate(strip_tags(xtc_get_long_description($products[$i]['id'])), CHECKOUT_SHOW_DESCRIPTION_LENG);
 	}
-	
+
 	if ($attributes_exist == 1) {
 		$product_shipping = '';
 	} else {
-		$product_shipping = $products[$i]['shipping_time'];
+		$main = new main($products[$i]['id']);
+		$pshipping_time = xtc_db_fetch_array(xtc_db_query("SELECT products_shippingtime FROM " . TABLE_PRODUCTS . " WHERE products_id = '" . $products[$i]['id'] . "';"));
+		$product_shipping = $products[$i]['shipping_time'] . $main->getShippingStatusInfoLinkActive($pshipping_time['products_shippingtime']);
 	}
 	
     $module_content[$i] = array('PRODUCTS_NAME' => $products[$i]['name'] . $mark_stock . $mark_minorder['mark'] . $mark_maxorder['mark'] . $mark_special_stock,
@@ -134,9 +136,12 @@ for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
                     $_SESSION['any_out_of_stock'] = 1;
             }
 			if ($products[$i][$option]['attributes_shippingtime'] > 0) {
-				$attr_shipping = $main->getShippingStatusName($products[$i][$option]['attributes_shippingtime']);
+				$main = new main($products[$i][$option]['attributes_shippingtime']);
+				$attr_shipping = $main->getShippingStatusName($products[$i][$option]['attributes_shippingtime']) . $main->getShippingStatusInfoLinkActive($products[$i][$option]['attributes_shippingtime']);
 			} else {
-				$attr_shipping = $products[$i]['shipping_time'];
+				$main = new main($products[$i]['id']);
+				$pshipping_time = xtc_db_fetch_array(xtc_db_query("SELECT products_shippingtime FROM " . TABLE_PRODUCTS . " WHERE products_id = '" . $products[$i]['id'] . "';"));
+				$attr_shipping = $products[$i]['shipping_time'] . $main->getShippingStatusInfoLinkActive($pshipping_time['products_shippingtime']);
 			}
             $price = $products[$i][$option]['options_values_price'];
 
@@ -148,6 +153,7 @@ for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
 						$module_content[$i]['ATTRIBUTES'][] = array ('ID' => $products[$i][$option]['products_attributes_id'], 
 																		'MODEL' => xtc_get_attributes_model(xtc_get_prid($products[$i]['id']), $products[$i][$option]['products_options_values_name'],$_SESSION['cart_freitext'][$i_]['freitext']), 
 																		'NAME' => $products[$i][$option]['products_options_name'],
+																		'ATTR_SHIPPING' => $attr_shipping,
 																		'ATTR_QTY' => ($products[$i][$option]['products_options_name'] != 'Downloads')? $products[$i]['quantity'].'x':'',
 																		'PRICE' => ($products[$i][$option]['products_options_name'] != 'Downloads')?$xtPrice->xtcFormat($products[$i][$option]['options_values_price'] * $products[$i]['quantity'],true,$products[$i]['tax_class_id']):'',
 																		'PREFIX' =>  ($products[$i][$option]['products_options_name'] != 'Downloads')?$products[$i][$option]['price_prefix']:'',
@@ -161,6 +167,7 @@ for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
 						$module_content[$i]['ATTRIBUTES'][] = array ('ID' => $products[$i][$option]['products_attributes_id'], 
 																		'MODEL' => xtc_get_attributes_model(xtc_get_prid($products[$i]['id']), $products[$i][$option]['products_options_values_name'],$_SESSION['cart_freitext'][$i_]['freitext1']), 
 																		'NAME' => $products[$i][$option]['products_options_name'],
+																		'ATTR_SHIPPING' => $attr_shipping,
 																		'ATTR_QTY' => ($products[$i][$option]['products_options_name'] != 'Downloads')? $products[$i]['quantity'].'x':'',
 																		'PRICE' => ($products[$i][$option]['products_options_name'] != 'Downloads')?$xtPrice->xtcFormat($products[$i][$option]['options_values_price'] * $products[$i]['quantity'],true,$products[$i]['tax_class_id']):'',
 																		'PREFIX' =>  ($products[$i][$option]['products_options_name'] != 'Downloads')?$products[$i][$option]['price_prefix']:'',
@@ -174,6 +181,7 @@ for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
 						$module_content[$i]['ATTRIBUTES'][] = array ('ID' => $products[$i][$option]['products_attributes_id'], 
 																		'MODEL' => xtc_get_attributes_model(xtc_get_prid($products[$i]['id']), $products[$i][$option]['products_options_values_name'],$_SESSION['cart_freitext'][$i_]['freitext2']), 
 																		'NAME' => $products[$i][$option]['products_options_name'],
+																		'ATTR_SHIPPING' => $attr_shipping,
 																		'ATTR_QTY' => ($products[$i][$option]['products_options_name'] != 'Downloads')? $products[$i]['quantity'].'x':'',
 																		'PRICE' => ($products[$i][$option]['products_options_name'] != 'Downloads')?$xtPrice->xtcFormat($products[$i][$option]['options_values_price'] * $products[$i]['quantity'],true,$products[$i]['tax_class_id']):'',
 																		'PREFIX' =>  ($products[$i][$option]['products_options_name'] != 'Downloads')?$products[$i][$option]['price_prefix']:'',
@@ -195,6 +203,7 @@ for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
 				$module_content[$i]['ATTRIBUTES'][] = array ('ID' => $products[$i][$option]['products_attributes_id'],
 														'MODEL' => xtc_get_attributes_model(xtc_get_prid($products[$i]['id']), $products[$i][$option]['products_options_values_name'],$products[$i][$option]['products_options_name']),
 														'NAME' => $products[$i][$option]['products_options_name'],
+														'ATTR_SHIPPING' => $attr_shipping,
 														'ATTR_QTY' => ($products[$i][$option]['products_options_name'] != 'Downloads')? $products[$i]['quantity'].'x':'',
 														'PRICE' => $price_sum,
 														'PREFIX' =>  ($products[$i][$option]['products_options_name'] != 'Downloads')?$products[$i][$option]['price_prefix']:'',
@@ -259,7 +268,7 @@ if (isset($_SESSION['cc_id'])) {
 }
 
 if ($_SESSION['cart']->show_weight() > 0) {
-	$total_content .= '<div class="ot_total_netto">'.WEIGHT.' : ' . $_SESSION['cart']->show_weight() . '</div>';
+	$total_content .= '<div class="ot_total_netto">'.WEIGHT.' : ' . $_SESSION['cart']->show_weight() . ' kg</div>';
 }
 
 if ($_SESSION['customers_status']['customers_status_show_price'] == '1') {
@@ -297,15 +306,24 @@ if ($_SESSION['customers_status']['customers_status_show_price'] == '1') {
 if ($customer_status_value['customers_status_ot_discount'] != 0) {
     $total_content .= TEXT_CART_OT_DISCOUNT . $customer_status_value['customers_status_ot_discount'] . '%';
 }
-if (SHOW_SHIPPING == 'true') {
-    $module_smarty->assign('SHIPPING_INFO', $main->getShippingLink());
-}
+
 if ($_SESSION['customers_status']['customers_status_show_price'] == '1') {
     if (MODULE_ORDER_TOTAL_UST_FREE_STATUS != 'true') {
 		if (DISPLAY_TAX != 'false') {
 			$module_smarty->assign('UST_CONTENT', '<div class="ot_tax">' . $_SESSION['cart']->show_tax() . '</div>');
 		}
 	}
+}
+
+if (SHOW_SHIPPING == 'true') {
+    $query = xtc_db_query("SELECT countries_id FROM " . TABLE_COUNTRIES . " WHERE status = '1';");
+    if (xtc_db_num_rows($query) == 1) {
+		$shipping_info = '';
+    } else {
+		$store_country = xtc_db_fetch_array(xtc_db_query("SELECT countries_name FROM " . TABLE_COUNTRIES . " WHERE countries_id = '".STORE_COUNTRY."';"));
+		$shipping_info = SHIPPING_AUSLAND_CART1 .' ' . $store_country['countries_name'] . ' <a title="' . SHIPPING_COSTS . '" class="shipping" href="' . xtc_href_link(FILENAME_POPUP_CONTENT, 'coID=' . SHIPPING_INFOS) . '"> ' . SHIPPING_AUSLAND_CART2 . '</a>';
+    }
+	$module_smarty->assign('SHIPPING_INFO', $shipping_info);
 }
 
 // Versandkosten im Warenkorb

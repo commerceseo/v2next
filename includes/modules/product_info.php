@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: product_info.php 1050 2014-05-14 16:53:07Z akausch $
+ * 	$Id: product_info.php 1065 2014-05-22 12:08:08Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -91,7 +91,7 @@ if (!is_object($product) || !$product->isProduct()) {
         }
 
         if (ACTIVATE_SHIPPING_STATUS == 'true') {
-            $info_smarty->assign('SHIPPING_NAME', $main->getShippingStatusName($product->data['products_shippingtime']));
+            $info_smarty->assign('SHIPPING_NAME', $main->getShippingStatusName($product->data['products_shippingtime']) . $main->getShippingStatusInfoLinkActive($product->data['products_shippingtime']));
             $info_smarty->assign('SHIPPING_IMAGE', $main->getShippingStatusImage($product->data['products_shippingtime']));
         }
         $products_price_vpe = $xtPrice->xtcGetPrice($product->data['products_id'], false, 0, $product->data['products_tax_class_id'], $product->data['products_price']);

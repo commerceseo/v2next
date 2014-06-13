@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: configuration.php 1063 2014-05-22 12:06:49Z akausch $
+* 	$Id: configuration.php 1099 2014-06-12 14:51:40Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -15,12 +15,9 @@
 define('TABLE_HEADING_CONFIGURATION_TITLE', 'Name');
 define('TABLE_HEADING_CONFIGURATION_VALUE', 'Wert');
 define('TABLE_HEADING_ACTION', 'Aktion');
-
 define('TEXT_INFO_EDIT_INTRO', 'Bitte führen Sie alle notwendigen Änderungen durch');
 define('TEXT_INFO_DATE_ADDED', 'hinzugefügt am:');
 define('TEXT_INFO_LAST_MODIFIED', 'letzte Änderung:');
-
-// commerce:SEO
 define('PRODUCT_LISTING_MANU_NAME_TITLE','Herstellername');
 define('PRODUCT_LISTING_MANU_NAME_DESC','Herstellername in der Produktübersichtsseite anzeigen?<br />Wird automatisch verlinkt.');
 define('PRODUCT_LISTING_MANU_IMG_TITLE','Herstellerbild');
@@ -41,7 +38,6 @@ define('IMAGE_NAME_PRODUCT_TITLE','Namensformat - Produkte');
 define('IMAGE_NAME_PRODUCT_DESC','Wie sollen die Namen der Produktbilder im Shop abgelegt werden?<br /><br />p_id = Die Produkt ID wird genutzt : 34.jpg, 34-1.jpg, usw.<br />p_name = Der Produktnamen wird genutzt, aus Technischen gründen derzeit immer in Deutsch : Das-erste-Produkt.jpg, Das-erste-Produkt-1.jpg<br />p_image = Die Bildername wird bebehalten : dvd_57h.jpg, dvd_57h-1.jpg');
 define('DOWN_FOR_MAINTENANCE_TITLE','<b style="color:red">Wartungsmodus</b>');
 define('DOWN_FOR_MAINTENANCE_DESC','Wartungsmodus aktivieren?<br />Sie können den Text für jede Sprache im <a href="content_manager.php">Content-Manager</a> einzeln anpassen.');
-
 define('CHECKOUT_SHOW_SHIPPING_MODULES_TITLE','Versandmodule aufgeklappt?');
 define('CHECKOUT_SHOW_SHIPPING_MODULES_DESC','Sollen die Versandmodule standardmäßig angezeigt werden?');
 define('CHECKOUT_SHOW_SHIPPING_ADDRESS_TITLE','Versandadresse aufgeklappt?');
@@ -64,62 +60,46 @@ define('CHECKOUT_AJAX_PRODUCTS_TITLE','Möglichkeit Artikelliste zu editieren?')
 define('CHECKOUT_AJAX_PRODUCTS_DESC','Sollen die Kunden während des Bestellprozesses die Möglichkeit haben, die Artikel zu editieren?');
 define('CHECKOUT_AJAX_STAT_TITLE','AJAX Checkout Prozess aktiviert?');
 define('CHECKOUT_AJAX_STAT_DESC','Sollen die Kunden über einen vereinfachten und kompakten Bestellvorgang Ihre Artikel bestellen?');
-
-// language definitions for config
 define('STORE_NAME_TITLE' , 'Name des Shops');
 define('STORE_NAME_DESC' , 'Der Name dieses Online Shops');
 define('STORE_OWNER_TITLE' , 'Inhaber');
 define('STORE_OWNER_DESC' , 'Der Name des Shop-Betreibers');
 define('STORE_OWNER_EMAIL_ADDRESS_TITLE' , 'Email Adresse');
 define('STORE_OWNER_EMAIL_ADDRESS_DESC' , 'Die Email Adresse des Shop-Betreibers');
-
 define('EMAIL_FROM_TITLE' , 'Email von');
 define('EMAIL_FROM_DESC' , 'Email Adresse die beim versenden (send mail)benutzt werden soll.');
-
 define('STORE_COUNTRY_TITLE' , 'Land');
 define('STORE_COUNTRY_DESC' , 'Das Land aus dem der Versand erfolgt <br /><b>Hinweis: Bitte nicht vergessen die Region richtig anzupassen.</b>');
 define('STORE_ZONE_TITLE' , 'Region');
 define('STORE_ZONE_DESC' , 'Die Region des Landes aus dem der Versand erfolgt.');
-
 define('EXPECTED_PRODUCTS_SORT_TITLE' , 'Reihenfolge für Artikelankündigungen');
 define('EXPECTED_PRODUCTS_SORT_DESC' , 'Das ist die Reihenfolge wie angekündigte Artikel angezeigt werden.');
 define('EXPECTED_PRODUCTS_FIELD_TITLE' , 'Sortierfeld für Artikelankündigungen');
 define('EXPECTED_PRODUCTS_FIELD_DESC' , 'Das ist die Spalte die zum Sortieren angekündigter Artikel benutzt wird.');
-
 define('USE_DEFAULT_LANGUAGE_CURRENCY_TITLE' , 'Auf die Landeswährung automatisch umstellen');
 define('USE_DEFAULT_LANGUAGE_CURRENCY_DESC' , 'Wenn die Spracheinstellung gewechselt wird automatisch die Währung anpassen.');
-
 define('SEND_EXTRA_ORDER_EmailS_TO_TITLE' , 'Senden einer extra Bestell-Email an:');
 define('SEND_EXTRA_ORDER_EmailS_TO_DESC' , 'Wenn zusätzlich eine Kopie des Bestell-Emails versendet werden soll, bitte in dieser Weise die Empfangs-Adressen auflisten: Name 1 &lt;Email@adresse1&gt;, Name 2 &lt;Email@adresse2&gt;');
-
 define('SEARCH_ENGINE_FRIENDLY_URLS_TITLE' , 'Suchmaschinenfreundliche URLs benutzen?');
 define('SEARCH_ENGINE_FRIENDLY_URLS_DESC' , 'Die Seiten URLs können automatisch für Suchmaschinen optimiert angezeigt werden.');
-
 define('DISPLAY_CART_TITLE' , 'Soll Warenkorb nach dem einfügen Angezeigt werden?');
 define('DISPLAY_CART_DESC' , 'Nach dem hinzufügen eines Artikels zum Warenkorb, oder zurück zum Artikel?');
-
 define('ALLOW_GUEST_TO_TELL_A_FRIEND_TITLE' , 'Gästen erlauben, ihre Bekannten per Email zu informieren?');
 define('ALLOW_GUEST_TO_TELL_A_FRIEND_DESC' , 'Gästen erlauben, ihre Bekannten per Email über Artikel zu informieren?');
-
 define('ADVANCED_SEARCH_DEFAULT_OPERATOR_TITLE' , 'Suchverknüpfungen');
 define('ADVANCED_SEARCH_DEFAULT_OPERATOR_DESC' , 'Standard Operator zum Verknüpfen von Suchwörtern.');
-
 define('STORE_NAME_ADDRESS_TITLE' , 'Geschäftsadresse und Telefonnummer etc');
 define('STORE_NAME_ADDRESS_DESC' , 'Tragen Sie hier Ihre Geschäftsadresse wie in einem Briefkopf ein.');
-
 define('SHOW_COUNTS_TITLE' , 'Artikelanzahl hinter Kategorienamen?');
 define('SHOW_COUNTS_DESC' , 'Zählt rekursiv die Anzahl der verschiedenen Artikel pro Warengruppe, und zeigt die anzahl (x) hinter jedem Kategorienamen');
-
 define('DISPLAY_PRICE_WITH_TAX_TITLE' , 'Preis inkl. MwSt. anzeigen');
 define('DISPLAY_PRICE_WITH_TAX_DESC' , 'Preise inklusive Steuer anzeigen (true) oder am Ende aufrechnen (false)');
-
 define('DEFAULT_CUSTOMERS_STATUS_ID_ADMIN_TITLE' , 'Kundenstatus(Kundengruppe) für Administratoren');
 define('DEFAULT_CUSTOMERS_STATUS_ID_ADMIN_DESC' , 'Wählen Sie den Kundenstatus(Gruppe) für Administratoren anhand der jeweiligen ID!');
 define('DEFAULT_CUSTOMERS_STATUS_ID_GUEST_TITLE' , 'Kundenstatus(Kundengruppe) für Gäste');
 define('DEFAULT_CUSTOMERS_STATUS_ID_GUEST_DESC' , 'Wählen Sie den Kundenstatus(Gruppe) für Gäste anhand der jeweiligen ID!');
 define('DEFAULT_CUSTOMERS_STATUS_ID_TITLE' , 'Kundenstatus für Neukunden');
 define('DEFAULT_CUSTOMERS_STATUS_ID_DESC' , 'Wählen Sie den Kundenstatus(Gruppe) für Gäste anhand der jeweiligen ID!<br />TIPP: Sie können im Menü Kundengruppen weitere Gruppen einrichten und zb Aktionswochen machen: Diese Woche 10 % Rabatt für alle Neukunden?');
-
 define('ALLOW_ADD_TO_CART_TITLE' , 'Erlaubt, Artikel in den Einkaufswagen zu legen');
 define('ALLOW_ADD_TO_CART_DESC' , 'Erlaubt das Einfügen von Artikeln in den Warenkorb auch dann, wenn "Preise anzeigen" in der Kundengruppe auf "Nein" steht');
 define('ALLOW_DISCOUNT_ON_PRODUCTS_ATTRIBUTES_TITLE' , 'Rabatte auch auf die Artikelattribute verwenden?');
@@ -130,7 +110,6 @@ define('TEMPLATE_TITLE' , 'Templateset (Theme)');
 define('TEMPLATE_DESC' , 'Wählen Sie ein Templateset (Theme) aus. Das Template muss sich im Ordner /templates/ befinden.<br /><br />Weitere Templates finden sie unter <a href="http://www.seo-template.de">http://www.seo-template.de</a>');
 define('CC_KEYCHAIN_TITLE','CC String');
 define('CC_KEYCHAIN_DESC','String zur verschlüsselung der CC Informationen (Bitte umbedingt ändern!)');
-
 define('ENTRY_FIRST_NAME_MIN_LENGTH_TITLE' , 'Vorname');
 define('ENTRY_FIRST_NAME_MIN_LENGTH_DESC' , 'Minimum Länge des Vornamens');
 define('ENTRY_LAST_NAME_MIN_LENGTH_TITLE' , 'Nachname');
@@ -153,20 +132,16 @@ define('ENTRY_TELEPHONE_MIN_LENGTH_TITLE' , 'Telefon Nummer');
 define('ENTRY_TELEPHONE_MIN_LENGTH_DESC' , 'Minimum Länge der Telefon Nummer');
 define('ENTRY_PASSWORD_MIN_LENGTH_TITLE' , 'Passwort');
 define('ENTRY_PASSWORD_MIN_LENGTH_DESC' , 'Minimum Länge des Passwort');
-
 define('CC_OWNER_MIN_LENGTH_TITLE' , 'Kreditkarteninhaber');
 define('CC_OWNER_MIN_LENGTH_DESC' , 'Minimum Länge des Namens des Kreditkarteninhabers');
 define('CC_NUMBER_MIN_LENGTH_TITLE' , 'Kreditkartennummer');
 define('CC_NUMBER_MIN_LENGTH_DESC' , 'Minimum Länge von Kreditkartennummern');
-
 define('REVIEW_TEXT_MIN_LENGTH_TITLE' , 'Bewertungen');
 define('REVIEW_TEXT_MIN_LENGTH_DESC' , 'Minimum Länge der Texteingabe bei Bewertungen');
-
 define('MIN_DISPLAY_BESTSELLERS_TITLE' , 'Bestseller');
 define('MIN_DISPLAY_BESTSELLERS_DESC' , 'Minimum Anzahl der Bestseller, die angezeigt werden sollen');
 define('MIN_DISPLAY_ALSO_PURCHASED_TITLE' , 'Ebenfalls gekauft');
 define('MIN_DISPLAY_ALSO_PURCHASED_DESC' , 'Minimum Anzahl der ebenfalls gekauften Artikel, die bei der Artikelansicht angezeigt werden sollen');
-
 define('MAX_ADDRESS_BOOK_ENTRIES_TITLE' , 'Adressbuch Einträge');
 define('MAX_ADDRESS_BOOK_ENTRIES_DESC' , 'Maximum erlaubte Anzahl an Adressbucheinträgen');
 define('MAX_DISPLAY_SEARCH_RESULTS_TITLE' , 'Suchergebnisse');
@@ -209,180 +184,116 @@ define('MAX_PRODUCTS_QTY_TITLE', 'Maximale Produktanzahl');
 define('MAX_PRODUCTS_QTY_DESC', 'Maximale Produktanzahl, die man eingeben kann');
 define('MAX_DISPLAY_NEW_PRODUCTS_DAYS_TITLE' , 'Anzahl der Tage für Neue Produkte');
 define('MAX_DISPLAY_NEW_PRODUCTS_DAYS_DESC' , 'Maximum Anzahl an Tagen die neue Artikel angezeigt werden sollen');
-
 define('PRODUCT_IMAGE_THUMBNAIL_WIDTH_TITLE' , 'Breite der Artikel-Thumbnails');
 define('PRODUCT_IMAGE_THUMBNAIL_WIDTH_DESC' , 'Maximale Breite der Artikel-Thumbnails in Pixel');
 define('PRODUCT_IMAGE_THUMBNAIL_HEIGHT_TITLE' , 'Höhe der Artikel-Thumbnails');
 define('PRODUCT_IMAGE_THUMBNAIL_HEIGHT_DESC' , 'Maximale Höhe der Artikel-Thumbnails in Pixel');
-
 define('PRODUCT_IMAGE_INFO_WIDTH_TITLE' , 'Breite der Artikel-Info Bilder');
 define('PRODUCT_IMAGE_INFO_WIDTH_DESC' , 'Maximale Breite der Artikel-Info Bilder in Pixel');
 define('PRODUCT_IMAGE_INFO_HEIGHT_TITLE' , 'Höhe der Artikel-Info Bilder');
 define('PRODUCT_IMAGE_INFO_HEIGHT_DESC' , 'Maximale Höhe der Artikel-Info Bilder in Pixel');
-
 define('PRODUCT_IMAGE_MINI_WIDTH_TITLE' , 'Breite der Mini Bilder');
 define('PRODUCT_IMAGE_MINI_WIDTH_DESC' , 'Maximale Breite der Mini Bilder in Pixel');
 define('PRODUCT_IMAGE_MINI_HEIGHT_TITLE' , 'Höhe der Mini Bilder');
 define('PRODUCT_IMAGE_MINI_HEIGHT_DESC' , 'Maximale Höhe der Mini Bilder in Pixel');
-
 define('CATEGORY_INFO_IMAGE_WIDTH_TITLE' , 'Breite der Kategorie Bilder');
 define('CATEGORY_INFO_IMAGE_WIDTH_DESC' , 'Maximale Breite der Kategorie Bilder in Pixel');
 define('CATEGORY_INFO_IMAGE_HEIGHT_TITLE' , 'Höhe der Kategorie Bilder');
 define('CATEGORY_INFO_IMAGE_HEIGHT_DESC' , 'Maximale Höhe der Kategorie Bilder in Pixel');
-
 define('CATEGORY_IMAGE_WIDTH_TITLE' , 'Breite der Kategorie Thumb-Bilder');
 define('CATEGORY_IMAGE_WIDTH_DESC' , 'Maximale Breite der Kategorie Thumb-Bilder in Pixel');
 define('CATEGORY_IMAGE_HEIGHT_TITLE' , 'Höhe der Kategorie Thumb-Bilder');
 define('CATEGORY_IMAGE_HEIGHT_DESC' , 'Maximale Höhe der Kategorie Thumb-Bilder in Pixel');
-
-
 define('PRODUCT_IMAGE_POPUP_WIDTH_TITLE' , 'Breite der Artikel-Popup Bilder');
 define('PRODUCT_IMAGE_POPUP_WIDTH_DESC' , 'Maximale Breite der Artikel-Popup Bilder in Pixel');
 define('PRODUCT_IMAGE_POPUP_HEIGHT_TITLE' , 'Höhe der Artikel-Popup Bilder');
 define('PRODUCT_IMAGE_POPUP_HEIGHT_DESC' , 'Maximale Höhe der Artikel-Popup Bilder in Pixel');
-
 define('SMALL_IMAGE_WIDTH_TITLE' , 'Breite der Artikel Bilder');
 define('SMALL_IMAGE_WIDTH_DESC' , 'Maximale Breite der Artikel Bilder in Pixel');
 define('SMALL_IMAGE_HEIGHT_TITLE' , 'Höhe der Artikel Bilder');
 define('SMALL_IMAGE_HEIGHT_DESC' , 'Maximale Höhe der Artikel Bilderin Pixel');
-
 define('HEADING_IMAGE_WIDTH_TITLE' , 'Breite der Überschrift Bilder');
 define('HEADING_IMAGE_WIDTH_DESC' , 'Maximale Breite der Überschrift Bilder in Pixel');
 define('HEADING_IMAGE_HEIGHT_TITLE' , 'Höhe der Überschrift Bilder');
 define('HEADING_IMAGE_HEIGHT_DESC' , 'Maximale Höhe der Überschriftbilder in Pixel');
-
-
 define('CONFIG_CALCULATE_IMAGE_SIZE_TITLE' , 'Bildgrösse berechnen');
 define('CONFIG_CALCULATE_IMAGE_SIZE_DESC' , 'Sollen die Bildgrössen berechnet werden?');
-
 define('IMAGE_REQUIRED_TITLE' , 'Bilder werden benötigt?');
 define('IMAGE_REQUIRED_DESC' , 'Wenn Sie hier auf "1" setzen, werden nicht vorhandene Bilder als Rahmen angezeigt. Gut für Entwickler.');
-
 define('MO_PICS_TITLE', 'Anzahl zusätzlicher Produktbilder');
 define('MO_PICS_DESC', 'Anzahl der Produktbilder die zusätzlich zum Haupt-Produktbild zur Verfügung stehen sollen.');
-
-
-//Mini Images
-
 define('PRODUCT_IMAGE_MINI_BEVEL_TITLE' , 'Mini Bilder:Bevel<br />');
 define('PRODUCT_IMAGE_MINI_BEVEL_DESC' , 'Mini Bilder:Bevel<br /><br />Default Wert: (8,FFCCCC,330000)<br /><br />shaded bevelled edges<br />Verwendung:<br />(edge width,hex light colour,hex dark colour)');
-
 define('PRODUCT_IMAGE_MINI_GREYSCALE_TITLE' , 'Mini Bilder:Greyscale<br />');
 define('PRODUCT_IMAGE_MINI_GREYSCALE_DESC' , 'Mini Bilder:Greyscale<br /><br />Default Wert: (32,22,22)<br /><br />basic black n white<br />Verwendung:<br />(int red,int green,int blue)');
-
 define('PRODUCT_IMAGE_MINI_ELLIPSE_TITLE' , 'Mini Bilder:Ellipse<br />');
 define('PRODUCT_IMAGE_MINI_ELLIPSE_DESC' , 'Mini Bilder:Ellipse<br /><br />Default Wert: (FFFFFF)<br /><br />ellipse on bg colour<br />Verwendung:<br />(hex background colour)');
-
 define('PRODUCT_IMAGE_MINI_ROUND_EDGES_TITLE' , 'Mini Bilder:Round-edges<br />');
 define('PRODUCT_IMAGE_MINI_ROUND_EDGES_DESC' , 'Mini Bilder:Round-edges<br /><br />Default Wert: (5,FFFFFF,3)<br /><br />corner trimming<br />Verwendung:<br />(edge_radius,background colour,anti-alias width)');
-
 define('PRODUCT_IMAGE_MINI_MERGE_TITLE' , 'Mini Bilder:Merge<br />');
 define('PRODUCT_IMAGE_MINI_MERGE_DESC' , 'Mini Bilder:Merge<br /><br />Default Wert: (overlay.gif,10,-50,60,FF0000)<br /><br />overlay merge image<br />Verwendung:<br />(merge image,x start [neg = from right],y start [neg = from base],opacity, transparent colour on merge image)');
-
 define('PRODUCT_IMAGE_MINI_FRAME_TITLE' , 'Mini Bilder:Frame<br />');
 define('PRODUCT_IMAGE_MINI_FRAME_DESC' , 'Mini Bilder:Frame<br /><br />Default Wert: (FFFFFF,000000,3,EEEEEE)<br /><br />plain raised border<br />Verwendung:<br />(hex light colour,hex dark colour,int width of mid bit,hex frame colour [optional - defaults to half way between light and dark edges])');
-
 define('PRODUCT_IMAGE_MINI_DROP_SHADDOW_TITLE' , 'Mini Bilder:Drop-Shadow<br />');
 define('PRODUCT_IMAGE_MINI_DROP_SHADDOW_DESC' , 'Mini Bilder:Drop-Shadow<br /><br />Default Wert: (3,333333,FFFFFF)<br /><br />more like a dodgy motion blur [semi buggy]<br />Verwendung:<br />(shadow width,hex shadow colour,hex background colour)');
-
 define('PRODUCT_IMAGE_MINI_MOTION_BLUR_TITLE' , 'Mini Bilder:Motion-Blur<br />');
 define('PRODUCT_IMAGE_MINI_MOTION_BLUR_DESC' , 'Mini Bilder:Motion-Blur<br /><br />Default Wert: (4,FFFFFF)<br /><br />fading parallel lines<br />Verwendung:<br />(int number of lines,hex background colour)');
-
-
-//This is for the Images showing your products for preview. All the small stuff.
-
 define('PRODUCT_IMAGE_THUMBNAIL_BEVEL_TITLE' , 'Artikel-Thumbnails:Bevel<br />');
 define('PRODUCT_IMAGE_THUMBNAIL_BEVEL_DESC' , 'Artikel-Thumbnails:Bevel<br /><br />Default Wert: (8,FFCCCC,330000)<br /><br />shaded bevelled edges<br />Verwendung:<br />(edge width,hex light colour,hex dark colour)');
-
 define('PRODUCT_IMAGE_THUMBNAIL_GREYSCALE_TITLE' , 'Artikel-Thumbnails:Greyscale<br />');
 define('PRODUCT_IMAGE_THUMBNAIL_GREYSCALE_DESC' , 'Artikel-Thumbnails:Greyscale<br /><br />Default Wert: (32,22,22)<br /><br />basic black n white<br />Verwendung:<br />(int red,int green,int blue)');
-
 define('PRODUCT_IMAGE_THUMBNAIL_ELLIPSE_TITLE' , 'Artikel-Thumbnails:Ellipse<br />');
 define('PRODUCT_IMAGE_THUMBNAIL_ELLIPSE_DESC' , 'Artikel-Thumbnails:Ellipse<br /><br />Default Wert: (FFFFFF)<br /><br />ellipse on bg colour<br />Verwendung:<br />(hex background colour)');
-
 define('PRODUCT_IMAGE_THUMBNAIL_ROUND_EDGES_TITLE' , 'Artikel-Thumbnails:Round-edges<br />');
 define('PRODUCT_IMAGE_THUMBNAIL_ROUND_EDGES_DESC' , 'Artikel-Thumbnails:Round-edges<br /><br />Default Wert: (5,FFFFFF,3)<br /><br />corner trimming<br />Verwendung:<br />(edge_radius,background colour,anti-alias width)');
-
 define('PRODUCT_IMAGE_THUMBNAIL_MERGE_TITLE' , 'Artikel-Thumbnails:Merge<br />');
 define('PRODUCT_IMAGE_THUMBNAIL_MERGE_DESC' , 'Artikel-Thumbnails:Merge<br /><br />Default Wert: (overlay.gif,10,-50,60,FF0000)<br /><br />overlay merge image<br />Verwendung:<br />(merge image,x start [neg = from right],y start [neg = from base],opacity, transparent colour on merge image)');
-
 define('PRODUCT_IMAGE_THUMBNAIL_FRAME_TITLE' , 'Artikel-Thumbnails:Frame<br />');
 define('PRODUCT_IMAGE_THUMBNAIL_FRAME_DESC' , 'Artikel-Thumbnails:Frame<br /><br />Default Wert: (FFFFFF,000000,3,EEEEEE)<br /><br />plain raised border<br />Verwendung:<br />(hex light colour,hex dark colour,int width of mid bit,hex frame colour [optional - defaults to half way between light and dark edges])');
-
 define('PRODUCT_IMAGE_THUMBNAIL_DROP_SHADDOW_TITLE' , 'Artikel-Thumbnails:Drop-Shadow<br />');
 define('PRODUCT_IMAGE_THUMBNAIL_DROP_SHADDOW_DESC' , 'Artikel-Thumbnails:Drop-Shadow<br /><br />Default Wert: (3,333333,FFFFFF)<br /><br />more like a dodgy motion blur [semi buggy]<br />Verwendung:<br />(shadow width,hex shadow colour,hex background colour)');
-
 define('PRODUCT_IMAGE_THUMBNAIL_MOTION_BLUR_TITLE' , 'Artikel-Thumbnails:Motion-Blur<br />');
 define('PRODUCT_IMAGE_THUMBNAIL_MOTION_BLUR_DESC' , 'Artikel-Thumbnails:Motion-Blur<br /><br />Default Wert: (4,FFFFFF)<br /><br />fading parallel lines<br />Verwendung:<br />(int number of lines,hex background colour)');
-
-// Kategorie Bilder
-
 define('CATEGORY_INFO_IMAGE_MERGE_TITLE' , 'Kategorie Bilder:Merge');
 define('CATEGORY_INFO_IMAGE_MERGE_DESC' , 'Kategorie Bilder:Merge<br /><br />Default Wert: (overlay.gif,10,-50,60,FF0000)<br /><br />overlay merge image<br />Verwendung:<br />(merge image,x start [neg = from right],y start [neg = from base],opacity,transparent colour on merge image)');
-
 define('CATEGORY_IMAGE_MERGE_TITLE' , 'Kategorie Thumb-Bilder:Merge');
 define('CATEGORY_IMAGE_MERGE_DESC' , 'Kategorie Thumb-Bilder:Merge<br /><br />Default Wert: (overlay.gif,10,-50,60,FF0000)<br /><br />overlay merge image<br />Verwendung:<br />(merge image,x start [neg = from right],y start [neg = from base],opacity,transparent colour on merge image)');
-
-
-//And this is for the Images showing your products in single-view
-
 define('PRODUCT_IMAGE_INFO_SMOTH_TITLE' , 'Bildschärfe');
 define('PRODUCT_IMAGE_INFO_SMOTH_DESC' , 'Hiermit können Sie die Bildschärfe definieren: <br /><b>leer = keine Änderung</b><br /><b>negativ Wert (z.B. -15) = schärfer</b><br /><b>positiv Wert (z.B. 10) = weicher</b>');
-
 define('PRODUCT_IMAGE_INFO_BEVEL_TITLE' , 'Artikel-Info Bilder:Bevel');
 define('PRODUCT_IMAGE_INFO_BEVEL_DESC' , 'Artikel-Info Bilder:Bevel<br /><br />Default Wert: (8,FFCCCC,330000)<br /><br />shaded bevelled edges<br />Verwendung:<br />(edge width, hex light colour, hex dark colour)');
-
 define('PRODUCT_IMAGE_INFO_GREYSCALE_TITLE' , 'Artikel-Info Bilder:Greyscale');
 define('PRODUCT_IMAGE_INFO_GREYSCALE_DESC' , 'Artikel-Info Bilder:Greyscale<br /><br />Default Wert: (32,22,22)<br /><br />basic black n white<br />Verwendung:<br />(int red, int green, int blue)');
-
 define('PRODUCT_IMAGE_INFO_ELLIPSE_TITLE' , 'Artikel-Info Bilder:Ellipse');
 define('PRODUCT_IMAGE_INFO_ELLIPSE_DESC' , 'Artikel-Info Bilder:Ellipse<br /><br />Default Wert: (FFFFFF)<br /><br />ellipse on bg colour<br />Verwendung:<br />(hex background colour)');
-
 define('PRODUCT_IMAGE_INFO_ROUND_EDGES_TITLE' , 'Artikel-Info Bilder:Round-edges');
 define('PRODUCT_IMAGE_INFO_ROUND_EDGES_DESC' , 'Artikel-Info Bilder:Round-edges<br /><br />Default Wert: (5,FFFFFF,3)<br /><br />corner trimming<br />Verwendung:<br />( edge_radius, background colour, anti-alias width)');
-
 define('PRODUCT_IMAGE_INFO_MERGE_TITLE' , 'Artikel-Info Bilder:Merge');
 define('PRODUCT_IMAGE_INFO_MERGE_DESC' , 'Artikel-Info Bilder:Merge<br /><br />Default Wert: (overlay.gif,10,-50,60,FF0000)<br /><br />overlay merge image<br />Verwendung:<br />(merge image,x start [neg = from right],y start [neg = from base],opacity,transparent colour on merge image)');
-
 define('PRODUCT_IMAGE_INFO_FRAME_TITLE' , 'Artikel-Info Bilder:Frame');
 define('PRODUCT_IMAGE_INFO_FRAME_DESC' , 'Artikel-Info Bilder:Frame<br /><br />Default Wert: (FFFFFF,000000,3,EEEEEE)<br /><br />plain raised border<br />Verwendung:<br />(hex light colour,hex dark colour,int width of mid bit,hex frame colour [optional - defaults to half way between light and dark edges])');
-
 define('PRODUCT_IMAGE_INFO_DROP_SHADDOW_TITLE' , 'Artikel-Info Bilder:Drop-Shadow');
 define('PRODUCT_IMAGE_INFO_DROP_SHADDOW_DESC' , 'Artikel-Info Bilder:Drop-Shadow<br /><br />Default Wert: (3,333333,FFFFFF)<br /><br />more like a dodgy motion blur [semi buggy]<br />Verwendung:<br />(shadow width,hex shadow colour,hex background colour)');
-
 define('PRODUCT_IMAGE_INFO_MOTION_BLUR_TITLE' , 'Artikel-Info Bilder:Motion-Blur');
 define('PRODUCT_IMAGE_INFO_MOTION_BLUR_DESC' , 'Artikel-Info Bilder:Motion-Blur<br /><br />Default Wert: (4,FFFFFF)<br /><br />fading parallel lines<br />Verwendung:<br />(int number of lines,hex background colour)');
-
-//so this image is the biggest in the shop this
-
 define('PRODUCT_IMAGE_POPUP_BEVEL_TITLE' , 'Artikel-Popup Bilder:Bevel');
 define('PRODUCT_IMAGE_POPUP_BEVEL_DESC' , 'Artikel-Popup Bilder:Bevel<br /><br />Default Wert: (8,FFCCCC,330000)<br /><br />shaded bevelled edges<br />Verwendung:<br />(edge width,hex light colour,hex dark colour)');
-
 define('PRODUCT_IMAGE_POPUP_GREYSCALE_TITLE' , 'Artikel-Popup Bilder:Greyscale');
 define('PRODUCT_IMAGE_POPUP_GREYSCALE_DESC' , 'Artikel-Popup Bilder:Greyscale<br /><br />Default Wert: (32,22,22)<br /><br />basic black n white<br />Verwendung:<br />(int red,int green,int blue)');
-
 define('PRODUCT_IMAGE_POPUP_ELLIPSE_TITLE' , 'Artikel-Popup Bilder:Ellipse');
 define('PRODUCT_IMAGE_POPUP_ELLIPSE_DESC' , 'Artikel-Popup Bilder:Ellipse<br /><br />Default Wert: (FFFFFF)<br /><br />ellipse on bg colour<br />Verwendung:<br />(hex background colour)');
-
 define('PRODUCT_IMAGE_POPUP_ROUND_EDGES_TITLE' , 'Artikel-Popup Bilder:Round-edges');
 define('PRODUCT_IMAGE_POPUP_ROUND_EDGES_DESC' , 'Artikel-Popup Bilder:Round-edges<br /><br />Default Wert: (5,FFFFFF,3)<br /><br />corner trimming<br />Verwendung:<br />(edge_radius,background colour,anti-alias width)');
-
 define('PRODUCT_IMAGE_POPUP_MERGE_TITLE' , 'Artikel-Popup Bilder:Merge');
 define('PRODUCT_IMAGE_POPUP_MERGE_DESC' , 'Artikel-Popup Bilder:Merge<br /><br />Default Wert: (overlay.gif,10,-50,60,FF0000)<br /><br />overlay merge image<br />Verwendung:<br />(merge image,x start [neg = from right],y start [neg = from base],opacity,transparent colour on merge image)');
-
 define('PRODUCT_IMAGE_POPUP_FRAME_TITLE' , 'Artikel-Popup Bilder:Frame');
 define('PRODUCT_IMAGE_POPUP_FRAME_DESC' , 'Artikel-Popup Bilder:Frame<br /><br />Default Wert: (FFFFFF,000000,3,EEEEEE)<br /><br />plain raised border<br />Verwendung:<br />(hex light colour,hex dark colour,int width of mid bit,hex frame colour [optional - defaults to half way between light and dark edges])');
-
 define('PRODUCT_IMAGE_POPUP_DROP_SHADDOW_TITLE' , 'Artikel-Popup Bilder:Drop-Shadow');
 define('PRODUCT_IMAGE_POPUP_DROP_SHADDOW_DESC' , 'Artikel-Popup Bilder:Drop-Shadow<br /><br />Default Wert: (3,333333,FFFFFF)<br /><br />more like a dodgy motion blur [semi buggy]<br />Verwendung:<br />(shadow width,hex shadow colour,hex background colour)');
-
 define('PRODUCT_IMAGE_POPUP_MOTION_BLUR_TITLE' , 'Artikel-Popup Bilder:Motion-Blur');
 define('PRODUCT_IMAGE_POPUP_MOTION_BLUR_DESC' , 'Artikel-Popup Bilder:Motion-Blur<br /><br />Default Wert: (4,FFFFFF)<br /><br />fading parallel lines<br />Verwendung:<br />(int number of lines,hex background colour)');
-
 define('IMAGE_MANIPULATOR_TITLE','GDlib processing');
 define('IMAGE_MANIPULATOR_DESC','Image Manipulator für GD2 oder GD1');
-
-
 define('ACCOUNT_GENDER_TITLE' , 'Anrede');
 define('ACCOUNT_GENDER_DESC' , 'Die Abfrage für die Anrede im Account benutzen');
 define('ACCOUNT_DOB_TITLE' , 'Geburtsdatum');
@@ -393,8 +304,6 @@ define('ACCOUNT_SUBURB_TITLE' , 'Vorort');
 define('ACCOUNT_SUBURB_DESC' , 'Die Abfrage für den Vorort im Account benutzen');
 define('ACCOUNT_STATE_TITLE' , 'Bundesland');
 define('ACCOUNT_STATE_DESC' , 'Die Abfrage für das Bundesland im Account benutzen');
-
-
 define('DEFAULT_CURRENCY_TITLE' , 'Standard Währung');
 define('DEFAULT_CURRENCY_DESC' , 'Währung die standardmässig benutzt wird');
 define('DEFAULT_LANGUAGE_TITLE' , 'Standard Sprache');
@@ -646,7 +555,7 @@ define('SESSION_RECREATE_DESC' , 'Erneuern der Session und Zuweisung einer neuen
 define('SESSION_TIMEOUT_ADMIN_TITLE' , 'Session Timeout Admin');
 define('SESSION_TIMEOUT_ADMIN_DESC' , 'Geben Sie die Zeit in Sekunden an, wie lange die Session für den Admin gültig sein soll');
 
-define('DISPLAY_CONDITIONS_ON_CHECKOUT_TITLE' , 'Unterzeichnen der AGB');
+define('DISPLAY_CONDITIONS_ON_CHECKOUT_TITLE' , 'Anzeige der AGB');
 define('DISPLAY_CONDITIONS_ON_CHECKOUT_DESC' , 'Anzeigen und Unterzeichnen der AGB beim Bestellvorgang');
 
 define('META_MIN_KEYWORD_LENGTH_TITLE' , 'Minimum Länge Meta-Keywords');
@@ -797,10 +706,8 @@ define('GOOGLE_ANONYM_ON_DESC','Einschalten: true<br />Ausschalten: false');
 
 
 // Widerruf und Datenschutz beim Bestellen
-define('DISPLAY_DATENSCHUTZ_ON_CHECKOUT_TITLE' , 'Unterzeichnen der Datenschutzbelehrung');
+define('DISPLAY_DATENSCHUTZ_ON_CHECKOUT_TITLE' , 'Anzeige der Datenschutzbelehrung');
 define('DISPLAY_DATENSCHUTZ_ON_CHECKOUT_DESC' , 'Anzeigen und Unterzeichnen der Datenschutzbelehrung beim Bestellvorgang');
-define('DISPLAY_WIDERRUFSRECHT_ON_CHECKOUT_TITLE' , 'Unterzeichnen des Widerrufsrecht');
-define('DISPLAY_WIDERRUFSRECHT_ON_CHECKOUT_DESC' , 'Anzeigen und Unterzeichnen des Widerrufsrecht beim Bestellvorgang');
 
 // PayPal Express
 define('PAYPAL_MODE_TITLE','PayPal-Modus:');
@@ -1382,8 +1289,6 @@ define('MODULE_CUSTOMERS_PDF_INVOICE_STATUS_DESC','<b>true</b> = Rechnung wird a
 define('MODULE_CUSTOMERS_PDF_INVOICE_MAIL_STATUS_TITLE','automatische Rechnung per E-Mail');
 define('MODULE_CUSTOMERS_PDF_INVOICE_MAIL_STATUS_DESC','<b>true</b> = Rechnung wird automatisch per E-Mail verschickt.');
 
-
-
 // moneybookers.com module (2.4)
 define('_PAYMENT_MONEYBOOKERS_EMAILID_TITLE','Moneybookers E-Mail Adresse');
 define('_PAYMENT_MONEYBOOKERS_EMAILID_DESC','E-Mail Adresse mitwelcher Sie bei Moneybookers.com registriert sind.<br />Wenn Sie noch &uuml;ber kein Konto verf&uuml;gen, <b>melden Sie sich</b> jetzt bei <a href="https://www.moneybookers.com/app/register.pl" target="_blank"><b>Moneybookers</b></a> <b>gratis</b> an.');
@@ -1423,8 +1328,6 @@ define('MB_INFO','<br><img src="../images/icons/moneybookers/MBbanner.jpg" /><br
 -sofortige Zahlungsbest&auml;tigung und Pr&uuml;fung der Kundendaten<br />
 -Bezahlabwicklung auch im Ausland und ohne Mehrkosten<br />
 -6 Millionen Kunden weltweit vertrauen Moneybookers');
-
-
 
 define('PRODUCT_LIST_VIEW_PER_SITE_TITLE', 'Anzeige "pro Seite"');
 define('PRODUCT_LIST_VIEW_PER_SITE_DESC', 'Anzeige der Auswahl für Artikelmenge pro Seite im Listing einschalten?');
@@ -1515,18 +1418,45 @@ define('CHECKOUT_ATTACH_FILE1_TITLE','Anhang 1');
 define('CHECKOUT_ATTACH_FILE1_DESC','Der Dateiname inkl. Pfad im Shop. (Beispiel: attachment/attach1.pdf)');
 define('CHECKOUT_ATTACH_FILE2_TITLE','Anhang 2'); 
 define('CHECKOUT_ATTACH_FILE2_DESC','Der Dateiname inkl. Pfad im Shop. (Beispiel: attachment/attach2.pdf)');
-
 define('PARTNER_SELLER_ACTIVE_TITLE','Partnerseller Tracking'); 
 define('PARTNER_SELLER_ACTIVE_DESC','Soll das Tracking für Partnerseller aktiviert werden? Voraussetzung ist eine Version von <a href="http://www.kohnlesoft.de/" target="_blank">www.kohnlesoft.de</a>.');
-
 define('PARTNER_SELLER_PATH_TITLE','Partnerseller Pfad'); 
 define('PARTNER_SELLER_PATH_DESC','Pfad zur Partnerseller Installation. Beispiel: http://www.yourdomain.de/partner/');
-
 define('PARTNER_SELLER_PWD_TITLE','Partnerseller Passwort'); 
 define('PARTNER_SELLER_PWD_DESC','Passwort zur Verschlüsselung der Partnerseller Installation.');
-
 define('PARTNER_SELLER_CHK_TITLE','Partnerseller Prüfwort'); 
 define('PARTNER_SELLER_CHK_DESC','Prüfwort zur Verschlüsselung der Partnerseller Installation. <a href="http://www.kohnlesoft.de/doku/psl300/verkaufserfassung/verschluesseln.pdf" target="_blank">Dokumentation</a>');
-
 define('GRATISARTIKEL_OPTION_TITLE','Gratisartikel Option'); 
 define('GRATISARTIKEL_OPTION_DESC','<b>select:</b> Mehrere Gratisartikel können bestellt werden, <b>radio:</b> es kann jeweils nur 1 Gratisartikel ausgewählt werden.');
+define('LISTINGHTML_TITLE','HTML in Listen'); 
+define('LISTINGHTML_DESC','Soll in Listen HTML für die Beschreibung verwendet werden? Bei <b>false</b> werden die Beschreibungen in reinen Text umgewandelt.');
+define('WRCHECKOUT_TITLE','Widerrufsformular Checkout'); 
+define('WRCHECKOUT_DESC','Soll im Bestellvorgang ein Widerrufsformular zum Download angezeigt werden?');
+define('WRCHECKOUTFILE_TITLE','Widerrufsformular Datei'); 
+define('WRCHECKOUTFILE_DESC','Geben Sie den Pfad und den Dateinamen für das Widerrufsformular an (Beispiel: attachment/wdformular.pdf).');
+define('VRRL_ACTIVE_TITLE','VRRL-Änderungen'); 
+define('VRRL_ACTIVE_DESC','<b>VRRL-Änderungen des 13.06.2014 jetzt erzwingen</b>');
+define('WITHDRAWAL_DOWNLOAD_TITLE','VRRL-Download'); 
+define('WITHDRAWAL_DOWNLOAD_DESC','<b>Verzicht auf Widerrufsrecht für Download-Artikel als Pflichtfeld</b><br>Das Wiederrufsrecht als Checkbox muss ebenfalls aktiviert sein!');
+define('WITHDRAWAL_SERVICE_TITLE','VRRL-Dienstleistungen'); 
+define('WITHDRAWAL_SERVICE_DESC','<b>Verzicht auf Widerrufsrecht für Dienstleistungen als Pflichtfeld</b><br>Das Wiederrufsrecht als Checkbox muss ebenfalls aktiviert sein!');
+define('WITHDRAWAL_WEBFORM_ACTIVE_TITLE','VRRL-Webformular'); 
+define('WITHDRAWAL_WEBFORM_ACTIVE_DESC','<b>Widerrufsformular in den Bestellungen anzeigen?</b><br>Das Widerrufsformular wird im Kundenkosto bei den jeweiligen Bestellungen angezeigt.');
+define('COMPANY_NAME_TITLE' , 'Firmenname');
+define('COMPANY_NAME_DESC' , 'Geben Sie hier Ihren Firmennamen ein.');
+define('TRADER_FIRSTNAME_TITLE' , 'Vorname');
+define('TRADER_FIRSTNAME_DESC' , 'Der Vorname des Shop-Betreibers');
+define('TRADER_NAME_TITLE' , 'Nachname');
+define('TRADER_NAME_DESC' , 'Der Nachname des Shop-Betreibers');
+define('TRADER_STREET_TITLE' , 'Straßenname');
+define('TRADER_STREET_DESC' , 'Der Straßenname des Firmensitzes');
+define('TRADER_STREET_NUMBER_TITLE' , 'Hausnummer');
+define('TRADER_STREET_NUMBER_DESC' , 'Die Hausnummer des Firmensitzes');
+define('TRADER_ZIPCODE_TITLE' , 'Postleitzahl');
+define('TRADER_ZIPCODE_DESC' , 'Die Postleitzahl des Firmensitzes');
+define('TRADER_LOCATION_TITLE' , 'Ort');
+define('TRADER_LOCATION_DESC' , 'Der Ort des Firmensitzes');
+define('TRADER_TEL_TITLE' , 'Telefonnummer');
+define('TRADER_TEL_DESC' , 'Die Telefonnummer des Shop-Betreibers');
+define('TRADER_FAX_TITLE' , 'Faxnummer');
+define('TRADER_FAX_DESC' , 'Die Faxnummer des Shop-Betreibers');

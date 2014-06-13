@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: german.php 1002 2014-05-05 15:14:06Z akausch $
+* 	$Id: german.php 1099 2014-06-12 14:51:40Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -339,6 +339,7 @@ define('NAVBAR_TITLE_2_CHECKOUT_SHIPPING_ADDRESS', 'Versandadresse ändern');
 define('NAVBAR_TITLE_1_CHECKOUT_SUCCESS', 'Kasse');
 define('NAVBAR_TITLE_2_CHECKOUT_SUCCESS', 'Erfolg');
 define('NAVBAR_TITLE_CREATE_ACCOUNT', 'Konto erstellen');
+
 if ($navigation->snapshot['page'] == FILENAME_CHECKOUT_SHIPPING) {
   define('NAVBAR_TITLE_LOGIN', 'Bestellen');
 } else {
@@ -499,7 +500,9 @@ define('CHECKOUT_SHIPPING_CHOOSE','Bitte eine Versandart auswählen');
 define('CHECKOUT_PAYMENT_CHOOSE','Bitte eine Zahlungsart auswählen');
 define('CHECKOUT_PAYMENT_NOT_COMPATIBLE','Zahlungsart nicht kompatibel. Bitte wählen Sie eine neue aus.');
 define('CHECKOUT_ERROR_CONDITIONS','- Bitte akzeptieren Sie unsere Allgemeinen Gesschäftsbedingungen');
-define('CHECKOUT_ERROR_REVOCATION','- Bitte akzeptieren Sie unser Widerrufrecht');
+define('CHECKOUT_ERROR_REVOCATION','- Bitte bestätigen Sie unser Widerrufrecht');
+define('CHECKOUT_ERROR_REVOCATION_DOWNLOAD','- Bitte bestätigen Sie den Verzicht auf Ihr Widerrufsrecht für Downloads.');
+define('CHECKOUT_ERROR_REVOCATION_SERVICE','- Bitte bestätigen Sie den Verzicht auf Ihr Widerrufsrecht für Dienstleistungen.');
 define('CHECKOUT_ERROR_DSG','- Bitte akzeptieren Sie unsere Datenschutzerklärung');
 define('CHECKOUT_PLEASE_WAIT','Bitte warten...');
 define('CHECKOUT_PAYMENT_DUE', '(+ Geb&uuml;hr)');
@@ -564,8 +567,6 @@ define('PRODUCT_AKS_A_QUESTION_SUBJECT_1', 'Frage zum Produkt');
 define('PRODUCT_AKS_A_QUESTION_SUBJECT_2', 'Angebot zum Produkt');
 define('PRODUCT_AKS_A_QUESTION_SUBJECT_3', 'technische Frage zum Produkt');
 
-
-// PayPal Express Version 6.90
 define('NAVBAR_TITLE_PAYPAL_CHECKOUT','PayPal-Checkout');
 define('PAYPAL_ERROR','PayPal Abbruch');
 define('PAYPAL_NOT_AVIABLE','PayPal Express steht zur Zeit leider nicht zur Verfügung.<br />Bitte wählen Sie eine andere Zahlungsart<br />oder versuchen Sie es später noch einmal.<br />Danke für Ihr Verständnis.<br />');
@@ -577,19 +578,8 @@ define('PAYPAL_GS','Gutschein/Coupon');
 define('PAYPAL_TAX','MwSt.');
 define('PAYPAL_EXP_WARN','Achtung! Eventuell anfallende Versandkosten werden erst im Shop endgültig berechnet.');
 define('PAYPAL_EXP_VORL','Vorläufige Versandkosten');
-//Hier kann man vorläufige Versandkosten eintragen. Diese werden bei der Bestellung dann erst mal aufgeschlagen!!!
-// define('PAYPAL_EXP_VERS','0.00');
-
-
-// 09.01.11
 define('PAYPAL_ADRESSE','Das Land in Ihrer PayPal-Versand-Adresse ist in unserem Shop nicht eingetragen.<br />Bitte nehmen Sie mit uns Kontakt auf.<br />Danke für Ihr Verständnis.<br />Von PayPal empfangenes Land: ');
-// 17.09.11
 define('PAYPAL_AMMOUNT_NULL','Die zu erwartende Auftrags-Summe (ohne Versand) ist gleich 0.<br />Dadurch steht PayPal Express nicht zur Verfügung.<br />Bitte wählen Sie eine andere Zahlungsart.<br />Danke für Ihr Verständnis.<br />');
-
-
-
-//v2.2
-
 
 define('TEXT_WISH_SINGLE', 'bestellen');
 
@@ -601,17 +591,12 @@ define('AUTOSUGGEST_CLOSE', 'Fenster schliessen');
 define('MORE_RESULTS', '...mehr Resultate');
 define('AUTOSUGGEST_NO_PRODUCTS', 'Keine Produkte gefunden');
 define('AUTOSUGGEST_INTRO', 'Zu diesem Suchbegriff empfehlen wir:');
-
-//Bewertung NEU
 define('GAST', 'Gast');
-
 define('TITLE_BEWERTUNGEN', 'Shop-Bewertungen Verwalten');
 define('SUB_TITLE_BEWERTUNGEN', 'Verwalten Sie die erhaltenen Shopbewertungen');
 
 define('NAVBAR_TITLE_SHOPBEWERTUNGEN', 'Shop-Bewertungen');
 define('NAVBAR_TITLE_SHOPBEWERTUNGEN_WRITE', 'Shop-Bewertung schreiben');
-
-// Bewertungsmail-Variablen
 
 define('SHOPBEWERTUNG_FORMULAR', 'Shopbewertung-Formular');
 define('SHOPBEWERTUNG_ERHALTEN', 'Neue Shopbewertung erhalten');
@@ -644,8 +629,6 @@ define('ORDERIDERROR', 'Es gibt keine Bestellung mit dieser Bestellnummer.');
 define('COMMENTERROR', 'Bitte geben Sie einen Kommentar ein.');
 define('ORDERIDERROREMAIL', 'Bestellnummer und E-Mail stimmen nicht mit den Bestelldaten &uuml;berein.');
 
-
-
 define('SMALL_IMAGE_BUTTON_DELETE', 'Löschen');
 define('SMALL_IMAGE_BUTTON_EDIT', '&Auml;ndern');
 define('SMALL_IMAGE_BUTTON_VIEW', 'Anzeigen');
@@ -655,7 +638,6 @@ define('ICON_CART', 'In den Warenkorb');
 define('ICON_SUCCESS', 'Erfolg');
 define('ICON_WARNING', 'Warnung');
 define('ICON_ERROR','Fehler');
-
 
 define('SECURITY_CODE_ERROR','Falscher Sicherheitscode');
 
@@ -667,8 +649,6 @@ define('CHECKOUT_DESC', 'Beschreibung');
 define('WK_NETTO', 'Summe ohne MwSt. ');
 
 define('BUTTON_PAYPAL_TEXT','Hinweis zu Expresskauf mit PayPal');
-
-//AmazonPayMent
 
 define('AMZ_SINGLE_PRICE', 'Einzelpreis');
 define('AMZ_TOTAL_PRICE', 'Gesamtpreis');
@@ -697,19 +677,13 @@ define('AMZ_BETRAG', 'Betrag');
 
 
 define('SUBCAT_PRODUCTS', 'Produktübersicht');
-
-#v2.4 new
-
 define('BOX_EMAIL_PASSWD','Passwort');
-
 define('TEXT_MINORDER','Bitte beachten Sie die Mindestbestellmenge für folgende Produkte');
 define('TEXT_MINORDER_TITLE','Mindestbestellmenge');
 define('RANDOM_SPECIALS','Angebote');
 define('PRODUCT_NO_BUY','Der angezeigte Artikel kann derzeit nicht bestellt werden.');
-
 define('TEXT_DATE_UPDATED', 'Aktualisiert am: %s');
 define('WEIGHT', 'Versandgewicht');
-
 define('ADMIN_TITLE_STATISTICS', 'Online:');
 define('ADMIN_TITLE_STATISTICS', 'Online:');
 define('ADMIN_EDIT_CONTENT', 'Content bearbeiten');
@@ -723,7 +697,6 @@ define('ADMIN_CUSTOMERS','Kunden:');
 define('ADMIN_PRODUCTS','Artikel:');
 define('ADMIN_REVIEWS','Bewertungen:');
 
-//PDF Rechnung
 define('FILENAME_BILL', 'Rechnung');
 define('FILENAME_PACKINSLIP', 'Lieferschein');
 define('TEXT_PDF_SEITE', 'Seite');
@@ -775,3 +748,11 @@ define('ENTRY_RMA_ERROR_MESSAGE','Bitte die Fehlerbeschreibung eingeben!');
 define('ENTRY_RMA_ERROR_MESSAGE_LENGTH','Die Fehlerbeschreibung ist zu kurz!');
 define('ENTRY_RMA_PRODUCTS_EAN','Bitte die Seriennummer des Produktes eintragen!');
 define('ENTRY_RMA_REASON','Bitte den Grund Ihres Auftrages auswählen!');
+
+define('SHIPPING_AUSLAND', '(Ausland abweichend)');
+define('SHIPPING_AUSLAND_CART1', 'Für Lieferungen ausserhalb');
+define('SHIPPING_AUSLAND_CART2', 'finden Sie hier Informationen zu Liefer- und Versandkosten.');
+
+define('NAVBAR_TITLE_WITHDRAWAL', 'Widerrufsformular');
+define('BUTTON_WITHDRAWAL', 'Online-Formular');
+define('BUTTON_WITHDRAWAL_PDF', 'PDF-Download');

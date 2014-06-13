@@ -12,9 +12,7 @@
 * 	Released under the GNU General Public License
 * ---------------------------------------------------------------*/
 
-
 define('HEADING_TITLE','Email Vorlagen');
-
 define('CONTACT_TITLE','Kontaktformular');
 define('ORDER_MAIL_TITLE','Bestellbest&auml;tigung');
 define('NEWSLETTER_AKTIVIERUNG_TITLE','Newsletter - Aktivierung');
@@ -37,4 +35,4 @@ define('KEINE_VORLAGE_DA','F&uuml;r diese Email gibt es keine Vorlagen. Sie wird
 define('RECOVER_CART_SALES_TITLE','Offene Warenkörbe');
 define('ASKAQUESTION_TITLE','Frage zum Produkt Vorlage');
 define('STOCK_MAIL_TITLE','Lagerbestandswarnung');
-?>
+define('WITHDRAWAL_TITLE','Widerrufsformular-Bestätigung');

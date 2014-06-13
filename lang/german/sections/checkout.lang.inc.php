@@ -1,0 +1,27 @@
+<?php
+
+$t_language_text_section_content_array = array(
+    'heading_checkout' => 'Bestellung aufgeben',
+    'text_ip' => 'Um den Missbrauch unseres Angebots zu verhindern, speichern wir Ihre IP-Adresse unter Wahrung Ihrer Privatsphäre:',
+    'title_comments' => 'Ihr Kommentar',
+    'title_shipping_modules' => 'Versandart',
+    'title_payment_modules' => 'Zahlungsweise',
+    'text_no_shippings' => 'Es sind keine Versandarten vorhanden',
+    'text_no_payments' => 'Es sind keine Zahlungsarten vorhanden',
+    'text_gccover' => 'Ihr Kupon/Gutschein deckt den Warenwert.',
+    'title_shipping_address' => 'Versandadresse',
+    'title_payment_address' => 'Rechnungsadresse',
+    'address_old' => 'Adressen aus Ihrem Adressbuch',
+    'address_no_more' => 'Um neue Adressen hinzuzufügen müssen Sie mindestens eine aus Ihrem Adressbuch löschen.',
+    'title_products' => 'Artikel',
+    'title_agb' => 'Allgemeine Geschäftsbedingungen:',
+    'title_dsg' => 'Datenschutzerklärung',
+    'title_revocation' => 'Widerrufsrecht',
+    'text_accept_agb' => 'Ich akzeptiere die allgemeinen Geschäfts- und Lieferbedingungen',
+    'text_accept_agb_link' => '- <a class="shipping" href="popup_content_print.php?coID=3"><u>AGB zum einsehen und drucken</u></a>',
+    'text_accept_dsg' => 'Ich akzeptiere die Datenschutzerklärung',
+    'text_accept_revocation' => 'Ich habe das Widerrufsrecht zur Kenntnis genommen',
+    'text_accept_revocation_link' => '- <a class="shipping" href="popup_content_print.php?coID=10"><u>Widerrufsrecht zum einsehen und drucken</u></a>',
+    'text_accept_revocation_download' => 'Ich stimme ausdrücklich zu, dass Sie vor Ablauf der Widerrufsfrist mit der Ausführung des Vertrages beginnen. Mir ist bekannt, dass ich durch diese Zustimmung mit Beginn der Ausführung des Vertrages mein Widerrufsrecht verliere.',
+    'text_accept_revocation_service' => 'Ich bin einverstanden und verlange ausdrücklich, dass Sie vor Ende der Widerrufsfrist mit der Ausführung der beauftragten Dienstleistung beginnen. Mir ist bekannt, dass ich bei vollständiger Vertragserfüllung durch Sie mein Widerrufsrecht verliere.',
+);

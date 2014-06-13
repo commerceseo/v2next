@@ -1,0 +1,26 @@
+<?php
+
+$t_language_text_section_content_array = array(
+	'heading_payment' => 'Zahlungsweise',
+	'title_address' => 'Rechnungsadresse',
+	'text_address' => 'Bitte wählen Sie aus Ihrem Adressbuch die gewünschte Rechnungsadresse für Ihre Bestellung aus.',
+	'title_payment' => 'Zahlungsweise',
+	'text_payment' => 'Bitte wählen Sie die gewünschte Zahlungsweise für Ihre Bestellung aus.',
+	'title_comments' => 'Fügen Sie hier Ihre Anmerkungen zu dieser Bestellung ein',
+	'title_continue' => 'Fortsetzung des Bestellvorganges',
+	'text_continue' => 'Zur Bestätigung Ihrer Bestellung',
+	'text_shipping_info' => 'Versandinformationen',
+	'text_payment_info' => 'Zahlungsweise',
+	'text_confirm' => 'Bestätigung',
+	'text_finished' => 'Fertig!',
+	'title_agb' => 'Allgemeine Geschäftsbedingungen:',
+	'text_accept_agb' => 'Ich akzeptiere die allgemeinen Geschäfts- und Lieferbedingungen (<a class="shipping" href="popup_content_print.php?coID=3"><u>AGB zum drucken</u></a>)',
+	'title_wd' => 'Widerrufsrecht:',
+	'text_accept_ds' => 'Ich habe die Datenschutzerklärung gelesen',
+	'title_ds' => 'Datenschutzerklärung:',
+	'text_accept_wd' => 'Ich habe das Widerrufsrecht gelesen',
+	'text_gccover' => 'Ihr Kupon deckt den Warenwert, Sie müssen nun lediglich Unsere AGB akzeptieren und den Bestellprozess mit klick auf Weiter fortsetzen',
+	'text_accept_revocation' => 'Ich habe das Widerrufsrecht zur Kenntnis genommen (<a class="shipping" href="popup_content_print.php?coID=10"><u>Widerrufsrecht zum drucken</u></a>)',
+	'text_accept_revocation_download' => 'Ich stimme ausdrücklich zu, dass Sie vor Ablauf der Widerrufsfrist mit der Ausführung des Vertrages beginnen. Mir ist bekannt, dass ich durch diese Zustimmung mit Beginn der Ausführung des Vertrages mein Widerrufsrecht verliere.',
+	'text_accept_revocation_service' => 'Ich bin einverstanden und verlange ausdrücklich, dass Sie vor Ende der Widerrufsfrist mit der Ausführung der beauftragten Dienstleistung beginnen. Mir ist bekannt, dass ich bei vollständiger Vertragserfüllung durch Sie mein Widerrufsrecht verliere.',
+);

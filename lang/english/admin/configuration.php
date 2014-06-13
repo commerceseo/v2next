@@ -707,8 +707,6 @@ define('GOOGLE_ANAL_CODE_DESC','Insert your Analytics Code here.<br />Example: U
 // Privacy Notice
 define('DISPLAY_DATENSCHUTZ_ON_CHECKOUT_TITLE' , 'Accept Privacy Notice');
 define('DISPLAY_DATENSCHUTZ_ON_CHECKOUT_DESC' , 'Display Accept Privacy Notice on Checkout');
-define('DISPLAY_WIDERRUFSRECHT_ON_CHECKOUT_TITLE' , 'Accept revocation');
-define('DISPLAY_WIDERRUFSRECHT_ON_CHECKOUT_DESC' , 'Display right of revocation Notice on Checkout');
 
 // PayPal Express
 define('PAYPAL_MODE_TITLE','PayPal-Modus:');

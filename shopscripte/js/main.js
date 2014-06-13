@@ -8,6 +8,10 @@ jQuery('.red_ds input').click(function(){
 jQuery('.red_ds').toggleClass("green");});
 jQuery('.red_wd input').click(function(){
 jQuery('.red_wd').toggleClass("green");});
+jQuery('.red_wdd input').click(function(){
+jQuery('.red_wdd').toggleClass("green");});
+jQuery('.red_wds input').click(function(){
+jQuery('.red_wds').toggleClass("green");});
 });
 
 

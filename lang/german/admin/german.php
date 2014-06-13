@@ -1296,3 +1296,7 @@ define('TEXT_PRODUCTS_TREEPODIA_3','Treepodia Catch-Phrase 3');
 define('TEXT_PRODUCTS_TREEPODIA_4','Treepodia Catch-Phrase 4');
 
 define('BUTTON_EDIT_KONFIGURATOR','Konfigurator');
+
+define('TEXT_DOWNLOAD', 'Download');
+define('TEXT_SERVICE', 'Dienstleistung');
+define('TEXT_PRODUCT_TYPE', 'Produkt Typ:');

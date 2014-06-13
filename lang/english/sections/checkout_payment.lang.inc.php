@@ -1,0 +1,26 @@
+<?php
+
+$t_language_text_section_content_array = array(
+	'heading_payment' => 'payment',
+	'title_address' => 'Billing Address',
+	'text_address' => 'Please choose from your address from the desired billing address for your order.',
+	'title_payment' => 'payment',
+	'text_payment' => 'Please select the preferred payment method for your order.',
+	'title_comments' => 'Put here your comments to your order',
+	'title_continue' => 'Continuation of the ordering process',
+	'text_continue' => 'To confirm your order',
+	'text_shipping_info' => 'Shipping Information',
+	'text_payment_info' => 'payment',
+	'text_confirm' => 'confirmation',
+	'text_finished' => 'finished!',
+	'title_agb' => 'Terms and Conditions:',
+	'text_accept_agb' => 'I accept the General Terms and Conditions (<a class="shipping" href="popup_content_print.php?coID=3"><u>AGB zum drucken</u></a>)',
+	'title_wd' => 'withdrawal:',
+	'text_accept_ds' => 'I have read the Privacy Policy',
+	'title_ds' => 'Privacy Statement:',
+	'text_accept_wd' => 'I have read the Withdrawal',
+	'text_gccover' => 'Your coupon covers the value of goods, you must now accept only our terms and conditions and continue the ordering process with click Next',
+	'text_accept_revocation' => 'I have taken note of the right of withdrawal (<a class="shipping" href="popup_content_print.php?coID=10"><u>Print for Withdrawal</u></a>)',
+	'text_accept_revocation_download' => 'I agree explicitly that you start before the end of the withdrawal period with the execution of the contract. I am aware that I have with the start of execution of the contract loses by this consent my withdrawal.',
+	'text_accept_revocation_service' => 'I agree and expressly require that you start before the end of the withdrawal period with the execution of the contracted services. I am aware that I carried you lose my right of withdrawal for complete performance of the contract.',
+);

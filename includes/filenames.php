@@ -75,3 +75,4 @@ define('FILENAME_BLOG', 'blog.php');
 define('FILENAME_RMA_STEP1', 'rma_step1.php');
 define('FILENAME_RMA_STEP2', 'rma_step2.php');
 define('FILENAME_RMA_STEP3', 'rma_step3.php');
+define('FILENAME_WITHDRAWAL', 'withdrawal.php');

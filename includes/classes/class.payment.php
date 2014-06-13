@@ -148,8 +148,21 @@ class payment_ORIGINAL {
                         '  }' . "\n\n";
             }
 
-            if (DISPLAY_WIDERRUFSRECHT_ON_CHECKOUT == 'true' && CHECKOUT_CHECKBOX_REVOCATION == 'true') {
+            if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true' && CHECKOUT_CHECKBOX_REVOCATION == 'true') {
                 $js .= "\n" . '  if (!document.getElementById("checkout_payment").widerrufsrecht.checked) {' . "\n" .
+                        '    error_message = error_message + unescape("' . xtc_js_lang(ERROR_WIDERRUFSRECHT_NOT_ACCEPTED) . '");' . "\n" .
+                        '    error = 1;' . "\n" .
+                        '  }' . "\n\n";
+            }
+
+            if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true' && WITHDRAWAL_DOWNLOAD == 'true') {
+                $js .= "\n" . '  if (!document.getElementById("checkout_payment").revocationdownload.checked) {' . "\n" .
+                        '    error_message = error_message + unescape("' . xtc_js_lang(ERROR_WIDERRUFSRECHT_NOT_ACCEPTED) . '");' . "\n" .
+                        '    error = 1;' . "\n" .
+                        '  }' . "\n\n";
+            }
+            if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true' && WITHDRAWAL_SERVICE == 'true') {
+                $js .= "\n" . '  if (!document.getElementById("checkout_payment").revocationservice.checked) {' . "\n" .
                         '    error_message = error_message + unescape("' . xtc_js_lang(ERROR_WIDERRUFSRECHT_NOT_ACCEPTED) . '");' . "\n" .
                         '    error = 1;' . "\n" .
                         '  }' . "\n\n";

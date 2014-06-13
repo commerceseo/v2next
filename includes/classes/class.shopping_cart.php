@@ -299,12 +299,12 @@ class shoppingCart_ORIGINAL {
         }
     }
 
-	function attributes_price_scale($products_id, $att_quantity, $taxid) {
+	function attributes_price_scale($products_id, $att_quantity, $taxid, $products_price) {
 		global $xtPrice;
 		if (isset ($this->contents[$products_id]['attributes'])) {
 			reset($this->contents[$products_id]['attributes']);
 			while (list ($option, $value) = each($this->contents[$products_id]['attributes'])) {
-				$values = $xtPrice->xtcGetOptionPrice($products_id, $option, $value);
+				$values = $xtPrice->xtcGetOptionPrice($products_id, $option, $value, $products_price);
 				if($values['scale_price'] != ''){
 					$attributes_scale_price = $xtPrice->calculate_optionscale($values['price'], $values['scale_price'], $att_quantity);
 					$attributes_scale_price = $xtPrice->xtcFormat($attributes_scale_price, false, $taxid);
@@ -324,13 +324,6 @@ class shoppingCart_ORIGINAL {
             while (list ($option, $value) = each($this->contents[$products_id]['attributes'])) {
                 $values = $xtPrice->xtcGetOptionPrice($products_id, $option, $value, $products_price);
                 $attributes_price += $values['price'];
-				// if($values['scale_price'] != ''){
-					// $attributes_scale_price = $xtPrice->calculate_optionscale($values['price'], $values['scale_price'], $att_quantity);
-					// $attributes_price += $attributes_scale_price;
-				// }
-				// else{
-					// $attributes_price += $values['price'];
-				// }
             }
         }
         return $attributes_price;
@@ -341,6 +334,7 @@ class shoppingCart_ORIGINAL {
         if (!is_array($this->contents))
             return false;
         $products_array = array();
+		$test = '';
         reset($this->contents);
         while (list ($products_id, ) = each($this->contents)) {
             if ($this->contents[$products_id]['qty'] != 0 || $this->contents[$products_id]['qty'] != '') {
@@ -356,7 +350,8 @@ class shoppingCart_ORIGINAL {
 												p.products_vpe_status,
 												p.products_vpe,
 												p.products_vpe_value,
-												p.products_tax_class_id 
+												p.products_tax_class_id,
+												p.product_type
 											FROM 
 												" . TABLE_PRODUCTS . " p, 
 												" . TABLE_PRODUCTS_DESCRIPTION . " pd 
@@ -377,26 +372,50 @@ class shoppingCart_ORIGINAL {
                     } else {
                         $vpe = '';
                     }
+					if (isset ($this->contents[$products_id]['attributes'])) {
+						reset($this->contents[$products_id]['attributes']);
+						while (list ($option, $value) = each($this->contents[$products_id]['attributes'])) {
+						$products_options = xtc_db_fetch_array(xtDBquery("SELECT 
+																*
+															FROM 
+																" . TABLE_PRODUCTS_ATTRIBUTES . "
+															WHERE 
+																products_id = '" . $products['products_id'] . "'
+															AND 
+																options_values_id = '" . $value . "'
+															AND 
+																attributes_vpe_status = '1'
+															AND 
+																attributes_vpe_value > 0
+															;"));
+
+							if ($products_options['attributes_vpe_status'] == '1' && $products_options['attributes_vpe_value'] != 0.00) {
+								$vpe_price = $xtPrice->xtcAddTax(($products_options['options_values_price'] * (1 / $products_options['attributes_vpe_value'])), $xtPrice->TAX[$products['products_tax_class_id']]);
+								$vpe = $xtPrice->xtcFormat($vpe_price, true) . TXT_PER . xtc_get_vpe_name($products_options['attributes_vpe']);
+
+							}
+						}
+					}
                     if (ACTIVATE_SHIPPING_STATUS == 'true') {
                         $shipping_time_active = $main->getShippingStatusName($products['products_shippingtime']);
                     }
+					
                     $products_array[] = array('id' => $products_id,
                         'name' => $products['products_name'],
                         'shipping_time' => $shipping_time_active,
                         'products_discount_allowed' => $products['products_discount_allowed'],
                         'image' => $products['products_image'],
                         'model' => $products['products_model'],
-                        // 'price' => ($products_price + $this->attributes_price($products_id, $products_price)),
-                        'price' => ($products_price + $this->attributes_price_scale($products_id, $this->contents[$products_id]['qty'],$products['products_tax_class_id'])),
-                        // 'p_single_price' => ($products_price + $this->attributes_price($products_id, $products_price)),
-                        'p_single_price' => ($products_price + $this->attributes_price_scale($products_id,  $this->contents[$products_id]['qty'],$products['products_tax_class_id'])),
+                        'price' => ($products_price + $this->attributes_price_scale($products_id, $this->contents[$products_id]['qty'],$products['products_tax_class_id'], $products_price)),
+                        'p_single_price' => ($products_price + $this->attributes_price_scale($products_id,  $this->contents[$products_id]['qty'],$products['products_tax_class_id'], $products_price)),
                         'quantity' => $this->contents[$products_id]['qty'],
                         'weight' => $products['products_weight'],
                         'vpe' => $vpe,
-                        // 'final_price' => ($products_price + $this->attributes_price($products_id, $products_price)),
-                        'final_price' => ($products_price + $this->attributes_price_scale($products_id, $this->contents[$products_id]['qty'],$products['products_tax_class_id'])),
+                        'final_price' => ($products_price + $this->attributes_price_scale($products_id, $this->contents[$products_id]['qty'],$products['products_tax_class_id'], $products_price)),
                         'tax_class_id' => $products['products_tax_class_id'],
-                        'attributes' => $this->contents[$products_id]['attributes']);
+                        'attributes' => $this->contents[$products_id]['attributes'],
+                        'product_type' => $products['product_type']
+						);
                 }
             }
         }

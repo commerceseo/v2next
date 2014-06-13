@@ -78,7 +78,7 @@ class account_ORIGINAL {
 			if(RMA_MODUL_ON == 'true'){
 				$account_smarty['RMA_STEP1'] = xtc_href_link(FILENAME_RMA_STEP1, '', 'SSL');
 			}
-            
+          
             return $account_smarty;
         }
     }
@@ -604,7 +604,13 @@ class account_ORIGINAL {
 		$account_smarty['SHIPPING_ADDRESS_EDIT'] = xtc_href_link(FILENAME_CHECKOUT_SHIPPING_ADDRESS, '', 'SSL');
 		$account_smarty['BILLING_ADDRESS_EDIT'] = xtc_href_link(FILENAME_CHECKOUT_PAYMENT_ADDRESS, '', 'SSL');
 		$account_smarty['BUTTON_PRINT'] = '<a class="shipping" href="' . xtc_href_link(FILENAME_PRINT_ORDER, 'oID=' . $Oid) . '">' . xtc_image_button('button_print.gif', IMAGE_BUTTON_PRINT) . '</a>';
-
+		
+		if(WITHDRAWAL_WEBFORM_ACTIVE == 'true'){
+			$account_smarty['WITHDRAWAL_BUTTON'] = '<a href="' . xtc_href_link(FILENAME_WITHDRAWAL, 'order='.$Oid.'', 'SSL') . '">' . BUTTON_WITHDRAWAL . '</a>';
+		}
+		if(WRCHECKOUT == 'true' && WRCHECKOUTFILE != ''){
+			$account_smarty['WITHDRAWAL_BUTTON_PDF'] = '<a href="' . xtc_href_link(WRCHECKOUTFILE, '', 'SSL') . '">' . BUTTON_WITHDRAWAL_PDF . '</a>';
+		}
 		return $account_smarty;
 	}
 

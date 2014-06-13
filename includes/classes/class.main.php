@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.main.php 594 2013-09-10 16:12:54Z akausch $
+ * 	$Id: class.main.php 1096 2014-06-12 14:47:41Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -18,9 +18,12 @@ class main_ORIGINAL {
     function main_ORIGINAL() {
         $this->SHIPPING = array();
         // prefetch shipping status
-        $status_query = xtDBquery("SELECT shipping_status_name, shipping_status_image, shipping_status_id FROM " . TABLE_SHIPPING_STATUS . " WHERE language_id = '" . (int) $_SESSION['languages_id'] . "';");
+        $status_query = xtDBquery("SELECT shipping_status_name, shipping_status_image, shipping_status_id, info_link_active FROM " . TABLE_SHIPPING_STATUS . " WHERE language_id = '" . (int) $_SESSION['languages_id'] . "';");
         while ($status_data = xtc_db_fetch_array($status_query, true)) {
-            $this->SHIPPING[$status_data['shipping_status_id']] = array('name' => $status_data['shipping_status_name'], 'image' => $status_data['shipping_status_image']);
+            $this->SHIPPING[$status_data['shipping_status_id']] = array(
+			'name' => $status_data['shipping_status_name'], 
+			'image' => $status_data['shipping_status_image'],
+			'info_link_active' => $status_data['info_link_active']);
         }
     }
 
@@ -35,6 +38,20 @@ class main_ORIGINAL {
             return;
         }
     }
+	
+	public function getShippingStatusInfoLinkActive($p_id) {
+		if ($this->SHIPPING[$p_id]['info_link_active'] == '1') {
+			$query = xtc_db_query("SELECT countries_id FROM " . TABLE_COUNTRIES . " WHERE status = '1';");
+			if (xtc_db_num_rows($query) > 1) {
+				$info_link = ' ' . '<a title="' . SHIPPING_COSTS . '" class="shipping" href="' . xtc_href_link(FILENAME_POPUP_CONTENT, 'coID=' . SHIPPING_INFOS) . '"> ' . SHIPPING_AUSLAND . '</a>';
+			} else {
+				$info_link = '';
+			}
+		} else {
+			$info_link = '';
+		}
+		return $info_link;
+	}
 
     function getShippingLink() {
         return ' ' . SHIPPING_EXCL . '<a title="' . SHIPPING_COSTS . '" class="shipping" href="' . xtc_href_link(FILENAME_POPUP_CONTENT, 'coID=' . SHIPPING_INFOS) . '"> ' . SHIPPING_COSTS . '</a>';

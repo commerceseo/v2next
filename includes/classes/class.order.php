@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.order.php 869 2014-03-18 16:57:50Z akausch $
+ * 	$Id: class.order.php 995 2014-04-29 17:59:27Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -342,9 +342,7 @@ class order_ORIGINAL {
             }
 
             $products_price = $xtPrice->xtcGetPrice($products[$i]['id'], $format = false, $products[$i]['quantity'], $products[$i]['tax_class_id'], '');
-            // $products_price += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price($products[$i]['id'], $products_price), false);
-            $products_price += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price_scale($products[$i]['id'], $products[$i]['quantity'],$products[$i]['tax_class_id']),false);
-
+            $products_price += $xtPrice->xtcFormat($_SESSION['cart']->attributes_price_scale($products[$i]['id'], $products[$i]['quantity'],$products[$i]['tax_class_id'], $products_price),false);
 
             $this->products[$index] = array('qty' => $products[$i]['quantity'],
                 'name' => $products[$i]['name'],
@@ -360,7 +358,8 @@ class order_ORIGINAL {
                 'final_price_formated' => $xtPrice->xtcFormat($products_price * $products[$i]['quantity'], true),
                 'shipping_time' => $products[$i]['shipping_time'],
                 'weight' => $products[$i]['weight'],
-                'id' => $products[$i]['id']);
+                'id' => $products[$i]['id'],
+				'product_type' =>  $products[$i]['product_type']);
 
             if ($products[$i]['attributes']) {
                 $subindex = 0;

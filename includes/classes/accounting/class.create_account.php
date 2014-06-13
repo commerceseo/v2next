@@ -332,7 +332,11 @@ class create_account_ORIGINAL {
                 }
             }
 			if ($site == 'create_guest_account') {
-				$customers_status = DEFAULT_CUSTOMERS_STATUS_ID_GUEST;
+				if (ACCOUNT_COMPANY_VAT_CHECK == 'true' && $vatID->vat_info['error'] == '' && $vatID->vat_info['vat_id_status'] == '1') {
+					$customers_status = $customers_status;
+				} else {
+					$customers_status = DEFAULT_CUSTOMERS_STATUS_ID_GUEST;
+				}
 				$account_type = '1';
 				$_SESSION['account_type'] = '1';
 			}
@@ -520,7 +524,7 @@ class create_account_ORIGINAL {
                         $insert_query = xtc_db_query("insert into " . TABLE_COUPONS . " (coupon_code, coupon_type, coupon_amount, date_created) values ('" . $coupon_code . "', 'G', '" . NEW_SIGNUP_GIFT_VOUCHER_AMOUNT . "', now())");
                         $insert_id = xtc_db_insert_id($insert_query);
                         $insert_query = xtc_db_query("insert into " . TABLE_COUPON_EMAIL_TRACK . " (coupon_id, customer_id_sent, sent_firstname, emailed_to, date_sent) values ('" . $insert_id . "', '0', 'Admin', '" . $email_address . "', now() )");
-
+						$xtPrice = new xtcPrice($_SESSION['currency'], $_SESSION['customers_status']['customers_status_id']);
                         $smarty->assign('SEND_GIFT', 'true');
                         $smarty->assign('GIFT_AMMOUNT', $xtPrice->xtcFormat(NEW_SIGNUP_GIFT_VOUCHER_AMOUNT, true));
                         $smarty->assign('GIFT_CODE', $coupon_code);
@@ -554,12 +558,14 @@ class create_account_ORIGINAL {
 					xtc_php_mail($mail_data['EMAIL_ADDRESS'], $mail_data['EMAIL_ADDRESS_NAME'], $email_address, $name, $mail_data['EMAIL_FORWARD'], $mail_data['EMAIL_REPLAY_ADDRESS'], $mail_data['EMAIL_REPLAY_ADDRESS_NAME'], '', '', $mail_data['EMAIL_SUBJECT'], $html_mail, $txt_mail);
 				}
                 if (!isset($mail_error)) {
-                    if ($_SESSION['cart']->count_contents() > 0)
+                    if ($_SESSION['cart']->count_contents() > 0) {
                         xtc_redirect(xtc_href_link(FILENAME_SHOPPING_CART, '', 'SSL'));
-                    else
+                    } else {
                         xtc_redirect(xtc_href_link(FILENAME_DEFAULT, '', 'SSL'));
-                } else
+					}
+                } else {
                     echo $mail_error;
+				}
             }
         }
 

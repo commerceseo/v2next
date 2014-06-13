@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.product.php 985 2014-04-17 14:53:53Z akausch $
+ * 	$Id: class.product.php 1073 2014-05-27 08:39:08Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -447,9 +447,16 @@ class product_ORIGINAL {
             }
         }
 
-        $shipping_status_name = $main->getShippingStatusName($array['products_shippingtime']);
-        $shipping_status_image = $main->getShippingStatusImage($array['products_shippingtime']);
-        $shipping_status_image = xtc_image($shipping_status_image, $shipping_status_name);
+        if(ACTIVATE_SHIPPING_STATUS == 'true'){
+		$shipping_status_name = $main->getShippingStatusName($array['products_shippingtime']);
+        $shipping_status_image = xtc_image($main->getShippingStatusImage($array['products_shippingtime']), $shipping_status_name);
+		$shipping_info_link_active = $main->getShippingStatusInfoLinkActive($array['products_shippingtime']);
+		
+		} else{
+			$shipping_status_name = '';
+			$shipping_status_image = '';
+			$shipping_info_link_active = '';
+		}
 
         if ($options['p_manu_img'] == 1 || $options['p_manu_name'] == 1) {
             $manufacturer_query = xtDBquery("SELECT
@@ -502,15 +509,21 @@ class product_ORIGINAL {
         }
 
         require_once (DIR_FS_INC . 'cseo_truncate.inc.php');
-
+		if (LISTINGHTML == 'true') {
+			$products_short_description = $array['products_short_description'];
+			$products_description = $array['products_description'];
+		} else {
+			$products_short_description = strip_tags($array['products_short_description']);
+			$products_description = strip_tags($array['products_description']);
+		}
         if ($options['p_short_desc'] == 1 && $array['products_short_description'] != '') {
-            $description = cseo_truncate($array['products_short_description'], $options['p_short_desc_lenght']);
+            $description = cseo_truncate($products_short_description, $options['p_short_desc_lenght']);
         } elseif ($options['p_short_desc'] == 1 && $array['products_short_description'] == '' && $array['products_description'] != '') {
-            $description = cseo_truncate($array['products_description'], $options['p_short_desc_lenght']);
+            $description = cseo_truncate($products_description, $options['p_short_desc_lenght']);
         } elseif ($options['p_short_desc'] == 1 && $array['products_short_description'] == '' && $array['products_description'] == '') {
             $description = cseo_truncate($array['products_name'], $options['p_short_desc_lenght']);
         } elseif ($options['p_long_desc'] == 1) {
-            $description = cseo_truncate($array['products_description'], $options['p_long_desc_lenght']);
+            $description = cseo_truncate($products_description, $options['p_long_desc_lenght']);
         } else {
             $description = '';
         }
@@ -623,7 +636,7 @@ class product_ORIGINAL {
             'PRODUCTS_BUTTON_BUY_NOW' => (($options['b_order'] == 1 && $array['products_buyable'] == 1) ? $buy_now_button : ''),
             'PRODUCTS_BUTTON_WISHLIST' => (($options['b_wishlist'] == 1) ? $wishlist : ''),
             'PRODUCTS_BUTTON_DETAILS' => $button_details,
-            'PRODUCTS_SHIPPING_NAME' => $shipping_status_name,
+            'PRODUCTS_SHIPPING_NAME' => $shipping_status_name . $shipping_info_link_active,
             'PRODUCTS_SHIPPING_IMAGE' => $shipping_status_image,
             'PRODUCTS_EXPIRES' => $array['expires_date'],
             'PRODUCTS_DATE' => xtc_date_short($array['products_date_available']),

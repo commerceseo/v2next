@@ -27,6 +27,7 @@ class cseoautoloader {
             'login' => DIR_WS_CLASSES . 'accounting/class.login.php',
             'create_account' => DIR_WS_CLASSES . 'accounting/class.create_account.php',
             'account' => DIR_WS_CLASSES . 'accounting/class.account.php',
+            'withdrawal' => DIR_WS_CLASSES . 'accounting/class.withdrawal.php',
             'cseo_navigation' => DIR_WS_CLASSES . 'class.navigation.php',
             'breadcrumb' => DIR_WS_CLASSES . 'class.breadcrumb.php',
             'main' => DIR_WS_CLASSES . 'class.main.php',

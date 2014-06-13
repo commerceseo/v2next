@@ -3,7 +3,7 @@
 if (isset($order) && $order->info['payment_method'] == 'secupay_inv_xtc') {
 
     include_once(DIR_FS_CATALOG . 'lang/' . $order->info['language'] . '/modules/payment/secupay_inv_xtc.php');
-    include_once ("../" . DIR_WS_CLASSES . 'secupay_api.php');
+    include_once ("../" . DIR_WS_CLASSES . 'payment/class.secupay_api.php');
     
     $invoice_hash_query = xtc_db_query("SELECT hash AS hash FROM secupay_transaction_order WHERE ordernr = " . intval($_GET['oID']) . ";");
     $invoice_hash_result = xtc_db_fetch_array($invoice_hash_query);
@@ -18,7 +18,7 @@ if (isset($order) && $order->info['payment_method'] == 'secupay_inv_xtc') {
 }
 if (isset($order) && $order->info['payment_method'] == 'secupay_ls_xtc') {
 
-    include_once ("../" . DIR_WS_CLASSES . 'secupay_api.php');
+    include_once ("../" . DIR_WS_CLASSES . 'payment/class.secupay_api.php');
     
     $debit_hash_query = xtc_db_query("SELECT hash AS hash FROM secupay_transaction_order WHERE ordernr = " . intval($_GET['oID']) . ";");
     $debit_hash_result = xtc_db_fetch_array($debit_hash_query);
@@ -33,7 +33,7 @@ if (isset($order) && $order->info['payment_method'] == 'secupay_ls_xtc') {
 }
 if (isset($order) && $order->info['payment_method'] == 'secupay_kk_xtc') {
 
-    include_once ("../" . DIR_WS_CLASSES . 'secupay_api.php');
+    include_once ("../" . DIR_WS_CLASSES . 'payment/class.secupay_api.php');
     
     $debit_hash_query = xtc_db_query("SELECT hash AS hash FROM secupay_transaction_order WHERE ordernr = " . intval($_GET['oID']) . ";");
     $debit_hash_result = xtc_db_fetch_array($debit_hash_query);

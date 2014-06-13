@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: delete_unused_guest_account.php 934 2014-04-02 15:40:06Z akausch $
+ * 	$Id: delete_unused_guest_account.php 1039 2014-05-12 16:01:33Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -43,7 +43,9 @@ function delete_unused_guest_accounts() {
 					LEFT JOIN 
 						" . TABLE_WHOS_ONLINE . " AS w ON (c.customers_id = w.customer_id)
 					WHERE
-						c.account_type = 1 
+						c.customers_status = 1
+					AND
+						c.account_type = 1
 					AND
 						w.customer_id IS NULL;");
 

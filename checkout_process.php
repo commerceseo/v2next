@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_process.php 1031 2014-05-10 10:04:13Z akausch $
+ * 	$Id: checkout_process.php 1039 2014-05-12 16:01:33Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -30,6 +30,12 @@ if (DISPLAY_CONDITIONS_ON_CHECKOUT == 'true') {
 }
 if (CHECKOUT_CHECKBOX_REVOCATION == 'true') {
     if (is_array($_SESSION['nvpReqArray']) && $_POST['widerrufsrecht'] != 'widerrufsrecht' && $_SESSION['payment'] == 'paypalexpress') {
+        $error_mess = '3';
+    }
+    if (is_array($_SESSION['nvpReqArray']) && $_POST['revocationdownload'] != 'revocationdownload' && $_SESSION['payment'] == 'paypalexpress') {
+        $error_mess = '3';
+    }
+    if (is_array($_SESSION['nvpReqArray']) && $_POST['revocationservice'] != 'revocationservice' && $_SESSION['payment'] == 'paypalexpress') {
         $error_mess = '3';
     }
 }
@@ -273,7 +279,8 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
             'products_tax' => $order->products[$i]['tax'],
             'products_discount_made' => $order->products[$i]['discount_allowed'],
             'products_quantity' => $order->products[$i]['qty'],
-            'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax']);
+            'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax'],
+			'product_type' => $order->products[$i]['product_type']);
 
         xtc_db_perform(TABLE_ORDERS_PRODUCTS, $sql_data_array);
         $order_products_id = xtc_db_insert_id();

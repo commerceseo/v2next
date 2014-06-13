@@ -131,9 +131,7 @@ if ($coid == 7) {
         $smarty->assign('FORM_ACTION', xtc_draw_form('contact_us', xtc_href_link(FILENAME_CONTENT, 'action=send&coID=' . (int) $_GET['coID'], 'SSL')));
 
         function get_customer_mail($customer_id) {
-            $customer_sql = 'select customers_email_address from ' . TABLE_CUSTOMERS . ' where customers_id=' . $customer_id;
-            $customer_array = xtDBquery($customer_sql);
-            $customer_info = xtc_db_fetch_array($customer_array);
+            $customer_info = xtc_db_fetch_array(xtDBquery("SELECT customers_email_address FROM " . TABLE_CUSTOMERS . " WHERE customers_id='" . $customer_id."';"));
             return $customer_info['customers_email_address'];
         }
 

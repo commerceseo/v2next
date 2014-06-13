@@ -17,10 +17,6 @@ include ('includes/application_top.php');
 $smarty = new Smarty;
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
 
-if (CHECKOUT_AJAX_STAT == 'true') {
-	xtc_redirect(xtc_href_link(FILENAME_CHECKOUT, '', 'SSL'));
-}
-
 require_once (DIR_FS_INC . 'xtc_address_label.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_address_format_id.inc.php');
 require_once (DIR_FS_INC . 'xtc_count_shipping_modules.inc.php');

@@ -228,18 +228,23 @@ if (isset($_POST['action']) && ($_POST['action'] == 'process')) {
         xtc_redirect(xtc_href_link(FILENAME_PAYPAL_CHECKOUT, '', 'SSL'));
     }
 }
-if ($kein_versand == 1)
-    $_SESSION['shipping'] = false;
+
 // get all available shipping quotes
 $quotes = $shipping_modules->quote();
 // if no shipping method has been selected, automatically select the cheapest method.
 // if the modules status was changed when none were available, to save on implementing
 // a javascript force-selection method, also automatically select the cheapest shipping
 // method if more than one module is now enabled
-if (!isset($_SESSION['shipping']) || (isset($_SESSION['shipping']) && ($_SESSION['shipping'] == false) && (xtc_count_shipping_modules() > 1)))
+if (!isset($_SESSION['shipping']) || (isset($_SESSION['shipping']) && ($_SESSION['shipping'] == false) && (xtc_count_shipping_modules() > 1))) {
     $_SESSION['shipping'] = $shipping_modules->cheapest();
-if ($kein_versand == 1)
+} else {
+	$_SESSION['shipping'] = false;
+}
+
+if ($kein_versand == 1) {
     $_SESSION['shipping'] = false;
+}
+
 $order = new order();
 // load all enabled payment modules
 require_once(DIR_WS_CLASSES . 'class.payment.php');

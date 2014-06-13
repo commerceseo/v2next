@@ -14,9 +14,7 @@
  * --------------------------------------------------------------- */
 
 include ('includes/application_top.php');
-$coo_text_mgr = new LanguageTextManager('account', $_SESSION['languages_id']);
 $smarty = new Smarty;
-$smarty->assign('txt', $coo_text_mgr->v_section_content_array['account']);
 $account = new account;
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
 

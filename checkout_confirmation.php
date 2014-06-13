@@ -58,7 +58,21 @@ if (isset($_POST['cot_gv']))
 // if conditions are not accepted, redirect the customer to the payment method selection page
 
 unset($_SESSION['error_message']);
-
+if(defined('VRRL_ACTIVE') && VRRL_ACTIVE == 'true') {
+	$show_abandonment_download = false;
+	$show_abandonment_service = false;
+	$products = $_SESSION['cart']->get_products();
+	for($i = 0, $n = sizeof($products); $i < $n; $i++) {
+		if($products[$i]['product_type'] == '2') {
+			$show_abandonment_download = true;
+		}
+		if($products[$i]['product_type'] == '3') {
+			$show_abandonment_service = true;
+		}
+	}
+	unset($_SESSION['abandonment_download']);
+	unset($_SESSION['abandonment_service']);
+}
 if (!isset($_SESSION['all_checkout_checks_ok'])) {
     if (DISPLAY_CONDITIONS_ON_CHECKOUT == 'true' && CHECKOUT_CHECKBOX_AGB == 'true') {
         if ($_REQUEST['conditions'] == false) {
@@ -67,7 +81,6 @@ if (!isset($_SESSION['all_checkout_checks_ok'])) {
             xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, '', 'SSL', true, false));
         }
     }
-
     if (DISPLAY_DATENSCHUTZ_ON_CHECKOUT == 'true' && CHECKOUT_CHECKBOX_DSG == 'true') {
         if ($_REQUEST['datenschutz'] == false) {
             $error = str_replace('\n', '<br />', ERROR_DATENSCHUTZ_NOT_ACCEPTED);
@@ -75,12 +88,30 @@ if (!isset($_SESSION['all_checkout_checks_ok'])) {
             xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, '', 'SSL', true, false));
         }
     }
-
-    if (DISPLAY_WIDERRUFSRECHT_ON_CHECKOUT == 'true' && CHECKOUT_CHECKBOX_REVOCATION == 'true') {
+    if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true' && CHECKOUT_CHECKBOX_REVOCATION == 'true') {
         if ($_POST['widerrufsrecht'] == false) {
-            $error = str_replace('\n', '<br />', ERROR_WIDERRUFSRECHT_NOT_ACCEPTED);
+            $error = str_replace('\n', '<br />', CHECKOUT_ERROR_REVOCATION);
             $_SESSION['error_message'] = urlencode($error);
             xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, '', 'SSL', true, false));
+        }
+    }
+	
+    if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true' && CHECKOUT_CHECKBOX_REVOCATION == 'true' && WITHDRAWAL_DOWNLOAD == 'true') {
+        if ($show_abandonment_download) {
+		if ($_POST['revocationdownload'] == false) {
+            $error = str_replace('\n', '<br />', CHECKOUT_ERROR_REVOCATION_DOWNLOAD);
+            $_SESSION['error_message'] = urlencode($error);
+            xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, '', 'SSL', true, false));
+        }
+        }
+    }
+    if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true' && CHECKOUT_CHECKBOX_REVOCATION == 'true' && WITHDRAWAL_SERVICE == 'true') {
+        if ($show_abandonment_service) {
+		if ($_POST['revocationservice'] == false) {
+            $error = str_replace('\n', '<br />', CHECKOUT_ERROR_REVOCATION_SERVICE);
+            $_SESSION['error_message'] = urlencode($error);
+            xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, '', 'SSL', true, false));
+        }
         }
     }
 
@@ -89,35 +120,27 @@ if (!isset($_SESSION['all_checkout_checks_ok'])) {
 // recover carts
 require_once (DIR_FS_INC . 'xtc_checkout_site.inc.php');
 xtc_checkout_site('confirm');
-// load the selected payment module
-require_once (DIR_WS_CLASSES . 'class.payment.php');
-if (isset($_SESSION['credit_covers']))
-    $_SESSION['payment'] = 'no_payment'; // GV Code Start/End ICW added for CREDIT CLASS
+
+if (isset($_SESSION['credit_covers'])) {
+    $_SESSION['payment'] = 'no_payment';
+}
 $payment_modules = new payment($_SESSION['payment']);
-
-// GV Code ICW ADDED FOR CREDIT CLASS SYSTEM
-require_once (DIR_WS_CLASSES . 'class.order_total.php');
-require_once (DIR_WS_CLASSES . 'class.order.php');
 $order = new order();
-
 $payment_modules->update_status();
 
-// GV Code Start
 $order_total_modules = new order_total();
 $order_total_modules->collect_posts();
 $order_total_modules->pre_confirmation_check();
-// GV Code End
-// GV Code line changed
+
 if ((is_array($payment_modules->modules) && (sizeof($payment_modules->modules) > 1) && (!is_object($$_SESSION['payment'])) && (!isset($_SESSION['credit_covers']))) || (is_object($$_SESSION['payment']) && ($$_SESSION['payment']->enabled == false))) {
     $_SESSION['error_message'] = urlencode(ERROR_NO_PAYMENT_MODULE_SELECTED);
     xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, '', 'SSL'));
 }
 
-if (is_array($payment_modules->modules))
+if (is_array($payment_modules->modules)) {
     $payment_modules->pre_confirmation_check();
+}
 
-// load the selected shipping module
-require_once (DIR_WS_CLASSES . 'class.shipping.php');
 $shipping_modules = new shipping($_SESSION['shipping']);
 
 // Stock Check
@@ -177,9 +200,6 @@ $smarty->assign('PAYMENT_EDIT', xtc_href_link(FILENAME_CHECKOUT_PAYMENT, '', 'SS
 
 $total_block = '';
 if (MODULE_ORDER_TOTAL_INSTALLED) {
-    //Delete by Novalnet
-    //$order_total_modules->process();
-    ### BEGIN INCLUDED CODES BY NOVALNET ###
     $aryNNTotal = $order_total_modules->process();
     if (count($aryNNTotal) != 0) {
         foreach ($aryNNTotal as $nnkey => $nnval) {
@@ -192,7 +212,6 @@ if (MODULE_ORDER_TOTAL_INSTALLED) {
             }
         }
     }
-    ### END INCLUDED CODES BY NOVALNET ###
     $total_block .= $order_total_modules->output();
 }
 $total_block .= '';
@@ -210,9 +229,7 @@ if (is_array($payment_modules->modules)) {
     }
 }
 
-// Call Refresh Hook Click & Buy
 $payment_modules->refresh();
-
 
 if (xtc_not_null($order->info['comments'])) {
     $smarty->assign('ORDER_COMMENTS', nl2br(htmlspecialchars($order->info['comments'])) . xtc_draw_hidden_field('comments', $order->info['comments']));
@@ -241,22 +258,17 @@ if (strpos($_SESSION['payment'], 'easydebit')) {
 $smarty->assign('BUTTON_EDIT', xtc_image_button('button_edit.gif', 'bearbeiten'));
 //check if display conditions on checkout page is true
 if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true') {
-
     if (GROUP_CHECK == 'true') {
         $group_check = "and group_ids LIKE '%c_" . $_SESSION['customers_status']['customers_status_id'] . "_group%'";
     }
-
-    $shop_content_query = "SELECT
+    $shop_content_data = xtc_db_fetch_array(xtc_db_query("SELECT
 							content_title,
 							content_heading,
 							content_text,
 							content_file
 							FROM " . TABLE_CONTENT_MANAGER . "
 							WHERE content_group='" . REVOCATION_ID . "' " . $group_check . "
-							AND languages_id='" . $_SESSION['languages_id'] . "'";
-
-    $shop_content_query = xtc_db_query($shop_content_query);
-    $shop_content_data = xtc_db_fetch_array($shop_content_query);
+							AND languages_id='" . (int)$_SESSION['languages_id'] . "'"));
 
     if ($shop_content_data['content_file'] != '') {
         ob_start();
@@ -275,17 +287,16 @@ if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true') {
     $smarty->assign('REVOCATION_TITLE', $shop_content_data['content_heading']);
     $smarty->assign('REVOCATION_LINK', $main->getContentLink(REVOCATION_ID, MORE_INFO));
 
-    $shop_content_query = "SELECT
-							content_title,
-							content_heading,
-							content_text,
-							content_file
-							FROM " . TABLE_CONTENT_MANAGER . "
-							WHERE content_group='3' " . $group_check . "
-							AND languages_id='" . $_SESSION['languages_id'] . "'";
+    $shop_content_data = xtc_db_fetch_array(xtc_db_query("SELECT
+								content_heading
+							FROM 
+								" . TABLE_CONTENT_MANAGER . "
+							WHERE 
+								content_group = '3' 
+								" . $group_check . "
+							AND 
+								languages_id='" . (int)$_SESSION['languages_id'] . "'"));
 
-    $shop_content_query = xtc_db_query($shop_content_query);
-    $shop_content_data = xtc_db_fetch_array($shop_content_query);
 
     $smarty->assign('AGB_TITLE', $shop_content_data['content_heading']);
     $smarty->assign('AGB_LINK', $main->getContentLink(3, MORE_INFO));
@@ -297,13 +308,14 @@ if (CHECKOUT_SHOW_SHIPPING == 'true') {
     }
 
     $shop_content_query = xtc_db_fetch_array(xtc_db_query("SELECT
-							content_title,
-							content_heading,
-							content_text,
-							content_file
-							FROM " . TABLE_CONTENT_MANAGER . "
-							WHERE content_group='" . CHECKOUT_SHOW_SHIPPING_ID . "' " . $group_check . "
-							AND languages_id='" . $_SESSION['languages_id'] . "'"));
+							content_text
+							FROM 
+								" . TABLE_CONTENT_MANAGER . "
+							WHERE 
+								content_group='" . CHECKOUT_SHOW_SHIPPING_ID . "' 
+								" . $group_check . "
+							AND 
+								languages_id='" . (int)$_SESSION['languages_id'] . "'"));
 
     $zolltext = $shop_content_query['content_text'];
     $smarty->assign('SZI', $zolltext);
@@ -326,9 +338,6 @@ if (is_array($cseo_extender_result_array)) {
 }
 
 $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/checkout_confirmation.html', USE_TEMPLATE_DEVMODE));
-
 $smarty->assign('main_content', $main_content);
-
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
-
 include ('includes/application_bottom.php');

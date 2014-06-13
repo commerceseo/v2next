@@ -18,14 +18,17 @@
                 <div class="fl wk2">{if $module_data.PRODUCTS_IMAGE!=''}<img src="{$module_data.PRODUCTS_IMAGE}" alt="{$module_data.IMAGE_ALT}" />{/if}</div>
                 <div class="fl wk3"><a href="{$module_data.PRODUCTS_LINK}">{$module_data.PRODUCTS_NAME}</a><br>
                     {$module_data.PRODUCTS_SHORT_DESCRIPTION}<br>
-                    {if $module_data.PRODUCTS_SHIPPING_TIME neq ""}
+                    {if $module_data.PRODUCTS_SHIPPING_TIME}
                     {$txt.text_shippingtime} {$module_data.PRODUCTS_SHIPPING_TIME}
                     {/if}
                     {if $module_data.ATTRIBUTES!=''}
                     {foreach key=key_data item=item_data from=$module_data.ATTRIBUTES}
                     <div class="col-xs-12">
-                        <em>{$item_data.NAME}: {$item_data.VALUE_NAME}</em>
-                        <em>{$item_data.PREFIX} {$item_data.PRICE}</em>
+                        <em>{$item_data.NAME}: {$item_data.VALUE_NAME}
+                        {$item_data.PREFIX} {$item_data.PRICE}</em>
+						{if $item_data.ATTR_SHIPPING}
+                        <br>{$txt.text_shippingtime}: {$item_data.ATTR_SHIPPING}
+						{/if}
                     </div>
                     {/foreach}
                     {/if}
@@ -81,3 +84,12 @@
         {/if}
     </div>
 </div>
+{if $SHIPPING_INFO}
+<hr />
+<br style="clear:both">
+<div class="row">
+    <div class="col-xs-12 text-right ar">
+        {$SHIPPING_INFO}
+    </div>
+</div>
+{/if}

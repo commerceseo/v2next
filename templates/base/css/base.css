@@ -58,6 +58,9 @@
 	.textblock {width:50%; }
 }
 
+.red_wdd {background: #f2dede; padding: 4px;}
+.red_wds {background: #f2dede; padding: 4px;}
+
 #socialshare {float: left; width: 100%; margin: 5px 0 10px 0;}
 #socialshare div {float: left; height: 22px; display: block; color: #fff; background-image: url("images/img/socialicons.png");}
 

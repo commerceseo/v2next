@@ -1,0 +1,123 @@
+{load_language_text section="checkout_payment"}
+{if $error!=''}
+	<div class="headerError bg-danger">{$error}</div>
+{/if}
+<h2>{$txt.heading_payment}</h2>
+<div class="row text-center">
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarCurrent">{$txt.text_shipping_info}</div>
+	</div>	
+	<div class="col-sm-3">
+		<div class="checkout_line"><img src="{$tpl_path}img/checkout_bullet.gif" alt="Bullet" /></div>
+		<div class="checkoutBarTo"><b>{$txt.text_payment_info}</b></div>
+	</div>
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{$txt.text_confirm}</div>
+	</div>	
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{$txt.text_finished}</div>
+	</div>
+</div>
+<hr />
+{$FORM_ACTION}
+<div class="row">
+	<div class="col-md-6 col-sm-12">
+		<b>{$txt.title_address}</b><br><br>
+		{$txt.text_address}
+	</div>
+	<div class="col-md-6 col-sm-12 bg-info">
+		{$ADDRESS_LABEL}<br><br>
+		{$BUTTON_ADDRESS}<br><br>
+	</div>
+</div>
+<hr />
+
+{if $GV_COVER !='true'}
+	{if $module_gift !=''}
+		{$module_gift}<br><hr /><br>
+	{/if}
+{else}
+	{$txt.text_gccover}<br>
+{/if}	
+	
+<div class="row checkout_payment_block">
+	<div class="col-sm-12">
+	<h3>{$txt.title_payment}</h3>
+		{$txt.text_payment}<br><br>
+		{$PAYMENT_BLOCK}
+	</div>
+</div>	
+	
+<hr />
+<div class="row checkout_payment_comments">
+	<div class="col-sm-12">
+		<h4>{$txt.title_comments}</h4>
+		<span class="textarea">{$COMMENTS}</span>
+	</div>
+</div>
+	
+{if $AGB || $AGB_CHECKBOX == 'true'}
+		<h4>{$txt.title_agb}</h4>
+	<fieldset class="checkout_payment">
+		{$AGB_LINK} {$BUTTON_PRINT_AGB} {$AGB_PDF_LINK}<br><br>
+		<span class="textarea">{$AGB}</span><br><br>
+		{if $AGB_CHECKBOX == 'true'}
+			<div class="red_agb" id="agb">
+				{$AGB_checkbox} <b>{$txt.text_accept_agb}</b>
+			</div>
+		{/if}
+	</fieldset>
+{/if}
+
+{if $DS || $DSG_CHECKBOX == 'true'}
+		<h4>{$txt.title_ds}</h4>
+	<fieldset class="checkout_payment">
+		{$DS_LINK} {$BUTTON_PRINT_DS} {$DS_PDF_LINK}<br><br>
+		<span class="textarea">{$DS}</span><br><br>
+		{if $DSG_CHECKBOX == 'true'}
+			<div class="red_ds" id="ds">
+				{$DS_checkbox} <b>{$txt.text_accept_ds}</b>
+			</div>
+		{/if}
+	</fieldset>
+{/if}
+
+{if $WD || $REVOCATION_CHECKBOX == 'true'}
+		<h4>{$txt.title_wd}</h4>
+	<fieldset class="checkout_payment">	
+		{$WD_LINK} {$BUTTON_PRINT_WD} {$WD_PDF_LINK}<br><br>
+		<span class="textarea">{$WD}</span><br><br>
+		{if $REVOCATION_CHECKBOX == 'true'}
+			<div class="red_wd" id="wd">
+				{$WD_checkbox} <b>{$txt.text_accept_revocation}</b>
+			</div>
+		{/if}
+		{if $SHOW_ABANDONMENT_DOWNLOAD == 'true'}
+			<div class="red_wdd" id="wdd">
+				{$REVOCATION_DOWNLOAD_checkbox} <b>{$txt.text_accept_revocation_download}</b>
+			</div>
+		{/if}
+		{if $SHOW_ABANDONMENT_SERVICE == 'true'}
+			<div class="red_wdd" id="wds">
+				{$REVOCATION_SERVICE_checkbox} <b>{$txt.text_accept_revocation_service}</b>
+			</div>
+		{/if}
+	</fieldset>
+{/if}
+<div class="row">
+	<div class="col-sm-12">
+		<b>{$txt.title_continue}</b><br>
+		{$txt.text_continue}<br>
+	</div>
+</div>
+<hr>
+<div class="row">
+	<div class="col-sm-12 text-right">
+		{$BUTTON_CONTINUE}<br><br>
+	</div>
+</div>
+
+{$FORM_END}

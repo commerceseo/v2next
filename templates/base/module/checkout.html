@@ -1,8 +1,5 @@
-{config_load file="lang/$language/lang_$language.conf" section="checkout"}
-{config_load file="lang/$language/lang_$language.conf" section="login"}
-{config_load file="lang/$language/lang_$language.conf" section="create_account"}
-{config_load file="lang/$language/lang_$language.conf" section="antispam"}
-<h1>{#heading_checkout#}</h1>
+{load_language_text section="checkout"}
+<h1>{$txt.heading_checkout}</h1>
 
 {if $error}
 	<div class="headerError bg-danger">{$error}</div>
@@ -14,14 +11,17 @@
 {else}
 
 	{if $CUSTOMERS_IP!=''} 
-		<b>{#text_ip#}</b> <span class="inputRequirement bg-danger"><b>{$CUSTOMERS_IP}</b></span>
+		<b>{$txt.text_ip}</b> <span class="inputRequirement bg-danger"><b>{$CUSTOMERS_IP}</b></span>
 	{/if}
 
 	<div class="checkout_row">
+	<div>{$txt.text_accept_agb_link}</div>
+	<div>{$txt.text_accept_revocation_link}</div>
+	<br>
 	{foreach from=$SORTING item=box}
 	{if $box=='modules'}
 		<div class="checkout_shipping_modules">
-			<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('shipping_modules')"><b>{#title_shipping_modules#}</b> <img id="loader_shipping_modules" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /><div class="right" id="btn_shipping_modules">-</div></div>
+			<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('shipping_modules')"><b>{$txt.title_shipping_modules}</b> <img id="loader_shipping_modules" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /><div class="right" id="btn_shipping_modules">-</div></div>
 			<div class="checkout_content border_bottom_radius_6" id="chkt_shipping_modules">
 				<div id="not_virtual_modules"{if $VIRTUAL == 1 || $FREE_SHIPPING == 1} style="display:none;"{/if}>
 				{$FORM_ACTION_SHIPPING_MODULES}
@@ -30,7 +30,7 @@
 				</div>
 				{if $NO_SHIPPINGS == 1}
 				<div>            
-				{#text_no_shippings#}
+				{$txt.text_no_shippings}
 				</div>
 				{/if}
 				{*if $NO_SHIPPINGS != 1}
@@ -45,7 +45,7 @@
 
 		</div>
 		<div class="checkout_payment_modules">
-			<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('payment_modules')"><b>{#title_payment_modules#}</b> <img id="loader_payment_modules" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;	vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /><div class="right" id="btn_payment_modules">-</div></div>
+			<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('payment_modules')"><b>{$txt.title_payment_modules}</b> <img id="loader_payment_modules" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;	vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /><div class="right" id="btn_payment_modules">-</div></div>
 			<div class="checkout_content border_bottom_radius_6" id="chkt_payment_modules">
 					<div id="payment_modules"{if $GV_COVER=='true'} style="display:none"{/if}>
 					{$FORM_ACTION_PAYMENT_MODULES}
@@ -54,7 +54,7 @@
 					</div>
 					{if $NO_PAYMENTS == 1}
 					<div>
-					{#text_no_payments#}
+					{$txt.text_no_payments}
 					</div>
 					{/if}
 					{if $NO_PAYMENTS != 1}
@@ -64,24 +64,8 @@
 					<div class="inputRequirement left_space" id="payment_module_error">&nbsp;</div>
 					{$FORM_END}
 					</div>
-					<div id="payment_gccover" class="virtual"{if $GV_COVER!='true'} style="display:none"{/if}>{#text_gccover#}</div>
-					<div id="payment_gift">{$module_gift}</div>
-					<div id="bonus">
-						{if $VALUED}  
-						<div id="payment_gift"><b>{#TABLE_HEADING_REDEEM_SYSTEM#}</b></div>
-						<div id="payment_gift">{#TEXT_REDEEM_SYSTEM_START#}{$VALUED}{#TEXT_REDEEM_SYSTEM_START_1#}{$ORDER_TOTAL}{$NOTE}</div>
-						<div id="payment_gift">{#TEXT_REDEEM_SYSTEM_SPENDING#} {$MAX_POINTS}{#TEXT_REDEEM_SYSTEM_SPENDING_1#} {$VALUED_MAX_POINTS}{#TEXT_REDEEM_SYSTEM_SPENDING_2#}</div>
-						<div id="payment_gift">{$LIMIT_EXACT_TRUE_MAX_POINTS}</div>
-						{/if}
-						{if $NOTE_NOT_ENOUGH_POINTS}
-						<div id="payment_gift">{#INFO_NOT_ENOUGH_POINTS#}</div>
-						{/if} 
-						{if $REFERRAL_INPUT}
-						<div id="payment_gift"><b>{$TABLE_HEADING_REFERRAL}</b></div>
-						<div id="payment_gift">{$TEXT_REFERRAL_REFERRED}</div>
-						<div id="payment_gift">{$REFERRAL_INPUT}</div>
-						{/if}
-					</div>                
+					<div id="payment_gccover" class="virtual"{if $GV_COVER!='true'} style="display:none"{/if}>{$txt.text_gccover}</div>
+					<div id="payment_gift">{$module_gift}</div>               
 			<br class="clearfix">
 			</div>
 		</div>
@@ -90,13 +74,13 @@
 	{elseif $box=='addresses'}
 	<div class="checkout_row">
 		<div class="checkout_shipping_address">
-			<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('shipping_address')"><b>{#title_shipping_address#}</b> <img id="loader_shipping_address" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;	vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /> <div class="right" id="btn_shipping_address">-</div></div>
+			<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('shipping_address')"><b>{$txt.title_shipping_address}</b> <img id="loader_shipping_address" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;	vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /> <div class="right" id="btn_shipping_address">-</div></div>
 			<div class="checkout_content border_bottom_radius_6" id="chkt_shipping_address">
 				<div id="not_virtual_address"{if $VIRTUAL == 1} style="display:none;"{/if}>
 					<div id="shipping_address">{$SHIPPING_ADDRESS_LABEL}</div>
 					
 					<div id="shipping_address_select" style="display:none;">
-						<b>{#address_old#}</b><br />
+						<b>{$txt.address_old}</b><br />
 						<span id="dyn_shipping_address"></span><br /><br />
 						{if $ADDRESS_NEW_POSSIBLE == 1}
 						{$FORM_ACTION_SHIPPING_ADDRESS}
@@ -104,7 +88,7 @@
 						<span id="shipping_address_error" class="inputRequirement"></span>
 						{$FORM_END}
 						{else}
-						{#address_no_more#}
+						{$txt.address_no_more}
 						{/if}
 					</div>
 					
@@ -116,11 +100,11 @@
 			</div>
 		</div>
 		<div class="checkout_payment_address">
-			<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('payment_address')"><b>{#title_payment_address#}</b> <img id="loader_payment_address" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;	vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /> <div class="right" id="btn_payment_address">-</div></div>
+			<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('payment_address')"><b>{$txt.title_payment_address}</b> <img id="loader_payment_address" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;	vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /> <div class="right" id="btn_payment_address">-</div></div>
 			<div class="checkout_content border_bottom_radius_6" id="chkt_payment_address">
 				<div id="payment_address">{$PAYMENT_ADDRESS_LABEL}</div>
 				<div id="payment_address_select" style="display:none;">
-					<b>{#address_old#}</b><br />
+					<b>{$txt.address_old}</b><br />
 					<span id="dyn_payment_address"></span><br /><br />
 					{if $ADDRESS_NEW_POSSIBLE == 1}
 					{$FORM_ACTION_PAYMENT_ADDRESS}
@@ -128,7 +112,7 @@
 					<span id="payment_address_error" class="inputRequirement"></span>
 					{$FORM_END}
 					{else}
-					{#address_no_more#}
+					{$txt.address_no_more}
 					{/if}
 				</div>
 				<div id="payment_address_button_edit" class="checkout_button">{$BUTTON_EDIT_PAYMENT_ADDRESS}</div>
@@ -139,15 +123,11 @@
 	</div>
 
 	<div class="checkout_spacer">&nbsp;</div>
-	<!-- 
-	{$INDIV_ACCOUNT}
-	<div class="checkout_spacer">&nbsp;</div>
-	-->
 
 	{$FORM_ACTION}
 	{elseif $box=='comments'}
 	<div class="checkout_comments">
-		<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('comments');"><b>{#title_comments#}</b> <div class="right" id="btn_comments">-</div></div>
+		<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('comments');"><b>{$txt.title_comments}</b> <div class="right" id="btn_comments">-</div></div>
 		<div class="checkout_content border_bottom_radius_6" id="chkt_comments">{$COMMENTS}</div>
 	</div>
 	<div class="checkout_spacer">&nbsp;</div>
@@ -155,12 +135,12 @@
 	{elseif $box=='legals'}
 	{if $AGB_stat == 1}
 		<div class="checkout_agb">
-		<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('agb')"><b>{#title_agb#}</b> <div class="right" id="btn_agb">-</div></div>
+		<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('agb')"><b>{$txt.title_agb}</b> <div class="right" id="btn_agb">-</div></div>
 		<div class="checkout_content border_bottom_radius_6" id="chkt_agb">
 		<div>{$AGB}</div>
 		</div>
 		{if $AGB_CHECKBOX == 'true'}
-			<div class="red_agb">{$AGB_checkbox} <b>{#text_accept_agb#}</b></div>
+			<div class="red_agb">{$AGB_checkbox} <b>{$txt.text_accept_agb}</b></div>
 		{/if}
 
 	</div>
@@ -170,12 +150,18 @@
 	{elseif $box=='wd'}
 	{if $REVOCATION_stat == 1 and $REVOCATION}
 	<div class="checkout_revocation">
-		<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('revocation')"><b>{#title_revocation#}</b> <div class="right" id="btn_revocation">-</div></div>
+		<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('revocation')"><b>{$txt.title_revocation}</b> <div class="right" id="btn_revocation">-</div></div>
 		<div class="checkout_content border_bottom_radius_6" id="chkt_revocation">
 			<div>{$REVOCATION}</div>
 		</div>
 		{if $REVOCATION_CHECKBOX == 'true'}
-			<div class="red_wd">{$REVOCATION_checkbox} <b>{#text_accept_revocation#}</b></div>
+			<div class="red_wd">{$REVOCATION_checkbox} <b>{$txt.text_accept_revocation}</b> {if $WRCHECKOUTFILE}{$WRCHECKOUTFILE}{/if}</div>
+		{/if}
+		{if $SHOW_ABANDONMENT_DOWNLOAD == 'true'}
+			<div class="red_wdd">{$REVOCATION_DOWNLOAD_checkbox} <b>{$txt.text_accept_revocation_download}</b></div>
+		{/if}
+		{if $SHOW_ABANDONMENT_SERVICE == 'true'}
+			<div class="red_wds">{$REVOCATION_SERVICE_checkbox} <b>{$txt.text_accept_revocation_service}</b></div>
 		{/if}
 	</div>
 	<div class="checkout_spacer">&nbsp;</div>
@@ -184,12 +170,12 @@
 	{elseif $box=='ds'}
 	{if $DSG_stat == 1}
 	<div class="checkout_dsg">
-		<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('dsg')"><b>{#title_dsg#}</b> <div class="right" id="btn_dsg">-</div></div>
+		<div class="checkout_title border_top_radius_6" onclick="slideInOrOut('dsg')"><b>{$txt.title_dsg}</b> <div class="right" id="btn_dsg">-</div></div>
 		<div class="checkout_content border_bottom_radius_6" id="chkt_dsg">
 			<div>{$DSG}</div>
 		</div>
 		{if $DSG_CHECKBOX == 'true'}
-			<div class="red_ds">{$DSG_checkbox} <b>{#text_accept_dsg#}</b></div>
+			<div class="red_ds">{$DSG_checkbox} <b>{$txt.text_accept_dsg}</b></div>
 		{/if}
 
 	</div>
@@ -198,7 +184,7 @@
 	{/if}
 	{/foreach}
 	<div class="checkout_products">
-		<div class="checkout_title" onclick="slideInOrOut('products')"><b>{#title_products#}</b> (<span id="checkout_products_howmuch">{$PRODUCTS_HOW_MUCH}</span>) <img id="loader_products" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;	vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /> <div class="right" id="btn_products">-</div></div>
+		<div class="checkout_title" onclick="slideInOrOut('products')"><b>{$txt.title_products}</b> (<span id="checkout_products_howmuch">{$PRODUCTS_HOW_MUCH}</span>) <img id="loader_products" src="{$tpl_path}img/ajaxload.gif" border="0" class="ajaxloader" width="16" height="16" style="display:none;	vertical-align:middle; position:absolute; margin-left:4px;margin-top:1px;" /> <div class="right" id="btn_products">-</div></div>
 		<div class="checkout_content" id="chkt_products">
 			<div id="chkt_products_list">
 			{$PRODUCTS_BLOCK}
@@ -227,12 +213,8 @@
 	</div>
 	</div>
 <div class="checkout_spacer">&nbsp;</div>
-
 	<div class="checkout_button_left">{$BUTTON_ORDER_BACK}</div>
 	<div class="checkout_button">{$HIDDEN_XAJAX}{$BUTTON_ORDER}</div>
 	<div class="checkout_spacer">&nbsp;</div>
-
 	{$FORM_END}
-
-
 {/if}

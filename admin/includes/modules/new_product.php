@@ -232,6 +232,7 @@ if (USE_WYSIWYG == 'true') {
 <?php
 $form_action = ($_GET['pID']) ? 'update_product' : 'insert_product';
 $fsk18_array = array(array('id' => 0, 'text' => NO), array('id' => 1, 'text' => YES));
+$product_type_array = array(array('id' => 1, 'text' => TEXT_DEFAULT), array('id' => 2, 'text' => TEXT_DOWNLOAD), array('id' => 3, 'text' => TEXT_SERVICE));
 echo xtc_draw_form('new_product', FILENAME_CATEGORIES, 'cPath=' . $_GET['cPath'] . '&pID=' . $_GET['pID'] . '&action=' . $form_action . '#pID=' . $_GET['pID'], 'post', 'enctype="multipart/form-data"');
 ?>
 
@@ -253,6 +254,12 @@ echo xtc_draw_form('new_product', FILENAME_CATEGORIES, 'cPath=' . $_GET['cPath']
 					?>
                     <li><a href="#prodimg"><?php echo HEAD_IMAGES; ?></a></li>
                     <li><a href="#prodgoogle"><?php echo HEAD_GOOGLE; ?></a></li>
+					<?php if ($filter_list_active == 'true') { ?>
+                        <li><a href="#prodfilter"><?php echo HEAD_FILTER; ?></a></li>
+                    <?php } ?>
+                    <?php if (ADMIN_CSEO_ATTRIBUT_MANAGER == 'true') { ?>
+                        <li><a href="#prodattrib"><?php echo HEAD_ATTRIB; ?></a></li>
+                    <?php } ?>
                     <?php if (TREEPODIAACTIVE == 'true') { ?>
                         <li><a href="#prodtreepodia">Treepodia</a></li>
                     <?php } ?>
@@ -331,10 +338,14 @@ echo xtc_draw_form('new_product', FILENAME_CATEGORIES, 'cPath=' . $_GET['cPath']
                                 <tr>
                                     <td style="border-bottom: 1px solid #376e37; border-left: 1px solid #376e37;" class="main"><?php echo TEXT_PRODUCTS_VPE; ?></td>
                                     <td style="border-bottom: 1px solid #376e37; border-right: 1px solid #376e37;" class="main"><?php echo xtc_draw_pull_down_menu('products_vpe', $vpe_array, $pInfo->products_vpe = '' ? DEFAULT_PRODUCTS_VPE_ID : $pInfo->products_vpe); ?></td>
-                                </tr>							
+                                </tr>
                                 <tr>
                                     <td class="main"><?php echo TEXT_FSK18; ?></td>
                                     <td class="main"><?php echo xtc_draw_pull_down_menu('fsk18', $fsk18_array, $pInfo->products_fsk18); ?></td>
+                                </tr>
+                                <tr>
+                                    <td class="main"><?php echo TEXT_PRODUCT_TYPE; ?></td>
+                                    <td class="main"><?php echo xtc_draw_pull_down_menu('product_type', $product_type_array, $pInfo->product_type); ?></td>
                                 </tr>
                                 <tr>
                                     <td class="main"><?php echo TEXT_PRODUCTS_WEIGHT; ?></td>
@@ -617,7 +628,25 @@ if (file_exists(DIR_WS_MODULES . 'product_prices_advanced.php')) {
                                         </tr>
                                     </table>
                                 </div>
-
+                                <h3><?php echo GROUP_PRICES; ?></h3>
+                                <div>
+<?php
+//Gruppenpreise
+if (file_exists(DIR_WS_MODULES . 'group_prices.php')) {
+    include(DIR_WS_MODULES . 'group_prices.php');
+}
+?>
+                                </div>
+                                <h3><?php echo SPECIALS_TITLE; ?></h3>
+                                <div>
+                                    <?php
+                                    //Sonderangebote
+                                    if (file_exists(DIR_WS_MODULES . 'categories_specials.php')) {
+                                        require_once(DIR_WS_MODULES . 'categories_specials.php');
+                                        showSpecialsBox();
+                                    }
+                                    ?>
+                                </div>
                                     <?php
                                     if (file_exists(DIR_WS_MODULES . 'product_promotion.php') && MODULE_PRODUCT_PROMOTION_STATUS == 'true') {
                                         echo '<h3>' . PROMO_TITLE . '</h3>';
@@ -635,7 +664,19 @@ if (file_exists(DIR_WS_MODULES . 'product_prices_advanced.php')) {
 
                 <br class="clear">
             </div>
-			
+                <?php if ($filter_list_active == 'true') { ?>
+                <div id="prodfilter">
+                    <table width="100%" border="0">
+                        <tr valign="top">
+                            <td>
+								<?php include (DIR_WS_MODULES . 'products_filter.php'); ?>
+                            </td>
+                        </tr>
+                    </table>
+                    <br class="clear">
+                </div>
+				<?php } ?>
+				
 				
             <div id="proddescr">
 <?php draw_product_desc_fields($pInfo);?>
@@ -725,6 +766,18 @@ if (file_exists(DIR_WS_MODULES . 'product_prices_advanced.php')) {
                                                     <div id="quote_<?php echo $languages[$i]['id'] ?>"></div>
                                                     <a class="ajax_<?php echo $languages[$i]['id'] ?>" href="#" onclick="javascript:return false;"><?php echo TEXT_PRODUCTS_TAGCLOUD; ?></a>        
                                                     <br>
+                                                    <!--<label for="jquery-tagbox-select">Dropdown TagBox</label>-->
+    <?php
+    // $tag_data_query = xtc_db_query("SELECT tag FROM tag_to_product WHERE lID = '" . $languages[$i]['id'] . "' GROUP BY tag;");
+    // if (xtc_db_num_rows($tag_data_query)) {
+        // while ($tag_data = xtc_db_fetch_array($tag_data_query)) {
+            // $tag_array[] = array('id' => $tag_data['tag'], 'text' => $tag_data['tag']);
+        // }
+        // echo xtc_draw_pull_down_menu('products_tag_cloud_drop', $tag_array, '', 'id="jquery-tagbox-select-options"');
+    // }
+    ?>
+
+
                                                 </td>
                                             </tr>
                                         </table>
@@ -919,6 +972,16 @@ for ($i = 0; $i < sizeof($languages); $i++) {
                 </table>
                 <br class="clear">
             </div>
+<?php if (ADMIN_CSEO_ATTRIBUT_MANAGER == 'true') { ?>
+                <div id="prodattrib">
+    <?php
+    unset($_SESSION['pid']);
+    $_SESSION['pid'] = $pInfo->products_id;
+    include(DIR_WS_MODULES . 'attribut_manager.php');
+    ?>
+                    <br class="clear">
+                </div>
+                <?php } ?>
                 <?php if (TREEPODIAACTIVE == 'true') { ?>
                 <div id="prodtreepodia">
                 <?php echo TEXT_PRODUCTS_TREEPODIA_ACTIVE; ?> <br>
@@ -950,4 +1013,14 @@ for ($i = 0; $i < sizeof($languages); $i++) {
         <?php echo '<a class="button" href="' . xtc_href_link(FILENAME_CATEGORIES, 'cPath=' . $cPath . '&pID=' . $_GET['pID']) . '">' . BUTTON_CANCEL . '</a>'; ?>
         </div>
     </form>
+
+
+
+
+    <script>
+        xajax_get_new_dropdown();
+    </script>
+    <script>
+        xajax_getOverview(<?php echo $pInfo->products_id; ?>);
+    </script>
 

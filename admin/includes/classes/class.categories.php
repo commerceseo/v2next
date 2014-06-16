@@ -615,6 +615,7 @@ class categories_ORIGINAL {
             'products_brand_name' => xtc_db_prepare_input($products_data['products_brand_name']),
             'products_g_availability' => xtc_db_prepare_input($products_data['products_g_availability']),
             'products_g_shipping_status' => xtc_db_prepare_input($products_data['products_g_shipping_status']),
+            'product_type' => xtc_db_prepare_input($products_data['product_type']),
             'products_sperrgut' => xtc_db_prepare_input($products_data['products_sperrgut']));
 			
 		if (table_exists('kfz') == true) {

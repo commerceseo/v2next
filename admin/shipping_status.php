@@ -21,15 +21,14 @@ switch ($_GET['action']) {
 
         $languages = xtc_get_languages();
         for ($i = 0, $n = sizeof($languages); $i < $n; $i++) {
-            $shipping_status_name_array = $_POST['shipping_status_name'];
+            $shipping_status_name_array = xtc_db_prepare_input($_POST['shipping_status_name']);
             $language_id = $languages[$i]['id'];
-
-            $sql_data_array = array('shipping_status_name' => xtc_db_prepare_input($shipping_status_name_array[$language_id]));
+            $sql_data_array = array('shipping_status_name' => xtc_db_prepare_input($shipping_status_name_array[$language_id]),
+									'info_link_active' => (int)$_POST['info_link_active']);
 
             if ($_GET['action'] == 'insert') {
                 if (!xtc_not_null($shipping_status_id)) {
-                    $next_id_query = xtc_db_query("SELECT max(shipping_status_id) AS shipping_status_id FROM " . TABLE_SHIPPING_STATUS . "");
-                    $next_id = xtc_db_fetch_array($next_id_query);
+                    $next_id = xtc_db_fetch_array(xtc_db_query("SELECT max(shipping_status_id) AS shipping_status_id FROM " . TABLE_SHIPPING_STATUS . ";"));
                     $shipping_status_id = $next_id['shipping_status_id'] + 1;
                 }
 
@@ -108,7 +107,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                             <th class="dataTableHeadingContent last" align="right"><?php echo TABLE_HEADING_ACTION; ?></th>
                                         </tr>
                                         <?php
-                                        $shipping_status_query_raw = "select shipping_status_id, shipping_status_name,shipping_status_image from " . TABLE_SHIPPING_STATUS . " where language_id = '" . $_SESSION['languages_id'] . "' order by shipping_status_id";
+                                        $shipping_status_query_raw = "select * from " . TABLE_SHIPPING_STATUS . " where language_id = '" . $_SESSION['languages_id'] . "' order by shipping_status_id";
                                         $shipping_status_split = new splitPageResults($_GET['page'], '20', $shipping_status_query_raw, $shipping_status_query_numrows);
                                         $shipping_status_query = xtc_db_query($shipping_status_query_raw);
                                         $i = 1;
@@ -187,6 +186,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                         }
                                         $contents[] = array('text' => '<br />' . TEXT_INFO_SHIPPING_STATUS_IMAGE . '<br />' . xtc_draw_file_field('shipping_status_image'));
                                         $contents[] = array('text' => '<br />' . TEXT_INFO_SHIPPING_STATUS_NAME . $shipping_status_inputs_string);
+										$contents[] = array('text' => '<br />' . TEXT_INFO_SHIPPING_STATUS_INFO_LINK_ACTIVE . ' ' . xtc_draw_checkbox_field('info_link_active', 1, true));
                                         $contents[] = array('text' => '<br />' . xtc_draw_checkbox_field('default') . ' ' . TEXT_SET_DEFAULT);
                                         $contents[] = array('align' => 'center', 'text' => '<br /><input type="submit" class="button" onClick="this.blur();" value="' . BUTTON_INSERT . '"/> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_SHIPPING_STATUS, 'page=' . $_GET['page']) . '">' . BUTTON_CANCEL . '</a>');
                                         break;
@@ -204,6 +204,11 @@ require(DIR_WS_INCLUDES . 'header.php');
                                         }
                                         $contents[] = array('text' => '<br />' . TEXT_INFO_SHIPPING_STATUS_IMAGE . '<br />' . xtc_draw_file_field('shipping_status_image', $oInfo->shipping_status_image));
                                         $contents[] = array('text' => '<br />' . TEXT_INFO_SHIPPING_STATUS_NAME . $shipping_status_inputs_string);
+									  $t_checked = false;
+									  if($oInfo->info_link_active == 1) {
+										  $t_checked = true;
+									  }
+									  $contents[] = array('text' => '<br />' . TEXT_INFO_SHIPPING_STATUS_INFO_LINK_ACTIVE . ' ' . xtc_draw_checkbox_field('info_link_active', 1, $t_checked));
                                         if (DEFAULT_SHIPPING_STATUS_ID != $oInfo->shipping_status_id)
                                             $contents[] = array('text' => '<br />' . xtc_draw_checkbox_field('default') . ' ' . TEXT_SET_DEFAULT);
                                         $contents[] = array('align' => 'center', 'text' => '<br /><input type="submit" class="button" onClick="this.blur();" value="' . BUTTON_UPDATE . '"/> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_SHIPPING_STATUS, 'page=' . $_GET['page'] . '&oID=' . $oInfo->shipping_status_id) . '">' . BUTTON_CANCEL . '</a>');

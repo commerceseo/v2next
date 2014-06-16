@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: database_admin.php 1080 2014-05-28 09:26:39Z svvario $
+ * 	$Id: database_admin.php 1081 2014-05-28 12:11:50Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -154,3 +154,4 @@ define('TABLE_PRODUCTS_PROPERTIES_COMBIS', 'products_properties_combis');
 define('TABLE_PRODUCTS_PROPERTIES_INDEX', 'products_properties_index');
 define('TABLE_PRODUCTS_PROPERTIES_COMBIS_VALUES', 'products_properties_combis_values');
 define('TABLE_ORDERS_PRODUCTS_PROPERTIES', 'orders_products_properties');
+define('TABLE_WITHDRAWAL', 'withdrawals');

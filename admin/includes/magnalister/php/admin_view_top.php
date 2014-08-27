@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: admin_view_top.php 4436 2014-08-25 15:55:10Z miguel.heredia $
+ * $Id: admin_view_top.php 4399 2014-08-18 14:38:30Z miguel.heredia $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -115,31 +115,6 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 		</style>'."\n";
 			}
 ?>
-		<style>
-		@-moz-keyframes ml-css-spin {
-			0% {-moz-transform: rotate(0deg);}
-			100% {-moz-transform: rotate(360deg);}
-		}
-		@-webkit-keyframes ml-css-spin {
-			0% {-webkit-transform: rotate(0deg);}
-			100% {-webkit-transform: rotate(360deg);}
-		}
-		@keyframes ml-css-spin {
-			0% {transform: rotate(0deg);}
-			100% {transform: rotate(360deg);}
-		}
-
-		.ml-css-loading {
-			-o-box-sizing: border-box;
-			-ie-box-sizing: border-box;
-			-moz-box-sizing: border-box;
-			-webkit-box-sizing: border-box;
-			box-sizing: border-box;
-			-moz-animation: ml-css-spin .8s infinite linear;
-			-webkit-animation: ml-css-spin .8s infinite linear;
-			animation: ml-css-spin .8s infinite linear;
-		}
-		</style>
 		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/debugFunctions.js"></script>
 		<script type="text/javascript">/*<![CDATA[*/
 			var debugging = true;/*<?php echo (MAGNA_DEBUG) ? 'true' : 'false'; ?>;*/
@@ -189,26 +164,19 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 					'z-index': '9000'
 				},
 				css: {
+					'background': 'transparent url("<?php echo DIR_MAGNALISTER_WS; ?>images/loading.svg") no-repeat 50% 50%',
 					'width': '32px',
 					'height': '32px',
-					'border-width': '4px',
-					'border-style': 'solid',
-					'border-color': 'rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 1)',
-					'border-radius': '32px',
-					'padding': '0',
 					'left': '50%',
-					'margin': '0 0 0 -16px',
-					'padding': '0',
-					'top': '300px',
-					'z-index': '9999',
-					'background': 'transparent'
+					'top': '230px',
+					'border': 'none',
+					'z-index': '9001'
 				},
-				blockMsgClass: 'ml-css-loading',
 				message: '<div></div>',
 				onBlock: function() {
-						jQuery('.blockUI.ml-css-loading.blockPage').bind('dblclick', function() {
-								jQuery.unblockUI();
-						});
+					$('.blockUI.blockMsg.blockPage').bind('dblclick', function() {
+						$.unblockUI();
+					});
 				}
 			};
 			var blockUIProgress = {
@@ -234,6 +202,8 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 			};
 			
 			/* Preload Loading Animation */
+			loadingImage = new Image(); 
+			loadingImage.src = "<?php echo DIR_MAGNALISTER_WS; ?>images/loading.svg";
 			progressbarImage = new Image(); 
 			progressbarImage.src = "<?php echo DIR_MAGNALISTER_WS; ?>images/progressbar.png";
 		/*]]>*/</script>
@@ -483,7 +453,7 @@ $globalButtons = array (
 								
 								<div id="globalButtonBox"><?php
 									foreach ($globalButtons as $blargh) {
-										echo '<span class="gfxbutton border '.$blargh['icon'].'" data-href="'.toURL($_url, $blargh['link']).'" title="'.$blargh['title'].'"></span> ';
+										echo '<span class="ml-js-noBlockUi gfxbutton border '.$blargh['icon'].'" data-href="'.toURL($_url, $blargh['link']).'" title="'.$blargh['title'].'"></span> ';
 									}
 								?></div>
 								<div class="visualClear">&nbsp;</div>

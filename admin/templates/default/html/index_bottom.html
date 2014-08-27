@@ -1,0 +1,13 @@
+{if $BOXES_footer}
+	<div class="box_bottom border_radius_6">
+		{if $BOXES_footer_count==1}
+		<div class="bottom_box_1">
+		{elseif $BOXES_footer_count==2}
+		<div class="bottom_box_2">
+		{else}
+		<div class="bottom_box_3">
+		{/if}
+			{$BOXES_footer}
+		</div>
+	</div>
+{/if}

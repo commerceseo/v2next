@@ -1,0 +1,64 @@
+.dynamic-tab-pane-control.tab-pane {
+	position:	relative;
+}
+.dynamic-tab-pane-control .tab-row .tab {
+	width: 90px;
+	height: 21px;
+	background:transparent url(../images/tr_bg.gif) repeat-x scroll 0 50%;
+	position: relative;
+	top: 0;
+	display: inline;
+	float: left;
+	overflow: hidden;
+	cursor: hand;
+	margin: 1px -1px 1px 2px;
+	padding: 2px 0px 0px 0px;
+	border: 0;
+	z-index: 1;
+	font: 11px Tahoma;
+	white-space: nowrap;
+	text-align: center;
+}
+
+.dynamic-tab-pane-control .tab-row .tab.selected {
+	background: #770101;
+	border-bottom-width: 0;
+	z-index: 3;
+	padding:	2px 0px 0px 0px;
+	margin: 1px -3px -3px 0px;
+	color: #fff;
+}
+
+.dynamic-tab-pane-control .tab-row .tab.selected a {
+	color: #fff;
+}
+
+.dynamic-tab-pane-control .tab-row .tab a {
+	color: #333;
+	text-decoration: none;
+}
+.dynamic-tab-pane-control .tab-row .tab.hover {
+	width: 90px;
+	height: 21px;
+}
+.dynamic-tab-pane-control .tab-page {
+
+	border: 1px solid rgb( 145, 155, 156 );
+	background: rgb( 252, 252, 254 );
+	z-index: 2;
+	position: relative;
+	top: -2px;
+	font: 11px Tahoma;
+	color: #333;
+	
+	/*244, 243, 238*/
+	/* 145, 155, 156*/
+	padding:	5px;
+	width: 97%;  /* stupid stupid stupid IE!!! */
+	float: left;
+
+}
+.dynamic-tab-pane-control .tab-row {
+	z-index: 1;
+	white-space: nowrap;
+}

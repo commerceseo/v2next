@@ -1,0 +1,96 @@
+<div class="row">
+	<div class ="col-xs-6">
+		<h2>{$txt.HEADING_SPECIALS}</h2>
+	</div>
+	{if $EDIT == 'true'}
+	{$FORM}
+	{$HIDDEN}
+	<div class ="col-xs-6 text-right">
+		{$BUTTON_SUBMIT} {$BUTTON_CANCEL}
+	</div>
+	<table class="table table-striped table-bordered">
+		<tr>
+			<td>{$txt.TEXT_SPECIALS_PRODUCT}</td>
+			<td>{$PRODUCT_NAME}{$HIDDEN_P}{$HIDDEN_UP}</td>
+			<td>&nbsp;</td>
+		</tr>
+		<tr>
+			<td>{$txt.TEXT_SPECIALS_PRICE}</td>
+			<td>{$SPECIAL_PRICE} {$SPECIAL_PRICE_NETTO}</td>
+			<td>{$txt.SPECIAL_PRICE_HELP}</td>
+		</tr>
+		<tr>
+			<td>{$txt.TEXT_SPECIALS_SPECIAL_QUANTITY}</td>
+			<td>{$SPECIAL_QUANTITY}</td>
+			<td>{$txt.QUANTITY_HELP}</td>
+		</tr>
+		<tr>
+			<td>{$txt.TEXT_SPECIALS_EXPIRES_DATE}</td>
+			<td>{$SPECIAL_DATE}</td>
+			<td>{$txt.SPECIAL_DATE_HELP}</td>
+		</tr>
+	</table>
+	<h3>{$txt.TEXT_SPECIALS_GROUPP}</h3>
+	<table class="table table-striped table-bordered">
+		<tr>
+			<th>{$txt.GROUNAME}</th>
+			<th>{$txt.INPUTFIELD}</th>
+			<th>{$txt.NETTO}</th>
+		</tr>
+		{foreach name=aussen item=module_data from=$specialgrouparray}
+		<tr>
+			<td>{$module_data.GROUNAME}</td>
+			<td>{$module_data.INPUTFIELD}</td>
+			<td>{$module_data.NETTO}</td>
+		</tr>
+		{/foreach}
+	</table>
+	<div class ="col-xs-12">
+		<p>{$txt.GROUP_PRICE_TIP}</p>
+	</div>
+	<div class ="col-xs-12 text-right">
+		{$BUTTON_SUBMIT} {$BUTTON_CANCEL}
+	</div>
+
+	{$JAVASCRIPT}
+	{$FORM_END}
+	{/if}
+	{if $LIST == 'true'}
+<table class="table">
+	<tr>
+		<td>
+			<table class="table table-striped table-bordered table-hover">
+				<tr>
+					<th>{$txt.TABLE_HEADING_PRODUCTS}</th>
+					<th>{$txt.TABLE_HEADING_PRODUCTS_PRICE}</th>
+					<th>{$txt.TABLE_HEADING_STATUS}</th>
+					<th>{$txt.TABLE_HEADING_ACTION}</th>
+				</tr>
+				{foreach name=aussen item=module_data from=$specialslistarray}
+				<tr{$module_data.TR_ONCLICK}>
+					<td>{$module_data.PNAME}</td>
+					<td>{$module_data.OPRICE}{$module_data.SPRICE}</td>
+					<td>{$module_data.STATUS}</td>
+					<td>{$module_data.ACTION}</td>
+				</tr>
+				{/foreach}
+			</table>
+            <table class="table">
+                <tr>
+                    <td><i>{$DISPLAY_NUMBER}</i></td>
+                    <td align="right"><i>{$DISPLAY_SITE}</i></td>
+                </tr>
+            </table>
+            <table class="table">
+                <tr>
+                    <td><a href="{$NEW_BUTTON}"><button class="btn btn-success">{$txt.NEW_BUTTON}</button></a></td>
+                </tr>
+            </table>
+        </td>
+		<td width="250">
+			{$SITE_BOX}
+		</td>
+    </tr>
+</table>
+	{/if}
+</div>

@@ -1,41 +1,11 @@
 (function($){
-	var isSafari = /^((?!chrome).)*safari/i.test(navigator.userAgent);
-	//console.log('isSafari', isSafari);
 	$(document).ready(function() {
-		$(".magnamain :submit").click(function (e) {
-			if (isSafari) { // Normally you'd expect IE here, but this time Safai is like WTF!
-				//console.log('Safari');
-				e.preventDefault();
-				var tehForm = $(this).parents('form');
-				$.blockUI(jQuery.extend(blockUILoading, {
-					onBlock: function () {
-						//console.log('Submit');
-						tehForm.submit();
-					}
-				}));
-				return false;
-			} else {
-				setTimeout(function() { $.blockUI(blockUILoading); }, 1000);
-				return true;
-			}
+		$(".magnaTabs2 :submit").click(function () {
+			setTimeout(function(){$.blockUI(blockUILoading);}, 1000);
 		});
-		$('.magnaTabs2 a').click(function (e) {
-			if ($(this).attr('target') != '_blank') {
-				if (isSafari) { // Same here.
-					//console.log('Safari');
-					e.preventDefault();
-					var sHref = $(this).attr('href');
-					$.blockUI(jQuery.extend(blockUILoading, {
-						onBlock: function () {
-							//console.log('Link');
-							document.location.href = sHref;
-						}
-					}));
-					return false;
-				} else {
-					setTimeout(function() { $.blockUI(blockUILoading); }, 1000);
-					return true;
-				}
+		$('.magnaTabs2 a').click(function () {
+			if ($(this).attr('target') != '_blank' && !$(this).hasClass('ml-js-noBlockUi')) {
+				setTimeout(function(){$.blockUI(blockUILoading);}, 1000);
 			}
 		});
 		$(".magnamain select").change(function () {

@@ -1,0 +1,20 @@
+{$FORM}
+	<div class="modal-content">
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="modal-title">{$txt.ANTWORT}</h4>
+		</div>	
+		<div class="modal-body">
+
+			<b>{$txt.ANTWORT2}</b>
+			<br>
+            {$TEXT}
+			<input type="hidden" value="Comment" name="safe" />
+			<input type="hidden" value="{$ITEM}" name="item_id" />
+		</div>
+		<div class="modal-footer">
+			<button type="button" class="btn btn-success" data-dismiss="modal">{$txt.BUTTON_CANCEL}</button>
+			<button type="submit" class="btn btn-primary">{$txt.BUTTON_SAVE}</button>
+		</div>
+	</div>
+{$FORM_END}

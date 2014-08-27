@@ -1,0 +1,113 @@
+
+img {border: 0;}
+
+
+#bewertungsbox {
+    width: 862px;
+    overflow: hidden;
+    background: #f1f1f1;
+    font-size: 11px;
+    margin: 15px 0 0 5px;
+    font-family: Verdana, Geneva, sans-serif;
+	
+}
+
+#borderbox {
+    border: 1px solid #cccccc;
+    border-top: 0;
+    padding: 4px;
+    font-size: 11px;                
+}
+
+#topmenu {
+    height: 30px;
+    overflow: hidden;
+    padding: 17px 0 0 10px;
+	border: 1px solid #cccccc;
+}
+
+
+.maintab {
+    background: #ffffff;
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+}
+
+th {text-align: left; background: none; border-bottom: 1px solid #cccccc; padding: 6px;}
+
+.leftupdatebox {
+    width: 340px;
+    float: left;
+    padding: 5px;
+}
+
+.rightpagebox {
+    width: 460px;
+    float: left;
+    text-align: right;
+    margin: 0 6px 0 0;
+    padding: 5px;    
+}
+
+.bottombox {
+    padding: 5px;
+    background: #fafafa;
+    border: 1px solid #cccccc;
+    margin: 15px 0 0 0;
+}
+
+.settingtab {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+}
+
+.settingtab td {padding: 4px;}
+
+.borderline {border-bottom: 1px solid #cccccc;}
+
+.maintab td {font-size: 11px;}
+
+#topmenubox {
+    padding: 12px 0 0 160px;
+    line-height: 32px;
+    height: 47px;
+    overflow: hidden;
+}
+
+
+
+.cyclecolor {background-color: #f0eeee;}
+
+.bottomborder {
+    border-bottom: 1px solid #cccccc;
+}
+
+
+.shownpages {
+    border: 1px solid #cccccc;
+    background: #f2f3f3;
+    font-size: 11px;
+    width: 426px;
+    float: left;
+    height: 34px;
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.clr {
+    clear: both;
+    margin: 0;
+    padding: 0;
+}
+
+.speichern {
+    padding: 5px;
+    background: #75b96f;
+    color: #ffffff;
+    border: 1px solid #67a048;
+    font-weight: bold;
+    margin: 5px 0 15px 0;
+}
+  
+  
+  

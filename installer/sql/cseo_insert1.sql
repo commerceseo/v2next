@@ -1172,4 +1172,4 @@ INSERT INTO configuration VALUES (NULL, 'WRCHECKOUTFILE', '', 333, 34, NULL, NOW
 
 
 #database Version
-INSERT INTO database_version VALUES ('commerce:SEO v2next 2.5.5 CE');
+INSERT INTO database_version VALUES ('commerce:SEO v2next 2.5.10 CE');

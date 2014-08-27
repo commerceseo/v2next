@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: config.php 3255 2013-10-29 13:40:18Z derpapst $
+ * $Id: config.php 3895 2014-05-22 13:06:44Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -38,7 +38,7 @@ function loadDBConfig($mpID = '0') {
 
 	$tmpConf = MagnaDB::gi()->fetchArray('
 		SELECT * FROM '.TABLE_MAGNA_CONFIG.' 
-		 WHERE `mpID`=\''.$mpID.'\'ORDER BY `mkey` ASC
+		 WHERE `mpID`="'.$mpID.'"ORDER BY `mkey` ASC
 	');
 	if (empty($tmpConf)) return false;
 
@@ -55,25 +55,25 @@ function loadDBConfig($mpID = '0') {
 
 function loadJSONConfig($lang = '') {
 	global $magnaConfig;
-	$path = DIR_MAGNALISTER.'config/'.$lang;
+	$path = DIR_MAGNALISTER_FS.'config/'.$lang;
 
 	if ($dirhandle = @opendir($path)) {
-	    while (false !== ($filename = readdir($dirhandle))) {
-	    	if (($filename == '.') || ($filename == '..')) continue;
-
-	    	if (!preg_match('/^.*\.config\.json$/', $filename)) continue;
-
-	    	$a = json_decode(file_get_contents($path.'/'.$filename), true);
-	    	if (!is_array($a) || empty($a)) continue;
-
-	    	$magnaConfig = array_merge_recursive($magnaConfig, $a);
-	    }
+		while (false !== ($filename = readdir($dirhandle))) {
+			if (($filename == '.') || ($filename == '..')) continue;
+		
+			if (!preg_match('/^.*\.config\.json$/', $filename)) continue;
+		
+			$a = json_decode(file_get_contents($path.'/'.$filename), true);
+			if (!is_array($a) || empty($a)) continue;
+		
+			$magnaConfig = array_merge_recursive($magnaConfig, $a);
+		}
 	}
 }
 
 function loadMaranonCacheConfig($purge = false) {
 	global $magnaConfig;
-	$mCFileName = DIR_MAGNALISTER_CACHE.'maranonCache.json';
+	$mCFileName = DIR_MAGNALISTER_FS_CACHE.'maranonCache.json';
 	if ($purge) {
 		@unlink($mCFileName);
 	}
@@ -100,7 +100,8 @@ function loadMaranonCacheConfig($purge = false) {
 	try {
 		$result = MagnaConnector::gi()->submitRequest(array(
 			'SUBSYSTEM' => 'Core',
-			'ACTION' => 'GetShopInfo'
+			'ACTION' => 'GetShopInfo',
+			'CALLBACKURL' => '',
 		));
 		#echo print_m($result, 'GetShopInfo');
 		$magnaConfig['maranon'] = $result['DATA'];
@@ -136,8 +137,8 @@ function loadMaranonCacheConfig($purge = false) {
 	$magnaConfig['maranon']['__expires'] = time() + (30 * 60); /* Expires again in 30 minutes */
 	
 	$mps = array();
-	if (array_key_exists('Marketplaces', $magnaConfig['maranon']) && 
-	    !empty($magnaConfig['maranon']['Marketplaces'])
+	if (array_key_exists('Marketplaces', $magnaConfig['maranon'])
+		&& !empty($magnaConfig['maranon']['Marketplaces'])
 	) {
 		foreach ($magnaConfig['maranon']['Marketplaces'] as $mp) {
 			$mps[$mp['ID']] = $mp['Marketplace'];

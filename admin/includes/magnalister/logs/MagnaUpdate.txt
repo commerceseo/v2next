@@ -1,0 +1,868 @@
+=== UPDATE START [2014-08-27 10:40:53] ===
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/ChangeLog
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/amazon.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/comparisonshopping_ftp.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/comparisonshopping_generic.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/daparto.form
+MagnaUpdater::mkdir [X] :: includes/magnalister/config/english/dawanda/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/dawanda/checkin.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/dawanda/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/dawanda/ordersExtend.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/dawanda/prepare.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/ebay.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/ebay.sites.config.json
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/email_template_generic.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/global.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/hitmeister.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/hood.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/laary/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/meinpaket.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/checkin.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/inventorysync.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/orderStatus.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/orders.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/ordersimport_pending.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/prepare/catMatch.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/prepare/useShopCatsAsOwn.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/prepare.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/price.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/promotionmail.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/modules/setImagePath.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/tradoria/checkinLeadtimeToShip.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/tradoria/checkinShippingGroup.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/tradoria/checkinSubmitVariations.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/tradoria/checkinTaxMatching.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/tradoria/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/tradoria/orderImportExtras.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/english/yatego.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/amazon.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/comparisonshopping_ftp.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/comparisonshopping_generic.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/daparto.form
+MagnaUpdater::mkdir [X] :: includes/magnalister/config/german/dawanda/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/dawanda/checkin.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/dawanda/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/dawanda/ordersExtend.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/dawanda/prepare.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/ebay.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/ebay.sites.config.json
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/email_template_generic.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/global.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/hitmeister/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/hitmeister/prepareadd.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/hitmeister.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/hood/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/hood/orderStatusHood.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/hood/prepare.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/laary/checkinMarketplaceRegion.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/laary/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/meinpaket.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/checkin.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/inventorysync.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/orderStatus.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/orders.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/ordersimport_pending.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/prepare/catMatch.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/prepare/useShopCatsAsOwn.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/prepare.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/price.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/promotionmail.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/modules/setImagePath.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/tradoria/checkinLeadtimeToShip.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/tradoria/checkinShippingGroup.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/tradoria/checkinSubmitVariations.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/tradoria/checkinTaxMatching.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/tradoria/login.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/tradoria/orderImportExtras.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/config/german/yatego.form
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/css/magnalister.css
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/db/013.sql.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/db/027.sql.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/db/035.sql.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/db/036.sql.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/db/037.sql.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/db/038.sql.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/db/039.sql.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/db/040.sql.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/files.list
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/images/loading.svg
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/images/logos/dawanda.png
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/images/logos/dawanda_inactive.png
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/images/logos/dawanda_orderview.png
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/images/logos/yatego.png
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/images/logos/yatego_inactive.png
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/images/logos/yatego_orderview.png
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/images/status/white_dot.png
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/js/classes/CheckinSubmit.js
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/js/jquery.blockUI.js
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/js/jquery.cookie.js
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/js/loading-timer.js
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/js/marketplaces/meinpaket/variationmatching.js
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/lang/english.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/lang/french.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/lang/german.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/permissions.list
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/admin_view_top.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/callback/order_details.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/callback/orders_import.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/callback/orders_update.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/callback/updateVariationsTable.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/callback/update_ebay_orders.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/config.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/MLProduct.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/MLTables.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/MagnaConnector.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/MagnaDB.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/MagnaError.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/CheckinManager.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/CheckinSubmit.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ComparisonShopping/ComparisonShoppingCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ComparisonShopping/ComparisonShoppingCheckinProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ComparisonShopping/ComparisonShoppingCheckinSubmit.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ComparisonShopping/DeletedView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ComparisonShopping/ErrorView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ComparisonShopping/InventoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ComparisonShopping/MLProductListComparisonShoppingAbstract.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/Configurator.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/GenerateProductsDetailInput.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/MLProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/MLShop.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/MagnaRecalcOrdersTotal.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/MarketplaceCategoryMatching.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/ProductList/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/ProductList/Dependency/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependency.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyCategoryFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyCheckinToSummaryAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyHtmlAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyManufacturersFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyMarketplaceSync.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyPrepareStatusFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencySearchFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencySelectionAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyStatusFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyTemplateSelectionAction.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/ProductList/templates/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/checkintosummary.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/html.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/selection.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/templateselection.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/filter/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/filter/marketplacesync.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/filter/select.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/filter/text.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/header/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/header/marketplacesync.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/header/selection.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/ProductList/templates/field/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/field/image.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/field/name.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/field/preparestatusindicator.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/field/price.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/field/selection.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/ProductList/templates/skeleton.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/QuickCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/Shipping.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/SimpleCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/SimpleCheckinCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/SimplePrice.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/SimpleSummaryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/TemplateAdmin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/TopTen.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/VariationsCalculatorClass.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/classes/productIdFilter/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/productIdFilter/AbstractProductIdFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/productIdFilter/DeletedInMarketplaceFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/productIdFilter/EANMasterFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/productIdFilter/ManufacturerFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/classes/productIdFilter/ProductStatusFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/configFunctions.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/functionLib.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/listingsBox.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/magnaFunctionLib.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/v3/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/v3/Codepool/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/v3/Codepool/90_System/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/v3/Codepool/90_System/Database/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/v3/Codepool/90_System/Database/Model/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/v3/Codepool/90_System/Database/Model/Query/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/v3/Codepool/90_System/Database/Model/Query/Select.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/v3fake/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/lib/v3fake/Alias/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/lib/v3fake/Alias/Database.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/amazonConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/application/applicationviews.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/apply.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/checkin/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/checkin/AmazonCheckinProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/AmazonCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/AmazonCheckinSubmit.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ApplyCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/DeletedView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ErrorView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/InventoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/MLProductListAmazonAbstract.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/classes/ProductList/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonApplyFormAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonApplyPrepareStatusFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonHistoryAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonMatchingFormAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonMatchingPrepareStatusFilter.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonapplyformleft.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonapplyformright.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonhistorybutton.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonmatchingformleft.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonmatchingformright.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/header/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/header/amazonmatchingform.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/field/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/field/amazonlowestprice.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/field/amazonpreparetype.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/classes/amazonTopTen.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/matching/multimatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/matching/singlematching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/matching.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/amazon/prepare/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/prepare/AmazonApplyProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/amazon/prepare/AmazonMatchingProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/apitest.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/billiger/billigerConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/billiger/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/configuration.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/daparto/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/daparto/dapartoConfig.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/DawandaHelper.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/checkin/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/checkin/DawandaCheckinCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/checkin/DawandaCheckinProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/checkin/DawandaCheckinSubmit.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/classes/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/DawandaApiConfigValues.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/DawandaProductSaver.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/DawandaShippingDetailsProcessor.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/DawandaTopTenCategories.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/MLProductListDawandaAbstract.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/classes/ProductList/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/classes/ProductList/Dependency/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/ProductList/Dependency/MLProductListDependencyDawandaPrepareFormAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/ProductList/Dependency/MLProductListDependencyDawandaPrepareStatusFilter.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/dependency/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/dependency/action/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/dependency/action/dawandaprepareformleft.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/dependency/action/dawandaprepareformright.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/field/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/field/dawandaprice.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/classes/productIdFilter/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/classes/productIdFilter/PreparedDawandaFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/config.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/configure.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/crons/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/crons/DawandaImportOrders.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/crons/DawandaSyncInventory.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/crons/DawandaSyncOrderStatus.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/errorlog/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/errorlog/DawandaErrorView.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/listings/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/listings/DawandaDeletedView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/listings/DawandaInventoryView.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/dawanda/prepare/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/prepare/DawandaCategoryMatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/prepare/DawandaPrepareCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/prepare/DawandaPrepareProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/prepare/DawandaPrepareView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/prepare/DawandaProductPrepare.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda/prepare.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dawanda.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/dev.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/ebay/checkin/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/checkin/EbayCheckinProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/CheckinCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/DeletedView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ErrorView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/InventoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/MLProductListEbayAbstract.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/PrepareCategoryView.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/ebay/classes/ProductList/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/ebay/classes/ProductList/Dependency/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ProductList/Dependency/MLProductListDependencyEbayPrepareFormAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ProductList/Dependency/MLProductListDependencyEbayPrepareStatusFilter.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/dependency/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/dependency/action/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/dependency/action/ebayprepareformleft.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/dependency/action/ebayprepareformright.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/field/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/field/ebayduration.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/field/ebaylistingtype.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/field/ebayprice.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/eBayCategoryMatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/eBayCheckinSubmit.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/eBayShippingDetailsProcessor.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/ebayTopTen.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/ebay/classes/productIdFilter/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/productIdFilter/DeletedInEbayFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/classes/productIdFilter/PreparedEbayFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/crons/EbaySyncInventory.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/crons/EbaySyncOrderStatus.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/crons/get_ebay_orders.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/ebayConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/ebayFunctions.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/listings.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/prepare/EbayPrepareProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/prepare/prepareView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/ebay/prepare.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/generic/cslistings.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/generictests.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/getdeal/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/getdeal/getdealConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/guenstiger/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/guenstiger/guenstigerConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/checkin/HitmeisterCheckinCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/checkin/HitmeisterCheckinProductList.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hitmeister/classes/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/Dependency/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/Dependency/MLProductListDependencyHitmeisterPrepareFormAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/Dependency/MLProductListDependencyHitmeisterPrepareStatusFilter.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/dependency/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/dependency/action/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/dependency/action/magnacompatibleprepareformleft.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/dependency/action/magnacompatibleprepareformright.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/field/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/field/magnacompatmpcategory.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/configure.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/prepare/HitmeisterPrepareCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/prepare/HitmeisterPrepareProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/prepare/HitmeisterPrepareView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hitmeister/prepare.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/checkin/HoodCheckinCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/checkin/HoodCheckinProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/checkin/HoodCheckinSubmit.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/checkin/HoodSummaryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/HoodProductSaver.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/HoodShippingDetailsProcessor.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/MLProductListHoodAbstract.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hood/classes/ProductList/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hood/classes/ProductList/Dependency/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/ProductList/Dependency/MLProductListDependencyHoodPrepareFormAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/ProductList/Dependency/MLProductListDependencyHoodPrepareStatusFilter.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/dependency/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/dependency/action/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/dependency/action/hoodprepareformleft.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/dependency/action/hoodprepareformright.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/field/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/field/hoodduration.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/field/hoodlistingtype.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/ProductList/templates/field/hoodprice.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/hood/classes/productIdFilter/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/productIdFilter/DeletedInHoodFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/classes/productIdFilter/PreparedHoodFilter.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/configure.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/crons/HoodSyncInventory.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/crons/HoodSyncOrderStatus.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/errorlog/HoodErrorView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/listings/HoodDeletedView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/listings/HoodInventoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/prepare/HoodCategoryMatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/prepare/HoodPrepareCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/prepare/HoodPrepareProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/prepare/HoodPrepareView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/hood/prepare.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/idealo/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/idealo/idealoConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/kelkoo/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/kelkoo/kelkooConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/laary/configure.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/lafeo/configure.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/MagnaCompatibleBase.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/categorymatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/catmatch/MagnaCompatibleCategoryMatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/catmatch/MagnaCompatibleCategoryMatchingProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/catmatch/MagnaCompatiblePrepareCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/checkin/MagnaCompatibleCheckinProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/checkin/MagnaCompatibleCheckinSubmit.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/classes/MLProductListMagnaCompatibleAbstract.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/classes/MagnaCompatibleApiConfigValues.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/Dependency/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/Dependency/MLProductListDependencyMagnaCompatiblePrepareFormAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/Dependency/MLProductListDependencyMagnaCompatiblePrepareStatusFilter.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/dependency/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/dependency/action/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/dependency/action/magnacompatibleprepareformleft.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/dependency/action/magnacompatibleprepareformright.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/field/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/field/magnacompatmpcategory.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/configure.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/crons/MagnaCompatibleCronBase.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/crons/MagnaCompatibleImportOrders.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/crons/MagnaCompatibleSyncInventory.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/crons/MagnaCompatibleSyncOrderStatus.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/errorlog/MagnaCompatibleErrorView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/listings/MagnaCompatibleDeletedView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible/listings/MagnaCompatibleInventoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/magnacompatible.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/catmatch/MeinpaketCategoryMatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/catmatch/MeinpaketPrepareCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/checkin/CheckinCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/checkin/MeinpaketCheckinProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/checkin/MeinpaketCheckinSubmit.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/checkin/MeinpaketSummaryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/classes/MLProductListMeinpaketAbstract.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/Dependency/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/Dependency/MLProductListDependencyMeinpaketPrepareFormAction.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/Dependency/MLProductListDependencyMeinpaketPrepareStatusFilter.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/dependency/
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/dependency/action/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/dependency/action/meinpaketprepareformleft.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/dependency/action/meinpaketprepareformright.php
+MagnaUpdater::mkdir [X] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/field/
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/field/meinpaketmpcategory.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/crons/MeinpaketImportOrders.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/crons/MeinpaketSyncInventory.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/listings/ErrorView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/listings/InventoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/meinpaketConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketPrepareCategoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketPrepareProductList.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketProductPrepare.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketProductPrepareSaver.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketProductPrepareView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketVariationMatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/preissuchmaschine/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/preissuchmaschine/preissuchmaschineConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/stats/main.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/stats/orders.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/stats/ordersPercent.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/toolbox/genSKU.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/tradoria/checkin/TradoriaCheckinSubmit.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/tradoria/configure.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/tradoria/crons/TradoriaImportOrders.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/twenga/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/twenga/twengaConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/viewchangelog.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/viewdbtables.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/yatego/categorymatching.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/yatego/checkin.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/yatego/classes/YategoInventoryView.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules/yatego/yategoConfig.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/php/modules.php
+MagnaUpdater::queueFileContents [QW] :: includes/magnalister/specialfiles.list
+MagnaUpdater::queueFileContents [QW] :: C:/xampp/htdocs/v2nextce/trunk/magnaCallback.php
+MagnaUpdater::queueFileContents [QW] :: C:/xampp/htdocs/v2nextce/trunk/admin/magnalister.php
+$updateAllFilesSuccess :: true
+$updateSpecialFilesSuccess :: true
+MagnaUpdater::filePutContents :: includes/magnalister/ChangeLog
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/amazon.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/comparisonshopping_ftp.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/comparisonshopping_generic.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/daparto.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/dawanda/checkin.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/dawanda/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/dawanda/ordersExtend.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/dawanda/prepare.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/ebay.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/ebay.sites.config.json
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/email_template_generic.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/global.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/hitmeister.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/hood.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/laary/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/meinpaket.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/checkin.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/inventorysync.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/orderStatus.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/orders.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/ordersimport_pending.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/prepare/catMatch.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/prepare/useShopCatsAsOwn.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/prepare.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/price.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/promotionmail.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/modules/setImagePath.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/tradoria/checkinLeadtimeToShip.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/tradoria/checkinShippingGroup.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/tradoria/checkinSubmitVariations.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/tradoria/checkinTaxMatching.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/tradoria/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/tradoria/orderImportExtras.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/english/yatego.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/amazon.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/comparisonshopping_ftp.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/comparisonshopping_generic.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/daparto.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/dawanda/checkin.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/dawanda/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/dawanda/ordersExtend.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/dawanda/prepare.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/ebay.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/ebay.sites.config.json
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/email_template_generic.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/global.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/hitmeister/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/hitmeister/prepareadd.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/hitmeister.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/hood/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/hood/orderStatusHood.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/hood/prepare.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/laary/checkinMarketplaceRegion.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/laary/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/meinpaket.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/checkin.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/inventorysync.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/orderStatus.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/orders.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/ordersimport_pending.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/prepare/catMatch.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/prepare/useShopCatsAsOwn.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/prepare.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/price.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/promotionmail.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/modules/setImagePath.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/tradoria/checkinLeadtimeToShip.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/tradoria/checkinShippingGroup.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/tradoria/checkinSubmitVariations.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/tradoria/checkinTaxMatching.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/tradoria/login.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/tradoria/orderImportExtras.form
+MagnaUpdater::filePutContents :: includes/magnalister/config/german/yatego.form
+MagnaUpdater::filePutContents :: includes/magnalister/css/magnalister.css
+MagnaUpdater::filePutContents :: includes/magnalister/db/013.sql.php
+MagnaUpdater::filePutContents :: includes/magnalister/db/027.sql.php
+MagnaUpdater::filePutContents :: includes/magnalister/db/035.sql.php
+MagnaUpdater::filePutContents :: includes/magnalister/db/036.sql.php
+MagnaUpdater::filePutContents :: includes/magnalister/db/037.sql.php
+MagnaUpdater::filePutContents :: includes/magnalister/db/038.sql.php
+MagnaUpdater::filePutContents :: includes/magnalister/db/039.sql.php
+MagnaUpdater::filePutContents :: includes/magnalister/db/040.sql.php
+MagnaUpdater::filePutContents :: includes/magnalister/files.list
+MagnaUpdater::filePutContents :: includes/magnalister/images/loading.svg
+MagnaUpdater::filePutContents :: includes/magnalister/images/logos/dawanda.png
+MagnaUpdater::filePutContents :: includes/magnalister/images/logos/dawanda_inactive.png
+MagnaUpdater::filePutContents :: includes/magnalister/images/logos/dawanda_orderview.png
+MagnaUpdater::filePutContents :: includes/magnalister/images/logos/yatego.png
+MagnaUpdater::filePutContents :: includes/magnalister/images/logos/yatego_inactive.png
+MagnaUpdater::filePutContents :: includes/magnalister/images/logos/yatego_orderview.png
+MagnaUpdater::filePutContents :: includes/magnalister/images/status/white_dot.png
+MagnaUpdater::filePutContents :: includes/magnalister/js/classes/CheckinSubmit.js
+MagnaUpdater::filePutContents :: includes/magnalister/js/jquery.blockUI.js
+MagnaUpdater::filePutContents :: includes/magnalister/js/jquery.cookie.js
+MagnaUpdater::filePutContents :: includes/magnalister/js/loading-timer.js
+MagnaUpdater::filePutContents :: includes/magnalister/js/marketplaces/meinpaket/variationmatching.js
+MagnaUpdater::filePutContents :: includes/magnalister/lang/english.php
+MagnaUpdater::filePutContents :: includes/magnalister/lang/french.php
+MagnaUpdater::filePutContents :: includes/magnalister/lang/german.php
+MagnaUpdater::filePutContents :: includes/magnalister/permissions.list
+MagnaUpdater::filePutContents :: includes/magnalister/php/admin_view_top.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/callback/order_details.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/callback/orders_import.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/callback/orders_update.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/callback/updateVariationsTable.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/callback/update_ebay_orders.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/config.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/MLProduct.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/MLTables.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/MagnaConnector.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/MagnaDB.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/MagnaError.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/CheckinManager.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/CheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ComparisonShopping/ComparisonShoppingCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ComparisonShopping/ComparisonShoppingCheckinProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ComparisonShopping/ComparisonShoppingCheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ComparisonShopping/DeletedView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ComparisonShopping/ErrorView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ComparisonShopping/InventoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ComparisonShopping/MLProductListComparisonShoppingAbstract.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/Configurator.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/GenerateProductsDetailInput.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/MLProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/MLShop.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/MagnaRecalcOrdersTotal.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/MarketplaceCategoryMatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependency.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyCategoryFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyCheckinToSummaryAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyHtmlAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyManufacturersFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyMarketplaceSync.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyPrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencySearchFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencySelectionAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/Dependency/MLProductListDependencyTemplateSelectionAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/checkintosummary.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/html.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/selection.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/action/templateselection.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/filter/marketplacesync.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/filter/select.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/filter/text.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/header/marketplacesync.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/dependency/header/selection.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/field/image.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/field/name.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/field/preparestatusindicator.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/field/price.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/field/selection.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/ProductList/templates/skeleton.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/QuickCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/Shipping.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/SimpleCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/SimpleCheckinCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/SimplePrice.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/SimpleSummaryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/TemplateAdmin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/TopTen.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/VariationsCalculatorClass.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/productIdFilter/AbstractProductIdFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/productIdFilter/DeletedInMarketplaceFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/productIdFilter/EANMasterFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/productIdFilter/ManufacturerFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/classes/productIdFilter/ProductStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/configFunctions.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/functionLib.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/listingsBox.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/magnaFunctionLib.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/v3/Codepool/90_System/Database/Model/Query/Select.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/lib/v3fake/Alias/Database.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/amazonConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/application/applicationviews.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/apply.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/checkin/AmazonCheckinProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/AmazonCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/AmazonCheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ApplyCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/DeletedView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ErrorView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/InventoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/MLProductListAmazonAbstract.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonApplyFormAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonApplyPrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonHistoryAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonMatchingFormAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/Dependency/MLProductListDependencyAmazonMatchingPrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonapplyformleft.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonapplyformright.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonhistorybutton.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonmatchingformleft.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/action/amazonmatchingformright.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/dependency/header/amazonmatchingform.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/field/amazonlowestprice.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/ProductList/templates/field/amazonpreparetype.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/classes/amazonTopTen.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/matching/multimatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/matching/singlematching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/matching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/prepare/AmazonApplyProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/amazon/prepare/AmazonMatchingProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/apitest.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/billiger/billigerConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/billiger/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/configuration.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/daparto/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/daparto/dapartoConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/DawandaHelper.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/checkin/DawandaCheckinCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/checkin/DawandaCheckinProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/checkin/DawandaCheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/DawandaApiConfigValues.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/DawandaProductSaver.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/DawandaShippingDetailsProcessor.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/DawandaTopTenCategories.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/MLProductListDawandaAbstract.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/ProductList/Dependency/MLProductListDependencyDawandaPrepareFormAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/ProductList/Dependency/MLProductListDependencyDawandaPrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/dependency/action/dawandaprepareformleft.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/dependency/action/dawandaprepareformright.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/ProductList/templates/field/dawandaprice.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/classes/productIdFilter/PreparedDawandaFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/config.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/configure.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/crons/DawandaImportOrders.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/crons/DawandaSyncInventory.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/crons/DawandaSyncOrderStatus.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/errorlog/DawandaErrorView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/listings/DawandaDeletedView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/listings/DawandaInventoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/prepare/DawandaCategoryMatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/prepare/DawandaPrepareCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/prepare/DawandaPrepareProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/prepare/DawandaPrepareView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/prepare/DawandaProductPrepare.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda/prepare.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dawanda.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/dev.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/checkin/EbayCheckinProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/CheckinCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/DeletedView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ErrorView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/InventoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/MLProductListEbayAbstract.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/PrepareCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ProductList/Dependency/MLProductListDependencyEbayPrepareFormAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ProductList/Dependency/MLProductListDependencyEbayPrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/dependency/action/ebayprepareformleft.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/dependency/action/ebayprepareformright.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/field/ebayduration.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/field/ebaylistingtype.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ProductList/templates/field/ebayprice.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/eBayCategoryMatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/eBayCheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/eBayShippingDetailsProcessor.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/ebayTopTen.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/productIdFilter/DeletedInEbayFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/classes/productIdFilter/PreparedEbayFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/crons/EbaySyncInventory.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/crons/EbaySyncOrderStatus.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/crons/get_ebay_orders.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/ebayConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/ebayFunctions.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/listings.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/prepare/EbayPrepareProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/prepare/prepareView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/ebay/prepare.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/generic/cslistings.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/generictests.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/getdeal/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/getdeal/getdealConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/guenstiger/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/guenstiger/guenstigerConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/checkin/HitmeisterCheckinCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/checkin/HitmeisterCheckinProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/classes/ProductList/Dependency/MLProductListDependencyHitmeisterPrepareFormAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/classes/ProductList/Dependency/MLProductListDependencyHitmeisterPrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/dependency/action/magnacompatibleprepareformleft.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/dependency/action/magnacompatibleprepareformright.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/classes/ProductList/templates/field/magnacompatmpcategory.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/configure.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/prepare/HitmeisterPrepareCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/prepare/HitmeisterPrepareProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/prepare/HitmeisterPrepareView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hitmeister/prepare.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/checkin/HoodCheckinCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/checkin/HoodCheckinProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/checkin/HoodCheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/checkin/HoodSummaryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/HoodProductSaver.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/HoodShippingDetailsProcessor.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/MLProductListHoodAbstract.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/ProductList/Dependency/MLProductListDependencyHoodPrepareFormAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/ProductList/Dependency/MLProductListDependencyHoodPrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/ProductList/templates/dependency/action/hoodprepareformleft.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/ProductList/templates/dependency/action/hoodprepareformright.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/ProductList/templates/field/hoodduration.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/ProductList/templates/field/hoodlistingtype.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/ProductList/templates/field/hoodprice.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/productIdFilter/DeletedInHoodFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/classes/productIdFilter/PreparedHoodFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/configure.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/crons/HoodSyncInventory.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/crons/HoodSyncOrderStatus.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/errorlog/HoodErrorView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/listings/HoodDeletedView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/listings/HoodInventoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/prepare/HoodCategoryMatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/prepare/HoodPrepareCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/prepare/HoodPrepareProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/prepare/HoodPrepareView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/hood/prepare.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/idealo/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/idealo/idealoConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/kelkoo/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/kelkoo/kelkooConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/laary/configure.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/lafeo/configure.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/MagnaCompatibleBase.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/categorymatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/catmatch/MagnaCompatibleCategoryMatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/catmatch/MagnaCompatibleCategoryMatchingProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/catmatch/MagnaCompatiblePrepareCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/checkin/MagnaCompatibleCheckinProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/checkin/MagnaCompatibleCheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/classes/MLProductListMagnaCompatibleAbstract.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/classes/MagnaCompatibleApiConfigValues.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/Dependency/MLProductListDependencyMagnaCompatiblePrepareFormAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/Dependency/MLProductListDependencyMagnaCompatiblePrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/dependency/action/magnacompatibleprepareformleft.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/dependency/action/magnacompatibleprepareformright.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/classes/ProductList/templates/field/magnacompatmpcategory.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/configure.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/crons/MagnaCompatibleCronBase.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/crons/MagnaCompatibleImportOrders.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/crons/MagnaCompatibleSyncInventory.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/crons/MagnaCompatibleSyncOrderStatus.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/errorlog/MagnaCompatibleErrorView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/listings/MagnaCompatibleDeletedView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible/listings/MagnaCompatibleInventoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/magnacompatible.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/catmatch/MeinpaketCategoryMatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/catmatch/MeinpaketPrepareCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/checkin/CheckinCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/checkin/MeinpaketCheckinProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/checkin/MeinpaketCheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/checkin/MeinpaketSummaryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/classes/MLProductListMeinpaketAbstract.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/classes/ProductList/Dependency/MLProductListDependencyMeinpaketPrepareFormAction.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/classes/ProductList/Dependency/MLProductListDependencyMeinpaketPrepareStatusFilter.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/dependency/action/meinpaketprepareformleft.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/dependency/action/meinpaketprepareformright.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/classes/ProductList/templates/field/meinpaketmpcategory.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/crons/MeinpaketImportOrders.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/crons/MeinpaketSyncInventory.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/listings/ErrorView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/listings/InventoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/meinpaketConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketPrepareCategoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketPrepareProductList.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketProductPrepare.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketProductPrepareSaver.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketProductPrepareView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/meinpaket/prepare/MeinpaketVariationMatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/preissuchmaschine/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/preissuchmaschine/preissuchmaschineConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/stats/main.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/stats/orders.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/stats/ordersPercent.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/toolbox/genSKU.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/tradoria/checkin/TradoriaCheckinSubmit.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/tradoria/configure.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/tradoria/crons/TradoriaImportOrders.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/twenga/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/twenga/twengaConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/viewchangelog.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/viewdbtables.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/yatego/categorymatching.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/yatego/checkin.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/yatego/classes/YategoInventoryView.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules/yatego/yategoConfig.php
+MagnaUpdater::filePutContents :: includes/magnalister/php/modules.php
+MagnaUpdater::filePutContents :: includes/magnalister/specialfiles.list
+MagnaUpdater::filePutContents :: C:/xampp/htdocs/v2nextce/trunk/magnaCallback.php
+MagnaUpdater::filePutContents :: C:/xampp/htdocs/v2nextce/trunk/admin/magnalister.php
+$success :: true

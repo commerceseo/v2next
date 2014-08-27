@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: box_manager.php 991 2014-04-24 07:38:43Z akausch $
+ * 	$Id: box_manager.php 995 2014-04-29 17:59:27Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -31,7 +31,7 @@ if ((isset($_POST['action'])) && ($_POST['action'] == 'save')) {
     $box_name = xtc_db_prepare_input($_POST['box_name']);
 
     $db_box = xtc_db_query("UPDATE 
-								boxes 
+								".TABLE_BOXES." 
 							SET 
 								position = '" . $box_position . "', 
 								sort_id = '" . $box_sort_id . "', 
@@ -44,7 +44,7 @@ if ((isset($_POST['action'])) && ($_POST['action'] == 'save')) {
         foreach ($box_name[$lang['id']] AS $box) {
             if (!empty($box)) {
                 $db = xtc_db_query("UPDATE 
-										boxes_names 
+										".TABLE_BOXES_NAMES." 
 									SET 
 										box_title = '" . trim($box) . "', 
 										status = '" . $box_name_status . "' 
@@ -55,23 +55,31 @@ if ((isset($_POST['action'])) && ($_POST['action'] == 'save')) {
             }
         }
     }
-    xtc_redirect(xtc_href_link('box_manager.php'));
+    xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
     exit();
 } elseif (isset($_GET['set_flag']) && (!empty($_GET['set_flag']))) {
     $box_status = xtc_db_prepare_input($_GET['status']);
-    $db_box = xtc_db_query("UPDATE boxes SET status = '" . $box_status . "' WHERE box_name = '" . $_GET['set_flag'] . "'  ");
-    xtc_redirect(xtc_href_link('box_manager.php'));
+    $db_box = xtc_db_query("UPDATE ".TABLE_BOXES." SET status = '" . $box_status . "' WHERE box_name = '" . $_GET['set_flag'] . "'  ");
+    xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
     exit();
 } elseif (isset($_GET['set_name_flag']) && (!empty($_GET['set_name_flag']))) {
     $box_status = xtc_db_prepare_input($_GET['status']);
-    $db_box = xtc_db_query("UPDATE boxes_names SET status = '" . $box_status . "' WHERE box_name = '" . $_GET['set_name_flag'] . "'  ");
-    xtc_redirect(xtc_href_link('box_manager.php'));
+    $db_box = xtc_db_query("UPDATE ".TABLE_BOXES_NAMES." SET status = '" . $box_status . "' WHERE box_name = '" . $_GET['set_name_flag'] . "'  ");
+    xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
     exit();
 } elseif (isset($_GET['delete']) && (!empty($_GET['delete']))) {
-    xtc_db_query("DELETE FROM boxes WHERE box_name = '" . $_GET['delete'] . "' AND box_type != 'file' ");
-    xtc_db_query("DELETE FROM boxes WHERE box_name = '" . $_GET['delete'] . "'");
-    xtc_db_query("DELETE FROM boxes_names WHERE box_name = '" . $_GET['delete'] . "' ");
-    xtc_redirect(xtc_href_link('box_manager.php'));
+    xtc_db_query("DELETE FROM ".TABLE_BOXES." WHERE box_name = '" . $_GET['delete'] . "' AND box_type != 'file' ");
+    xtc_db_query("DELETE FROM ".TABLE_BOXES." WHERE box_name = '" . $_GET['delete'] . "'");
+    xtc_db_query("DELETE FROM ".TABLE_BOXES_NAMES." WHERE box_name = '" . $_GET['delete'] . "' ");
+    xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
+    exit();
+} elseif ((isset($_POST['save'])) && (($_POST['save'] == 'new_pos'))) {
+    if ($_POST['save'] == 'new_pos') {
+        $sql_data_array = array('id' => '',
+            'position_name' => xtc_db_prepare_input($_POST['position_name']));
+        xtc_db_perform(TABLE_BOXES_POSITIONS, $sql_data_array);
+    }
+    xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
     exit();
 } elseif ((isset($_POST['save'])) && (($_POST['save'] == 'new_box') || $_POST['save'] == 'edit_new_box')) {
     if ($_POST['save'] == 'new_box') {
@@ -83,13 +91,13 @@ if ((isset($_POST['action'])) && ($_POST['action'] == 'save')) {
             'mobile' => xtc_db_prepare_input($_POST['box_mobile']),
             'status' => xtc_db_prepare_input($_POST['box_status']),
             'file_flag' => 0);
-        xtc_db_perform('boxes', $sql_data_array);
+        xtc_db_perform(TABLE_BOXES, $sql_data_array);
     } elseif ($_POST['save'] == 'edit_new_box') {
         $sql_data_array = array('position' => xtc_db_prepare_input($_POST['box_position']),
             'sort_id' => xtc_db_prepare_input($_POST['box_sort_id']),
             'mobile' => xtc_db_prepare_input($_POST['box_mobile']),
             'status' => xtc_db_prepare_input($_POST['box_status']));
-        xtc_db_perform('boxes', $sql_data_array, 'update', 'box_name = \'' . $_POST['name'] . '\'');
+        xtc_db_perform(TABLE_BOXES, $sql_data_array, 'update', 'box_name = \'' . $_POST['name'] . '\'');
     }
 
     foreach ($languages AS $lang) {
@@ -102,16 +110,16 @@ if ((isset($_POST['action'])) && ($_POST['action'] == 'save')) {
                 'language_id' => $language_id,
                 'status' => xtc_db_prepare_input($_POST['box_name_status']));
 
-            xtc_db_perform('boxes_names', $insert_data_array);
+            xtc_db_perform(TABLE_BOXES_NAMES, $insert_data_array);
         } elseif ($_POST['save'] == 'edit_new_box') {
             $update_data_array = array('box_title' => xtc_db_prepare_input($_POST['box_title_' . $language_id]),
                 'box_desc' => xtc_db_prepare_input($_POST['new_box_' . $language_id]),
                 'language_id' => $language_id,
                 'status' => xtc_db_prepare_input($_POST['box_name_status']));
-            xtc_db_perform('boxes_names', $update_data_array, 'update', 'box_name = \'' . $_POST['name'] . '\' and language_id = \'' . $language_id . '\'');
+            xtc_db_perform(TABLE_BOXES_NAMES, $update_data_array, 'update', 'box_name = \'' . $_POST['name'] . '\' and language_id = \'' . $language_id . '\'');
         }
     }
-    xtc_redirect(xtc_href_link('box_manager.php'));
+    xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
     exit();
 } elseif (isset($_POST['filter']) && ($_POST['filter'] == 'boxes')) {
     $sql_where = '';
@@ -145,12 +153,28 @@ if ((isset($_POST['action'])) && ($_POST['action'] == 'save')) {
     } elseif ($_POST['box_mobile'] == 'off') {
         $sql_where .= " AND b.mobile = '0'";
     }
+} elseif ((isset($_GET['action'])) && ($_GET['action'] == 'set_b_flag')) {
+	$bid = xtc_db_prepare_input($_GET['bid']);
+	$mid = xtc_db_prepare_input($_GET['mid']);
+	$tid = xtc_db_prepare_input($_GET['tid']);
+	$status = xtc_db_prepare_input($_GET['status']);
+	if (isset($bid) && $bid != '') {
+		xtc_db_query("UPDATE " . TABLE_BOXES . " SET status = '" . $status . "' WHERE id = '" . $bid . "';");
+		xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
+	} elseif (isset($mid) && $mid != '') {
+		xtc_db_query("UPDATE " . TABLE_BOXES . " SET mobile = '" . $status . "' WHERE id = '" . $mid . "';");
+		xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
+	} elseif (isset($tid) && $tid != '') {
+		xtc_db_query("UPDATE " . TABLE_BOXES_NAMES . " SET status = '" . $status . "' WHERE id = '" . $tid . "';");
+		xtc_redirect(xtc_href_link(FILENAME_BOX_MANAGER));
+	}
 }
 
-if ($sql_order_by == '')
+if ($sql_order_by == '') {
     $sql_order_by = " ORDER BY position,sort_id ASC";
+}
 
-$position_query = xtc_db_query("SELECT id, position_name FROM boxes_positions order by id");
+$position_query = xtc_db_query("SELECT id, position_name FROM ".TABLE_BOXES_POSITIONS." order by id");
 $position_array = array(array('id' => '', 'text' => '------'));
 while ($pos = xtc_db_fetch_array($position_query)) {
     $position_array[] = array('id' => $pos['position_name'], 'text' => $pos['position_name']);
@@ -176,24 +200,6 @@ if (USE_WYSIWYG == 'true') {
 
 if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
     //Liste
-    echo '<script>
-			function changeFlag(box_id) {
-			jQuery.ajax({
-				type: "POST",
-				url: "includes/javascript/box_manager_change_flag.php",
-				data: {\'id\': box_id},
-				dataType: "html",
-				success: function(msg) {
-					jQuery(\'#box_\' + box_id).html(msg).fadeIn("slow");
-					jQuery(location).attr("hash", jQuery(this).attr("hash"));
-				}
-			});
-			return false;
-		}
-		;
-	</script>
-	';
-
     $uebersicht_query = xtc_db_query("SELECT b.id AS bid,
 											bn.id AS bnid,
 											b.box_name,
@@ -204,8 +210,8 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
 											b.mobile AS mobile,
 											bn.status AS bname,
 											bn.box_title
-											FROM boxes b,
-											boxes_names bn
+											FROM ".TABLE_BOXES." b,
+											".TABLE_BOXES_NAMES." bn
 											WHERE bn.box_name = b.box_name
 											AND bn.language_id = '" . (int) $_SESSION['languages_id'] . "'
 											" . $sql_where . "
@@ -214,40 +220,35 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
 
     while ($box = xtc_db_fetch_array($uebersicht_query)) {
         if ($box['box_type'] == 'database') {
-            $box_edit_link = '<a href="' . xtc_href_link('box_manager.php', 'action=edit_new_box&name=' . $box['box_name']) . '"><span class="glyphicon glyphicon-edit"></span></a>';
+            $box_edit_link = '<a href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=edit_new_box&name=' . $box['box_name']) . '"><i class="glyphicon glyphicon-edit"></i></a>';
         } else {
-            $box_edit_link = '<a data-toggle="modal" href="' . xtc_href_link('box_manager.php', 'action=edit_box&name=' . $box['box_name']) . '"><span class="glyphicon glyphicon-edit"></span></a>';
+            // $box_edit_link = '<a data-toggle="modal" data-target="#meinModal" href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=edit_box&name=' . $box['box_name']) . '"><i class="glyphicon glyphicon-edit"></i></a>';
+            $box_edit_link = '<a href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=edit_box&name=' . $box['box_name']) . '"><i class="glyphicon glyphicon-edit"></i></a>';
         }
-        if ($box['box'] == 1) {
-            $box_status_icon = xtc_image(DIR_WS_IMAGES . 'icon_status_green.gif', '', '10') . ' ';
-            $box_status_link = '<a class="box_flag" id="bs_' . $box['bid'] . '" href="javascript:void(0)" onclick="javascript:changeFlag(this.id);"><img src="' . DIR_WS_IMAGES . 'icon_status_red_light.gif" height="10" alt="" title="deaktivieren" /></a>';
+		if ($box['box'] == 1) {
+			$box_status_icon = '<a href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=set_b_flag&status=0&bid=' . $box['bid']) . '"><button class="btn btn-success btn-xs"><i class="glyphicon glyphicon-ok"></i></button></a>';
+		} else {
+			$box_status_icon = '<a href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=set_b_flag&status=1&bid=' . $box['bid']) . '"><button class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i></button></a>';
+		}
+		if ($box['mobile'] == 1) {
+			$box_mobile_icon = '<a href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=set_b_flag&status=0&mid=' . $box['bid']) . '"><button class="btn btn-success btn-xs"><i class="glyphicon glyphicon-ok"></i></button></a>';
+		} else {
+			$box_mobile_icon = '<a href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=set_b_flag&status=1&mid=' . $box['bid']) . '"><button class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i></button></a>';
+		}
+		if ($box['bname'] == 1) {
+			$box_status_n_icon = '<a href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=set_b_flag&status=0&tid=' . $box['bnid']) . '"><button class="btn btn-success btn-xs"><i class="glyphicon glyphicon-ok"></i></button></a>';
+		} else {
+			$box_status_n_icon = '<a href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=set_b_flag&status=1&tid=' . $box['bnid']) . '"><button class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i></button></a>';
+		}
+        if ($box['box_type'] == 'file') {
+            $box_type = '<a class="btn btn-default btn-xs" href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=edit_box&name=' . $box['box_name']) . '"><i class="glyphicon glyphicon-file"></i></a>';
         } else {
-            $box_status_link = '<a class="box_flag" id="bs_' . $box['bid'] . '" height="10" href="javascript:void(0)" onclick="javascript:changeFlag(this.id);"><img src="' . DIR_WS_IMAGES . 'icon_status_green_light.gif" alt="" height="10" title="aktivieren" /></a> ';
-            $box_status_icon = xtc_image(DIR_WS_IMAGES . 'icon_status_red.gif', '', '10') . ' ';
-        }
-        if ($box['mobile'] == 1) {
-            $box_mobile_icon = xtc_image(DIR_WS_IMAGES . 'icon_status_green.gif', '', '10') . ' ';
-            $box_mobile_link = '<a class="box_flag" id="bm_' . $box['bid'] . '" href="javascript:void(0)" onclick="javascript:changeFlag(this.id);"><img src="' . DIR_WS_IMAGES . 'icon_status_red_light.gif" height="10" alt="" title="deaktivieren" /></a>';
-        } else {
-            $box_mobile_link = '<a class="box_flag" id="bm_' . $box['bid'] . '" height="10" href="javascript:void(0)" onclick="javascript:changeFlag(this.id);"><img src="' . DIR_WS_IMAGES . 'icon_status_green_light.gif" alt="" height="10" title="aktivieren" /></a> ';
-            $box_mobile_icon = xtc_image(DIR_WS_IMAGES . 'icon_status_red.gif', '', '10') . ' ';
-        }
-        if ($box['bname'] == 1) {
-            $box_status_n_icon = xtc_image(DIR_WS_IMAGES . 'icon_status_green.gif', '', '10') . ' ';
-            $box_status_n_link = ' <a class="box_flag" id="bn_' . $box['bnid'] . '" href="javascript:void(0)" onclick="javascript:changeFlag(this.id);"><img src="' . DIR_WS_IMAGES . 'icon_status_red_light.gif" height="10" alt="" title="deaktivieren" /></a>';
-        } else {
-            $box_status_n_link = '<a class="box_flag" id="bn_' . $box['bnid'] . '" href="javascript:void(0)" onclick="javascript:changeFlag(this.id);"><img src="' . DIR_WS_IMAGES . 'icon_status_green_light.gif" height="10" alt="" title="aktivieren" /></a> ';
-            $box_status_n_icon = xtc_image(DIR_WS_IMAGES . 'icon_status_red.gif', '', '10') . ' ';
+            $box_type = '<a class="btn btn-info btn-xs" href="' . xtc_href_link(FILENAME_BOX_MANAGER, 'action=edit_new_box&name=' . $box['box_name']) . '"><i class="glyphicon glyphicon-folder-open"></i></a>';
         }
         if ($box['box_type'] == 'file') {
-            $box_type = '<span class="glyphicon glyphicon-file"></span>';
+            $box_type_link = '<a href="' . $_SERVER['REQUEST_URI'] . '?delete=' . $box['box_name'] . '" onClick="return confirm(' . CONFIRM_DELETE . ')"><button onClick="return confirm(\'' . DELETE_ENTRY . '\')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button></a>';
         } else {
-            $box_type = '<span class="glyphicon glyphicon-folder-open"></span>';
-        }
-        if ($box['box_type'] == 'file') {
-            $box_type_link = '<a href="' . $_SERVER['REQUEST_URI'] . '?delete=' . $box['box_name'] . '"><span class="glyphicon glyphicon-trash"></span></a>';
-        } else {
-            $box_type_link = '<a href="' . $_SERVER['REQUEST_URI'] . '?delete=' . $box['box_name'] . '"><span class="glyphicon glyphicon-trash"></span></a>';
+            $box_type_link = '<a href="' . $_SERVER['REQUEST_URI'] . '?delete=' . $box['box_name'] . '" onClick="return confirm(' . CONFIRM_DELETE . ')"><button onClick="return confirm(\'' . DELETE_ENTRY . '\')" class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-trash"></i></button></a>';
         }
 
         $boxlistarray[] = array('BOX_EDIT' => $box_edit_link,
@@ -267,7 +268,8 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
     }
     $smarty->assign('boxlistarray', $boxlistarray);
     $smarty->assign('BOX_LIST', 'true');
-    $smarty->assign('BOX_NEW', xtc_button_link(BUTTON_NEW_BOX, 'box_manager.php?action=new_box'));
+    $smarty->assign('BOX_NEW', '<a class="btn btn-success" href="'.xtc_href_link(FILENAME_BOX_MANAGER, 'action=new_box').'">'.BUTTON_NEW_BOX.'</a>');
+    $smarty->assign('BOX_NEW_POS', '<a class="btn btn-default" href="'.xtc_href_link(FILENAME_BOX_MANAGER, 'action=new_pos').'">'.BUTTON_NEW_BOX_POS.'</a>');
     $smarty->assign('BOX_HIDDEN', xtc_draw_hidden_field('filter', 'boxes'));
     $smarty->assign('BOX_SORT_TITLE', xtc_sorting(FILENAME_BOX_MANAGER, 'title'));
     $smarty->assign('BOX_SORT_NAME', xtc_sorting(FILENAME_BOX_MANAGER, 'name'));
@@ -277,17 +279,26 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
     $smarty->assign('BOX_SORT_STATUS', xtc_sorting(FILENAME_BOX_MANAGER, 'status'));
     $smarty->assign('BOX_SORT_NAMESTATUS', xtc_sorting(FILENAME_BOX_MANAGER, 'namestatus'));
     $smarty->assign('BOX_SORT_TYP', xtc_sorting(FILENAME_BOX_MANAGER, 'typ'));
+} elseif ((isset($_GET['action'])) && (($_GET['action'] == 'new_pos'))) {
+    //New Position
+	$smarty->assign('BOX_NEW_POS', 'true');
+    $smarty->assign('FORM', xtc_draw_form('new_pos', FILENAME_BOX_MANAGER, '', 'post', 'id="database_pos_box"'));
+    $smarty->assign('FORM_END', '</form>');
+    $smarty->assign('BOX_POS_NAME', xtc_draw_input_field('position_name', '', 'class="box_int_name"'));
+    $smarty->assign('BUTTON_SUBMIT', '<button type="submit" class="btn btn-success">'.BUTTON_SAVE.'</button>');
+    $smarty->assign('BUTTON_CANCEL', '<a class="btn btn-default" href="'.xtc_href_link(FILENAME_BOX_MANAGER).'">'.BUTTON_CANCEL.'</a>');
+    $hidden_save = xtc_draw_hidden_field('save', 'new_pos');
+    $smarty->assign('HIDDEN_SAVE', $hidden_save);
 } elseif ((isset($_GET['action'])) && (($_GET['action'] == 'new_box') || ($_GET['action'] == 'edit_new_box'))) {
     //Box New
     $dd[] = array('id' => '1', 'text' => YES);
     $dd[] = array('id' => '0', 'text' => NO);
-
-    $positions_query = xtc_db_query("SELECT id, position_name FROM boxes_positions order by id;");
-    while ($pos = xtc_db_fetch_array($positions_query, true))
+    $positions_query = xtc_db_query("SELECT id, position_name FROM ".TABLE_BOXES_POSITIONS." order by id;");
+    while ($pos = xtc_db_fetch_array($positions_query, true)) {
         $positions_array[] = array('id' => $pos['position_name'], 'text' => $pos['position_name']);
-
+	}
     if ($_GET['action'] == 'edit_new_box') {
-        $new_box = xtc_db_fetch_array(xtc_db_query("SELECT b.id, b.box_name, b.position, b.sort_id, b.status AS box, bn.status AS bname, b.mobile AS mobile FROM boxes AS b, boxes_names AS bn WHERE bn.box_name = b.box_name AND bn.language_id = '" . (int) $_SESSION['languages_id'] . "' AND b.box_name = '" . $_GET['name'] . "';"));
+        $new_box = xtc_db_fetch_array(xtc_db_query("SELECT b.id, b.box_name, b.position, b.sort_id, b.status AS box, bn.status AS bname, b.mobile AS mobile FROM ".TABLE_BOXES." AS b, ".TABLE_BOXES_NAMES." AS bn WHERE bn.box_name = b.box_name AND bn.language_id = '" . (int) $_SESSION['languages_id'] . "' AND b.box_name = '" . $_GET['name'] . "';"));
     }
     $smarty->assign('BOX_NEW', 'true');
     $smarty->assign('FORM', xtc_draw_form('new_box', FILENAME_BOX_MANAGER, '', 'post', 'id="database_box"'));
@@ -298,16 +309,15 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
     $smarty->assign('NEW_STATUS', xtc_draw_pull_down_menu('box_status', $dd, $new_box['box']));
     $smarty->assign('NEW_NAME_MOBILE', xtc_draw_pull_down_menu('box_mobile', $dd, $new_box['mobile']));
     $smarty->assign('NEW_NAME_STATUS', xtc_draw_pull_down_menu('box_name_status', $dd, $new_box['bname']));
-
-    if (!empty($new_box['box_name']))
+    if (!empty($new_box['box_name'])) {
         $new_name = $new_box['box_name'] . xtc_draw_hidden_field('box_int_name', $new_box['box_name']);
-    else
+    } else {
         $new_name = xtc_draw_input_field('box_int_name', '', 'class="box_int_name"');
-
+	}
     $smarty->assign('NEW_NAME', $new_name);
     for ($i = 0, $n = sizeof($languages); $i < $n; $i++) {
         if ($_GET['action'] == 'edit_new_box') {
-            $name_query = xtc_db_query("SELECT box_title,box_desc FROM boxes_names WHERE box_name = '" . $_GET['name'] . "' AND language_id = '" . $languages[$i]['id'] . "';");
+            $name_query = xtc_db_query("SELECT box_title, box_desc FROM ".TABLE_BOXES_NAMES." WHERE box_name = '" . $_GET['name'] . "' AND language_id = '" . $languages[$i]['id'] . "';");
             $name = xtc_db_fetch_array($name_query);
         }
         $lang_images = xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']);
@@ -327,16 +337,15 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
         );
     }
     $smarty->assign('boxnewarray', $boxnewarray);
-
-    if (xtc_db_num_rows($name_query))
+    if (xtc_db_num_rows($name_query)) {
         $hidden_save = xtc_draw_hidden_field('save', 'edit_new_box');
-    else
+    } else {
         $hidden_save = xtc_draw_hidden_field('save', 'new_box');
-
+	}
     $smarty->assign('HIDDEN_SAVE', $hidden_save);
     $smarty->assign('HIDDEN_NAME', xtc_draw_hidden_field('name', $_GET['name']));
-    $smarty->assign('BUTTON_SUBMIT', xtc_button(BUTTON_SAVE, 'submit'));
-    $smarty->assign('BUTTON_CANCEL', xtc_button_link(BUTTON_CANCEL, 'box_manager.php'));
+    $smarty->assign('BUTTON_SUBMIT', '<button type="submit" class="btn btn-success">'.BUTTON_SAVE.'</button>');
+    $smarty->assign('BUTTON_CANCEL', '<a class="btn btn-default" href="'.xtc_href_link(FILENAME_BOX_MANAGER).'">'.BUTTON_CANCEL.'</a>');
 } elseif ($_GET['action'] == 'edit_box') {
 //Edit Box
     $box_query = xtc_db_query("SELECT 
@@ -350,8 +359,8 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
 									bn.status AS bname,
 									bn.box_title AS title
 									FROM 
-										boxes AS b, 
-										boxes_names AS bn
+										".TABLE_BOXES." AS b, 
+										".TABLE_BOXES_NAMES." AS bn
 									WHERE 
 										b.box_name = '" . $_GET['name'] . "'
 									AND 
@@ -362,12 +371,12 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
     $dd[] = array('id' => '1', 'text' => YES);
     $dd[] = array('id' => '0', 'text' => NO);
 
-    $position_edit_query = xtc_db_query("SELECT id, position_name FROM boxes_positions ORDER BY id");
+    $position_edit_query = xtc_db_query("SELECT id, position_name FROM ".TABLE_BOXES_POSITIONS." ORDER BY id");
     while ($pos = xtc_db_fetch_array($position_edit_query)) {
         $position_edit_array[] = array('id' => $pos['position_name'], 'text' => $pos['position_name']);
     }
     for ($i = 0, $n = sizeof($languages); $i < $n; $i++) {
-        $name = xtc_db_fetch_array(xtc_db_query("SELECT box_title FROM boxes_names WHERE box_name = '" . $_GET['name'] . "' AND language_id = '" . $languages[$i]['id'] . "';"));
+        $name = xtc_db_fetch_array(xtc_db_query("SELECT box_title FROM ".TABLE_BOXES_NAMES." WHERE box_name = '" . $_GET['name'] . "' AND language_id = '" . $languages[$i]['id'] . "';"));
         $lang_images = xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']);
         $boxeditarray[$i] = array(
             'langname' => $languages[$i]['name'],
@@ -386,8 +395,8 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
     $smarty->assign('BOX_STATUS', xtc_draw_pull_down_menu('box_status', $dd, $box['box']));
     $smarty->assign('BOX_NAME_STATUS', xtc_draw_pull_down_menu('box_name_status', $dd, $box['bname']));
     $smarty->assign('HIDDEN', xtc_draw_hidden_field('name', $_GET['name']) . xtc_draw_hidden_field('action', 'save'));
-    $smarty->assign('BUTTON_SUBMIT', xtc_button(BUTTON_SAVE, 'submit'));
-    $smarty->assign('BUTTON_CANCEL', xtc_button_link(BUTTON_CANCEL, 'box_manager.php'));
+    $smarty->assign('BUTTON_SUBMIT', '<button type="submit" class="btn btn-success">'.BUTTON_SAVE.'</button>');
+    $smarty->assign('BUTTON_CANCEL', '<a class="btn btn-default" href="'.xtc_href_link(FILENAME_BOX_MANAGER).'">'.BUTTON_CANCEL.'</a>');
 }
 
 $smarty->assign('FORMSORT', xtc_draw_form('sort_boxes', FILENAME_BOX_MANAGER, '', 'post', ''));
@@ -414,6 +423,14 @@ require(DIR_WS_INCLUDES . 'application_bottom.php');
 echo "<script>
 			head.ready(function() {
 			jQuery('#database_box').submit(function() {
+				if (jQuery('.box_int_name').val() != '') {
+					return true;
+				}
+				alert('Geben Sie einen eindeutigen Begriff für die interne Bezeichnung an!');
+				jQuery('.box_int_name').focus().css('border', '2px solid #b20000');
+				return false;
+			});
+			jQuery('#database_pos_box').submit(function() {
 				if (jQuery('.box_int_name').val() != '') {
 					return true;
 				}

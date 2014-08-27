@@ -77,6 +77,7 @@ if (xtc_db_num_rows($getCustomerData) > 0) {
 $getProductsData = xtc_db_query("SELECT
 										p.products_id,
 										p.products_model,
+										p.products_ean,
 										pd.products_name,
 										p2c.categories_id
 									FROM
@@ -87,6 +88,8 @@ $getProductsData = xtc_db_query("SELECT
 										p.products_id LIKE '%" . $q . "%'
 									OR
 										p.products_model LIKE '%" . $q . "%'
+									OR
+										p.products_ean LIKE '%" . $q . "%'
 									OR
 										pd.products_name LIKE '%" . $q . "%'
 									GROUP BY

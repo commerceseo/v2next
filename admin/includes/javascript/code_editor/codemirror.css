@@ -233,9 +233,16 @@ div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 /* IE7 hack to prevent it from returning funny offsetTops on the spans */
 .CodeMirror span { *vertical-align: text-bottom; }
 
+iframe {
+	width: 95%;
+	height: 300px;
+	border: 1px solid black;
+}
+
 @media print {
   /* Hide the cursor when printing */
   .CodeMirror pre.CodeMirror-cursor {
     visibility: hidden;
   }
 }
+

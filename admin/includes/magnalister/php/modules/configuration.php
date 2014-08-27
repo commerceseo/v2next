@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: configuration.php 2437 2013-05-06 13:32:58Z tim.neumann $
+ * $Id: configuration.php 4330 2014-08-05 11:45:12Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -22,152 +22,6 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 /**
  * Global Configuration
  */
-function tryToFixAccessToTmpDirOnReallyRetardedServers () {
-	if (!function_exists('sys_get_temp_dir')) {
-		function sys_get_temp_dir() {
-			if ($temp = getenv('TMP'))    return $temp;
-			if ($temp = getenv('TEMP'))   return $temp;
-			if ($temp = getenv('TMPDIR')) return $temp;
-			if ($temp = getenv('TMPDIR')) return $temp;
-			ob_start();
-			$errLv = error_reporting(-1);
-			$temp = tempnam(__FILE__, '');
-			$warning = ob_get_contents();
-			ob_end_clean();
-			error_reporting($errLv);
-			if (!empty($warning) && preg_match('/File\(([^\)]*)\) is not within/', $warning, $match)) {
-				return $match[1];
-			}
-			if (file_exists($temp)) {
-				unlink($temp);
-				return dirname($temp);
-			}
-		    return false;
-		}
-	}
-	if (!function_exists('is_writable_retarded')) {
-		function is_writable_retarded($dir) {
-			ob_start();
-			$errLv = error_reporting(-1);
-			$b = is_writeable($dir);
-			$warning = ob_get_contents();
-			ob_end_clean();
-			error_reporting($errLv);
-			if (!empty($warning)) {
-				return false;
-			}
-			return $b;
-		}
-	}
-	
-	$tmpDir = sys_get_temp_dir();
-	if (is_writable_retarded($tmpDir)) return true;
-
-	ob_start();
-	$errLv = error_reporting(-1);		
-	putenv('TMPDIR=' . ini_get('upload_tmp_dir'));
-	$warning = ob_get_contents();
-	ob_end_clean();
-	error_reporting($errLv);
-	if (!empty($warning)) {
-		return false;
-	}
-	return true;
-}
-
-function verifyFTPLogin() {
-	if (!tryToFixAccessToTmpDirOnReallyRetardedServers()) {
-		return ML_ERROR_FTP_NOT_WORKY_CAUSE_OF_RETARDED_PHPCONFIG;
-	}
-	$ftpAccess = array(
-		'host' => getDBConfigValue('general.ftp.host', '0'),
-		'port' => getDBConfigValue('general.ftp.port', '0'),
-		'user' => getDBConfigValue('general.ftp.username', '0'),
-		'pass' => getDBConfigValue('general.ftp.password', '0'),
-	);
-	foreach ($ftpAccess as $val) {
-		if (empty($val)) return ML_ERROR_FTP_INCOMPLETE_DATA;
-	}
-
-	$ftpLayer = new FTPConnect(
-		$ftpAccess['host'], $ftpAccess['port'],
-		$ftpAccess['user'], $ftpAccess['pass']
-	);
-
-	if (!$ftpLayer->isConnected()) {
-		return ML_ERROR_FTP_CANNOT_CONNECT;
-	}
-	$finalFTPPath = '/';
-	
-	$temp = $ftpLayer->getlist();
-	if (empty($temp)) {
-		return ML_ERROR_FTP_CANNOT_CONNECT;
-	}
-	$partFound = false;
-	$possiblePaths = array();
-	foreach ($temp as $file) {
-		if (($file['filename'] == '.') || ($file['filename'] == '..') || ($file['type'] != 'dir')) continue;
-		if (($pos = strpos(DIR_FS_DOCUMENT_ROOT, $file['filename'].'/')) !== false) {
-			$possiblePaths[] = $pos;
-		}
-	}
-
-	$finalPathFound = false;
-	if (!empty($possiblePaths)) {
-		foreach ($possiblePaths as $pos) {
-			$tmpPath = $finalFTPPath;
-			
-			$ftpLayer->cd('/');
-
-			$subPath = explode('/', ltrim(rtrim(substr(DIR_FS_DOCUMENT_ROOT, $pos), '/'), '/'));
-			$firstDir = array_shift($subPath);
-			$ftpLayer->cd($firstDir);
-			$tmpPath .= $firstDir.'/';
-		
-			if (!empty($subPath)) {
-				foreach ($subPath as $pathElem) {
-					$temp = $ftpLayer->getlist();
-					if (!array_key_exists($pathElem, $temp)) {
-						break;
-					}
-					$tmpPath .= $pathElem.'/';
-					$ftpLayer->cd($pathElem);
-				}
-			}
-			$mlTestFile = 'magna_test_file_'.time();
-			/* $finalFTPPath should be final by now. Verify it. */
-			ob_start();
-			$ftpLayer->uploadFileContents('blubb', $tmpPath.$mlTestFile);
-			$err = ob_get_contents();
-			ob_end_clean();
-			if (strpos($err, 'Permission denied')) {
-				return ML_ERROR_FTP_PERMISSION_DENIED;
-			} else if (!empty($err)) {
-				return ML_ERROR_FTP_RW_ERROR;
-			}
-			if (file_exists(DIR_FS_DOCUMENT_ROOT.$mlTestFile)) {
-				$finalPathFound = true;
-				$finalFTPPath = $tmpPath;
-				$ftpLayer->deleteFile($mlTestFile);
-				break;
-			}
-			$ftpLayer->deleteFile($mlTestFile);
-		}
-	}
-	
-	if (!$finalPathFound) {
-		$mlTestFile = 'magna_test_file_'.time();
-		/* $finalFTPPath should be final by now. Verify it. */
-		$ftpLayer->uploadFileContents('blubb', $finalFTPPath.$mlTestFile);
-		$finalPathFound = file_exists(DIR_FS_DOCUMENT_ROOT.$mlTestFile);
-		$ftpLayer->deleteFile($mlTestFile);
-	}
-	if (!$finalPathFound) {
-		return ML_ERROR_FTP_PATH_DOES_NOT_MATCH;
-	}
-	return $finalFTPPath;
-}
-
 $_MagnaSession['mpID'] = '0';
  
 require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/Configurator.php');
@@ -183,10 +37,7 @@ try {
 MagnaConnector::gi()->resetTimeOut();
 */
 
-$form = json_decode(file_get_contents(DIR_MAGNALISTER.'config/'.$_lang.'/global.form'), true);
-if (!MAGNA_SAFE_MODE) {
-	unset($form['ftp']);
-}
+$form = json_decode(file_get_contents(DIR_MAGNALISTER_FS.'config/'.$_lang.'/global.form'), true);
 
 $keysToSubmit = array();
 
@@ -199,7 +50,7 @@ if (($hp = magnaContribVerify('GenericConfiguration', 1)) !== false) {
 	require($hp);
 }
 
-$cG = new Configurator($form, $_MagnaSession['mpID'], 'conf_general');
+$cG = new MLConfigurator($form, $_MagnaSession['mpID'], 'conf_general');
 $cG->processPOST($keysToSubmit);
 
 /* Passphrase is in DB now. Try to authenticate us */
@@ -222,19 +73,6 @@ if (isset($_POST['conf']['general.passphrase'])) {
 				'configuration_key' => 'MAGNALISTER_PASSPHRASE'
 			));
 		}
-	}
-}
-
-if (MAGNA_SAFE_MODE && isset($_POST['conf'])) {
-	$result = verifyFTPLogin();
-	if ((substr($result, 0, 1) == '/') && (substr($result, -1) == '/')) {
-		/* A path */
-		setDBConfigValue('general.ftp.path', '0', $result, true);
-		echo '<p class="successBox">'.ML_TEXT_FTP_CORRECT.'</p>';
-	} else {
-		/* Error message */
-		removeDBConfigValue('general.ftp.path', '0');
-		echo '<p class="errorBox">'.$result.'</p>';
 	}
 }
 
@@ -326,7 +164,7 @@ if (($forceConfigView !== false) && !isset($comercialText)) {
 echo $cG->renderConfigForm();
 ?>
 <style>
-body.magna div#content .button {
+body.magna div#content .ml-button {
 /*
 	background: linear-gradient(center top, rgba(255,255,255, 0.8) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.4) 100%), linear-gradient(left, red, orange, yellow, green, blue, indigo, violet);
 	background: -moz-linear-gradient(center top, rgba(255,255,255, 0.8) 0%, rgba(255,255,255,0) 50%, rgba(0,0,0,0) 50%, rgba(0,0,0,0.4) 100%), -moz-linear-gradient(left, red, orange, yellow, green, blue, indigo, violet);

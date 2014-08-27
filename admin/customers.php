@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: customers.php 1048 2014-05-13 21:25:06Z akausch $
+ * 	$Id: customers.php 1136 2014-07-08 16:35:50Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -13,6 +13,8 @@
  * --------------------------------------------------------------- */
 
 require ('includes/application_top.php');
+
+$orderlistingnum = ADMIN_DEFAULT_LISTING_NUM;
 
 require_once (DIR_FS_INC . 'xtc_validate_vatid_status.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_geo_zone_code.inc.php');
@@ -603,12 +605,12 @@ require(DIR_WS_INCLUDES . 'header.php');
                             <td class="main"><?php
         if ($error == true) {
             if ($entry_company_error == true) {
-                echo xtc_draw_input_field('entry_company', $cInfo->entry_company, 'maxlength="32"') . '&nbsp;' . ENTRY_COMPANY_ERROR;
+                echo xtc_draw_input_field('entry_company', $cInfo->entry_company, '') . '&nbsp;' . ENTRY_COMPANY_ERROR;
             } else {
                 echo $cInfo->entry_company . xtc_draw_hidden_field('entry_company');
             }
         } else {
-            echo xtc_draw_input_field('entry_company', $cInfo->entry_company, 'maxlength="32"');
+            echo xtc_draw_input_field('entry_company', $cInfo->entry_company, '');
         }
         ?></td>
                         </tr>
@@ -968,7 +970,7 @@ require(DIR_WS_INCLUDES . 'header.php');
 							" . $search_word . "
 							" . $sort;
 
-    $customers_split = new splitPageResults($_GET['page'], '20', $customers_query_raw, $customers_query_numrows);
+    $customers_split = new splitPageResults($_GET['page'], $orderlistingnum, $customers_query_raw, $customers_query_numrows);
     $customers_query = xtc_db_query($customers_query_raw);
     $rows = 1;
     while ($customers = xtc_db_fetch_array($customers_query)) {
@@ -1167,8 +1169,9 @@ require(DIR_WS_INCLUDES . 'header.php');
                             $customers_options[] = array('id' => '20', 'text' => '20');
                             $customers_options[] = array('id' => '50', 'text' => '50');
                             $customers_options[] = array('id' => '100', 'text' => '100');
+                            $customers_options[] = array('id' => '250', 'text' => '250');
 
-                            $customer_page_dropdown .= xtc_draw_pull_down_menu('anzahl', $customers_options, ($_GET['anzahl'] != '' ? $_GET['anzahl'] : '20'), 'onchange="this.form.submit()"') . "\n";
+                            $customer_page_dropdown .= xtc_draw_pull_down_menu('anzahl', $customers_options, ($_GET['anzahl'] != '' ? $_GET['anzahl'] : $orderlistingnum), 'onchange="this.form.submit()"') . "\n";
 
                             $customer_page_dropdown .= '</form>' . "\n";
                             ?>
@@ -1176,8 +1179,8 @@ require(DIR_WS_INCLUDES . 'header.php');
     <tr>
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
         <tr>
-            <td class="smallText" valign="top" width="33.33%"><?php echo $customers_split->display_count($customers_query_numrows, ($_GET['anzahl'] != '') ? $_GET['anzahl'] : '20', $_GET['page'], TEXT_DISPLAY_NUMBER_OF_CUSTOMERS); ?></td>
-            <td class="smallText" align="right" width="33.33%"><?php echo $customers_split->display_links($customers_query_numrows, ($_GET['anzahl'] != '') ? $_GET['anzahl'] : '20', MAX_DISPLAY_PAGE_LINKS, $_GET['page'], xtc_get_all_get_params(array('page', 'info', 'x', 'y', 'cID'))); ?></td>
+            <td class="smallText" valign="top" width="33.33%"><?php echo $customers_split->display_count($customers_query_numrows, ($_GET['anzahl'] != '') ? $_GET['anzahl'] : $orderlistingnum, $_GET['page'], TEXT_DISPLAY_NUMBER_OF_CUSTOMERS); ?></td>
+            <td class="smallText" align="right" width="33.33%"><?php echo $customers_split->display_links($customers_query_numrows, ($_GET['anzahl'] != '') ? $_GET['anzahl'] : $orderlistingnum, MAX_DISPLAY_PAGE_LINKS, $_GET['page'], xtc_get_all_get_params(array('page', 'info', 'x', 'y', 'cID'))); ?></td>
             <td align="right" width="33.33%">
         <?php
         echo 'Kunden pro Seite: ' . $customer_page_dropdown;

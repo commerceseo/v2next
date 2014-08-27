@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: apitest.php 3425 2014-01-06 13:39:19Z markus.bauer $
+ * $Id: apitest.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -254,7 +254,7 @@ if (array_key_exists('__loadedBlocks', $_POST) && !empty($_POST['__loadedBlocks'
 	}
 }
 
-$_js[] = 'includes/magnalister/js/tinymce/tinymce.min.js';
+$_js[] = DIR_MAGNALISTER_WS.'js/tinymce/tinymce.min.js';
 $gPDI = new GenerateProductsDetailInput($fData);
 
 if (!isset($_GET['kind']) || ($_GET['kind'] != 'ajax')) {
@@ -286,8 +286,8 @@ if (!isset($_GET['kind']) || ($_GET['kind'] != 'ajax')) {
 		<tbody>
 			<tr class="firstChild"><td>
 				<table><tbody><tr>
-					<td class="firstChild"><input class="button" type="button" id="ajaxLoadForm" value="Load"/></td>
-					<td class="lastChild"><input class="button" type="submit" value="Daten speichern"/></td>
+					<td class="firstChild"><input class="ml-button" type="button" id="ajaxLoadForm" value="Load"/></td>
+					<td class="lastChild"><input class="ml-button" type="submit" value="Daten speichern"/></td>
 				</tr></tbody></table>
 			</td></tr>
 		</tbody>

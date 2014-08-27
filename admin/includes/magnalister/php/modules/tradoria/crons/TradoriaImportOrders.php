@@ -39,6 +39,10 @@ class TradoriaImportOrders extends MagnaCompatibleImportOrders {
 		);
 		return $keys;
 	}
+
+	protected function getPastTimeOffset() {
+		return 60 * 60 * 24 * 30;
+	}
 	
 	protected function getOrdersStatus() {
 		return $this->config['OrderStatusOpen'];

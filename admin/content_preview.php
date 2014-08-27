@@ -33,9 +33,10 @@ if ($_GET['pID'] == 'media') {
     $content_data = xtc_db_fetch_array($content_query);
 }
 ?>
-
-<html <?php echo HTML_PARAMS; ?>>
+<!DOCTYPE html>
+<html lang="de">
     <head>
+		<meta charset="utf-8" />
         <title><?php echo $page_title; ?></title>
         <link rel="stylesheet" type="text/css" href="includes/stylesheet.css">
     </head>

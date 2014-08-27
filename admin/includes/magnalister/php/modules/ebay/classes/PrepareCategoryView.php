@@ -21,28 +21,35 @@
 defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/QuickCategoryView.php');
 
-class PrepareCategoryView extends QuickCategoryView {
+class PrepareCategoryView extends QuickCategoryView {	
+	
 	public function __construct($cPath = 0, $settings = array(), $sorting = false, $search = '', $productIDs = array()) {
 		if ($search != '') {
 			$this->blUseParent=true;
 		}
+		
 		parent::__construct($cPath, $settings, $sorting, $search, $productIDs);
-		//$this->action = array('action' => 'matching');
+		
 		if (!isset($_GET['kind']) || ($_GET['kind'] != 'ajax')) {
 			$this->simplePrice->setCurrency(getCurrencyFromMarketplace($this->_magnasession['mpID']));
 		}
 	}
-
+	
 	protected function init() {
+		parent::init();
+		
 		if (isset($_POST['action']) && ($_POST['action'] == 'uncheckSelection')) {
 			MagnaDB::gi()->delete(TABLE_MAGNA_SELECTION, array (
 				'mpID' => $this->_magnasession['mpID'],
 				'selectionname' => $this->settings['selectionName'],
 				'session_id' => session_id(),
 			));
-		}	
+		}
+		
+		$this->productIdFilterRegister('DeletedInEbayFilter', array());
+		$this->productIdFilterRegister('ManufacturerFilter', array());
 	}
-
+	
 	public function getAdditionalHeadlines() {
 		return '
 			<td class="lowestprice">'.ML_EBAY_LABEL_EBAY_PRICE.'</td>
@@ -51,58 +58,54 @@ class PrepareCategoryView extends QuickCategoryView {
 	
 	protected function getProductsCountOfCategoryInfo($iId) {
 		if (!isset($this->aCatInfo[$iId])) {
-		    $aOut = array(
-		    	'iTotal' => 0,
-		    	'iMatched' => 0,
-		    	'iFailed' => 0
-		    );
-		    $aCatIds = $this->getAllSubCategoriesOfCategory($iId);
-		    $aCatIds[] = $iId;
-		    $sIdent = (getDBConfigValue('general.keytype', '0') == 'artNr') ? 'products_model' : 'products_id';
-		    $sSql = '
-		        SELECT DISTINCT p.'.$sIdent.'
-		          FROM '.TABLE_PRODUCTS_TO_CATEGORIES.' p2c
-				  LEFT JOIN '.TABLE_PRODUCTS.' p ON p2c.products_id=p.products_id
-		         WHERE p2c.categories_id IN(' . implode(', ', $aCatIds) . ')
-		        '.(
-						$this->showOnlyActiveProducts
-								? 'AND p.products_status<>0'
-								: ''
-				).'
-				'.(getDBConfigValue('general.keytype', '0') == 'artNr'
-		            ? " AND p.products_model!='' AND p.products_model IS NOT NULL"
-		            : ""
-		        ).'
-		    ';
-		    $aProducts = MagnaDB::gi()->fetchArray($sSql);
-		    $aProductIds = array();
-		    foreach ($aProducts as $aRow) {
-		        $aProductIds[$aRow[$sIdent]] = MagnaDB::gi()->escape($aRow[$sIdent]);
-		    }
-		    $aOut['iTotal'] = count($aProductIds);
-		    if (count($aProductIds)){
-		        $sSql = "
-		            SELECT DISTINCT COUNT(products_id) AS count, verified 
-		              FROM ".TABLE_MAGNA_EBAY_PROPERTIES." 
-		             WHERE ".$sIdent." in('".implode("', '",$aProductIds)."')
-                     AND mpid='".$this->_magnasession['mpID']."'
-		          GROUP BY verified
-		        ";
-		        foreach (MagnaDB::gi()->fetchArray($sSql) as $aInfo) {
-		            if ($aInfo['verified'] != 'OK') {
-		                $aOut['iFailed'] += $aInfo['count'];
-		            } else {
-		                $aOut['iMatched'] += $aInfo['count'];
-		            }
-		        }
-		    }
-		    $this->aCatInfo[$iId] = $aOut;
+			$aOut = array(
+				'iTotal' => 0,
+				'iMatched' => 0,
+				'iFailed' => 0
+			);
+			$aCatIds = $this->getAllSubCategoriesOfCategory($iId);
+			$aCatIds[] = $iId;
+			$sIdent = (getDBConfigValue('general.keytype', '0') == 'artNr') ? 'products_model' : 'products_id';
+			$sSql = '
+			    SELECT DISTINCT p.'.$sIdent.'
+			      FROM '.TABLE_PRODUCTS_TO_CATEGORIES.' p2c
+			 LEFT JOIN '.TABLE_PRODUCTS.' p ON p2c.products_id=p.products_id
+			     WHERE p2c.categories_id IN(' . implode(', ', $aCatIds) . ')
+			           '.($this->showOnlyActiveProducts ? 'AND p.products_status<>0' : '').'
+			           '.(getDBConfigValue('general.keytype', '0') == 'artNr'
+							? " AND p.products_model!='' AND p.products_model IS NOT NULL"
+							: ""
+						).'
+			';
+			$aProducts = MagnaDB::gi()->fetchArray($sSql);
+			$aProductIds = array();
+			foreach ($aProducts as $aRow) {
+				$aProductIds[$aRow[$sIdent]] = MagnaDB::gi()->escape($aRow[$sIdent]);
+			}
+			$aOut['iTotal'] = count($aProductIds);
+			if (count($aProductIds)){
+				$sSql = "
+				    SELECT DISTINCT COUNT(products_id) AS count, verified 
+				      FROM ".TABLE_MAGNA_EBAY_PROPERTIES." 
+				     WHERE ".$sIdent." in('".implode("', '",$aProductIds)."')
+				           AND mpid='".$this->_magnasession['mpID']."'
+				  GROUP BY verified
+				";
+				foreach (MagnaDB::gi()->fetchArray($sSql) as $aInfo) {
+					if ($aInfo['verified'] != 'OK') {
+						$aOut['iFailed'] += $aInfo['count'];
+					} else {
+						$aOut['iMatched'] += $aInfo['count'];
+					}
+				}
+			}
+			$this->aCatInfo[$iId] = $aOut;
 		}
 		return $this->aCatInfo[$iId];
 	}
 	
 	public function getAdditionalCategoryInfo($cID, $data = false) {
-        return '<td>&mdash;</td>'.parent::renderAdditionalCategoryInfo($cID);
+		return '<td>&mdash;</td>'.parent::renderAdditionalCategoryInfo($cID);
 	}
 
 	public function getAdditionalProductInfo($pID, $data = false) {
@@ -111,15 +114,15 @@ class PrepareCategoryView extends QuickCategoryView {
 			SELECT products_id, Price, BuyItNowPrice, Verified, ListingType
 			  FROM '.TABLE_MAGNA_EBAY_PROPERTIES.'
 			 WHERE '.((getDBConfigValue('general.keytype', '0') == 'artNr')
-					? 'products_model=\''.MagnaDB::gi()->escape($data['products_model']).'\''
-					: 'products_id=\''.$pID.'\''
-				    ).'
+						? 'products_model=\''.MagnaDB::gi()->escape($data['products_model']).'\''
+						: 'products_id=\''.$pID.'\''
+					).'
 					 AND mpID = '.$this->_magnasession['mpID']
 		);
 		if (empty($a)) {
 			return '
 				<td>&mdash;</td>
-				<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/grey_dot.png', ML_EBAY_PRODUCT_MATCHED_NO, 12, 12).'</td>';
+				<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/grey_dot.png', ML_EBAY_PRODUCT_MATCHED_NO, 12, 12).'</td>';
 		}
 		if (0.0 == $a['Price']) { # Preis nicht eingefroren => berechnen
 			$a['Price'] = makePrice($pID, $a['ListingType']);
@@ -138,13 +141,19 @@ class PrepareCategoryView extends QuickCategoryView {
 			$priceTooltip = ' title="'.ML_EBAY_PRICE_CALCULATED_TOOLTIP.'" ';
 		}
 		if ('OK' != $a['Verified']) {
-			return '
-				<td '.$priceTooltip.'>'.$startPriceFormat.$textEBayPrice.$endPriceFormat.'</td>
-				<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/red_dot.png', ML_EBAY_PRODUCT_PREPARED_FAULTY, 12, 12).'</td>';
+			if ('EMPTY' == $a['Verified']) {
+				return '
+					<td '.$priceTooltip.'>'.$startPriceFormat.$textEBayPrice.$endPriceFormat.'</td>
+					<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/white_dot.png', ML_EBAY_PRODUCT_PREPARED_FAULTY_BUT_MP, 12, 12).'</td>';
+			} else {
+				return '
+					<td '.$priceTooltip.'>'.$startPriceFormat.$textEBayPrice.$endPriceFormat.'</td>
+					<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/red_dot.png', ML_EBAY_PRODUCT_PREPARED_FAULTY, 12, 12).'</td>';
+			}
 		}
 		return '
 			<td '.$priceTooltip.'>'.$startPriceFormat.$textEBayPrice.$endPriceFormat.'</td>
-			<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/green_dot.png', ML_EBAY_PRODUCT_PREPARED_OK, 12, 12).'</td>';
+			<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/green_dot.png', ML_EBAY_PRODUCT_PREPARED_OK, 12, 12).'</td>';
 	}
 	
 	public function getFunctionButtons() {
@@ -165,7 +174,7 @@ class PrepareCategoryView extends QuickCategoryView {
 					</td>
 					<td class="texcenter inputCell">
 						<table class="right"><tbody>
-							<tr><td><input type="submit" class="fullWidth button smallmargin" value="'.ML_EBAY_BUTTON_PREPARE.'" id="prepare" name="prepare"/></td></tr>
+							<tr><td><input type="submit" class="fullWidth ml-button smallmargin" value="'.ML_EBAY_BUTTON_PREPARE.'" id="prepare" name="prepare"/></td></tr>
 						</tbody></table>
 					</td>
 					<td>
@@ -179,8 +188,8 @@ class PrepareCategoryView extends QuickCategoryView {
 
 	public function getLeftButtons() {
 		return '
-			<input type="submit" class="button" value="'.ML_EBAY_BUTTON_UNPREPARE.'" id="unprepare" name="unprepare"/><br/>
-			<input type="submit" class="button" value="'.ML_EBAY_BUTTON_RESET_DESCRIPTION.'" id="reset_description" name="reset_description"/>';
+			<input type="submit" class="ml-button" value="'.ML_EBAY_BUTTON_UNPREPARE.'" id="unprepare" name="unprepare"/><br/>
+			<input type="submit" class="ml-button" value="'.ML_EBAY_BUTTON_RESET_DESCRIPTION.'" id="reset_description" name="reset_description"/>';
 	}
 	
 	protected function renderDeletedArticlesSelector() {
@@ -193,15 +202,16 @@ class PrepareCategoryView extends QuickCategoryView {
 					 <option value="">'.ML_LABEL_ACTION.'</option>
 					 <option value="uncheckSelection">'.ML_LABEL_UNCHECK_SELECTION.'</option>
 				</select>
-				<script type="text/javascript">/*<![CDATA[*/
-					$(document).ready(function() {
-						$(\'form#deletedArticlesSelection\').change(function() {
-							jQuery.blockUI(blockUILoading);
-							this.submit();
-						});
+			</form>
+			<script type="text/javascript">/*<![CDATA[*/
+				$(document).ready(function() {
+					$("form#deletedArticlesSelection").change(function() {
+						jQuery.blockUI(blockUILoading);
+						this.submit();
 					});
-				/*]]>*/</script>
-			</form>';
+				});
+			/*]]>*/</script>
+		';
 		return $html;
 	}
 	

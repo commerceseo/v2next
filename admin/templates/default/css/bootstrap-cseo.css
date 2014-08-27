@@ -13,11 +13,12 @@ font-size: 15px;
 .navbar {
 border-radius: 0 0 4px 4px;
 min-height: 30px;
-margin-bottom: 5px;
 }
-.navright {
-min-width: 300px;
-}
+
+#usernav .glyphicon {margin-right: 5px;}
+#usernav .label {margin-left: 5px;}
+
+
 @media (min-width: 768px) {
 .navbar-nav > li > a {
 padding-top: 10px;

@@ -39,6 +39,8 @@ class HoodPrepareCategoryView extends QuickCategoryView {
 	}
 
 	protected function init() {
+		parent::init();
+		
 		if (isset($_POST['action']) && ($_POST['action'] == 'uncheckSelection')) {
 			MagnaDB::gi()->delete(TABLE_MAGNA_SELECTION, array (
 				'mpID' => $this->_magnasession['mpID'],
@@ -46,6 +48,8 @@ class HoodPrepareCategoryView extends QuickCategoryView {
 				'session_id' => session_id(),
 			));
 		}
+		
+		$this->productIdFilterRegister('ManufacturerFilter', array());
 	}
 
 	public function getAdditionalHeadlines() {
@@ -126,7 +130,7 @@ class HoodPrepareCategoryView extends QuickCategoryView {
 		if (empty($a)) {
 			return '
 				<td>&mdash;</td>
-				<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/grey_dot.png', ML_HOOD_PRODUCT_MATCHED_NO, 12, 12).'</td>';
+				<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/grey_dot.png', ML_HOOD_PRODUCT_MATCHED_NO, 12, 12).'</td>';
 		}
 		
 		$listingType = ($a['ListingType'] == 'classic') ? 'Auction' : 'Fixed';
@@ -156,18 +160,22 @@ class HoodPrepareCategoryView extends QuickCategoryView {
 			$textHoodPrice = implode('<br>', $textHoodPrice);
 		}
 		if ('OK' != $a['Verified']) {
-			return '
-				<td title="'.ML_HOOD_PRICE_CALCULATED_TOOLTIP.'">'.$textHoodPrice.'</td>
-				<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/red_dot.png', ML_HOOD_PRODUCT_PREPARED_FAULTY, 12, 12).'</td>';
+			if ('EMPTY' == $a['Verified']) {
+				return '
+					<td title="'.ML_HOOD_PRICE_CALCULATED_TOOLTIP.'">'.$textHoodPrice.'</td>
+					<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/white_dot.png', ML_EBAY_PRODUCT_PREPARED_FAULTY_BUT_MP, 12, 12).'</td>';
+			} else {
+				return '
+					<td title="'.ML_HOOD_PRICE_CALCULATED_TOOLTIP.'">'.$textHoodPrice.'</td>
+					<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/red_dot.png', ML_HOOD_PRODUCT_PREPARED_FAULTY, 12, 12).'</td>';
+			}
 		}
 		return '
 			<td title="'.ML_HOOD_PRICE_CALCULATED_TOOLTIP.'">'.$textHoodPrice.'</td>
-			<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/green_dot.png', ML_HOOD_PRODUCT_PREPARED_OK, 12, 12).'</td>';
+			<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/green_dot.png', ML_HOOD_PRODUCT_PREPARED_OK, 12, 12).'</td>';
 	}
 	
 	public function getFunctionButtons() {
-		global $_url;
-
 		$mmatch = true;
 
 		return '
@@ -183,7 +191,7 @@ class HoodPrepareCategoryView extends QuickCategoryView {
 					</td>
 					<td class="texcenter inputCell">
 						<table class="right"><tbody>
-							<tr><td><input type="submit" class="fullWidth button smallmargin" value="'.ML_HOOD_BUTTON_PREPARE.'" id="prepare" name="prepare"/></td></tr>
+							<tr><td><input type="submit" class="fullWidth ml-button smallmargin" value="'.ML_HOOD_BUTTON_PREPARE.'" id="prepare" name="prepare"/></td></tr>
 						</tbody></table>
 					</td>
 					<td>
@@ -197,8 +205,8 @@ class HoodPrepareCategoryView extends QuickCategoryView {
 
 	public function getLeftButtons() {
 		return '
-			<input type="submit" class="button" value="'.ML_HOOD_BUTTON_UNPREPARE.'" id="unprepare" name="unprepare"/><br/>
-			<input type="submit" class="button" value="'.ML_HOOD_BUTTON_RESET_DESCRIPTION.'" id="reset_description" name="reset_description"/>';
+			<input type="submit" class="ml-button" value="'.ML_HOOD_BUTTON_UNPREPARE.'" id="unprepare" name="unprepare"/><br/>
+			<input type="submit" class="ml-button" value="'.ML_HOOD_BUTTON_RESET_DESCRIPTION.'" id="reset_description" name="reset_description"/>';
 	}
 	
 	protected function renderDeletedArticlesSelector() {

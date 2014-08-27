@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: ordersPercent.php 2355 2013-04-17 12:28:24Z tim.neumann $
+ * $Id: ordersPercent.php 3691 2014-03-27 14:23:22Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -28,17 +28,11 @@ $result = MagnaDB::gi()->fetchArray('
   GROUP BY platform
 ', true);
 
-
-if (empty($result)) {
-	renderTextImage(
-		$phPlotSettings['width'], $phPlotSettings['height'], ML_LABEL_NO_DATA, 
-		$phPlotSettings['fonts']['title']['size'], $phPlotSettings['fonts']['title']['font']
-	);
-}
-
 $platforms = array('label' => '', 'total' => 0, 'shop' => 0);
-foreach ($result as $item) {
-	$platforms[$item] = 0;
+if (!empty($result)) {
+	foreach ($result as $item) {
+		$platforms[$item] = 0;
+	}
 }
 
 $query = MagnaDB::gi()->query('
@@ -113,7 +107,7 @@ $maretplaceColors = array(
 );
 
 foreach ($labels as $label) {
-	$col = $phPlotSettings['colorMap']['marketplace'][$label];
+	$col = isset($phPlotSettings['colorMap']['marketplace'][$label]) ? $phPlotSettings['colorMap']['marketplace'][$label] : 'trueblack';
 	$maretplaceColors['colors'][] = $col;
 	$maretplaceColors['borders'][$label] = $phPlotSettings['colorMap']['data']['borders'][$col];
 }

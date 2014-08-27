@@ -54,8 +54,9 @@ class HoodInventoryView {
 		$this->settings = array_merge(array(
 			'maxTitleChars' => 80,
 			'itemLimit' => $this->magnasession[$this->mpID]['InventoryView']['ItemLimit'],
-				), $settings);
-
+			'language' => getDBConfigValue('hood.lang', $this->mpID),
+		), $settings);
+		
 		$this->simplePrice = new SimplePrice();
 		$this->simplePrice->setCurrency('EUR');
 		$this->url = $_url;
@@ -100,10 +101,10 @@ class HoodInventoryView {
 		return '
 			<span class="nowrap">
 				<a href="' . toURL($tmpURL, array('sorting' => $type . '')) . '" title="' . ML_LABEL_SORT_ASCENDING . '" class="sorting">
-					<img alt="' . ML_LABEL_SORT_ASCENDING . '" src="' . DIR_MAGNALISTER_IMAGES . 'sort_up.png" />
+					<img alt="' . ML_LABEL_SORT_ASCENDING . '" src="' . DIR_MAGNALISTER_WS_IMAGES . 'sort_up.png" />
 				</a>
 				<a href="' . toURL($tmpURL, array('sorting' => $type . '-desc')) . '" title="' . ML_LABEL_SORT_DESCENDING . '" class="sorting">
-					<img alt="' . ML_LABEL_SORT_DESCENDING . '" src="' . DIR_MAGNALISTER_IMAGES . 'sort_down.png" />
+					<img alt="' . ML_LABEL_SORT_DESCENDING . '" src="' . DIR_MAGNALISTER_WS_IMAGES . 'sort_down.png" />
 				</a>
 			</span>';
 	}
@@ -209,7 +210,7 @@ class HoodInventoryView {
 				$item['ItemTitleShort'] = (strlen($item['Title']) > $this->settings['maxTitleChars'] + 2) ? (fixHTMLUTF8Entities(substr($item['Title'], 0, $this->settings['maxTitleChars'])) . '&hellip;') : fixHTMLUTF8Entities($item['Title']);
 				$item['VariationAttributesText'] = '';
 				foreach ($item['Variation'] as $variation) {
-					$item['VariationAttributesText'] .= fixHTMLUTF8Entities($variation['Name'] . ':' . $variation['Value'].' , ');
+					$item['VariationAttributesText'] .= rtrim(fixHTMLUTF8Entities($variation['Name'] . ': ' . $variation['Value'].' , '), ', ');
 				}
 				$item['StartTime'] = strtotime($item['StartTime']);
 				$item['EndTime'] = ('-1' == $item['ListingDuration'] ? '&mdash;' : strtotime($item['EndTime']));
@@ -219,20 +220,66 @@ class HoodInventoryView {
 		}
 		$this->getShopDataForItems();
 	}
-
+	
+	protected function getVariationItems($sKUlist, $sKUarr) {
+		$data = MagnaDB::gi()->fetchArray('
+			SELECT DISTINCT v.'.mlGetVariationSkuField().' AS SKU,
+			       v.products_id products_id,
+			       v.variation_attributes,
+			       CAST(v.variation_quantity AS SIGNED) ShopQuantity, 
+			       v.variation_price + p.products_price ShopPrice,
+			        pd.products_name ShopTitle
+			  FROM ' . TABLE_MAGNA_VARIATIONS . ' v, ' . TABLE_PRODUCTS . ' p, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd
+			 WHERE v.products_id=p.products_id
+			       AND v.products_id=pd.products_id
+			       AND pd.language_id=' . $this->settings['language'] . '
+			       AND v.'.mlGetVariationSkuField().' IN (' . $sKUlist . ')
+		');
+		
+		if (empty($data)) {
+			foreach ($sKUarr as $sku) {
+				$aId = magnaSKU2aID($sku);
+				if (empty($aId)) {
+					continue;
+				}
+				$set = MagnaDB::gi()->fetchRow("
+					SELECT '' AS SKU, v.products_id,
+					       CONCAT('|', v.options_id, ',', v.options_values_id, '|') AS variation_attributes,
+					       CAST(v.attributes_stock AS SIGNED) ShopQuantity,
+					       (p.products_price + (v.options_values_price * IF(v.price_prefix='+', 1, -1))) AS ShopPrice,
+					       pd.products_name ShopTitle
+					  FROM ".TABLE_PRODUCTS_ATTRIBUTES." v, " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_DESCRIPTION . " pd
+					 WHERE products_attributes_id = ".$aId."
+					       AND v.products_id=p.products_id
+					       AND v.products_id=pd.products_id
+					       AND pd.language_id=" . $this->settings['language'] . "
+					 LIMIT 1
+				");
+				if (!empty($set)) {
+					$set['SKU'] = $sku;
+					$data[] = $set;
+				}
+			}
+		}
+		
+		if (!empty($data)) {
+			foreach ($data as &$row) {
+				$row['ShopVarText'] = VariationsCalculator::generateVariationsAttributesText($row['variation_attributes'], $this->settings['language'], ', ', ': ');
+			}
+		}
+		//echo print_m($data, '$data');
+		return $data;
+	}
+	
 	private function getShopDataForItems() {
-		global $magnaConfig;
-		$language = $magnaConfig['db'][$this->magnasession['mpID']]['hood.lang'];
 		$sKUarr = array();
+		$sKUarrEsc = array();
 		$sKUlist = '';
 		foreach ($this->renderableData as $item) {
 			$sKUarr[] = $item['SKU'];
+			$sKUarrEsc[] = MagnaDB::gi()->escape($item['SKU']);
 		}
-		$sKUarr = array_unique($sKUarr);
-		foreach ($sKUarr as $currentSKU) {
-			$sKUlist .= ", '" . MagnaDB::gi()->escape($currentSKU) . "'";
-		}
-		$sKUlist = ltrim($sKUlist, ', ');
+		$sKUlist = "'".implode("', '", $sKUarrEsc)."'";
 		if (!empty($sKUlist)) {
 			if ('artNr' == getDBConfigValue('general.keytype', '0')) {
 				$shopDataForSimpleItems = MagnaDB::gi()->fetchArray('
@@ -241,7 +288,7 @@ class HoodInventoryView {
 					       pd.products_name ShopTitle 
 					  FROM ' . TABLE_PRODUCTS . ' p, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd
 					 WHERE p.products_id=pd.products_id
-					       AND pd.language_id=' . $language . '
+					       AND pd.language_id=' . $this->settings['language'] . '
 					       AND p.products_model IN (' . $sKUlist . ')
 				');
 			} else {
@@ -251,20 +298,11 @@ class HoodInventoryView {
 					       pd.products_name ShopTitle
 					  FROM ' . TABLE_PRODUCTS . ' p, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd
 					 WHERE p.products_id=pd.products_id
-					       AND pd.language_id=' . $language . '
+					       AND pd.language_id=' . $this->settings['language'] . '
 					       AND CONCAT(\'ML\',p.products_id) IN (' . $sKUlist . ')
 				');
 			}
-			$shopDataForVariationItems = MagnaDB::gi()->fetchArray('
-				SELECT DISTINCT v.'.mlGetVariationSkuField().' AS SKU, v.products_id products_id,
-					   v.variation_attributes,
-					   CAST(v.variation_quantity AS SIGNED) ShopQuantity, v.variation_price + p.products_price ShopPrice, pd.products_name ShopTitle
-				  FROM ' . TABLE_MAGNA_VARIATIONS . ' v, ' . TABLE_PRODUCTS . ' p, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd
-				 WHERE v.products_id=p.products_id
-					   AND v.products_id=pd.products_id
-					   AND pd.language_id=' . $language . '
-					   AND v.'.mlGetVariationSkuField().' IN (' . $sKUlist . ')
-			');
+			$shopDataForVariationItems = $this->getVariationItems($sKUlist, $sKUarr);
 			$shopDataForItemsBySKU = array();
 			if (is_array($shopDataForSimpleItems)) {
 				foreach ($shopDataForSimpleItems as $shopDataForSimpleItem) {
@@ -277,7 +315,6 @@ class HoodInventoryView {
 				foreach ($shopDataForVariationItems as &$shopDataForVariationItem) {
 					$shopDataForItemsBySKU[$shopDataForVariationItem['SKU']] = $shopDataForVariationItem;
 					unset($shopDataForItemsBySKU[$shopDataForVariationItem['SKU']]['SKU']);
-					$ShopDataForVariationItem['ShopVarText'] = VariationsCalculator::generateVariationsAttributesText($ShopDataForVariationItem['variation_attributes'], $language, ', ', ':');
 				}
 			}
 		} else {
@@ -410,7 +447,7 @@ class HoodInventoryView {
 		$offset = $currentPage * $this->settings['itemLimit'] - $this->settings['itemLimit'] + 1;
 		$limit = $offset + count($this->renderableData) - 1;
 		$html .= '<table class="listingInfo"><tbody><tr>
-					<td class="pagination">
+					<td class="ml-pagination">
 						' . (($this->numberofitems > 0) ? ('<span class="bold">' . ML_LABEL_PRODUCTS . ':&nbsp; ' .
 						$offset . ' bis ' . $limit . ' von ' . ($this->numberofitems) . '&nbsp;&nbsp;&nbsp;&nbsp;</span>'
 						) : ''
@@ -459,7 +496,7 @@ class HoodInventoryView {
 	public function renderActionBox() {
 		global $_modules;
 		$left = (!empty($this->renderableData) ?
-						'<input type="button" class="button" value="' . ML_BUTTON_LABEL_DELETE . '" id="listingDelete" name="listing[delete]"/>' :
+						'<input type="button" class="ml-button" value="' . ML_BUTTON_LABEL_DELETE . '" id="listingDelete" name="listing[delete]"/>' :
 						''
 				);
 
@@ -497,7 +534,7 @@ class HoodInventoryView {
 						<td class="firstChild">' . $left . '</td>
 						<td><label for="tfSearch">' . ML_LABEL_SEARCH . ':</label>
 							<input id="tfSearch" name="tfSearch" type="text" value="' . fixHTMLUTF8Entities($this->search, ENT_COMPAT) . '"/>
-							<input type="submit" class="button" value="' . ML_BUTTON_LABEL_GO . '" name="search_go" /></td>
+							<input type="submit" class="ml-button" value="' . ML_BUTTON_LABEL_GO . '" name="search_go" /></td>
 						<td class="lastChild">' . $right . '</td>
 					</tr></tbody></table>
 				</td></tr></tbody>

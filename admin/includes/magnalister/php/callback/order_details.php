@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: order_details.php 3131 2013-08-21 13:29:57Z derpapst $
+ * $Id: order_details.php 3664 2014-03-23 21:16:31Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -96,14 +96,14 @@ function magnaRenderOrderPlatformIcon($args) {
 	$filename = magnaGetOrderPlatformIcon($order);
 	
 	return ' style="
-		background-image: url(includes/magnalister/images/logos/'.$filename.'.png);
+		background-image: url('.DIR_MAGNALISTER_WS.'images/logos/'.$filename.'.png);
 		background-repeat: no-repeat;
 		background-position: 99% 60%;"';
 }
 
 function magnaRenderOrderDetails($args) {
 	/* Description of Modules */
-	include(DIR_MAGNALISTER_INCLUDES.'modules.php');
+	include(DIR_MAGNALISTER_FS_INCLUDES.'modules.php');
 	$details = magnaLoadOrder(MagnaDB::gi()->escape($args['oID']));
 	if ($details === false) {
 		return '';
@@ -151,7 +151,7 @@ table.magnaOrderDetails tbody tr td.key {
 		</style>
 		<div class="magnaOrderHeadline">
 			<span>m</span>agnalister Details
-			<img src="includes/magnalister/images/logos/'.$filename.'.png" alt="'.$filename.'">
+			<img src="'.DIR_MAGNALISTER_WS.'images/logos/'.$filename.'.png" alt="'.$filename.'">
 		</div>
 		<table class="magnaOrderDetails"><tbody>';
 	$isOdd = true;
@@ -342,7 +342,7 @@ $_POST = array (
 
 		$orderIDs = $_POST['gm_multi_status'];
 		
-		$incl = DIR_MAGNALISTER_MODULES.$order['platform'].'/'.$order['platform'].'Functions.php';
+		$incl = DIR_MAGNALISTER_FS_MODULES.$order['platform'].'/'.$order['platform'].'Functions.php';
 		if (!file_exists($incl)) return '';
 		require_once($incl);
 
@@ -379,7 +379,7 @@ $_POST = array (
 		$order = magnaLoadOrder($oID);
 		if ($order === false) return '';
 
-		$incl = DIR_MAGNALISTER_MODULES.$order['platform'].'/'.$order['platform'].'Functions.php';
+		$incl = DIR_MAGNALISTER_FS_MODULES.$order['platform'].'/'.$order['platform'].'Functions.php';
 		if (!file_exists($incl)) return '';
 		require_once($incl);
 
@@ -422,7 +422,7 @@ function magnaRenderOrderStatusSync($args) {
 		#echo print_m($order, '$order');
 		if ($order === false) return '';
 
-		$incl = DIR_MAGNALISTER_MODULES.$order['platform'].'/'.$order['platform'].'Functions.php';
+		$incl = DIR_MAGNALISTER_FS_MODULES.$order['platform'].'/'.$order['platform'].'Functions.php';
 		if (!file_exists($incl)) return '';
 		require_once($incl);
 

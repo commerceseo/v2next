@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.order.php 872 2014-03-21 14:46:30Z akausch $
+ * 	$Id: class.order.php 1148 2014-07-15 09:29:03Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -88,6 +88,7 @@ class order {
             'company' => $order['delivery_company'],
             'street_address' => $order['delivery_street_address'],
             'suburb' => $order['delivery_suburb'],
+			'telephone' => $order['customers_telephone'],
             'city' => $order['delivery_city'],
             'postcode' => $order['delivery_postcode'],
             'state' => $order['delivery_state'],

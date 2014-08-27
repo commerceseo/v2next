@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: InventoryView.php 2964 2013-07-14 10:06:09Z derpapst $
+ * $Id: InventoryView.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -95,10 +95,10 @@ class InventoryView {
 			#echo print_m($request);
 			$result = MagnaConnector::gi()->submitRequest($request);
 			if ($result['LATESTCHANGE']) {
-				$this->latestChange = strtotime($result['LATESTCHANGE'].' +0000');
+				$this->latestChange = strtotime($result['LATESTCHANGE']);
 			}
 			if ($result['LATESTREPORT']) {
-				$latestReport = strtotime($result['LATESTREPORT'].' +0000');
+				$latestReport = strtotime($result['LATESTREPORT']);
 				if ($this->latestReport != $latestReport) {
 					$this->getPendingItems();
 				}
@@ -231,10 +231,10 @@ class InventoryView {
 		return '
 			<span class="nowrap">
 				<a href="'.toURL($tmpURL, array('sorting' => $type.'')).'" title="'.ML_LABEL_SORT_ASCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_up.png" />
+					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_up.png" />
 				</a>
 				<a href="'.toURL($tmpURL, array('sorting' => $type.'-desc')).'" title="'.ML_LABEL_SORT_DESCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_down.png" />
+					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_down.png" />
 				</a>
 			</span>';
 	}
@@ -261,7 +261,7 @@ class InventoryView {
 					'ItemTitle' => '',
 					'Type' => 'add',
 				), $item);
-				$item['DateAdded'] = strtotime($item['DateAdded'].' +0000');
+				$item['DateAdded'] = strtotime($item['DateAdded']);
 				$this->renderableData[] = $item;
 			}
 		}
@@ -275,6 +275,8 @@ class InventoryView {
 				
 				$aID = magnaSKU2aID($item['SKU']);
 				$item['pID'] = magnaAmazonSKU2pID($item['SKU'], $item['ASIN']);
+				$item['aID'] = $aID;
+				
 				$variationTheme = false;
 				if ($aID !== false) {
 					$variationTheme = MagnaDB::gi()->fetchRow('
@@ -321,7 +323,7 @@ class InventoryView {
 				}
 				$item['DateAdded'] = ($item['DateAdded'] == '0000-00-00 00:00:00')
 					? 0
-					: strtotime($item['DateAdded'].' +0000');
+					: strtotime($item['DateAdded']);
 
 				$this->renderableData[] = $item;
 			}
@@ -346,12 +348,17 @@ class InventoryView {
 		';
 		$oddEven = false;
 		#echo print_m($this->renderableData);
+		$sFuncNameSubStr = 'substr';
+		if (function_exists('mb_substr')) {
+			mb_internal_encoding("UTF-8");
+			$sFuncNameSubStr = 'mb_substr';
+		}
 		foreach ($this->renderableData as $item) {
 			if (!empty($item['ShopItemName'])) {
 				$item['ShopItemNameShort'] = (
 					(strlen($item['ShopItemName']) > $this->settings['maxTitleChars'] + 2) 
 						? 
-							(fixHTMLUTF8Entities(substr($item['ShopItemName'], 0, $this->settings['maxTitleChars']), ENT_COMPAT).'&hellip;')
+							(fixHTMLUTF8Entities($sFuncNameSubStr($item['ShopItemName'], 0, $this->settings['maxTitleChars']), ENT_COMPAT).'&hellip;')
 						: 
 							fixHTMLUTF8Entities($item['ShopItemName'], ENT_COMPAT)
 				);
@@ -364,7 +371,7 @@ class InventoryView {
 				$item['ItemTitleShort'] = (
 					(strlen($item['ItemTitle']) > $this->settings['maxTitleChars'] + 2) 
 						? 
-							(fixHTMLUTF8Entities(substr($item['ItemTitle'], 0, $this->settings['maxTitleChars']), ENT_COMPAT).'&hellip;')
+							(fixHTMLUTF8Entities($sFuncNameSubStr($item['ItemTitle'], 0, $this->settings['maxTitleChars']), ENT_COMPAT).'&hellip;')
 						: 
 							fixHTMLUTF8Entities($item['ItemTitle'], ENT_COMPAT)
 				);
@@ -374,7 +381,7 @@ class InventoryView {
 				$item['ItemTitle'] = ML_LABEL_IN_QUEUE;
 			}
 			
-			$item['SKU_Rendered'] = $item['SKU'];
+			$item['SKU_Rendered'] = fixHTMLUTF8Entities($item['SKU'], ENT_COMPAT);
 			if ($item['Type'] == 'inventory') {
 				$item['SKU_Rendered'] = '<a href="categories.php?pID='.$item['pID'].'&action=new_product" target="_blank" title="'.ML_LABEL_EDIT.'">'.$item['SKU'].'</a>';
 			}
@@ -409,23 +416,23 @@ class InventoryView {
 			switch ($item['Type']) {
 				case 'add': {
 					$html .= '
-						<td title="'.ML_AMAZON_LABEL_ADD_WAIT.'"><img src="'.DIR_MAGNALISTER_IMAGES.'status/grey_dot.png" alt="'.ML_AMAZON_LABEL_ADD_WAIT.'"/></td>';
+						<td title="'.ML_AMAZON_LABEL_ADD_WAIT.'"><img src="'.DIR_MAGNALISTER_WS_IMAGES.'status/grey_dot.png" alt="'.ML_AMAZON_LABEL_ADD_WAIT.'"/></td>';
 					break;
 				}
 				case 'update': {
 					$html .= '
-						<td title="'.ML_AMAZON_LABEL_EDIT_WAIT.'"><img src="'.DIR_MAGNALISTER_IMAGES.'status/blue_dot.png" alt="'.ML_AMAZON_LABEL_EDIT_WAIT.'"/></td>';
+						<td title="'.ML_AMAZON_LABEL_EDIT_WAIT.'"><img src="'.DIR_MAGNALISTER_WS_IMAGES.'status/blue_dot.png" alt="'.ML_AMAZON_LABEL_EDIT_WAIT.'"/></td>';
 					break;					
 				}
 				case 'delete':
 				case 'sysdelete': {
 					$html .= '
-						<td title="'.ML_AMAZON_LABEL_DELETE_WAIT.'"><img src="'.DIR_MAGNALISTER_IMAGES.'status/red_dot.png" alt="'.ML_AMAZON_LABEL_DELETE_WAIT.'"/></td>';					
+						<td title="'.ML_AMAZON_LABEL_DELETE_WAIT.'"><img src="'.DIR_MAGNALISTER_WS_IMAGES.'status/red_dot.png" alt="'.ML_AMAZON_LABEL_DELETE_WAIT.'"/></td>';					
 					break;
 				}
 				default: {
 					$html .= '
-						<td title="'.ML_AMAZON_LABEL_IN_INVENTORY.'"><img src="'.DIR_MAGNALISTER_IMAGES.'status/green_dot.png" alt="'.ML_AMAZON_LABEL_IN_INVENTORY.'"/></td>';
+						<td title="'.ML_AMAZON_LABEL_IN_INVENTORY.'"><img src="'.DIR_MAGNALISTER_WS_IMAGES.'status/green_dot.png" alt="'.ML_AMAZON_LABEL_IN_INVENTORY.'"/></td>';
 				}
 			}
 			$html .= '	
@@ -503,7 +510,7 @@ class InventoryView {
 		$offset = $currentPage * $this->settings['itemLimit'] - $this->settings['itemLimit'] + 1;
 		$limit = $offset + count($this->renderableData) - 1;
 		$html .= '<table class="listingInfo"><tbody><tr>
-					<td class="pagination">
+					<td class="ml-pagination">
 						'.(($this->numberofitems > 0)
 							?	('<span class="bold">'.ML_LABEL_PRODUCTS.':&nbsp; '.
 								 $offset.' bis '.$limit.' von '.($this->numberofitems).'&nbsp;&nbsp;&nbsp;&nbsp;</span>'
@@ -516,7 +523,7 @@ class InventoryView {
 						'.renderPagination($currentPage, $pages, $tmpURL).'
 					</td>
 				</tr></tbody></table>';
-
+		
 		if (!empty($this->renderableData)) {
 			$html .= $this->renderDataGrid('inventory');
 		} else {
@@ -559,11 +566,11 @@ $(document).ready(function() {
 	private function renderActionBox() {
 		global $_modules;
 
-		$left = '<input type="button" class="button" value="'.ML_BUTTON_LABEL_DELETE.'" id="listingDelete" name="listing[delete]"/>';
+		$left = '<input type="button" class="ml-button" value="'.ML_BUTTON_LABEL_DELETE.'" id="listingDelete" name="listing[delete]"/>';
 		$right = '<table class="right"><tbody>
-			<tr><td><input type="submit" class="button fullWidth smallmargin" name="reload" value="'.ML_BUTTON_RELOAD_INVENTORY.'"/></td></tr>
+			<tr><td><input type="submit" class="ml-button fullWidth smallmargin" name="reload" value="'.ML_BUTTON_RELOAD_INVENTORY.'"/></td></tr>
 			'.(in_array(getDBConfigValue('amazon.stocksync.tomarketplace', $this->magnaSession['mpID']), array('abs', 'auto'))
-				? '<tr><td><input type="submit" class="button fullWidth smallmargin" name="refreshStock" value="'.ML_BUTTON_REFRESH_STOCK.'"/></td></tr>'
+				? '<tr><td><input type="submit" class="ml-button fullWidth smallmargin" name="refreshStock" value="'.ML_BUTTON_REFRESH_STOCK.'"/></td></tr>'
 				: ''
 			).'
 		</tbody></table>';
@@ -595,7 +602,7 @@ $(document).ready(function() {
 						<td class="firstChild">'.$left.'</td>
 						<td><label for="tfSearch">'.ML_LABEL_SEARCH.':</label>
 							<input id="tfSearch" name="tfSearch" type="text" value="'.fixHTMLUTF8Entities($this->search, ENT_COMPAT).'"/>
-							<input type="submit" class="button" value="'.ML_BUTTON_LABEL_GO.'" name="search_go" /></td>
+							<input type="submit" class="ml-button" value="'.ML_BUTTON_LABEL_GO.'" name="search_go" /></td>
 						<td class="lastChild">'.$right.'</td>
 					</tr></tbody></table>
 				</td></tr></tbody>

@@ -56,7 +56,7 @@ abstract class MagnaCompatibleCronBase {
 	protected function out($str) {
 		echo $str;
 		flush();
-		ob_flush();
+		#ob_flush();
 	}
 	
 	protected function log($str) {

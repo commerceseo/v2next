@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: footer.php 960 2014-04-10 06:21:06Z akausch $
+ * 	$Id: footer.php 1127 2014-06-30 11:54:44Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -14,31 +14,45 @@
 
 defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 ?>
-
-<br /><br />
-<div id="footpanel">
-    <ul id="mainpanel">
-        <li><a href="<?php echo xtc_href_link('start.php', 'subsite=empty'); ?>"><img src="images/icons/home.png" title="Startseite" alt="Startseite"></a></li>
-        <li><a href="<?php echo xtc_href_link('orders.php', 'subsite=customers'); ?>"><img src="images/icons/table-money.png" alt="<?php echo HEADER_TITLE_ORDERS ?>" title="<?php echo HEADER_TITLE_ORDERS ?>" /></a></li>
-        <li><a href="<?php echo xtc_href_link('customers.php', 'subsite=customers'); ?>"><img src="images/icons/user-black.png" alt="<?php echo HEADER_TITLE_CUTOMERS ?>" title="<?php echo HEADER_TITLE_CUTOMERS ?>" /></a></li>
-        <li><a href="<?php echo xtc_href_link('whos_online.php', 'subsite=statistics'); ?>"><img src="images/icons/chart.png" alt="<?php echo HEADER_TITLE_STATISTICS ?>" title="<?php echo HEADER_TITLE_STATISTICS ?>" /></a></li>
-        <li><a href="<?php echo xtc_href_link('content_manager.php', 'subsite=tools'); ?>"><img src="images/icons/documents-text.png" alt="<?php echo HEADER_TITLE_CONTENT_MANAGER ?>" title="<?php echo HEADER_TITLE_CONTENT_MANAGER ?>" /></a></li>
-        <li><a href="<?php echo xtc_href_link('categories.php', 'subsite=products'); ?>"><img src="images/icons/folders-stack.png" alt="<?php echo HEADER_TITLE_CATEGORIES ?>" title="<?php echo HEADER_TITLE_CATEGORIES ?>" /></a></li>
-        <li><a href="<?php echo xtc_href_link(FILENAME_CREDITS, 'subsite=empty') ?>"><img src="images/icons/balloons.png" alt="Credits" title="Credits" /></a></li>
-
-        <li id="searchpanel">
-            <form name="search" id="search" action="global_search.php" method="POST">
-                <div style="position: relative">
-                    <input type="text" name="search" value="" size="30" class="mag_text" />
-                    <input type="image" src="images/search.png" value="" class="mag" />
-                </div>
-            </form>
-        </li>
-
-    </ul>
+<br><br><br><br>
 </div>
+<nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+	<div class="container-fluid">
+		<div class="navbar-header">
+		  <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#footernav">
+			<span class="sr-only">Navigation ein-/ausblenden</span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+		  </button>
+		  <b class="navbar-brand hidden-sm hidden-md hidden-lg">Footer Menu</b>
+		</div>
+		<div class="navbar-collapse collapse" id="footernav">
+			<ul class="nav navbar-nav">
+				<li><a href="../index.php" title="Front" target="_blank"><span class="glyphicon glyphicon-home"></span><span class="hidden-sm hidden-md hidden-lg">Home</span></a></li>
+				<li><a href="<?php echo xtc_href_link('blog.php'); ?>" title="Blog"><span class="glyphicon glyphicon-globe"></span><span class="hidden-sm hidden-md hidden-lg">Blog</span></a></li>
+				<li><a href="<?php echo xtc_href_link('cseo_center_security.php'); ?>" title="Security"><span class="glyphicon glyphicon-lock"></span><span class="hidden-sm hidden-md hidden-lg">Security</span></a></li>
+				<li><a href="<?php echo xtc_href_link('delete_cache.php'); ?>" title="Cache leeren"><span class="glyphicon glyphicon-trash"></span><span class="hidden-sm hidden-md hidden-lg">Cache leeren</span></a></li>
+				<li><a href="<?php echo xtc_href_link('module_system.php', 'set=&module=commerce_seo_url'); ?>" title="SEO-URL"><span class="glyphicon glyphicon-link"></span><span class="hidden-sm hidden-md hidden-lg">SEO-URL</span></a></li>
+				<li><a href="http://plussupport.commerce-seo.de/" target="_blank" title="Support"><span class="glyphicon glyphicon-comment"></span><span class="hidden-sm hidden-md hidden-lg">Support</span></a></li>
+				<li><a href="https://www.facebook.com/commerce.seo.v2" target="_blank" title="Like"><span class="glyphicon glyphicon-thumbs-up"></span><span class="hidden-sm hidden-md hidden-lg">Like</span></a></li>
+				<li><a href="<?php echo xtc_href_link(FILENAME_CREDITS) ?>" title="Credits"><span class="glyphicon glyphicon-copyright-mark"></span><span class="hidden-sm hidden-md hidden-lg">Credits</span></a></li>
+				<li><a href="<?php echo xtc_href_link(FILENAME_LOGOUT) ?>" title="Logout"><span class="glyphicon glyphicon-off"></span><span class="hidden-sm hidden-md hidden-lg">Logout</span></a></li>
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li>
+					<form class="navbar-form navbar-left" role="search" name="search" id="search" action="global_search.php" method="POST">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Suchen" name="search" value="" />
+							<button type="submit" class="btn btn-success btn-xs"><span class="glyphicon glyphicon-search"></span></button>
+						</div>
+					</form>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
 
-</div>
 
 
 <?php

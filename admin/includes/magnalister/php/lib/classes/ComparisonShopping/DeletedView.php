@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: DeletedView.php 3366 2013-12-06 14:27:29Z tim.neumann $
+ * $Id: DeletedView.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -128,17 +128,17 @@ class DeletedView {
 		return '
 			<span class="nowrap">
 				<a href="'.toURL($this->url, array('sorting' => $type.'')).'" title="'.ML_LABEL_SORT_ASCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_up.png" />
+					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_up.png" />
 				</a>
 				<a href="'.toURL($this->url, array('sorting' => $type.'-desc')).'" title="'.ML_LABEL_SORT_DESCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_down.png" />
+					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_down.png" />
 				</a>
 			</span>';
 	}
 
 	public function renderActionBox() {
 		#return '';
-		$left = '<input type="submit" class="button" value="'.ML_BUTTON_LABEL_DELETE.'" id="logDelete" name="action[delete]"/>';
+		$left = '<input type="submit" class="ml-button" value="'.ML_BUTTON_LABEL_DELETE.'" id="logDelete" name="action[delete]"/>';
 		$right = '&nbsp;';
 
 		ob_start();
@@ -180,7 +180,7 @@ $(document).ready(function() {
 			$html .= '
 				<form action="'.toURL($this->url).'" method="POST">
 					<table class="listingInfo"><tbody><tr>
-						<td class="pagination">
+						<td class="ml-pagination">
 							<span class="bold">'.ML_LABEL_CURRENT_PAGE.' &nbsp;&nbsp; '.$this->currentPage.'</span>
 						</td>
 						<td class="textright">

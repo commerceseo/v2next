@@ -29,6 +29,8 @@ class HoodCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 	protected $priceConfig = array();
 	protected $quantityConfig = array();
 	
+	protected $config = array();
+	
 	private $verify = false;
 	private $lastException = null;
 	protected $ignoreErrors = true;
@@ -39,7 +41,8 @@ class HoodCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		global $_MagnaSession;
 		$settings = array_merge(array(
 			'language' => getDBConfigValue($settings['marketplace'] . '.lang', $_MagnaSession['mpID']),
-			'currency' => 'EUR'
+			'currency' => 'EUR',
+			'itemsPerBatch' => 5
 		), $settings);
 		
 		parent::__construct($settings);
@@ -48,6 +51,9 @@ class HoodCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		$this->quantityConfig = HoodHelper::loadQuantitySettings($this->_magnasession['mpID']);
 		
 		$this->hasAttributesSortOrder = MagnaDB::gi()->columnExistsInTable('sortorder', TABLE_PRODUCTS_ATTRIBUTES);
+		
+		$this->config['maxImages'] = getDBConfigValue($this->marketplace.'.prepare.maximagecount', $this->_magnasession['mpID'], 'all');
+		$this->config['maxImages'] = ($this->config['maxImages'] == 'all') ? true : (int)$this->config['maxImages'];
 	}
 	
 	protected function generateRequestHeader() {
@@ -87,7 +93,7 @@ class HoodCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		parent::initSelection($offset, $limit);
 	}
 	
-	protected function calcVariationPrice($price, $addition) {
+	protected function calcVariationPrice($price, $offset, $tax) {
 		return $price;
 	}
 	
@@ -288,13 +294,20 @@ class HoodCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 			&& isset($propertiesRow['GalleryPictures']['BaseUrl']) && is_string($propertiesRow['GalleryPictures']['BaseUrl']) && !empty($propertiesRow['GalleryPictures']['BaseUrl'])
 			&& isset($propertiesRow['GalleryPictures']['Images'])  && is_array($propertiesRow['GalleryPictures']['Images'])   && !empty($propertiesRow['GalleryPictures']['Images'])
 		) {
+			if ($propertiesRow['GalleryPictures']['BaseUrl'] == '/') {
+				$propertiesRow['GalleryPictures']['BaseUrl'] = '';
+			}
+			$maxImages = $this->config['maxImages'];
 			foreach ($propertiesRow['GalleryPictures']['Images'] as $img => $imgSubmit) {
-				if (!$imgSubmit) {
+				if (!$imgSubmit || ((int)$maxImages <= 0)) {
 					continue;
 				}
 				$data['submit']['Images'][] = array(
 					'URL' => $propertiesRow['GalleryPictures']['BaseUrl'].$img,
 				);
+				if ($maxImages !== false) {
+					--$maxImages;
+				}
 			}
 		}
 		
@@ -347,8 +360,17 @@ class HoodCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 			'Unit' => $product['products_vpe_name'],
 			'Value' => $product['products_vpe_value'],
 		);
-		$data['submit']['DeliveryDaysOnStockFrom'] = getDBConfigValue('hood.DispatchTimeMin', $this->_magnasession['mpID']);
-		$data['submit']['ShippingTime'] = getDBConfigValue('hood.DispatchTimeMin', $this->_magnasession['mpID']);
+		
+		$data['submit']['ShippingTime'] = array();
+		$shippingMin = getDBConfigValue('hood.ShippingTime.Min', $this->_magnasession['mpID'], '');
+		if (strlen($shippingMin) > 0) {
+			$data['submit']['ShippingTime']['Min'] = (int)$shippingMin;
+		}
+		$shippingMax = getDBConfigValue('hood.ShippingTime.Max', $this->_magnasession['mpID'], '');
+		if (strlen($shippingMax) > 0) {
+			$data['submit']['ShippingTime']['Max'] = (strlen($shippingMin) > 0) ? max((int)$shippingMin, (int)$shippingMax) : (int)$shippingMax;
+		}
+		
 		$data['submit']['ShippingServices'] = $propertiesRow['ShippingServiceOptions'];
 		
 		if (($data['submit']['ListingType'] == 'classic') && ((float)$propertiesRow['StartPrice'] > 0)) {
@@ -546,12 +568,14 @@ class HoodCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		//echo print_m($this->settings, '$this->settings');
 
 		$this->initSelection(0, 1);
+		$this->init('Verify', count($this->selection));
 		//echo print_m($this->selection, '$this->selection[1]');
 		foreach ($this->selection as $pID => &$data) {
-			if ($data['quantity'] == 0) {
+			if (!isset($data['quantity']) || ($data['quantity'] == 0)) {
 				$data['quantity'] = 1; // hack to get verification of zero quantity items working
 			}
 		}
+		
 		$this->populateSelectionWithData();
 		//echo print_m($this->selection, '$this->selection[2]');
 		

@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: AmazonCategoryView.php 3157 2013-09-06 12:06:19Z markus.bauer $
+ * $Id: AmazonCategoryView.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -23,33 +23,34 @@ require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/QuickCategoryView.php');
 
 class AmazonCategoryView extends QuickCategoryView {
 	public function __construct($cPath = 0, $settings = array(), $sorting = false, $search = '', $productIDs = array()) {
-            global $_MagnaSession;
-	    $filter = array();
+		global $_MagnaSession;
+		$filter = array();
 		
 		if (($matchedItems = MagnaDB::gi()->fetchArray('
 				SELECT DISTINCT '.(
 					(getDBConfigValue('general.keytype', '0') == 'artNr') ? 'products_model' : 'products_id'
 				).'
 				  FROM '.TABLE_MAGNA_AMAZON_APPLY.' 
-				 WHERE mpID=\''.$_MagnaSession['mpID'].'\'
+				 WHERE mpID="'.$_MagnaSession['mpID'].'"
 			', true)) !== false
 		) {
 			if (getDBConfigValue('general.keytype', '0') == 'artNr') {
 				$filter[] = array(
 					'join' => '',
-					'where' => 'p.products_model NOT IN (\''.implode('\', \'', MagnaDB::gi()->escape($matchedItems)).'\')'
+					'where' => 'p.products_model NOT IN ("'.implode('", "', MagnaDB::gi()->escape($matchedItems)).'")'
 				);
 			} else {
 				$filter[] = array(
 					'join' => '',
-					'where' => 'p2c.products_id NOT IN (\''.implode('\', \'', $matchedItems).'\')'
+					'where' => 'p2c.products_id NOT IN ("'.implode('", "', $matchedItems).'")'
 				);
 			}
 		}
 		$this->setCat2ProdCacheQueryFilter($filter);
 		if ($search != '') {
-			$this->blUseParent=true;
+			$this->blUseParent  = true;
 		}
+		
 		parent::__construct($cPath, $settings, $sorting, $search, $productIDs);
 		//$this->action = array('action' => 'matching');
 
@@ -57,66 +58,73 @@ class AmazonCategoryView extends QuickCategoryView {
 			$this->simplePrice->setCurrency(getCurrencyFromMarketplace($this->_magnasession['mpID']));
 		}
 	}
-        protected function getProductsCountOfCategoryInfo($iId){
-            if(!isset($this->aCatInfo[$iId])){
-                $aOut=array('iTotal'=>0,'iMatched'=>0,'iFailed'=>0);
-                $aCatIds = $this->getAllSubCategoriesOfCategory($iId);
-                $aCatIds[] = $iId;
-                $sIdent=(getDBConfigValue('general.keytype', '0')=='artNr')?'products_model':'products_id';
-                $sSql= '
-                    SELECT DISTINCT p.'.$sIdent.' 
-							   FROM '.TABLE_PRODUCTS_TO_CATEGORIES.' p2c
-						  LEFT JOIN '.TABLE_PRODUCTS.' p on p2c.products_id=p.products_id
-							  WHERE p2c.categories_id IN(' . implode(', ', $aCatIds) . ')
-                    '.(
-						$this->showOnlyActiveProducts
-								? 'AND p.products_status<>0'
-								: ''
-					).'
-					'.(
-                        getDBConfigValue('general.keytype', '0') == 'artNr'
-                        ?	  " AND p.products_model != '' and p.products_model is not null"
-                        :	  ""
-                    ).'
-                ';
-                $aProducts = MagnaDB::gi()->fetchArray($sSql);
-                $aProductIds = array();
-                foreach($aProducts as $aRow){
-                    $aProductIds[$aRow[$sIdent]] = MagnaDB::gi()->escape($aRow[$sIdent]);
-                }
-                if(count($aProductIds)>0){
-                    $sSql="
-						SELECT ".$sIdent."
-						  FROM ".TABLE_MAGNA_AMAZON_APPLY."
-						 WHERE ".$sIdent." IN ('".implode("', '",$aProductIds)."')
-							   AND mpID = '".$this->_magnasession['mpID']."'
-                    ";
-                    $aAll = MagnaDB::gi()->fetchArray($sSql);
-                    foreach($aAll as $aRow){
-                        unset($aProductIds[$aRow[$sIdent]]);
-                    }
-                }
-                $aOut['iTotal'] = count($aProductIds);
-                if(count($aProductIds)){
-                    $sSql= "
-						SELECT DISTINCT COUNT(products_id) AS count, (asin = '' OR asin IS NULL) AS is_incomplete
-								   FROM ".TABLE_MAGNA_AMAZON_PROPERTIES."
-								  WHERE ".$sIdent." IN ('".implode("', '",$aProductIds)."')
-										AND mpid = '".$this->_magnasession['mpID']."'
-							   GROUP BY is_incomplete;
-                    ";
-                    foreach(MagnaDB::gi()->fetchArray($sSql) as $aInfo){
-                        if($aInfo['is_incomplete']=='true'){
-                            $aOut['iFailed']+=$aInfo['count'];
-                        }else{
-                            $aOut['iMatched']+=$aInfo['count'];
-                        }
-                    }
-                }
-                $this->aCatInfo[$iId]=$aOut;
-            }
-            return $this->aCatInfo[$iId];
-        }
+	
+	protected function init() {
+		parent::init();
+		
+		$this->productIdFilterRegister('ManufacturerFilter', array());
+	}
+	
+	protected function getProductsCountOfCategoryInfo($iId){
+		if (!isset($this->aCatInfo[$iId])) {
+			$aOut = array (
+				'iTotal' => 0,
+				'iMatched' => 0,
+				'iFailed' => 0
+			);
+			$aCatIds = $this->getAllSubCategoriesOfCategory($iId);
+			$aCatIds[] = $iId;
+			$sIdent = (getDBConfigValue('general.keytype', '0') == 'artNr') ? 'products_model' : 'products_id';
+			$sSql = '
+				     SELECT DISTINCT p.'.$sIdent.' 
+				       FROM '.TABLE_PRODUCTS_TO_CATEGORIES.' p2c
+				  LEFT JOIN '.TABLE_PRODUCTS.' p on p2c.products_id=p.products_id
+				      WHERE p2c.categories_id IN(' . implode(', ', $aCatIds) . ')
+				           '.($this->showOnlyActiveProducts ? 'AND p.products_status<>0' : '').'
+				'.((getDBConfigValue('general.keytype', '0') == 'artNr')
+						? 'AND p.products_model != "" AND p.products_model is not null'
+						: ''
+				).'
+			';
+			$aProducts = MagnaDB::gi()->fetchArray($sSql);
+			$aProductIds = array();
+			foreach ($aProducts as $aRow) {
+				$aProductIds[$aRow[$sIdent]] = MagnaDB::gi()->escape($aRow[$sIdent]);
+			}
+			if (count($aProductIds) > 0) {
+				$sSql = "
+					SELECT ".$sIdent."
+					  FROM ".TABLE_MAGNA_AMAZON_APPLY."
+					 WHERE ".$sIdent." IN ('".implode("', '",$aProductIds)."')
+					        AND mpID = '".$this->_magnasession['mpID']."'
+				";
+				$aAll = MagnaDB::gi()->fetchArray($sSql);
+				foreach ($aAll as $aRow) {
+					unset($aProductIds[$aRow[$sIdent]]);
+				}
+			}
+			$aOut['iTotal'] = count($aProductIds);
+			if (count($aProductIds)) {
+				$sSql= "
+					  SELECT DISTINCT COUNT(products_id) AS count, (asin = '' OR asin IS NULL) AS is_incomplete
+					    FROM ".TABLE_MAGNA_AMAZON_PROPERTIES."
+					   WHERE ".$sIdent." IN ('".implode("', '",$aProductIds)."')
+					         AND mpid = '".$this->_magnasession['mpID']."'
+					GROUP BY is_incomplete;
+				";
+				foreach (MagnaDB::gi()->fetchArray($sSql) as $aInfo) {
+					if ($aInfo['is_incomplete'] == 'true') {
+						$aOut['iFailed'] += $aInfo['count'];
+					} else {
+						$aOut['iMatched'] += $aInfo['count'];
+					}
+				}
+			}
+			$this->aCatInfo[$iId] = $aOut;
+		}
+		return $this->aCatInfo[$iId];
+	}
+	
 	public function getAdditionalHeadlines() {
 		return '
 			<td class="lowestprice">'.ML_GENERIC_LOWEST_PRICE.'</td>
@@ -124,7 +132,7 @@ class AmazonCategoryView extends QuickCategoryView {
 	}
 
 	public function getAdditionalCategoryInfo($cID, $data = false) {
-            return '<td>&mdash;</td>'.parent::renderAdditionalCategoryInfo($cID);
+		return '<td>&mdash;</td>'.parent::renderAdditionalCategoryInfo($cID);
 	}
 
 	public function getAdditionalProductInfo($pID, $data = false) {
@@ -132,24 +140,24 @@ class AmazonCategoryView extends QuickCategoryView {
 			SELECT products_id, `asin`, `lowestprice` 
 			  FROM '.TABLE_MAGNA_AMAZON_PROPERTIES.'
 			 WHERE '.((getDBConfigValue('general.keytype', '0') == 'artNr')
-						? 'products_model=\''.MagnaDB::gi()->escape($data['products_model']).'\''
-						: 'products_id=\''.$pID.'\''
+						? 'products_model="'.MagnaDB::gi()->escape($data['products_model']).'"'
+						: 'products_id="'.$pID.'"'
 					).'
-					AND mpID=\''.$this->_magnasession['mpID'].'\'
+					AND mpID="'.$this->_magnasession['mpID'].'"
 		');
 		if (empty($a)) {
 			return '
 				<td>&mdash;</td>
-				<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/grey_dot.png', ML_AMAZON_PRODUCT_MATHCED_NO, 12, 12).'</td>';
+				<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/grey_dot.png', ML_AMAZON_PRODUCT_MATHCED_NO, 12, 12).'</td>';
 		}
 		if (empty($a['asin'])) {
 			return '
 				<td>&mdash;</td>
-				<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/red_dot.png', ML_AMAZON_PRODUCT_MATCHED_FAULTY, 12, 12).'</td>';
+				<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/red_dot.png', ML_AMAZON_PRODUCT_MATCHED_FAULTY, 12, 12).'</td>';
 		}
 		return '
 			<td>'.((!empty($a['lowestprice']) && ($a['lowestprice'] > 0)) ?  $this->simplePrice->setPrice($a['lowestprice'])->format().'<br />&nbsp;' : '&mdash;').'</td>
-			<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/green_dot.png', ML_AMAZON_PRODUCT_MATCHED_OK, 12, 12).'</td>';
+			<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/green_dot.png', ML_AMAZON_PRODUCT_MATCHED_OK, 12, 12).'</td>';
 	}
 	
 	public function getFunctionButtons() {
@@ -293,7 +301,7 @@ $(document).ready(function() {
 						<label for="match_notmatched_rb">'.ML_AMAZON_LABEL_ONLY_NOT_MATCHED.'</label>
 					</td>
 					<td class="texcenter inputCell">
-						<input type="submit" class="fullWidth button smallmargin" value="'.ML_AMAZON_LABEL_MANUAL_MATCHING.'" id="matching" name="matching"/>
+						<input type="submit" class="fullWidth ml-button smallmargin" value="'.ML_AMAZON_LABEL_MANUAL_MATCHING.'" id="matching" name="matching"/>
 					</td>
 					<td>
 						<div class="desc" id="desc_man_match" title="'.ML_LABEL_INFOS.'"><span>'.ML_AMAZON_LABEL_MANUAL_MATCHING.'</span></div>
@@ -301,7 +309,7 @@ $(document).ready(function() {
 				</tr>
 				<tr>
 					<td class="texcenter inputCell">
-						<input type="button" class="fullWidth button smallmargin" value="'.ML_AMAZON_LABEL_AUTOMATIC_MATCHING.'" id="automatching" name="automatching"/>
+						<input type="button" class="fullWidth ml-button smallmargin" value="'.ML_AMAZON_LABEL_AUTOMATIC_MATCHING.'" id="automatching" name="automatching"/>
 					</td>
 					<td>
 						<div class="desc" id="desc_auto_match" title="'.ML_LABEL_INFOS.'"><span>'.ML_AMAZON_LABEL_AUTOMATIC_MATCHING.'</span></div>
@@ -318,7 +326,7 @@ $(document).ready(function() {
 	}
 
 	public function getLeftButtons() {
-		return '<input type="submit" class="button" value="'.ML_AMAZON_BUTTON_MATCHING_DELETE.'" id="unmatching" name="unmatching"/>';
+		return '<input type="submit" class="ml-button" value="'.ML_AMAZON_BUTTON_MATCHING_DELETE.'" id="unmatching" name="unmatching"/>';
 	}
 	
 }

@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: orders_import.php 3519 2014-02-14 13:42:58Z derpapst $
+ * $Id: orders_import.php 4337 2014-08-06 12:09:45Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -83,6 +83,19 @@ function magnaInitOrderImport() {
 	} else {
 		define('MAGNA_LABEL_ORDERS_DISCOUNT', ML_LABEL_ORDER_TOTAL_DISCOUNT.':');
 	}
+
+	// Gambio specific "Kleinunternehmer Regelung"
+	if (
+		   defined('MODULE_ORDER_TOTAL_GM_TAX_FREE_STATUS')
+		&& strtolower(MODULE_ORDER_TOTAL_GM_TAX_FREE_STATUS) == 'true'
+		&& file_exists(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_gm_tax_free.php')
+	) {
+		require_once(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_gm_tax_free.php');
+		define('MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS', true);
+	} else {
+		define('MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS', false);
+	}
+
 	define('MAGNA_LABEL_ORDERS_SUBTOTAL', MODULE_ORDER_TOTAL_SUBTOTAL_TITLE.':');
 	define('MAGNA_LABEL_ORDERS_TAX', MODULE_ORDER_TOTAL_TAX_TITLE.':');
 	define('MAGNA_LABEL_ORDERS_SHIPPING', MODULE_ORDER_TOTAL_SHIPPING_TITLE.':');
@@ -101,7 +114,7 @@ function magnaImportAllOrders() {
 	/* Bitte nicht vor Lachen in Traenen ausbrechen, aber die naechsten Zeilen sollen so etwas wie ein "mutex" darstellen :-) */
 	$doImports = false;
 	usleep(rand(0, $verbose ? 2000 : 2000000)); // sleep for 0 to max 2 seconds
-	$lockName = DIR_MAGNALISTER.'OrderImportLock';
+	$lockName = DIR_MAGNALISTER_FS.'OrderImportLock';
 	$myTime = time();
 	if (!file_exists($lockName)) {
 		file_put_contents($lockName, $myTime);

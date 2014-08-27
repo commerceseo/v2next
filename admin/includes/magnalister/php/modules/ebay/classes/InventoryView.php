@@ -39,6 +39,8 @@ class InventoryView {
 	protected $magnasession = array();
 	protected $magnaShopSession = array();
 
+	protected $pendingItems = array();
+
 	protected $search = '';
 
 	public function __construct($marketplace, $settings = array()) {
@@ -101,6 +103,29 @@ class InventoryView {
 		}
 	}
 
+	private function getPendingItems() {
+
+		try {
+			$result = MagnaConnector::gi()->submitRequest(array(
+				'ACTION' => 'GetPendingItems',
+			));
+		} catch (MagnaException $e) {
+			$result = array('DATA' => false);
+		}
+		$waitingItems = 0;
+		$maxEstimatedTime = 0;
+		if (is_array($result['DATA']) && !empty($result['DATA'])) {
+			foreach ($result['DATA'] as $item) {
+				$maxEstimatedTime = max($maxEstimatedTime, $item['EstimatedWaitingTime']);
+				$waitingItems  += 1;
+			}
+		}
+		$this->pendingItems = array (
+			'itemsCount' => $waitingItems,
+			'estimatedWaitingTime' => $maxEstimatedTime
+		);
+	}
+
 	protected function sortByType($type) {
 		$tmpURL = $this->url;
 		if (!empty($this->search)) {
@@ -109,10 +134,10 @@ class InventoryView {
 		return '
 			<span class="nowrap">
 				<a href="'.toURL($tmpURL, array('sorting' => $type.'')).'" title="'.ML_LABEL_SORT_ASCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_up.png" />
+					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_up.png" />
 				</a>
 				<a href="'.toURL($tmpURL, array('sorting' => $type.'-desc')).'" title="'.ML_LABEL_SORT_DESCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_down.png" />
+					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_down.png" />
 				</a>
 			</span>';
 	}
@@ -241,6 +266,7 @@ class InventoryView {
 	
 	public function prepareInventoryData() {
 		$result = $this->getInventory();
+		$this->getPendingItems();
 		if (($result !== false) && !empty($result['DATA'])) {
 			$this->renderableData = $result['DATA'];
 			foreach ($this->renderableData as &$item) {
@@ -268,6 +294,17 @@ class InventoryView {
             $SKUarr[] = $item['SKU'];
         }
         $SKUarr = array_unique($SKUarr);
+		$character_set_client = MagnaDB::gi()->mysqlVariableValue('character_set_client');
+		$character_set_system = MagnaDB::gi()->mysqlVariableValue('character_set_system');
+		if (('utf8mb3' == $character_set_client) || ('utf8mb4' == $character_set_client)) {
+			$character_set_client = 'utf8';
+		}
+		if (('utf8mb3' == $character_set_system) || ('utf8mb4' == $character_set_system)) {
+			$character_set_system = 'utf8';
+		}
+		if (('utf8' == $character_set_system) && ('utf8' != $character_set_client)) {
+			arrayEntitiesToLatin1($SKUarr);
+		}
         foreach ($SKUarr as $currentSKU) {
             $SKUlist .= ", '".MagnaDB::gi()->escape($currentSKU)."'";
         }
@@ -307,7 +344,7 @@ class InventoryView {
                             OR v.variation_products_model IN ('.$SKUlist.')
                        )
             ', false));
-            #echo print_m($ShopDataForVariationItems, '$ShopDataForVariationItems');
+			
             $ShopDataForItemsBySKU = array();
             foreach ($ShopDataForSimpleItems as $ShopDataForSimpleItem) {
                 $ShopDataForItemsBySKU[$ShopDataForSimpleItem['SKU']] = $ShopDataForSimpleItem;
@@ -315,6 +352,9 @@ class InventoryView {
                 $ShopDataForItemsBySKU[$ShopDataForSimpleItem['SKU']]['ShopVarText'] = '';
             }
             foreach ($ShopDataForVariationItems as &$ShopDataForVariationItem) {
+                if (('utf8' == $character_set_system) && ('utf8' != $character_set_client)) {
+                    $ShopDataForVariationItem['SKU'] = utf8_encode($ShopDataForVariationItem['SKU']);
+                }
                 $ShopDataForItemsBySKU[$ShopDataForVariationItem['SKU']] = $ShopDataForVariationItem;
                 unset ($ShopDataForItemsBySKU[$ShopDataForVariationItem['SKU']]['SKU']);
                 //$ShopDataForVariationItem['ShopVarText'] = VariationsCalculator::generateVariationsAttributesText($ShopDataForVariationItem['variation_attributes'], $language, ', ', ':');
@@ -333,7 +373,9 @@ class InventoryView {
                 $item['ShopQuantity'] = $ShopDataForItemsBySKU[$item['SKU']]['ShopQuantity'];
                 $item['ShopPrice']    = $ShopDataForItemsBySKU[$item['SKU']]['ShopPrice'];
                 $item['ShopTitle']    = $ShopDataForItemsBySKU[$item['SKU']]['ShopTitle'];
-                $item['ShopVarText']  = $ShopDataForItemsBySKU[$item['SKU']]['ShopVarText'];
+                $item['ShopVarText']  = isset($ShopDataForItemsBySKU[$item['SKU']]['ShopVarText'])
+				                        ? $ShopDataForItemsBySKU[$item['SKU']]['ShopVarText']
+				                        : '&nbsp;';
             } else {
                 $item['ShopQuantity'] = $item['ShopPrice'] = $item['ShopTitle'] = '&mdash;';
                 $item['ShopVarText']  = '&nbsp;';
@@ -449,7 +491,7 @@ class InventoryView {
 		$offset = $currentPage * $this->settings['itemLimit'] - $this->settings['itemLimit'] + 1;
 		$limit = $offset + count($this->renderableData) - 1;
 		$html .= '<table class="listingInfo"><tbody><tr>
-					<td class="pagination">
+					<td class="ml-pagination">
 						'.(($this->numberofitems > 0)
 							?	('<span class="bold">'.ML_LABEL_PRODUCTS.':&nbsp; '.
 								 $offset.' bis '.$limit.' von '.($this->numberofitems).'&nbsp;&nbsp;&nbsp;&nbsp;</span>'
@@ -463,6 +505,13 @@ class InventoryView {
 					</td>
 				</tr></tbody></table>';
 
+		if (    !empty($this->pendingItems)
+		     && !empty($this->pendingItems['itemsCount'])
+		   ) {
+			$html .= '<p class="successBoxBlue">'
+			.sprintf(ML_EBAY_N_PENDING_UPDATES_ESTIMATED_TIME_M, $this->pendingItems['itemsCount'], $this->pendingItems['estimatedWaitingTime'])
+			.'</p>';
+		}
 		if (!empty($this->renderableData)) {
 			$html .= $this->renderDataGrid('ebayinventory');
 		} else {
@@ -498,7 +547,7 @@ $(document).ready(function() {
 	public function renderActionBox() {
 		global $_modules;
 		$left = (!empty($this->renderableData) ? 
-			'<input type="button" class="button" value="'.ML_BUTTON_LABEL_DELETE.'" id="listingDelete" name="listing[delete]"/>' : 
+			'<input type="button" class="ml-button" value="'.ML_BUTTON_LABEL_DELETE.'" id="listingDelete" name="listing[delete]"/>' : 
 			''
 		);
 		
@@ -534,7 +583,7 @@ $(document).ready(function() {
 						<td class="firstChild">'.$left.'</td>
 						<td><label for="tfSearch">'.ML_LABEL_SEARCH.':</label>
 							<input id="tfSearch" name="tfSearch" type="text" value="'.fixHTMLUTF8Entities($this->search, ENT_COMPAT).'"/>
-							<input type="submit" class="button" value="'.ML_BUTTON_LABEL_GO.'" name="search_go" /></td>
+							<input type="submit" class="ml-button" value="'.ML_BUTTON_LABEL_GO.'" name="search_go" /></td>
 						<td class="lastChild">'.$right.'</td>
 					</tr></tbody></table>
 				</td></tr></tbody>

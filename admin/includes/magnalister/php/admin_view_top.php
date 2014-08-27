@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: admin_view_top.php 3509 2014-02-10 21:09:31Z derpapst $
+ * $Id: admin_view_top.php 4436 2014-08-25 15:55:10Z miguel.heredia $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -94,7 +94,7 @@ echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.
 <html '.HTML_PARAMS.'>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset='.$_SESSION['language_charset'].'">
-		<title>'.TITLE.' :: Magnalister'.$_mainTitle.'</title>
+		<title>'.(defined('TITLE') ? TITLE.' :: ' : '').'magnalister'.$_mainTitle.'</title>
 		<link rel="stylesheet" type="text/css" href="includes/stylesheet.css" />'."\n";
 }
 /* Force IE into Standards Mode */
@@ -105,8 +105,8 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 	echo '		<noscript><meta http-equiv="refresh" content="0;URL='.toURL(array('module' => 'nojs')).'"></noscript>'."\n";
 }
 ?>
-		<link rel="stylesheet" type="text/css" href="includes/magnalister/css/jqueryui/jquery-ui-1.9.1.custom.css" />
-		<link rel="stylesheet" type="text/css" href="includes/magnalister/css/magnalister.css?<?php echo CLIENT_BUILD_VERSION?>" />
+		<link rel="stylesheet" type="text/css" href="<?php echo DIR_MAGNALISTER_WS; ?>css/jqueryui/jquery-ui-1.9.1.custom.css" />
+		<link rel="stylesheet" type="text/css" href="<?php echo DIR_MAGNALISTER_WS; ?>css/magnalister.css?<?php echo CLIENT_BUILD_VERSION?>" />
 <?php
 			if (isset($_pageCSS) && ($_pageCSS = trim($_pageCSS)) && !empty($_pageCSS)) {
 				echo '
@@ -115,7 +115,32 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 		</style>'."\n";
 			}
 ?>
-		<script type="text/javascript" src="includes/magnalister/js/debugFunctions.js"></script>
+		<style>
+		@-moz-keyframes ml-css-spin {
+			0% {-moz-transform: rotate(0deg);}
+			100% {-moz-transform: rotate(360deg);}
+		}
+		@-webkit-keyframes ml-css-spin {
+			0% {-webkit-transform: rotate(0deg);}
+			100% {-webkit-transform: rotate(360deg);}
+		}
+		@keyframes ml-css-spin {
+			0% {transform: rotate(0deg);}
+			100% {transform: rotate(360deg);}
+		}
+
+		.ml-css-loading {
+			-o-box-sizing: border-box;
+			-ie-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
+			-moz-animation: ml-css-spin .8s infinite linear;
+			-webkit-animation: ml-css-spin .8s infinite linear;
+			animation: ml-css-spin .8s infinite linear;
+		}
+		</style>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/debugFunctions.js"></script>
 		<script type="text/javascript">/*<![CDATA[*/
 			var debugging = true;/*<?php echo (MAGNA_DEBUG) ? 'true' : 'false'; ?>;*/
 			if ((debugging === true) && window.console) {
@@ -159,30 +184,31 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 			
 			var blockUILoading = {
 				overlayCSS: { 
-					backgroundColor: '#000',
-					'opacity': '0.1',
+					backgroundColor: '#fff',
+					'opacity': '0.8',
 					'z-index': '9000'
 				},
 				css: {
-					'background': '#fff url("includes/magnalister/images/loading.gif") no-repeat 50% 50%',
-					'width': '31px',
-					'height': '31px',
+					'width': '32px',
+					'height': '32px',
+					'border-width': '4px',
+					'border-style': 'solid',
+					'border-color': 'rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 1)',
+					'border-radius': '32px',
+					'padding': '0',
 					'left': '50%',
-					'padding': '10px',
-					'border': 'none',
-					'border-radius': '10px',
-					'-moz-border-radius': '10px',
-					'-webkit-border-radius': '10px',
-					'box-shadow': '0 0 20px #000000',
-					'-moz-box-shadow': '0 0 20px #000000',
-					'-webkit-box-shadow': '0 0 20px #000000',
-					'z-index': '9001'
+					'margin': '0 0 0 -16px',
+					'padding': '0',
+					'top': '300px',
+					'z-index': '9999',
+					'background': 'transparent'
 				},
+				blockMsgClass: 'ml-css-loading',
 				message: '<div></div>',
 				onBlock: function() {
-					$('.blockUI.blockMsg.blockPage').bind('dblclick', function() {
-						$.unblockUI();
-					});
+						jQuery('.blockUI.ml-css-loading.blockPage').bind('dblclick', function() {
+								jQuery.unblockUI();
+						});
 				}
 			};
 			var blockUIProgress = {
@@ -200,31 +226,29 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 					'padding': '10px',
 					'border': 'none',
 					'border-radius': '10px',
-					'-moz-border-radius': '10px',
-					'-webkit-border-radius': '10px',
 					'box-shadow': '0 0 20px #000000',
-					'-moz-box-shadow': '0 0 20px #000000',
-					'-webkit-box-shadow': '0 0 20px #000000',
-					'z-index': '9001'
+					'z-index': '9001',
+					'box-sizing': 'content-box'
 				},
 				message: '<div class="progressBarContainer"><div class="progressBar"></div><div class="progressPercent">0%</div></div>'
 			};
 			
 			/* Preload Loading Animation */
-			loadingImage = new Image(); 
-			loadingImage.src = "includes/magnalister/images/loading.gif";
 			progressbarImage = new Image(); 
-			progressbarImage.src = "includes/magnalister/images/progressbar.png";
+			progressbarImage.src = "<?php echo DIR_MAGNALISTER_WS; ?>images/progressbar.png";
 		/*]]>*/</script>
-		<script type="text/javascript" src="includes/magnalister/js/jquery-1.8.3.js"></script>
-		<script type="text/javascript" src="includes/magnalister/js/jquery.timers-1.2.js"></script>
-		<script type="text/javascript" src="includes/magnalister/js/jquery.blockUI.js"></script>
-		<script type="text/javascript" src="includes/magnalister/js/jquery-ui-1.9.1.custom.js"></script>
-		<script type="text/javascript" src="includes/magnalister/js/jquery-ui-i18n.js"></script>
-		<script type="text/javascript" src="includes/magnalister/js/jquery.ba-throttle-debounce.js"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/jquery-1.8.3.js"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/jquery.timers-1.2.js"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/jquery.blockUI.js"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/jquery-ui-1.9.1.custom.js"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/jquery-ui-i18n.js"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/jquery.ba-throttle-debounce.js"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/jquery.cookie.js"></script>
 
-		<script type="text/javascript" src="includes/magnalister/js/magnalister_general.js?<?php echo CLIENT_BUILD_VERSION?>"></script>
-		<script type="text/javascript" src="includes/magnalister/js/classes/JSClass.js?<?php echo CLIENT_BUILD_VERSION?>"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/magnalister_general.js?<?php echo CLIENT_BUILD_VERSION?>"></script>
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/classes/JSClass.js?<?php echo CLIENT_BUILD_VERSION?>"></script>
+		
+		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/loading-timer.js"></script>
 
 <?php if (defined('MERCARI_INSTALLED')) { 
 		global $tage, $monate;
@@ -313,6 +337,13 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 					});
 				});*/
 			});
+			try {
+				$.cookie('device_pixel_ratio', window.devicePixelRatio, { expires: 7, path: '/' });
+			} catch (e) {
+				myConsole.log(e);
+			}
+			console.log('$_COOKIE[device_pixel_ratio]:', <?php echo json_encode(isset($_COOKIE['device_pixel_ratio']) ? $_COOKIE['device_pixel_ratio'] : null); ?>);
+			console.log('retina enabled:', <?php echo json_encode(ML_RETINA_DISPLY); ?>);
 		/*]]>*/</script>
 		<!--[if lt IE 9]><script type="text/javascript">/*<![CDATA[*/
 			$(document).ready(function() {
@@ -328,10 +359,10 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 		/* Wenn es ein gambio oder xtcModified shop ist, sollten wir die alte Version von jquery und jqueryui loswerden. */
 		$hasHeadNav = (strpos(file_get_contents(DIR_WS_INCLUDES . 'header.php'), 'magnalister') !== false) || defined('MERCARI_INSTALLED');
 		ob_start();
-		if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) ^ E_NOTICE);
+		if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) & ~E_NOTICE & ~E_STRICT);
 		$current_page = basename($_SERVER["PHP_SELF"]);
 		require(DIR_WS_INCLUDES . 'header.php'); 
-		if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) | E_WARNING | E_NOTICE);
+		if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) | E_WARNING | E_NOTICE | E_STRICT);
 		$out = ob_get_contents();
 		ob_clean();
 		echo preg_replace('/(<script (type="text\/javascript")*.*jquery.[^tooltip].*(type="text\/javascript")* *><\/script>)/', '', $out);
@@ -349,9 +380,9 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 				}
 			}
 			ob_start();
-			if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) ^ E_NOTICE);
+			if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL)  & ~E_NOTICE & ~E_STRICT);
 			require(DIR_WS_INCLUDES . 'column_left.php');
-			if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) | E_WARNING | E_NOTICE);
+			if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) | E_WARNING | E_NOTICE | E_STRICT);
 			$nav = ob_get_contents();
 			ob_clean();
 			unset($tnav);
@@ -443,7 +474,7 @@ $globalButtons = array (
 						<tr>
 							<td width="100%">
 								<h1 id="magnalogo"><a href="<?php echo toURL(); ?>" title="<?php echo ML_HEADLINE_MAIN; ?>">
-									<img src="<?php echo DIR_MAGNALISTER_IMAGES; ?>magnalister_logo.png" alt="<?php echo ML_HEADLINE_MAIN; ?>" width="165" height="42"/>
+									<img src="<?php echo DIR_MAGNALISTER_WS_IMAGES; ?>magnalister_logo.png" alt="<?php echo ML_HEADLINE_MAIN; ?>" width="165" height="42"/>
 								</a></h1>
 								<?php if (isset($_SESSION['magna_UPDATE_PATH']) && (strpos($_SESSION['magna_UPDATE_PATH'], 'debug') !== false)) { ?>
 									<span style="display: inline-block; padding-left: 3px; padding-top: 36px;"> :: Debug &#4314;(&#3232;&#30410;&#3232;&#4314;</span>
@@ -506,7 +537,9 @@ if (array_key_exists($_MagnaSession['currentPlatform'], $_modules)) {
 	if (isset($_GET['mode']) && array_key_exists($_GET['mode'], $module['pages'])) {
 		$tmpMagnaQuery['mode'] = $_GET['mode'];
 	}
-
+	if (!isset($tmpMagnaQuery['mode'])) {
+		$tmpMagnaQuery['mode'] = '';
+	}
 	if (array_key_exists('pages', $module)) {
 		echo renderTabs(
 			$module['pages'],
@@ -518,7 +551,7 @@ if (array_key_exists($_MagnaSession['currentPlatform'], $_modules)) {
 	echo '<div class="magnamain">';
 	++$_additionalDivs;
 	
-	if (is_array($module['pages'][$tmpMagnaQuery['mode']])) {
+	if (isset($module['pages'][$tmpMagnaQuery['mode']]) && is_array($module['pages'][$tmpMagnaQuery['mode']])) {
 		echo renderTabs(
 			$module['pages'][$tmpMagnaQuery['mode']]['views'],
 			'view',

@@ -44,8 +44,14 @@ class HoodProductSaver {
 		$this->config['hasShortDesc'] = MagnaDB::gi()->columnExistsInTable('products_short_description', TABLE_PRODUCTS_DESCRIPTION);
 		
 		$this->config['imagepath'] = rtrim(getDBConfigValue($this->marketplace.'.imagepath', $this->mpId), '/').'/';
+		if ($this->config['imagepath'] == '/') {
+			$this->config['imagepath'] = '';
+		}
 		$this->config['templateContent'] = getDBConfigValue($this->marketplace.'.template.content', $this->mpId);
 		$this->config['templateTitle']   = getDBConfigValue($this->marketplace.'.template.name', $this->mpId, '#TITLE#');
+		
+		$this->config['maxImages'] = getDBConfigValue($this->marketplace.'.prepare.maximagecount', $this->mpId, 'all');
+		$this->config['maxImages'] = ($this->config['maxImages'] == 'all') ? true : (int)$this->config['maxImages'];
 	}
 	
 	protected function insertPrepareData($data) {
@@ -53,7 +59,13 @@ class HoodProductSaver {
 		if ((SHOPSYSTEM == 'gambio') && isset($data['Description'])) {
 			$data['Description'] = preg_replace('/\[TAB:([^\]]*)\]/', '<h1>${1}</h1>', $data['Description']);
 		}
-
+		
+		foreach (array('StoreCategory', 'StoreCategory2', 'StoreCategory3') as $shopCat) {
+			if (!isset($data[$shopCat]) || empty($data[$shopCat])) {
+				$data[$shopCat] = 0;
+			}
+		}
+		
 		if (($hp = magnaContribVerify('hoodInsertPrepareData', 1)) !== false) {
 			require($hp);
 		}
@@ -87,8 +99,12 @@ class HoodProductSaver {
 			'BaseUrl' => $this->config['imagepath'],
 			'Images' => array(),
 		);
+		$maxImages = $this->config['maxImages'];
 		foreach ($images as $img) {
-			$gallery['Images'][$img] = true;
+			$gallery['Images'][$img] = (int)$maxImages > 0;
+			if ($maxImages !== true) {
+				--$maxImages;
+			}
 		}
 		return $gallery;
 	}
@@ -126,7 +142,7 @@ class HoodProductSaver {
 		
 		$row['ListingType'] = $itemDetails['ListingType'];
 		$row['ListingDuration']  = isset($itemDetails['ListingDuration']) ? $itemDetails['ListingDuration'] : '';
-		$row['PaymentMethods']   = json_encode($itemDetails['PaymentMethods']);
+		$row['PaymentMethods']   = json_encode(isset($itemDetails['PaymentMethods']) ? $itemDetails['PaymentMethods'] : array());
 	
 		$row['ConditionType']    = $itemDetails['ConditionType'];
 		$row['noIdentifierFlag'] = $itemDetails['noIdentifierFlag'];
@@ -144,7 +160,7 @@ class HoodProductSaver {
 		foreach ($itemDetails['hood_default_shipping_local'] as $key => $localService) {
 			$shippingDetails[$key] = array(
 				'Service' => $localService['Service'],
-				'Cost' => priceToFloat($localService['Cost']),
+				'Cost' => mlFloatalize($localService['Cost']),
 			);
 		}
 		if (isset($itemDetails['conf'])
@@ -199,7 +215,12 @@ class HoodProductSaver {
 		if (!empty($itemDetails['startTime'])) {
 			$row['StartTime'] = $itemDetails['startTime'];
 		}
-		$row['StartPrice'] = priceToFloat($itemDetails['StartPrice']);
+		
+		if (isset($itemDetails['StartPrice'])) {
+			$row['StartPrice'] = mlFloatalize($itemDetails['StartPrice']);
+		} else {
+			$row['StartPrice'] = 0.0;
+		}
 		
 		$row['ShortDescription'] = trim($itemDetails['ShortDescription']);
 		$row['Description'] = trim($itemDetails['Description']);

@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: ComparisonShoppingCategoryView.php 2332 2013-04-04 16:12:19Z derpapst $
+ * $Id: ComparisonShoppingCategoryView.php 3701 2014-03-30 17:55:43Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -25,7 +25,7 @@ class ComparisonShoppingCategoryView extends SimpleCheckinCategoryView {
 	protected $marketplace;
 	
 	public function __construct($cPath = 0, $settings = array(), $sorting = false, $search = '') {
-		global $_Marketplace, $_modules;
+		global $_Marketplace;
 		
 		$this->marketplace = $_Marketplace;
 		$settings = array_merge(array(
@@ -37,7 +37,8 @@ class ComparisonShoppingCategoryView extends SimpleCheckinCategoryView {
 		
 		parent::__construct($cPath, $settings, $sorting, $search);
 		if (!isset($_GET['kind']) || ($_GET['kind'] != 'ajax')) {
-			$this->simplePrice->setCurrency($_modules[$this->marketplace]['currency']);
+			$this->simplePrice->setCurrency(getCurrencyFromMarketplace($this->mpID));
 		}
 	}
+	
 }

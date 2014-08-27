@@ -183,7 +183,7 @@ var GenericCheckinSubmitAjaxController = (function (_super, $) {
 	 * @private
 	 */
 	GenericCheckinSubmitAjaxController.prototype._handleFatalError = function () {
-		var btn = $('<button class="button">+</button>').click(function () {
+		var btn = $('<button class="ml-button">+</button>').click(function () {
 			$('#checkinSubmitDebug').css({'display': 'block'});
 		});
 		$('#checkinSubmitStatus').html(this.__('MessageUploadFatalError'));
@@ -272,9 +272,13 @@ var GenericCheckinSubmitAjaxController = (function (_super, $) {
 		}
 		
 		if (this._abort) {
+			datatext = data;
+			if (typeof datatext !== 'string') {
+				datatext = JSON.stringify(datatext, null, ' ');
+			}
 			$('#checkinSubmitDebug').html(
 				'<a href="' + this._triggerURL + this._triggerURLAppend + '" target="_blank">Rerun</a>\n\n'
-				+data
+				+datatext
 			).css({'display': 'block'});
 			return false;
 		}

@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: magnalister.php 3545 2014-02-21 16:22:33Z derpapst $
+ * $Id: magnalister.php 4330 2014-08-05 11:45:12Z tim.neumann $
  *
  * (c) 2010 - 2012 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -96,8 +96,14 @@ $_backup = array (
 );
 
 #ob_start(); # avoid output from broken files, so that our ajax requests don't fail.
-require_once('includes/application_top.php');
+require_once(dirname(__FILE__).'/includes/application_top.php');
 #ob_end_clean();
+
+/*
+$constants = get_defined_constants(true);
+print_r($constants['user']);
+die();
+*/
 
 /* Kein MagicQuotes mist mitmachen... */
 $_REQUEST = $_backup['REQUEST'];
@@ -120,9 +126,21 @@ define('MAGNA_PUBLIC_SERVER', 'http://magnalister.com/');
 define('MAGNA_PLUGIN_DIR', 'magnalister/');
 define('DIR_MAGNALISTER_ABSOLUTE', dirname(__FILE__).'/');
 define('DIR_MAGNALISTER', 'includes/'.MAGNA_PLUGIN_DIR);
+	
+if (defined('DIR_FS_EXTERNAL') && is_dir(DIR_FS_EXTERNAL.'magnalister/') && defined('DIR_WS_EXTERNAL')) {
+	define('DIR_MAGNALISTER_FS', DIR_FS_EXTERNAL.'magnalister/');
+	define('DIR_MAGNALISTER_WS', DIR_WS_EXTERNAL.'magnalister/');
+} else {
+	define('DIR_MAGNALISTER_FS', dirname(__FILE__).'/includes/magnalister/');
+	define('DIR_MAGNALISTER_WS', 'includes/magnalister/');
+}
+
 define('MAGNA_UPDATE_PATH', $_SESSION['magna_UPDATE_PATH'].'oscommerce/');
 defined('MAGNA_UPDATE_FILEURL') OR define('MAGNA_UPDATE_FILEURL', MAGNA_SERVICE_URL.MAGNA_UPDATE_PATH);
 define('MAGNA_SUPPORT_URL', '<a href="'.MAGNA_PUBLIC_SERVER.'" title="'.MAGNA_PUBLIC_SERVER.'">'.MAGNA_PUBLIC_SERVER.'</a>');
+
+#echo 'DIR_MAGNALISTER_FS: '.DIR_MAGNALISTER_FS."<br>\n";
+#echo 'DIR_MAGNALISTER_WS: '.DIR_MAGNALISTER_WS."<br>\n";
 
 if (MAGNA_SHOW_WARNINGS) {
 	error_reporting(E_ALL | E_STRICT);
@@ -233,6 +251,9 @@ function fileGetContentsCURL($path, &$warnings = null, $timeout = 10, $forceSSLO
 		$path = str_replace('http://', 'https://', $path);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+		if (defined('MAGNA_CURLOPT_SSLVERSION')) {
+			curl_setopt($ch, CURLOPT_SSLVERSION, MAGNA_CURLOPT_SSLVERSION);
+		}
 	}
 	
 	curl_setopt($ch, CURLOPT_URL, $path);
@@ -344,7 +365,7 @@ if (strpos($str, ',') !== false) {
 unset($str);
 
 /* Alles ueber diesem Kommentar muss PHP 4 kompatibel sein! */
-if (MAGNA_SAFE_MODE && !file_exists(DIR_MAGNALISTER.'ClientVersion')) {
+if (MAGNA_SAFE_MODE && !file_exists(DIR_MAGNALISTER_FS.'ClientVersion')) {
 	echoDiePage(
 		'Safe Mode '.(($_SESSION['language'] == 'german') ? 'Beschr&auml;nkung aktiv' : 'Restriction active'),
 		(($_SESSION['language'] == 'german') ?
@@ -361,13 +382,13 @@ if (MAGNA_SAFE_MODE && !file_exists(DIR_MAGNALISTER.'ClientVersion')) {
 	);
 }
 
-if (!MAGNA_SAFE_MODE && !is_writable(DIR_MAGNALISTER)) {
+if (!MAGNA_SAFE_MODE && !is_writable(DIR_MAGNALISTER_FS)) {
 	echoDiePage(
-		substr(DIR_WS_ADMIN.DIR_MAGNALISTER, 1).' '.(($_SESSION['language'] == 'german') ? 'kann nicht geschrieben werden' : 'is not writable'),
+		DIR_MAGNALISTER_WS.' '.(($_SESSION['language'] == 'german') ? 'kann nicht geschrieben werden' : 'is not writable'),
 		(($_SESSION['language'] == 'german') ?
-			'Das Verzeichnis <tt>'.substr(DIR_WS_ADMIN.DIR_MAGNALISTER, 1).'</tt> kann nicht vom Webserver geschrieben werden.<br/>
+			'Das Verzeichnis <tt>'.DIR_MAGNALISTER_WS.'</tt> kann nicht vom Webserver geschrieben werden.<br/>
 			 Dies ist allerdings zwingend notwendig um den magnalister verwenden zu k&ouml;nnen.' :
-			'The directory <tt>'.substr(DIR_WS_ADMIN.DIR_MAGNALISTER, 1).'</tt> is not writable by the webserver.<br/>
+			'The directory <tt>'.DIR_MAGNALISTER_WS.'</tt> is not writable by the webserver.<br/>
 			 This is however required to use the magnalister.'
 		)
 	);
@@ -375,7 +396,6 @@ if (!MAGNA_SAFE_MODE && !is_writable(DIR_MAGNALISTER)) {
 
 $requiredFiles = array (
 	'init.php',
-	'ftp.php',
 	'MagnaUpdater.php'
 );
 
@@ -391,7 +411,7 @@ if (!MAGNA_SAFE_MODE) {
 	foreach ($requiredFiles as $file) {
 		$doDownload = (isset($_GET['update']) && ($_GET['update'] == 'true')) || ($_SESSION['MagnaPurge'] === true);
 		$scriptPath = MAGNA_UPDATE_FILEURL.'magnalister/'.$file;
-		if ($doDownload || !file_exists(DIR_MAGNALISTER.$file)) {
+		if ($doDownload || !file_exists(DIR_MAGNALISTER_FS.$file)) {
 			$scriptContent = fileGetContents($scriptPath, $foo, -1);
 			if ($scriptContent === false) {
 				echoDiePage(
@@ -407,16 +427,16 @@ if (!MAGNA_SAFE_MODE) {
 				);
 			}
 		
-			if (@file_put_contents(DIR_MAGNALISTER.$file, $scriptContent) === false) {
+			if (@file_put_contents(DIR_MAGNALISTER_FS.$file, $scriptContent) === false) {
 				echoDiePage(
-					DIR_MAGNALISTER.$file.' '.(
+					DIR_MAGNALISTER_WS.$file.' '.(
 						($_SESSION['language'] == 'german') ? 
 							'kann nicht gespeichert werden' : 
 							'can\'t be loaded'
 					),
 					(($_SESSION['language'] == 'german') ?
-						'Die Datei <tt>'.DIR_MAGNALISTER.$file.'</tt> kann nicht gespeichert werden.' :
-						'The File <tt>'.DIR_MAGNALISTER.$file.'</tt> can not be saved.'
+						'Die Datei <tt>'.DIR_MAGNALISTER_WS.$file.'</tt> kann nicht gespeichert werden.' :
+						'The File <tt>'.DIR_MAGNALISTER_WS.$file.'</tt> can not be saved.'
 					)
 				);
 			}
@@ -427,6 +447,6 @@ if (!MAGNA_SAFE_MODE) {
 /**
  * Magnalister Core
  */
-include_once(DIR_MAGNALISTER.'init.php');
+include_once(DIR_MAGNALISTER_FS.'init.php');
 
 include_once(DIR_WS_INCLUDES.'application_bottom.php');

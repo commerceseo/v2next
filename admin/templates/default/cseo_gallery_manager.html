@@ -185,21 +185,31 @@
     <div class="col-xs-9">
         <table class="table table-striped">
             <tr>
+                <th>{$txt.TABLE_HEADING_LANG}</th>
                 <th>{$txt.TABLE_HEADING_GALERIES}</th>
                 <th>{$txt.TABLE_HEADING_STATUS}</th>
                 <th class="text-right">{$txt.TABLE_HEADING_ACTION}</th>
             </tr>
             {foreach name=aussen item=module_data from=$sliderlistarray}
             {$module_data.TR}
+            <td>{$module_data.LANG}</td>
             <td>{$module_data.TITLE}</td>
             <td>{$module_data.STATUS}</td>
             <td class="text-right">{$module_data.ACTION} {$module_data.EDIT}</td>
             </tr>
             {/foreach}
         </table>
-        <div class ="col-xs-12 text-right">
-            <a class="button" href="{$BUTTON_NEW}">{$txt.BUTTON_NEW_ELEMENT}</a>
-        </div>
+		<table class="table">
+			<tr>
+				<td><i>{$DISPLAY_NUMBER}</i></td>
+				<td align="right"><i>{$DISPLAY_SITE}</i></td>
+			</tr>
+		</table>
+		<table class="table">
+			<tr>
+				<td><a href="{$BUTTON_NEW}"><button class="btn btn-success">{$txt.BUTTON_NEW_ELEMENT}</button></a></td>
+			</tr>
+		</table>
     </div>
 
     <div class="col-xs-3">

@@ -50,11 +50,11 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 	protected function formExists($name) {
 		$path = '%s/%s.form';
 		$lpath = sprintf($path, strtolower($this->marketplace), $name);
-		if (file_exists(DIR_MAGNALISTER.'config/'.$this->lang.'/'.$lpath)) {
+		if (file_exists(DIR_MAGNALISTER_FS.'config/'.$this->lang.'/'.$lpath)) {
 			return $lpath;
 		}
 		$lpath = sprintf($path, 'modules', $name);
-		if (file_exists(DIR_MAGNALISTER.'config/'.$this->lang.'/'.$lpath)) {
+		if (file_exists(DIR_MAGNALISTER_FS.'config/'.$this->lang.'/'.$lpath)) {
 			return $lpath;
 		}
 		return false;
@@ -98,7 +98,7 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 		$form = array();
 		foreach ($files as $file => $options) {
 			$fC = $this->loadConfigFormFile(
-				DIR_MAGNALISTER.'config/'.$this->lang.'/'.$file,
+				DIR_MAGNALISTER_FS.'config/'.$this->lang.'/'.$file,
 				$replace,
 				array_key_exists('unset', $options) ? $options['unset'] : array()
 			);
@@ -114,10 +114,14 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 
 	protected function loadChoiseValues() {
 		if (isset($this->form['prepare']['fields']['lang'])) {
-			getLanguages($this->form['prepare']['fields']['lang']);
+			mlGetLanguages($this->form['prepare']['fields']['lang']);
 		}
+		if (isset($this->form['prepare']['fields']['manufacturerfilter'])) {
+			mlGetManufacturers($this->form['prepare']['fields']['manufacturerfilter']);
+		}
+		
 		if (isset($this->form['price']['fields']['whichprice'])) {
-			getCustomersStatus($this->form['price']['fields']['whichprice'], false);
+			mlGetCustomersStatus($this->form['price']['fields']['whichprice'], false);
 			if (!empty($this->form['price']['fields']['whichprice'])) {
 				$this->form['price']['fields']['whichprice']['values']['0'] = ML_LABEL_SHOP_PRICE;
 				ksort($this->form['price']['fields']['whichprice']['values']);
@@ -126,18 +130,19 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 			}
 		}
 		if (isset($this->form['orders']['fields']['openstatus'])) {
-			getOrderStatus($this->form['orders']['fields']['openstatus']);
-			getCustomersStatus($this->form['orders']['fields']['customersgroup']);	
+			mlGetOrderStatus($this->form['orders']['fields']['openstatus']);
+			mlGetCustomersStatus($this->form['orders']['fields']['customersgroup']);
 		}
 		if (isset($this->form['orders']['fields']['defaultshipping'])) {
-			getShippingModules($this->form['orders']['fields']['defaultshipping']);
+			mlGetShippingModules($this->form['orders']['fields']['defaultshipping']);
 		}
 		if (isset($this->form['orders']['fields']['defaultpayment'])) {
-			getPaymentModules($this->form['orders']['fields']['defaultpayment']);
+			mlGetPaymentModules($this->form['orders']['fields']['defaultpayment']);
 		}
 		if (isset($this->form['checkin']['fields']['imagepath'])) {
 			$this->form['checkin']['fields']['imagepath']['default'] =
-				defined('DIR_WS_CATALOG_POPUP_IMAGES')	? HTTP_CATALOG_SERVER.DIR_WS_CATALOG_POPUP_IMAGES
+				defined('DIR_WS_CATALOG_POPUP_IMAGES')
+					? HTTP_CATALOG_SERVER.DIR_WS_CATALOG_POPUP_IMAGES
 					: HTTP_CATALOG_SERVER.DIR_WS_CATALOG_IMAGES;
 		}
 	}
@@ -283,11 +288,11 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 				'_#_platformName_#_' => $this->marketplaceTitle
 			)
 		);
-		$this->loadChoiseValues();
 		$this->processAuth();
+		$this->loadChoiseValues();
 		$this->finalizeForm();
 		
-		$cG = new Configurator($this->form, $this->mpID, 'conf_magnacompat');
+		$cG = new MLConfigurator($this->form, $this->mpID, 'conf_magnacompat');
 		$cG->setRenderTabIdent(true);
 		$allCorrect = $cG->processPOST();
 

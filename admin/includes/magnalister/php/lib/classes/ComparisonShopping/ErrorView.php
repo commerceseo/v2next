@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: ErrorView.php 2332 2013-04-04 16:12:19Z derpapst $
+ * $Id: ErrorView.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -127,17 +127,17 @@ class ErrorView {
 		return '
 			<span class="nowrap">
 				<a href="'.toURL($this->url, array('sorting' => $type.'')).'" title="'.ML_LABEL_SORT_ASCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_up.png" />
+					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_up.png" />
 				</a>
 				<a href="'.toURL($this->url, array('sorting' => $type.'-desc')).'" title="'.ML_LABEL_SORT_DESCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_down.png" />
+					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_down.png" />
 				</a>
 			</span>';
 	}
 	
 	public function renderActionBox() {
-		$left = '<input type="button" class="button" value="'.ML_BUTTON_LABEL_DELETE.'" id="errorLogDelete" name="errorLog[delete]"/>';
-		$right = '<input type="button" class="button" value="'.ML_BUTTON_LABEL_RETRY.'" id="errorLogRetry" name="errorLog[retry]"/>';
+		$left = '<input type="button" class="ml-button" value="'.ML_BUTTON_LABEL_DELETE.'" id="errorLogDelete" name="errorLog[delete]"/>';
+		$right = '<input type="button" class="ml-button" value="'.ML_BUTTON_LABEL_RETRY.'" id="errorLogRetry" name="errorLog[retry]"/>';
 
 		ob_start();
 		echo '<div id="infodiag" class="dialog2" title="'.ML_LABEL_NOTE.'">'.ML_HINT_NO_PRODUCTS_SELECTED.'</div>';
@@ -210,7 +210,7 @@ $(document).ready(function() {
 			$html .= '
 				<form action="'.toURL($this->url).'" method="POST">
 					<table class="listingInfo"><tbody><tr>
-						<td class="pagination">
+						<td class="ml-pagination">
 							<span class="bold">'.ML_LABEL_CURRENT_PAGE.' &nbsp;&nbsp; '.$this->currentPage.'</span>
 						</td>
 						<td class="textright">

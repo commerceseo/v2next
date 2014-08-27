@@ -11,13 +11,14 @@
 		<table class="table table-bordered table-striped">
 			<tr>
 				<td>{$txt.filter}</td>
-				<td>{$txt.filter_name} {$BOXFILTERNAME}</td>
-				<td>{$txt.filter_intern} {$BOXFILTERINTERN}</td>
-				<td>{$txt.filter_position} {$BOXFILTERPOSITION}</td>
-				<td>{$txt.filter_aktiv} {$BOXFILTERAKTIV}</td>
-				<td>{$txt.filter_mobileaktiv} {$BOXFILTERMOBILEAKTIV}</td>
-				<td>{$txt.filter_nameaktiv} {$BOXFILTERNAMEAKTIV}</td>
-				<td>{$BOX_NEW}</td>
+				<td class="text-center">{$txt.filter_name} {$BOXFILTERNAME}</td>
+				<td class="text-center">{$txt.filter_intern} {$BOXFILTERINTERN}</td>
+				<td class="text-center">{$txt.filter_position} {$BOXFILTERPOSITION}</td>
+				<td class="text-center">{$txt.filter_aktiv} {$BOXFILTERAKTIV}</td>
+				<td class="text-center">{$txt.filter_mobileaktiv} {$BOXFILTERMOBILEAKTIV}</td>
+				<td class="text-center">{$txt.filter_nameaktiv} {$BOXFILTERNAMEAKTIV}</td>
+				<td class="text-center">{$BOX_NEW}</td>
+				<td class="text-center">{$BOX_NEW_POS}</td>
 			</tr>
 		</table>
 		{$HIDDENSORT}
@@ -62,13 +63,14 @@
 		<table class="table table-bordered table-striped">
 			<tr>
 				<td>{$txt.filter}</td>
-				<td>{$txt.filter_name} {$BOXFILTERNAME}</td>
-				<td>{$txt.filter_intern} {$BOXFILTERINTERN}</td>
-				<td>{$txt.filter_position} {$BOXFILTERPOSITION}</td>
-				<td>{$txt.filter_aktiv} {$BOXFILTERAKTIV}</td>
-				<td>{$txt.filter_mobileaktiv} {$BOXFILTERMOBILEAKTIV}</td>
-				<td>{$txt.filter_nameaktiv} {$BOXFILTERNAMEAKTIV}</td>
-				<td>{$BOX_NEW}</td>
+				<td class="text-center">{$txt.filter_name} {$BOXFILTERNAME}</td>
+				<td class="text-center">{$txt.filter_intern} {$BOXFILTERINTERN}</td>
+				<td class="text-center">{$txt.filter_position} {$BOXFILTERPOSITION}</td>
+				<td class="text-center">{$txt.filter_aktiv} {$BOXFILTERAKTIV}</td>
+				<td class="text-center">{$txt.filter_mobileaktiv} {$BOXFILTERMOBILEAKTIV}</td>
+				<td class="text-center">{$txt.filter_nameaktiv} {$BOXFILTERNAMEAKTIV}</td>
+				<td class="text-center">{$BOX_NEW}</td>
+				<td class="text-center">{$BOX_NEW_POS}</td>
 			</tr>
 		</table>
 		{$HIDDENSORT}
@@ -235,5 +237,44 @@
 </div>
 
 {$SCRIPT}
+{$FORM_END}
+{/if}
+
+{if $BOX_NEW_POS == 'true'}
+{$FORM}
+<div class="row">
+    <div class="col-md-8">
+        <h4><span class="glyphicon glyphicon-th-large"></span> {$txt.heading_new_box}</h4>
+    </div>
+    <div class="col-md-4 text-right">
+        {$BUTTON_SUBMIT}
+        {$BUTTON_CANCEL}
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>{$txt.box_config}</th>
+                <th>{$txt.box_name}</th>
+            </tr>
+            <tr>
+				<td>{$txt.box_position}</td>
+				<td>{$BOX_POS_NAME}</td>
+             </tr>
+        </table>
+    </div>
+</div>
+{$HIDDEN_SAVE}
+
+<div class="row">
+    <div class="col-md-12 text-right">
+        {$BUTTON_SUBMIT}
+        {$BUTTON_CANCEL}
+    </div>
+    <br>
+</div>
+
 {$FORM_END}
 {/if}

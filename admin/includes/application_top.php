@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: application_top.php 1080 2014-05-28 09:26:39Z svvario $
+ * 	$Id: application_top.php 1162 2014-08-08 08:52:34Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -390,3 +390,36 @@ if (file_exists(DIR_FS_CATALOG.'includes/plugins/cseo_modules/general/general.ph
 	include (DIR_FS_CATALOG.'includes/plugins/cseo_modules/general/general.php');
 }
 define(CURRENT_ADMIN_TEMPLATE, 'default');
+
+
+function getDataFromMasterServer() {
+    $version = xtc_db_fetch_array(xtc_db_query("SELECT version FROM database_version"));
+    $params = 'vnumber=' . urlencode($version['version']);
+
+    if (function_exists('curl_init')) {
+        $url = 'https://www.commerce-seo.de/1v2nextcheck.php?' . $params;
+        $output = '';
+        $ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        $output = curl_exec($ch);
+        curl_close($ch);
+        if (!empty($output))
+            return $output;
+        else
+            return 'Der Server konnte nicht erreicht werden.';
+    } elseif (ini_get(allow_url_fopen) !== false && function_exists(file_get_contents)) {
+        $data = file_get_contents('https://www.commerce-seo.de/1v2nextcheck.php?' . $params);
+
+        if (!empty($data)) {
+            return $data;
+        } else {
+            return 'Der Server konnte nicht erreicht werden.';
+        }
+    } else {
+        return 'Der Server konnte nicht erreicht werden.';
+    }
+}

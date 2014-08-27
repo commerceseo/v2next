@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: general.php 1050 2014-05-14 16:53:07Z akausch $
+ * 	$Id: general.php 1148 2014-07-15 09:29:03Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -418,6 +418,7 @@ function xtc_address_format($address_format_id, $address, $html, $boln, $eoln) {
     $lastname = addslashes($address['lastname']);
     $street = addslashes($address['street_address']);
     $suburb = addslashes($address['suburb']);
+	$phone = addslashes($address['telephone']);
     $city = addslashes($address['city']);
     $state = addslashes($address['state']);
     $country_id = $address['country_id'];
@@ -461,11 +462,12 @@ function xtc_address_format($address_format_id, $address, $html, $boln, $eoln) {
     $fmt = $address_format['format'];
     eval("\$address = \"$fmt\";");
     $address = stripslashes($address);
-
     if ((ACCOUNT_COMPANY == 'true') && (xtc_not_null($company))) {
         $address = $company . $cr . $address;
     }
-
+	if ((xtc_not_null($phone))) {
+        $address = 'Tel.:' . $phone . $cr . $address;
+    }
     return $address;
 }
 

@@ -548,11 +548,23 @@ $shipping_tracking = xtc_get_tracking_status();
                     <tr>
                         <td>
                             <label for="notify"><?php echo ENTRY_NOTIFY_CUSTOMER; ?> </label>
-                            <input type="checkbox" name="notify" value="on" id="notify" />
+                            <?php 
+							if (ADMIN_CSEO_ORDER_SEND == 'true') {
+								echo xtc_draw_checkbox_field('notify', '', true);
+							} else {
+								echo xtc_draw_checkbox_field('notify', '', false);
+							}
+							?>
                         </td>
                         <td>
                             <label for="notify_comments"><?php echo ENTRY_NOTIFY_COMMENTS; ?></label>
-                            <input type="checkbox" name="notify_comments" value="on" id="notify_comments" />
+                            <?php 
+							if (ADMIN_CSEO_ORDER_SEND == 'true') {
+								echo xtc_draw_checkbox_field('notify_comments', '', true);
+							} else {
+								echo xtc_draw_checkbox_field('notify_comments', '', false);
+							}
+							?>
                         </td>
                     </tr>
                     <tr>

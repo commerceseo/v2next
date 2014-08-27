@@ -14,9 +14,12 @@
 
 defined("_VALID_XTC") or die("Direct access to this location isn't allowed.");
 
+$orderlistingnum = ADMIN_DEFAULT_LISTING_NUM;
+
 function xtc_get_orders_status_color($orders_status_id, $language_id = '') {
-    if (!$language_id)
-        $language_id = $_SESSION['languages_id'];
+    if (!$language_id) {
+        $language_id = (int) $_SESSION['languages_id'];
+	}
     $orders_status_query = xtc_db_query("SELECT orders_status_color FROM " . TABLE_ORDERS_STATUS . " WHERE orders_status_id = '" . $orders_status_id . "' AND language_id = '" . $language_id . "'");
     $orders_status = xtc_db_fetch_array($orders_status_query);
     return $orders_status['orders_status_color'];
@@ -92,7 +95,7 @@ function xtc_get_orders_status_color($orders_status_id, $language_id = '') {
 									$orders_query_raw = "select o.orders_id, o.order_delivery_id, o.order_tracking_id, o.orders_status, o.customers_country, o.afterbuy_success, o.afterbuy_id, o.customers_name, o.customers_cid, o.payment_method, o.date_purchased, o.last_modified, o.currency, o.currency_value, s.orders_status_name, ot.text as order_total from ".TABLE_ORDERS." o left join ".TABLE_ORDERS_TOTAL." ot on (o.orders_id = ot.orders_id), ".TABLE_ORDERS_STATUS." s where (o.orders_status = s.orders_status_id and s.language_id = '".$_SESSION['languages_id']."' and ot.class = 'ot_total') or (o.orders_status = '0' and ot.class = 'ot_total' and  s.orders_status_id = '1' and s.language_id = '".$_SESSION['languages_id']."') order by o.date_purchased DESC";
 								}
 
-                                $orders_split = new splitPageResults($_GET['page'], ($_GET['anzahl'] != '') ? $_GET['anzahl'] : '20', $orders_query_raw, $orders_query_numrows);
+                                $orders_split = new splitPageResults($_GET['page'], ($_GET['anzahl'] != '') ? $_GET['anzahl'] : $orderlistingnum, $orders_query_raw, $orders_query_numrows);
                                 $orders_query = xtc_db_query($orders_query_raw);
                                 $rows = 1;
                                 while ($orders = xtc_db_fetch_array($orders_query)) {
@@ -231,19 +234,14 @@ switch ($_GET['action']) {
                 $contents[] = array('align' => 'center', 'text' => '<a class="button" href="' . xtc_href_link(FILENAME_ORDERS, xtc_get_all_get_params(array('oID', 'action')) . 'oID=' . $oInfo->orders_id . '&action=afterbuy_send') . '">' . BUTTON_AFTERBUY_SEND . '</a>');
             }
             if (MODULE_PAYMENT_PI_CLICKANDBUY_STATUS == 'True' || MODULE_PAYMENT_PI_CLICKANDBUY_RECURRING_STATUS == 'True') {
-            // ClickandBuy START
 				$contents[] = array('align' => 'center', 'text' => '<br /><a class="button" href="pi_clickandbuy_details.php?selected_box=customers&oID=' . $oInfo->orders_id . '">ClickandBuy Details</a>');
-            // ClickandBuy END
 			}
             if (MODULE_SHIPPING_HERMESPROPS_STATUS == 'True') {
-            // BEGIN Hermes
                 $contents[] = array('align' => 'left', 'text' => '<div align="center"><a class="button" href="' . xtc_href_link('hermes_order.php', 'orders_id=' . $oInfo->orders_id) . '">Hermes Versand</a></div>');
-            // END Hermes
             }
 			
             $contents[] = array('align' => 'center', 'text' => '<hr size="1" style="color:#ccc" />');
             $contents[] = array('align' => 'center', 'text' => '<b>' . TEXT_INFORMATIONS . '</b>');
-			// print_r($oInfo);
 			if ($oInfo->order_tracking_id != '') {
             $contents[] = array('text' => TEXT_TRACKING_SHIPPING . xtc_get_shipping_tracking_name($oInfo->order_delivery_id));
             $contents[] = array('text' => TEXT_TRACKING_CODE . $oInfo->order_tracking_id);
@@ -270,8 +268,28 @@ switch ($_GET['action']) {
                 }
             }
 
-            
-			
+            $contents[] = array('align' => 'center', 'text' => '<hr size="1" style="color:#ccc" />');
+            $contents[] = array('align' => 'center', 'text' => '<b>' . TEXT_MARKED_ELEMENTS . '</b>');
+            //Rechnungen
+			$contents[] = array('text' => '<b>' . HEADING_MULTI_PDF . '</b>');
+            $contents[] = array('text' => '
+								<input type="radio" name="multistatus_genpdf" id ="multistatus_genpdf" onchange="document.getElementById(\'multistatus_mergepdf\').checked=false;" />
+								<label for="multistatus_genpdf">PDF Rechnung im Hintergrund generieren</label><br/>
+								<input type="radio" name="multistatus_mergepdf" id="multistatus_mergepdf" onchange="document.getElementById(\'multistatus_genpdf\').checked=false;" />
+								<label for="multistatus_mergepdf">PDF Rechnungen gesammelt downloaden</label><br/>
+								');
+            $contents[] = array('text' => '<br /><input type="checkbox" name="pdf_rechnung_senden" id="check_pdf_rechnung_senden" value="on" />' . PDF_BILL_STEP3);
+			//Lieferscheine
+            $contents[] = array('align' => 'center', 'text' => '<hr size="1" style="color:#ccc" />');
+            $contents[] = array('text' => '<b>' . HEADING_MULTI_PDF_DELIVERY . '</b>');
+            $contents[] = array('text' => '
+								<input type="radio" name="multistatus_genpdf_delivery" id ="multistatus_genpdf_delivery" onchange="document.getElementById(\'multistatus_mergepdf_delivery\').checked=false;" />
+								<label for="multistatus_genpdf_delivery">PDF Lieferschein im Hintergrund generieren</label><br/>
+								<input type="radio" name="multistatus_mergepdf_delivery" id="multistatus_mergepdf_delivery" onchange="document.getElementById(\'multistatus_genpdf_delivery\').checked=false;" />
+								<label for="multistatus_mergepdf_delivery">PDF Lieferscheine gesammelt downloaden</label><br/>
+								');
+            $contents[] = array('text' => '<input type="hidden" name="pdf_language_id" value="' . $_SESSION['languages_id'] . '" />');
+
 			if ($_GET['page'] != '') {
                 $contents[] = array('text' => xtc_draw_hidden_field('page', $_GET['page']));
             }
@@ -282,8 +300,22 @@ switch ($_GET['action']) {
                 $contents[] = array('text' => xtc_draw_hidden_field('anzahl', $_GET['anzahl']));
             }
 			
-
-
+			$contents[] = array('align' => 'center', 'text' => '<hr size="1" style="color:#ccc" />');
+            $contents[] = array('text' => '<b>' . HEADING_MULTI_STATUS . '</b>');
+            $mail_template = array();
+            $mail_template[] = array('id' => 0, 'text' => '---');
+            $get_names_query = xtc_db_query("SELECT id, title, mail_text FROM mail_templates order by id");
+            while ($get_names = xtc_db_fetch_array($get_names_query)) {
+                $mail_template[] = array('id' => $get_names['id'], 'text' => $get_names['title']);
+            }
+            $contents[] = array('text' => xtc_draw_pull_down_menu('mail_template', $mail_template, '', 'onchange="xajax_getMailTemplate(this.value);"'));
+            $contents[] = array('text' => xtc_draw_pull_down_menu('status', array_merge(array(array('id' => ' ', 'text' => TEXT_STATUS)), array(array('id' => '0', 'text' => TEXT_VALIDATING)), $orders_statuses)));
+            $contents[] = array('text' => xtc_draw_checkbox_field('notify', 'on') . ENTRY_NOTIFY_CUSTOMER);
+            $contents[] = array('text' => xtc_draw_checkbox_field('notify_comments', 'on') . ENTRY_NOTIFY_COMMENTS);
+            $contents[] = array('text' => TABLE_HEADING_COMMENTS . '<br>' . xtc_draw_textarea_field('comments', '', 24, 5, $_GET['comments'], '', 'id="comments"') . '<br>');
+            $contents[] = array('align' => 'left', 'text' => '<div align="center"><button type="submit" class="button">' . BUTTON_COMMIT . '</button></div>');
+            $contents[] = array('text' => '</form>');
+            // End Multiverarbeitung
         }
         break;
 }
@@ -309,9 +341,9 @@ $order_options[] = array('id' => '10', 'text' => '10');
 $order_options[] = array('id' => '20', 'text' => '20');
 $order_options[] = array('id' => '50', 'text' => '50');
 $order_options[] = array('id' => '100', 'text' => '100');
+$order_options[] = array('id' => '250', 'text' => '250');
 
-$order_page_dropdown .= xtc_draw_pull_down_menu('anzahl', $order_options, ($_GET['anzahl'] != '' ? $_GET['anzahl'] : '20'), 'onchange="this.form.submit()"') . "\n";
-
+$order_page_dropdown .= xtc_draw_pull_down_menu('anzahl', $order_options, ($_GET['anzahl'] != '' ? $_GET['anzahl'] : $orderlistingnum), 'onchange="this.form.submit()"') . "\n";
 $order_page_dropdown .= '</form>' . "\n";
 ?>
                 </tr>
@@ -320,8 +352,8 @@ $order_page_dropdown .= '</form>' . "\n";
                         <table border="0" cellspacing="0" cellpadding="10" width="100%">
                             <tr>
 
-                                <td class="smallText" valign="top" width="33.33%"><?php echo $orders_split->display_count($orders_query_numrows, ($_GET['anzahl'] != '') ? $_GET['anzahl'] : '20', $_GET['page'], TEXT_DISPLAY_NUMBER_OF_ORDERS); ?></td>
-                                <td class="smallText" align="right" width="33.33%"><?php echo $orders_split->display_links($orders_query_numrows, ($_GET['anzahl'] != '') ? $_GET['anzahl'] : '20', MAX_DISPLAY_PAGE_LINKS, $_GET['page'], xtc_get_all_get_params(array('page', 'oID', 'action'))); ?></td>
+                                <td class="smallText" valign="top" width="33.33%"><?php echo $orders_split->display_count($orders_query_numrows, ($_GET['anzahl'] != '') ? $_GET['anzahl'] : $orderlistingnum, $_GET['page'], TEXT_DISPLAY_NUMBER_OF_ORDERS); ?></td>
+                                <td class="smallText" align="right" width="33.33%"><?php echo $orders_split->display_links($orders_query_numrows, ($_GET['anzahl'] != '') ? $_GET['anzahl'] : $orderlistingnum, MAX_DISPLAY_PAGE_LINKS, $_GET['page'], xtc_get_all_get_params(array('page', 'oID', 'action'))); ?></td>
                                 <td align="right" width="33.33%">
 <?php echo 'Bestellungen pro Seite: ' . $order_page_dropdown; ?>
                                 </td>

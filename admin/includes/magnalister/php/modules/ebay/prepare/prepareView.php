@@ -1,5 +1,24 @@
 <?php
 /**
+ * 888888ba                 dP  .88888.                    dP                
+ * 88    `8b                88 d8'   `88                   88                
+ * 88aaaa8P' .d8888b. .d888b88 88        .d8888b. .d8888b. 88  .dP  .d8888b. 
+ * 88   `8b. 88ooood8 88'  `88 88   YP88 88ooood8 88'  `"" 88888"   88'  `88 
+ * 88     88 88.  ... 88.  .88 Y8.   .88 88.  ... 88.  ... 88  `8b. 88.  .88 
+ * dP     dP `88888P' `88888P8  `88888'  `88888P' `88888P' dP   `YP `88888P' 
+ *
+ *                          m a g n a l i s t e r
+ *                                      boost your Online-Shop
+ *
+ * -----------------------------------------------------------------------------
+ * $Id$
+ *
+ * (c) 2010 - 2014 RedGecko GmbH -- http://www.redgecko.de
+ *     Released under the MIT License (Expat)
+ * -----------------------------------------------------------------------------
+ */
+
+/**
  * @todo: Preise einfrieren funzt perfekt fuer Einzel-Artikel. Fuer Multi noch einzubauen.
  */
 
@@ -14,7 +33,7 @@ function eBayRenderCategoryOptions($type = 'PrimaryCategory', $selectedCat, $sel
 	global $_MagnaSession;
 	# echo print_m(func_get_args(), __FUNCTION__);
 	$opt = '<option value="">..</option>'."\n";
-	require_once DIR_MAGNALISTER.DIRECTORY_SEPARATOR.'php'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'ebay'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'ebayTopTen.php';
+	require_once DIR_MAGNALISTER_FS.DIRECTORY_SEPARATOR.'php'.DIRECTORY_SEPARATOR.'modules'.DIRECTORY_SEPARATOR.'ebay'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'ebayTopTen.php';
 	$oTopTen = new ebayTopTen();
 	$oTopTen->setMarketPlaceId($_MagnaSession['mpID']);
 	$aTopTenCatIds = $oTopTen->getTopTenCategories($type);
@@ -656,7 +675,7 @@ function renderMultiPrepareView($data) {
 												? 'value=\''.$PrimaryPreselectedValues.'\''
 												: ''
 										).' />
-										<input class="fullWidth button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectPrimaryCategory"/>
+										<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectPrimaryCategory"/>
 									</td>
 								</tr>
 								<tr>
@@ -670,8 +689,8 @@ function renderMultiPrepareView($data) {
 										</div>
 									</td>
 									<td class="buttons">
-										<input class="fullWidth button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectSecondaryCategory"/>
-										<input class="fullWidth button smallmargin" type="button" value="'.ML_EBAY_DELETE.'" id="deleteSecondaryCategory"/>
+										<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectSecondaryCategory"/>
+										<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_EBAY_DELETE.'" id="deleteSecondaryCategory"/>
 									</td>
 								</tr>';
 			if ($hasStore) {
@@ -687,7 +706,7 @@ function renderMultiPrepareView($data) {
 										</div>
 									</td>
 									<td class="buttons">
-										<input class="fullWidth button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectStoreCategory"/>
+										<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectStoreCategory"/>
 									</td>
 								</tr>
 								<tr>
@@ -701,7 +720,7 @@ function renderMultiPrepareView($data) {
 										</div>
 									</td>
 									<td class="buttons">
-										<input class="fullWidth button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectStoreCategory2"/>
+										<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectStoreCategory2"/>
 									</td>
 								</tr>';
 			}
@@ -745,6 +764,7 @@ function renderMultiPrepareView($data) {
 				if (isset($prefilledShippingDetails)) {
 					$prefilledShippingDetailsArray = json_decode($prefilledShippingDetails, true);
 					$shipProc = new eBayShippingDetailsProcessor(array(
+						'key' => 'ebay.default.shipping.local',
 						'content' => $prefilledShippingDetailsArray['ShippingServiceOptions'],
 					), 'ebay.default.shipping.local', $tmpURL);
 				} else {
@@ -802,11 +822,13 @@ function renderMultiPrepareView($data) {
 
 		if (isset($prefilledShippingDetails) && isset($prefilledShippingDetailsArray['InternationalShippingServiceOption'])) {
 			$shipProc = new eBayShippingDetailsProcessor(array(
+				'key' => 'ebay.default.shipping.international',
 				'content' => $prefilledShippingDetailsArray['InternationalShippingServiceOption'],
 			), 'ebay.default.shipping.international', $tmpURL);
 		} else if (isset($prefilledShippingDetails) && !isset($prefilledShippingDetailsArray['InternationalShippingServiceOption'])) {
 			$shipProc = new eBayShippingDetailsProcessor(array(
-				'content' => array (array('ShippingService' =>'', 'ShipToLocation' => 'None')),
+				'key' => 'ebay.default.shipping.international',
+				'content' => array (array('ShippingService' => '', 'ShipToLocation' => 'None')),
 			), 'ebay.default.shipping.international', $tmpURL);
 		} else {
 			$shipProc = new eBayShippingDetailsProcessor(array(
@@ -858,7 +880,7 @@ function renderMultiPrepareView($data) {
 	ob_start();
 ?>
 <style>
-table.attributesTable table.inner.
+table.attributesTable table.inner,
 table.attributesTable table.inlinetable {
 	border: none;
 	border-spacing: 0px;
@@ -877,7 +899,7 @@ table.attributesTable table.inner tr td {
 table.attributesTable table.inner.middle tr td {
 	vertical-align: middle;
 }
-table.attributesTable table.categorySelect tr td.buttons {
+table.attributesTable table.categorySelect tr td.ml-buttons {
 	width: 6em;
 }
 table.attributesTable table.categorySelect tr td.label {
@@ -926,7 +948,6 @@ div.ebayCatVisual {
 }
 </style>
 <script type="text/javascript">/*<![CDATA[*/
-
 function getListingDurations() {
 	var preselectedDuration='<?php echo $ListingDuration; ?>';
 	if ($('#ListingType').val() != '<?php echo $ListingType; ?>') {
@@ -936,7 +957,6 @@ function getListingDurations() {
 			preselectedDuration='<?php echo getDBConfigValue('ebay.fixed.duration'  , $_MagnaSession['mpID']); ?>';
 		}
 	}
-	jQuery.blockUI(blockUILoading);
 	jQuery.ajax({
 		type: 'POST',
 		url: '<?php echo toURL($_url, array('where' => 'prepareView', 'kind' => 'ajax'), true);?>',
@@ -946,18 +966,15 @@ function getListingDurations() {
 			'preselected': preselectedDuration
 		},
 		success: function(data) {
-			jQuery.unblockUI();
 			$('#ListingDuration').html(data);
 		},
 		error: function() {
-			jQuery.unblockUI();
 		},
 		dataType: 'html'
 	});
 }
 
 function updatePrice() {
-	jQuery.blockUI(blockUILoading);
 	jQuery.ajax({
 		type: 'POST',
 		url: '<?php echo toURL($_url, array('where' => 'prepareView', 'kind' => 'ajax'), true);?>',
@@ -967,19 +984,16 @@ function updatePrice() {
 			'ListingType': $('#ListingType').val() 
 		},
 		success: function(data) {
-			jQuery.unblockUI();
 			$('#Price').val(data);
 			$('#showCalcPrice').val(data);
 		},
 		error: function() {
-			jQuery.unblockUI();
 		},
 		dataType: 'html'
 	});
 }
 
 function getEBayCategoryAttributes(cID, aMode, preselectedValues) {
-	jQuery.blockUI(blockUILoading);
 	jQuery.ajax({
 		type: 'POST',
 		url: '<?php echo toURL($_url, array('where' => 'prepareView', 'kind' => 'ajax'), true);?>',
@@ -996,10 +1010,8 @@ function getEBayCategoryAttributes(cID, aMode, preselectedValues) {
 			} else {
 				$('#attr_'+aMode).css({'display':'table-row-group'});
 			}
-			jQuery.unblockUI();
 		},
 		error: function() {
-			jQuery.unblockUI();
 		},
 		dataType: 'html'
 	});
@@ -1055,7 +1067,7 @@ $(document).ready(function() {
 		}
 	});
 	$('#SecondaryCategoryVisual > select').trigger('change');
-        
+	
 	$('#selectPrimaryCategory').click(function() {
 		startCategorySelector(function(cID) {
 			$('#PrimaryCategory').val(cID);
@@ -1076,7 +1088,7 @@ $(document).ready(function() {
 		$('#SecondaryCategory').val(null);
 		$('#SecondaryCategoryVisual').find('option').attr('selected', '');
 		$('#SecondaryCategoryVisual').find('option')[0].selected = 'selected';
-                
+		
 		$('#attr_2').css({'display': 'none'});
 		$('#attr_2').html('');
 	});
@@ -1094,7 +1106,11 @@ $(document).ready(function() {
 	});
 	
 	$('#ListingType').change(onListingTypeChange);
-    onListingTypeChange();
+	onListingTypeChange();
+	
+	$('#prepareForm').on('submit', function () {
+		jQuery.blockUI(blockUILoading);
+	});
 });
 /*]]>*/</script><?php
 	$html .= ob_get_contents();
@@ -1105,7 +1121,7 @@ $(document).ready(function() {
 
 function renderPrepareView($data) {
 	global $_url;
-	global $_MagnaSession;
+	global $_MagnaSession; // for hook
 	/* {Hook} "EbayPrepareView_renderPrepareView": Is called before the data of the product in <code>$data</code> will shown.
 		Usefull to manipulate some of the data.
 		Variables that can be used:
@@ -1117,13 +1133,31 @@ function renderPrepareView($data) {
 	if (($hp = magnaContribVerify('EbayPrepareView_renderPrepareView', 1)) !== false) {
 		require($hp);
 	}
+	
 	/**
 	 * Check ob einer oder mehrere Artikel
 	 */
 	$prepareView = (1 == count($data)) ? 'single' : 'multiple';
+	
+	
+	ob_start();
+?>
+<script type="text/javascript">/*<![CDATA[*/
+$(document).ajaxStart(function() {
+	myConsole.log('ajaxStart');
+	jQuery.blockUI(blockUILoading);
+}).ajaxStop(function() {
+	myConsole.log('ajaxStop');
+	jQuery.unblockUI();
+});
+// Start blockui right now because the ajaxStart event gets registered to late.
+jQuery.blockUI(blockUILoading);
 
-	$renderedView = '
-		<form method="post" action="'.toURL($_url).'">
+/*]]>*/</script><?php
+	$renderedView = ob_get_clean();
+	
+	$renderedView .= '
+		<form method="post" id="prepareForm" action="'.toURL($_url).'">
 			<table class="attributesTable">';
 	if ('single' == $prepareView) {
 		$renderedView .= renderSinglePrepareView($data);
@@ -1138,10 +1172,10 @@ function renderPrepareView($data) {
 					<tr class="firstChild"><td>
 						<table><tbody><tr>
 							<td class="firstChild">'.(($prepareView == 'single')
-								? '<input class="button" type="submit" name="unprepare" id="unprepare" value="'.ML_BUTTON_LABEL_REVERT.'"/>'
+								? '<input class="ml-button" type="submit" name="unprepare" id="unprepare" value="'.ML_BUTTON_LABEL_REVERT.'"/>'
 								: ''
 							).'</td>
-							<td class="lastChild">'.'<input class="button" type="submit" name="savePrepareData" id="savePrepareData" value="'.ML_BUTTON_LABEL_SAVE_DATA.'"/>'.'</td>
+							<td class="lastChild">'.'<input class="ml-button" type="submit" name="savePrepareData" id="savePrepareData" value="'.ML_BUTTON_LABEL_SAVE_DATA.'"/>'.'</td>
 						</tr></tbody></table>
 					</td></tr>
 				</tbody>

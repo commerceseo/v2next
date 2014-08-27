@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: Configurator.php 3584 2014-03-08 02:18:03Z derpapst $
+ * $Id: Configurator.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -20,7 +20,7 @@
 
 defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 
-class Configurator {
+class MLConfigurator {
 	private $form = array();
 	private $id = '';
 	private $url = array();
@@ -242,6 +242,9 @@ class Configurator {
 
 			foreach ($this->form as $fi) {
 				foreach ($fi['fields'] as $configItem) {
+					if (!isset($configItem['key'])) {
+						continue;
+					}
 					if ($key == $configItem['key']) {
 						$foundItem = $configItem;
 						break;
@@ -293,15 +296,22 @@ class Configurator {
 
 			$correct = $this->verify($verify, $key, $value);
 			if (!empty($foundItem) && ($foundItem['type'] == 'extern') && is_callable($foundItem['procFunc'])) {
-				$correct = call_user_func($foundItem['procFunc'], array_merge(
-					$foundItem['params'], 
-					array(
-						'key' => $foundItem['key'],
-						'kind' => 'save',
-					)
-				), $value);
+				#echo print_m($value, basename(__FILE__).'{L'.__LINE__.'}');
+				$correct = call_user_func_array($foundItem['procFunc'], array (
+					'args' => array_merge(
+						$foundItem['params'],
+						array (
+							'key' => $foundItem['key'],
+							'kind' => 'save',
+						)
+					),
+					'value' => &$value
+				));
+				#echo print_m($value, basename(__FILE__).'{L'.__LINE__.'}');
 			}
-			if (!$correct) $noError = false;
+			if (!$correct) {
+				$noError = false;
+			}
 
 			if (!empty($key) && $correct) {
 				if (empty($value) && ($value !== '0')) $value = '';
@@ -488,6 +498,9 @@ class Configurator {
 		#echo print_m($item);
 		
 		$value = '';
+		if (!isset($item['key'])) {
+			$item['key'] = '';
+		}
 		if (array_key_exists($item['key'], $this->config)) {
 			$value = $this->config[$item['key']];
 			if (is_array($value) && isset($item['default']) && is_array($item['default'])) {
@@ -530,6 +543,13 @@ class Configurator {
 			}
 		}
 
+		if (!isset($item['cssClasses'])) {
+			$item['cssClasses'] = array();
+		}
+		if (in_array($item['key'], $this->missingConfigKeys)) {
+			$item['cssClasses'][] = 'missing';
+		}
+		
 		$html = '';
 		switch ($item['type']) {
 			case 'text':
@@ -544,25 +564,14 @@ class Configurator {
 				if (isset($item['formatstr']) && !empty($item['formatstr'])) {
 					$value = sprintf($item['formatstr'], $value);
 				}
-				if (!isset($item['cssClasses'])) {
-					$item['cssClasses'] = array();
-					$item['cssClasses'][] = 'fullwidth';
-				}
-				if (in_array($item['key'], $this->missingConfigKeys)) {
-					$item['cssClasses'][] = 'missing';
-				}
+				$item['cssClasses'][] = 'fullwidth';
+
 				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
 
 				$html .= '<input type="'.$item['type'].'"'.$class.' id="config_'.$idkey.'" name="conf['.$item['key'].']" value="'.(string)$value.'"'.$parameters.'/>';
 				break;
 			}
 			case 'selection': {
-				if (!isset($item['cssClasses'])) {
-					$item['cssClasses'] = array();
-				}
-				if (in_array($item['key'], $this->missingConfigKeys)) {
-					$item['cssClasses'][] = 'missing';
-				}
 				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
 				$html .= '<select id="config_'.$idkey.'" name="conf['.$item['key'].']"'.$parameters.''.$class.'>'."\n";
 				foreach ($item['values'] as $k => $v) {
@@ -574,34 +583,27 @@ class Configurator {
 							}
 						}
 					} else {
-						$html .= '<option value="'.$k.'"'.(($value == $k) ? ' selected="selected"' : '').'>'.(!preg_match('/&[^\s;]*;/', $v) ? fixHTMLUTF8Entities($v) : $v).'</option>'."\n";
+						$html .= '<option value="'.$k.'"'.(((strlen((string)$value) == strlen((string)$k)) && ($value == $k)) ? ' selected="selected"' : '').'>'.(!preg_match('/&[^\s;]*;/', $v) ? fixHTMLUTF8Entities($v) : $v).'</option>'."\n";
 					}
 				}
 				$html .= '</select>'."\n";
 				break;
 			}
 			case 'multiselection': {
-				if (!isset($item['cssClasses'])) {
-					$item['cssClasses'] = array();
-				}
-				if (in_array($item['key'], $this->missingConfigKeys)) {
-					$item['cssClasses'][] = 'missing';
-				}
 				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
+				$html .= '<input type="hidden" value="[]" name="conf['.$item['key'].']" />';
 				$html .= '<select id="config_'.$idkey.'" name="conf['.$item['key'].'][]" multiple="multiple" '.$parameters.''.$class.'>'."\n";
-				foreach ($item['values'] as $k => $v) {
-					$html .= '<option value="'.$k.'"'.(in_array($k, $value) ? ' selected="selected"' : '').'>'.$v.'</option>'."\n";
+				if (empty($item['values'])) {
+					$html .= '<option>&mdash;</option>';
+				} else {
+					foreach ($item['values'] as $k => $v) {
+						$html .= '<option value="'.$k.'"'.(in_array($k, $value) ? ' selected="selected"' : '').'>'.$v.'</option>'."\n";
+					}
 				}
 				$html .= '</select>'."\n";
 				break;
 			}
 			case 'radio': {
-				if (!isset($item['cssClasses'])) {
-					$item['cssClasses'] = array();
-				}
-				if (in_array($item['key'], $this->missingConfigKeys)) {
-					$item['cssClasses'][] = 'missing';
-				}
 				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
 				$c = 0;
 				$modSep = isset($item['separatormodulo']) && is_int($item['separatormodulo']) ? $item['separatormodulo'] : 1;
@@ -617,12 +619,6 @@ class Configurator {
 				break;
 			}
 			case 'checkbox': {
-				if (!isset($item['cssClasses'])) {
-					$item['cssClasses'] = array();
-				}
-				if (in_array($item['key'], $this->missingConfigKeys)) {
-					$item['cssClasses'][] = 'missing';
-				}
 				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
 				$c = 0;
 				$modSep = isset($item['separatormodulo']) && is_int($item['separatormodulo']) ? $item['separatormodulo'] : 1;
@@ -637,34 +633,50 @@ class Configurator {
 					if (($c % $modSep) == ($modSep - 1)) {
 						$sep = isset($item['separator']) ? $item['separator'] : '';
 					}
-					$html .= '<span>
+					$html .= '<span class="nowrap">
 						<input type="hidden" value="false" name="conf['.$item['key'].']['.$k.']" />
 						<input type="checkbox" value="true" name="conf['.$item['key'].']['.$k.']" id="conf_'.$item['key'].'_'.$k.'"'.
 								(is_array($value) && (array_key_exists($k, $value) && $value[$k]) ? ' checked="checked"' : '').$parameters.
-							' /> '.$v.'</span>'.$sep."\n";
+							' /> '.$v.'</span>'.$sep."\n";	
 					++$c;
 				}
 				break;
 			}
+			case 'multicheckbox': {
+				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
+				$c = 0;
+				$modSep = isset($item['separatormodulo']) && is_int($item['separatormodulo']) ? $item['separatormodulo'] : 1;
+				//$html .= print_m($value);
+				$html .= '<input type="hidden" value="[]" name="conf['.$item['key'].']" />';
+				if (empty($item['values'])) {
+					$html .= '&mdash;';
+				} else {
+					foreach ($item['values'] as $k => $v) {
+						if (is_array($v)) {
+							$v = $this->renderSubInput($v, $k, $item);
+						} else {
+							$v = '<label for="conf_'.$item['key'].'_'.$k.'"'.$class.'>'.$v.'</label>';
+						}
+						$sep = '';
+						if (($c % $modSep) == ($modSep - 1)) {
+							$sep = isset($item['separator']) ? $item['separator'] : '';
+						}
+						$html .= '<span class="nowrap">
+							<input type="checkbox" value="'.$k.'" name="conf['.$item['key'].'][]" id="conf_'.$item['key'].'_'.$k.'"'.
+									((is_array($value) && in_array($k, $value)) ? ' checked="checked"' : '').$parameters.
+								' /> '.$v.'</span>'.$sep."\n";
+						++$c;
+					}
+				}
+				break;
+			}
 			case 'textarea': {
-				if (!isset($item['cssClasses'])) {
-					$item['cssClasses'] = array();
-					$item['cssClasses'][] = 'fullwidth';
-				}
-				if (in_array($item['key'], $this->missingConfigKeys)) {
-					$item['cssClasses'][] = 'missing';
-				}
+				$item['cssClasses'][] = 'fullwidth';
 				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
 				$html .= '<textarea'.$class.' id="config_'.$idkey.'" name="conf['.$item['key'].']"'.$parameters.'>'.str_replace('<', '&lt;', (string)$value).'</textarea>';
 				break;
 			}
 			case 'dbfieldselector': {
-				if (!isset($item['cssClasses'])) {
-					$item['cssClasses'] = array();
-				}
-				if (in_array($item['key'], $this->missingConfigKeys)) {
-					$item['cssClasses'][] = 'missing';
-				}
 				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
 				$html .= '<select id="config_'.$idkey.'_table" name="conf['.$item['key'].'][table]"'.$parameters.''.$class.'>'."\n";
 				$tables = MagnaDB::gi()->getAvailableTables();
@@ -704,12 +716,6 @@ class Configurator {
 				break;
 			}
 			case 'date': {
-				if (!isset($item['cssClasses'])) {
-					$item['cssClasses'] = array();
-				}
-				if (in_array($item['key'], $this->missingConfigKeys)) {
-					$item['cssClasses'][] = 'missing';
-				}
 				$class = ' class="'.implode(' ', $item['cssClasses']).'"';
 
 				$default = $value;
@@ -731,7 +737,7 @@ class Configurator {
 				if (empty($langCode)) {
 					$langCode = $_SESSION['language_code'] = MagnaDB::gi()->fetchOne('
 						SELECT code FROM '.TABLE_LANGUAGES.'
-						 WHERE languages_id=\''.$_SESSION['languages_id'].'\'
+						 WHERE languages_id="'.$_SESSION['languages_id'].'"
 					');
 				}
 				$deleteButton = '';
@@ -794,7 +800,7 @@ class Configurator {
 		switch ($button) {
 			case '#restoreDefault#': {
 				$this->renderResetJS = true;
-				return '<input class="button" type="button" onclick="resetDefaults(\'config_'.$idkey.'\')" value="'.ML_BUTTON_RESTORE_DEFAULTS.'" />';
+				return '<input class="ml-button" type="button" onclick="resetDefaults(\'config_'.$idkey.'\')" value="'.ML_BUTTON_RESTORE_DEFAULTS.'" />';
 				break;
 			}
 			default: {
@@ -805,6 +811,7 @@ class Configurator {
 
 	public function renderConfigForm() {
 		$html = '';
+		#echo print_m($this->form);
 		
 		if (array_key_exists('conf', $_POST) && is_array($_POST['conf']) &&
 			array_key_exists('configtool', $_POST) && ($_POST['configtool'] == 'MagnaConfigurator') /* Nur um gaaaanz sicher zu gehen :D */
@@ -833,7 +840,7 @@ class Configurator {
 			$tabLabel = getDBConfigValue(array('general.tabident', $this->mpID), '0', '');
 			$tabLabel = fixHTMLUTF8Entities($tabLabel);
 			$html .= '
-				<tr class="conf"><th class="label">
+				<tr class="conf"><th class="ml-label">
 					<label for="config_tabident">'.ML_LABEL_TAB_IDENT.'</label></th>
 					<th class="desc">
 						<div class="desc" id="desc_'.($descCount++).'" title="'.ML_LABEL_INFOS.'"><span>'.ML_TEXT_TAB_IDENT.'</span></div>
@@ -894,6 +901,9 @@ class Configurator {
 			
 			foreach ($section['fields'] as $item) {
 				$isExpert = array_key_exists('expertsetting', $item) && $item['expertsetting'];
+				if (!isset($item['key'])) {
+					$item['key'] = '';
+				}
 				$idkey = str_replace('.', '_', $item['key']);
 				$input = $this->renderInput($item);
 				if ($item['type'] != 'hidden') {
@@ -934,7 +944,7 @@ class Configurator {
 						<tr class="conf">
 							'.(!empty($item['label'])
 								? (
-									'<th class="label">'.
+									'<th class="ml-label">'.
 										'<label for="config_'.$idkey.'" class="'.$labelClasses.'">'.$item['label'].'</label>'.
 									'</th>' 
 								)
@@ -1018,14 +1028,14 @@ class Configurator {
 								<td class="firstChild">
 									<a href="'.toUrl(
 										$this->realUrl, array('expert' => 'true')
-									).'" title="'.ML_BUTTON_LABEL_EXPERTVIEW.'" class="button">'.
+									).'" title="'.ML_BUTTON_LABEL_EXPERTVIEW.'" class="ml-button">'.
 										ML_BUTTON_LABEL_EXPERTVIEW.
 									'</a>
 								</td>
 								<td class="lastChild">
 									<input type="hidden" value="MagnaConfigurator" name="configtool"/>
-									<input class="button" type="submit" value="'.ML_BUTTON_LABEL_SAVE_DATA.'"/>
-									<input class="button" type="reset" value="'.ML_BUTTON_LABEL_RESET.'"/>
+									<input class="ml-button" type="submit" value="'.ML_BUTTON_LABEL_SAVE_DATA.'"/>
+									<input class="ml-button" type="reset" value="'.ML_BUTTON_LABEL_RESET.'"/>
 								</td>
 							</tr></tbody></table>
 						</td></tr>
@@ -1038,13 +1048,13 @@ class Configurator {
 			$langCode = MagnaDB::gi()->fetchOne('
 				SELECT code FROM '.TABLE_LANGUAGES.' WHERE languages_id=\''.$_SESSION['languages_id'].'\' LIMIT 1
 			');
-			if (!empty($langCode) && file_exists(DIR_MAGNALISTER.'js/tinymce/langs/'.$langCode.'.js')) {
+			if (!empty($langCode) && file_exists(DIR_MAGNALISTER_FS.'js/tinymce/langs/'.$langCode.'.js')) {
 				$langCode = 'language: "'.$langCode.'",';
 			} else {
 				$langCode = '';
 			}
 			echo '
-			<script type="text/javascript" src="includes/magnalister/js/tinymce/tinymce.min.js"></script>';
+			<script type="text/javascript" src="'.DIR_MAGNALISTER_WS.'js/tinymce/tinymce.min.js"></script>';
 			ob_start();?>
 	        <script type="text/javascript">/*<![CDATA[*/
 	        	<?php echo getTinyMCEDefaultConfigObject(); ?>

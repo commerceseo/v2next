@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
-* 	$Id: cseo_center_security.php 971 2014-04-11 08:37:04Z akausch $
+* 	$Id: cseo_center_security.php 995 2014-04-29 17:59:27Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -148,13 +148,13 @@ require(DIR_WS_INCLUDES . 'header.php');
 									$f = '';
 								}
 								echo '<tr class="'.$f.'">';
-								echo '<td class="dataTableContent">'.$logging_table['ip'].'</td>';
-								echo '<td class="dataTableContent">'.$logging_table['ip2'].'</td>';
-								echo '<td class="dataTableContent">'.$logging_table['name'].'</td>';
-								echo '<td class="dataTableContent">'.$logging_table['badvalue'].'</td>';
-								echo '<td class="dataTableContent">'.$logging_table['page'].'</td>';
-								echo '<td class="dataTableContent">'.$logging_table['impact'].'</td>';
-								echo '<td class="dataTableContent">'.$logging_table['created'].'</td>';
+								echo '<td class="dataTableContent">'.htmlentities($logging_table['ip']).'</td>';
+								echo '<td class="dataTableContent">'.htmlentities($logging_table['ip2']).'</td>';
+								echo '<td class="dataTableContent">'.htmlentities($logging_table['name']).'</td>';
+								echo '<td class="dataTableContent">'.htmlentities($logging_table['badvalue']).'</td>';
+								echo '<td class="dataTableContent">'.htmlentities($logging_table['page']).'</td>';
+								echo '<td class="dataTableContent">'.htmlentities($logging_table['impact']).'</td>';
+								echo '<td class="dataTableContent">'.htmlentities($logging_table['created']).'</td>';
 								echo '</tr>';
 								$rows++;
 							}
@@ -207,13 +207,13 @@ require(DIR_WS_INCLUDES . 'header.php');
 									$f = '';
 								}
 								echo '<tr class="' . $f . '">';
-								echo '<td class="dataTableContent">' . $logging_table['customers_id'] . '</td>';
-								echo '<td class="dataTableContent">' . $logging_table['customers_cid'] . '</td>';
-								echo '<td class="dataTableContent">' . $logging_table['customers_firstname'] . '</td>';
-								echo '<td class="dataTableContent">' . $logging_table['customers_lastname'] . '</td>';
-								echo '<td class="dataTableContent">' . $logging_table['customers_email_address'] . '</td>';
-								echo '<td class="dataTableContent">' . $logging_table['login_tries'] . '</td>';
-								echo '<td class="dataTableContent">' . $logging_table['login_time'] . '</td>';
+								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_id']) . '</td>';
+								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_cid']) . '</td>';
+								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_firstname']) . '</td>';
+								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_lastname']) . '</td>';
+								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_email_address']) . '</td>';
+								echo '<td class="dataTableContent">' . htmlentities($logging_table['login_tries']) . '</td>';
+								echo '<td class="dataTableContent">' . htmlentities($logging_table['login_time']) . '</td>';
 								echo '</tr>';
 								$rows++;
 							}

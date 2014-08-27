@@ -1,0 +1,201 @@
+<div class="row">
+	<div class ="col-xs-12">
+		<h2>{$txt.heading_title}</h2>
+	</div>
+	{if $ACTION == 'true'}
+	<div class ="col-xs-12">
+		<h3>{$txt.HEADING_CONTENT}</h3>
+		<p>{$txt.CONTENT_NOTE}</p>
+		<p>{$SPACEUSED}</p>
+	</div>
+	<table class="table table-striped table-bordered table-hover">
+		<tr>
+			<th>{$txt.TABLE_HEADING_LANG}</th>
+			<th>{$txt.TABLE_HEADING_GROUP}</th>
+			<th>{$txt.TABLE_HEADING_TITLE}</th>
+			<th>{$txt.TABLE_HEADING_SORT}</th>
+			<th>{$txt.TABLE_HEADING_FILE}</th>
+			<th>{$txt.TABLE_HEADING_VISIBLE}</th>
+			<th>{$txt.TABLE_HEADING_BOX}</th>
+			<th>{$txt.TABLE_HEADING_LINK}</th>
+			<th>{$txt.TABLE_HEADING_ACTION}</th>
+			<th>{$txt.TABLE_HEADING_ID}</th>
+		</tr>
+		{foreach name=aussen item=module_data from=$contentlistarray}
+		<tr>
+			<td>{$module_data.LANG_ICON}</td>
+			<td><b>{$module_data.CONTENT_GROUP}</b></td>
+			<td><b>{$module_data.CONTENT_TITLE}</b>{$module_data.CONTENT_DELETE}{$module_data.CONTENT_URL_ALIAS}</td>
+			<td>{$module_data.SORT_ORDER}</td>
+			<td>{$module_data.CONTENT_FILE}</td>
+			<td>{$module_data.CONTENT_STATUS}</td>
+			<td>{$module_data.FILE_FLAG}</td>
+			<td>{$module_data.CONTENT_OUT_LINK}</td>
+			<td>{$module_data.ACTION_EDIT} {$module_data.ACTION_VIEW} {$module_data.ACTION_DEL}</td>
+			<td>{$module_data.CONTENT_ID}</td>
+		</tr>
+		{if $module_data.CONTENT_CHILD}
+		{foreach name=child item=content_child from=$module_data.CONTENT_CHILD}
+		<tr>
+			<td>{$content_child.LANG_ICON}</td>
+			<td><b>{$content_child.CONTENT_GROUP}<b></td>
+			<td><sup>|_</sup><b>{$content_child.CONTENT_TITLE}</b>{$content_child.CONTENT_URL_ALIAS}</td>
+			<td>{$content_child.SORT_ORDER}</td>
+			<td>{$content_child.CONTENT_FILE}</td>
+			<td>{$content_child.CONTENT_STATUS}</td>
+			<td>{$content_child.FILE_FLAG}</td>
+			<td>{$content_child.CONTENT_OUT_LINK}</td>
+			<td>{$content_child.ACTION_EDIT} {$content_child.ACTION_VIEW} {$content_child.ACTION_DEL}</td>
+			<td>{$content_child.CONTENT_ID}</td>
+		</tr>
+		{/foreach}
+		{/if}
+		{/foreach}
+	</table>
+
+	<div class ="col-xs-12">
+		<a href="{$NEW_CONTENT}"><button class="btn btn-success">{$txt.NEW_CONTENT}</button></a>
+	</div>
+
+	{/if}
+	
+	{if $NEW_CONTENT_FORM == 'true'}
+	<div class ="col-xs-6">
+		<h3>{$txt.NEW_CONTENT}</h3>
+	</div>
+	{$FORM}
+	<div class ="col-xs-6 text-right">
+		{$BUTTON_SUBMIT} {$BUTTON_UPDATE} {$BUTTON_CANCEL}
+	</div>
+	<table class="table table-striped table-bordered">
+	<tr>
+	<td width="15%">{$txt.LANGUAGE}</td>
+	<td width="20%">{$LANG_PULLDOWN}</td>
+	<td width="65%">{$txt.LANG_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.LANGGOUP}</td>
+	<td>{$CONTENT_GROUP}</td>
+	<td>{$txt.TEXT_GROUP_DESC}</td>
+	</tr>
+	<tr>
+	<td>{$txt.FILE_FLAG}</td>
+	<td>{$FILE_FLAG}</td>
+	<td>{$txt.FILE_FLAG_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.SLIDER_SET}</td>
+	<td>{$SLIDER_SET}</td>
+	<td>{$txt.SLIDER_SET_DESC}</td>
+	</tr>
+	<tr>
+	<td>{$txt.SORT_ORDER}</td>
+	<td>{$SORT_ORDER}</td>
+	<td>{$txt.SORT_ORDER_DESC}</td>
+	</tr>
+	<tr>
+	<td>{$txt.STATUS}</td>
+	<td>{$STATUS}</td>
+	<td>{$txt.STATUS_HELP}</td>
+	</tr>
+	{if $GROUPCHECK}
+	<tr>
+	<td class="warning">{$txt.GROUPCHECK}</td>
+	<td class="warning">
+		{foreach name=group item=group_data from=$GROUPCHECK}
+		{$group_data.input}
+		{/foreach}
+	</td>
+	<td class="warning" width="65%">{$txt.GROUPCHECK_HELP}</td>
+	</tr>
+	{/if}
+	<tr>
+	<td>{$txt.CONT_TITLE}</td>
+	<td>{$CONT_TITLE}</td>
+	<td>{$txt.CONT_TITLE_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.CONT_HEADING}</td>
+	<td>{$CONT_HEADING}</td>
+	<td>{$txt.CONT_HEADING_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.CONT_URL_ALIAS}</td>
+	<td>{$CONT_URL_ALIAS}</td>
+	<td>{$txt.CONT_URL_ALIAS_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.CONT_META_TITLE}</td>
+	<td>{$CONT_META_TITLE}</td>
+	<td>{$txt.CONT_META_TITLE_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.CONT_META_DESCRIPTION}</td>
+	<td>{$CONT_META_DESCRIPTION}</td>
+	<td>{$txt.CONT_META_DESCRIPTION_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.CONT_META_KEYWORDS}</td>
+	<td>{$CONT_META_KEYWORDS}</td>
+	<td>{$txt.CONT_META_KEYWORDS_HELP}</td>
+	</tr>
+	<tr>
+	<td width="15%">{$txt.CONTENT}</td>
+	<td width="85%" colspan="2">{$txt.CONTENT_HELP}{$CONTENT}{$EDITOR}</td>
+	</tr>
+	</table>
+	<div class ="col-xs-12">
+		<h3>{$txt.ADDON}</h3>
+	</div>
+	<table class="table table-striped table-bordered">
+	{if $PARENT_CONTENT}
+	<tr>
+	<td width="15%">{$txt.PARENT_CONTENT}</td>
+	<td width="20%">{$PARENT_CONTENT}</td>
+	<td width="65%">{$txt.PARENT_CONTENT_HELP}</td>
+	</tr>
+	{/if}
+	<tr>
+	<td width="15%">{$txt.TEXT_LINK}</td>
+	<td width="20%">{$TEXT_LINK}</td>
+	<td width="65%">{$txt.TEXT_LINK_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.TEXT_ZIEL}</td>
+	<td>{$TEXT_ZIEL}</td>
+	<td>{$txt.TEXT_ZIEL_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.TEXT_TYP}</td>
+	<td>{$TEXT_TYP}</td>
+	<td>{$txt.TEXT_TYP_HELP}</td>
+	</tr>
+	<tr>
+	<td width="15%">{$txt.UPLOAD}</td>
+	<td width="20%">{$UPLOAD}</td>
+	<td width="65%">{$txt.UPLOAD_HELP}</td>
+	</tr>
+	<tr>
+	<td>{$txt.FILE_SELECT}</td>
+	<td>{$FILE_SELECT}</td>
+	<td>{$txt.FILE_SELECT_HELP}</td>
+	</tr>
+	{if $CURRENT_FILE}
+	<tr>
+	<td>{$txt.CURRENT_FILE}</td>
+	<td>{$CURRENT_FILE}</td>
+	<td>{$txt.CURRENT_FILE_HELP}</td>
+	</tr>
+	{/if}
+	<tr>
+	<td width="15%">{$txt.content_col}</td>
+	<td width="20%">{$content_col_top}{$content_col_left}{$content_col_right}{$content_col_bottom}</td>
+	<td width="65%">{$TEMPLATE_CHOSE}</td>
+	</tr>
+	</table>
+	<div class ="col-xs-12 text-right">
+		{$BUTTON_SUBMIT} {$BUTTON_UPDATE} {$BUTTON_CANCEL}
+	</div>
+	{$FORM_END}
+	{/if}
+</div>

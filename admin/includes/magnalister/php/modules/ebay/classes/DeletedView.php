@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: DeletedView.php 3483 2014-01-31 20:19:38Z derpapst $
+ * $Id: DeletedView.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -23,7 +23,7 @@ require_once (DIR_MAGNALISTER_INCLUDES.'lib/classes/SimplePrice.php');
 require_once (DIR_MAGNALISTER_INCLUDES.'lib/classes/VariationsCalculator.php');
 
 class DeletedView {
-	protected $marketplace;
+	protected $marketplaceID;
 
 	protected $settings = array();
 	protected $sort = array();
@@ -40,10 +40,10 @@ class DeletedView {
 
 	protected $search = '';
 
-	public function __construct($marketplace, $settings = array()) {
+	public function __construct($settings = array()) {
 		global $_MagnaShopSession, $_MagnaSession, $_url, $_modules;
 		
-		$this->marketplace = $marketplace;
+		$this->marketplaceID = $_MagnaSession['mpID'];
 		
 		$this->settings = array_merge(array(
 			'maxTitleChars'	=> 80,
@@ -51,7 +51,7 @@ class DeletedView {
 		), $settings);
 
 		$this->simplePrice = new SimplePrice();
-		$this->simplePrice->setCurrency(getCurrencyFromMarketplace($_MagnaSession['mpID']));
+		$this->simplePrice->setCurrency(getCurrencyFromMarketplace($this->marketplaceID));
 		$this->url = $_url;
 		$this->url['view'] = 'deleted';
 		$this->magnasession = &$_MagnaSession;
@@ -97,10 +97,10 @@ class DeletedView {
 		return '
 			<span class="nowrap">
 				<a href="'.toURL($tmpURL, array('sorting' => $type.'')).'" title="'.ML_LABEL_SORT_ASCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_up.png" />
+					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_up.png" />
 				</a>
 				<a href="'.toURL($tmpURL, array('sorting' => $type.'-desc')).'" title="'.ML_LABEL_SORT_DESCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_down.png" />
+					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_down.png" />
 				</a>
 			</span>';
 	}
@@ -137,11 +137,14 @@ class DeletedView {
 	            $this->sort['order'] = 'Price';
 	            $this->sort['type']  = 'DESC';
 	            break;
-	        case 'dateadded-desc':
-	            $this->sort['order'] = 'DateAdded';
-	            $this->sort['type']  = 'DESC';
-	            break;
 			case 'dateadded':
+				$this->sort['order'] = 'DateAdded';
+				$this->sort['type']  = 'ASC';
+				break;
+			case 'dateadded-desc':
+				$this->sort['order'] = 'DateAdded';
+				$this->sort['type']  = 'DESC';
+				break;
 	        default:
 	            $this->sort['order'] = 'DateAdded';
 	            $this->sort['type']  = 'DESC';
@@ -237,7 +240,7 @@ class DeletedView {
 				$item['ItemTitleShort'] = (strlen($item['ItemTitle']) > $this->settings['maxTitleChars'] + 2)
 						? (fixHTMLUTF8Entities(substr($item['ItemTitle'], 0, $this->settings['maxTitleChars'])).'&hellip;')
 						: fixHTMLUTF8Entities($item['ItemTitle']);
-                $item['VariationAttributesText'] = fixHTMLUTF8Entities($item['VariationAttributesText']);
+				$item['VariationAttributesText'] = fixHTMLUTF8Entities($item['VariationAttributesText']);
 				$item['DateAdded'] = strtotime($item['DateAdded']);
 				$item['DateEnd'] = ('1'==$item['GTC']?'&mdash;':strtotime($item['End']));
 				$item['LastSync'] = strtotime($item['LastSync']);
@@ -290,14 +293,14 @@ class DeletedView {
         foreach ($ShopDataForVariationItems as $ShopDataForVariationItem) {
             $ShopDataForItemsBySKU[$ShopDataForVariationItem['SKU']] = $ShopDataForVariationItem;
             unset ($ShopDataForItemsBySKU[$ShopDataForVariationItem['SKU']]['SKU']);
-			$ShopDataForVariationItem['ShopVarText'] = VariationsCalculator::generateVariationsAttributesText($ShopDataForVariationItem['variation_attributes'], $language, ', ', ':');
+            $ShopDataForVariationItem['ShopVarText'] = VariationsCalculator::generateVariationsAttributesText($ShopDataForVariationItem['variation_attributes'], $language, ', ', ':');
         }
         foreach ($this->renderableData as &$item) {
             if (isset ($ShopDataForItemsBySKU[$item['SKU']])) {
                 $item['ShopQuantity'] = $ShopDataForItemsBySKU[$item['SKU']]['ShopQuantity'];
                 $item['ShopPrice']    = $ShopDataForItemsBySKU[$item['SKU']]['ShopPrice'];
                 $item['ShopTitle']    = $ShopDataForItemsBySKU[$item['SKU']]['ShopTitle'];
-                $item['ShopVarText']  = $ShopDataForItemsBySKU[$item['SKU']]['ShopVarText'];
+                $item['ShopVarText']  = isset($ShopDataForItemsBySKU[$item['SKU']]['ShopVarText']) ? $ShopDataForItemsBySKU[$item['SKU']]['ShopVarText'] : '&nbsp;';
             } else {
                 $item['ShopQuantity'] = $item['ShopPrice'] = $item['ShopTitle'] = '&mdash;';
                 $item['ShopVarText']  = '&nbsp;';
@@ -396,7 +399,7 @@ class DeletedView {
 		$offset = $currentPage * $this->settings['itemLimit'] - $this->settings['itemLimit'] + 1;
 		$limit = $offset + count($this->renderableData) - 1;
 		$html .= '<table class="listingInfo"><tbody><tr>
-					<td class="pagination">
+					<td class="ml-pagination">
 						'.(($this->numberofitems > 0)
 							?	('<span class="bold">'.ML_LABEL_PRODUCTS.':&nbsp; '.
 								 $offset.' bis '.$limit.' von '.($this->numberofitems).'&nbsp;&nbsp;&nbsp;&nbsp;</span>'
@@ -441,11 +444,11 @@ $(document).ready(function() {
 	
 	public function renderActionBox() {
 		global $_modules;
-		$left = (!empty($this->renderableData) ? 
-			'<input type="button" class="button" value="'.ML_BUTTON_LABEL_DELETE.'" id="listingDelete" name="listing[delete]"/>' : 
+		/*$left = (!empty($this->renderableData) ? 
+			'<input type="button" class="ml-button" value="'.ML_BUTTON_LABEL_DELETE.'" id="listingDelete" name="listing[delete]"/>' : 
 			''
-		);
-		
+		);*/
+		$left  = '';
 		$right = $this->getRightActionButton();
 
 		ob_start();?>
@@ -465,9 +468,9 @@ $(document).ready(function() {
 		$js = ob_get_contents();	
 		ob_end_clean();
 
-		if (($left == '') && ($right == '')) {
+		/*if (($left == '') && ($right == '')) {
 			return '';
-		}
+		}*/
 		return '
 			<input type="hidden" id="action" name="action" value="">
 			<input type="hidden" name="timestamp" value="'.time().'">
@@ -478,7 +481,7 @@ $(document).ready(function() {
 						<td class="firstChild">'.$left.'</td>
 						<td><label for="tfSearch">'.ML_LABEL_SEARCH.':</label>
 							<input id="tfSearch" name="tfSearch" type="text" value="'.fixHTMLUTF8Entities($this->search, ENT_COMPAT).'"/>
-							<input type="submit" class="button" value="'.ML_BUTTON_LABEL_GO.'" name="search_go" /></td>
+							<input type="submit" class="ml-button" value="'.ML_BUTTON_LABEL_GO.'" name="search_go" /></td>
 						<td class="lastChild">'.$right.'</td>
 					</tr></tbody></table>
 				</td></tr></tbody>

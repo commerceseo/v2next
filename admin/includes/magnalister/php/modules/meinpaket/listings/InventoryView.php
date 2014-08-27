@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: InventoryView.php 3192 2013-09-24 14:13:35Z tim.neumann $
+ * $Id: InventoryView.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2011 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -99,10 +99,10 @@ class InventoryView {
 		return '
 			<span class="nowrap">
 				<a href="'.toURL($tmpURL, array('sorting' => $type.'')).'" title="'.ML_LABEL_SORT_ASCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_up.png" />
+					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_up.png" />
 				</a>
 				<a href="'.toURL($tmpURL, array('sorting' => $type.'-desc')).'" title="'.ML_LABEL_SORT_DESCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_down.png" />
+					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_down.png" />
 				</a>
 			</span>';
 	}
@@ -126,11 +126,11 @@ class InventoryView {
 			$sorting = str_replace('-desc', '', $sorting);
 		}
 		if (array_key_exists($sorting, $sortFlags)) {
-            $this->sort['order'] = $sortFlags[$sorting];
-            $this->sort['type']  = $order;
+			$this->sort['order'] = $sortFlags[$sorting];
+			$this->sort['type']  = $order;
 		} else {
-            $this->sort['order'] = 'DateAdded';
-            $this->sort['type']  = 'DESC';			
+			$this->sort['order'] = 'DateAdded';
+			$this->sort['type']  = 'DESC';			
 		}
 	}
 	
@@ -222,6 +222,8 @@ class InventoryView {
 						? (fixHTMLUTF8Entities(substr($item['ItemTitle'], 0, $this->settings['maxTitleChars'])).'&hellip;')
 						: fixHTMLUTF8Entities($item['ItemTitle']);
 				$item['DateAdded'] = strtotime($item['DateAdded']);
+				
+				
 			}
 			unset($result);
 		}
@@ -256,9 +258,8 @@ class InventoryView {
 		$oddEven = false;
 		foreach ($this->renderableData as $item) {
 			$details = htmlspecialchars(str_replace('"', '\\"', serialize(array(
-			 	'SKU' => $item['SKU'],
-			 	'Price' => $item['Price'],
-			 	'Currency' => $item['Currency'],
+				'SKU' => $item['SKU'],
+				'Price' => $item['Price'],
 			))));
 			$html .= '
 				<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
@@ -267,7 +268,7 @@ class InventoryView {
 					<td>'.$item['SKU'].'</td>
 					<td>'.$item['MeinpaketID'].'</td>
 					<td title="'.fixHTMLUTF8Entities($item['ItemTitle'], ENT_COMPAT).'">'.$item['ItemTitleShort'].'</td>
-					<td>'.$this->simplePrice->setPriceAndCurrency($item['Price'], $item['Currency'])->format().'</td>
+					<td>'.$this->simplePrice->setPrice($item['Price'])->format().'</td>
 					<td>'.$item['Quantity'].'</td>
 					'.($this->additionalValues($item)).'
 					<td>'.date("d.m.Y", $item['DateAdded']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['DateAdded']).'</span>'.'</td>';
@@ -304,7 +305,7 @@ class InventoryView {
 		$offset = $currentPage * $this->settings['itemLimit'] - $this->settings['itemLimit'] + 1;
 		$limit = $offset + count($this->renderableData) - 1;
 		$html .= '<table class="listingInfo"><tbody><tr>
-					<td class="pagination">
+					<td class="ml-pagination">
 						'.(($this->numberofitems > 0)
 							?	('<span class="bold">'.ML_LABEL_PRODUCTS.':&nbsp; '.
 								 $offset.' bis '.$limit.' von '.($this->numberofitems).'&nbsp;&nbsp;&nbsp;&nbsp;</span>'
@@ -350,12 +351,12 @@ $(document).ready(function() {
 
 		$js = '';
 		$left = (!empty($this->renderableData) ? 
-			'<input type="button" class="button" value="'.ML_BUTTON_LABEL_DELETE.'" id="listingDelete" name="listing[delete]"/>' : 
+			'<input type="button" class="ml-button" value="'.ML_BUTTON_LABEL_DELETE.'" id="listingDelete" name="listing[delete]"/>' : 
 			''
 		);
 		$right = '<table class="right"><tbody>
 			'.(in_array(getDBConfigValue('meinpaket.stocksync.tomarketplace', $this->magnasession['mpID']), array('abs', 'auto'))
-				? '<tr><td><input type="submit" class="button fullWidth smallmargin" name="refreshStock" value="'.ML_BUTTON_REFRESH_STOCK.'"/></td></tr>'
+				? '<tr><td><input type="submit" class="ml-button fullWidth smallmargin" name="refreshStock" value="'.ML_BUTTON_REFRESH_STOCK.'"/></td></tr>'
 				: ''
 			).'
 		</tbody></table>';
@@ -390,7 +391,7 @@ $(document).ready(function() {
 						<td class="firstChild">'.$left.'</td>
 						<td><label for="tfSearch">'.ML_LABEL_SEARCH.':</label>
 							<input id="tfSearch" name="tfSearch" type="text" value="'.fixHTMLUTF8Entities($this->search, ENT_COMPAT).'"/>
-							<input type="submit" class="button" value="'.ML_BUTTON_LABEL_GO.'" name="search_go" /></td>
+							<input type="submit" class="ml-button" value="'.ML_BUTTON_LABEL_GO.'" name="search_go" /></td>
 						<td class="lastChild">'.$right.'</td>
 					</tr></tbody></table>
 				</td></tr></tbody>

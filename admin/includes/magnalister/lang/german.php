@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: german.php 3584 2014-03-08 02:18:03Z derpapst $
+ * $Id: german.php 4290 2014-07-25 22:09:49Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -171,15 +171,33 @@ define('ML_LABEL_MISSING_DATA', 'Fehlende Daten');
 define('ML_LABEL_UNCHECK_SELECTION', 'Auswahl aufheben');
 define('ML_LABEL_CUSTOMERSID', 'Kunden ID');
 define('ML_LABEL_UNLIMITED', 'unbegrenzt');
+define('ML_LABEL_SHOP_LANGUAGE', 'Shop Sprache');
+define('ML_LABEL_DONT_SUBMIT', 'Nicht &uuml;bertragen');
+define('ML_LABEL_DATA_CANNOT_BE_FETCHED', 'Daten k&ouml;nnen nicht abgerufen werden.');
 
-define('ML_OPTION_DELETED_ARTICLES_ENUM_DEFAULT', 'Zeige alle');
-define('ML_OPTION_DELETED_ARTICLES_ENUM_', 'Zeige noch nicht auf %s eingestellte');
-define('ML_OPTION_DELETED_ARTICLES_ENUM_NOT', 'Zeige nicht auf %s vorhandene');
-define('ML_OPTION_DELETED_ARTICLES_ENUM_EMPTY', 'Zeige auf %s vorhandene');
-define('ML_OPTION_DELETED_ARTICLES_ENUM_SYNC', 'Beendete: durch Lagersync.');
-define('ML_OPTION_DELETED_ARTICLES_ENUM_BUTTON', 'Beendete: durch man. L&ouml;schen');
-define('ML_OPTION_DELETED_ARTICLES_ENUM_EXPIRED', 'Beendete: durch Laufzeitende');
+/* productlists */
+define('ML_LABEL_TO_SELECTION_SELECT', 'Auswahl (%s ausgew&auml;hlt)');
+define('ML_LABEL_TO_SELECTION_SELECT_ADD', 'hinzuf&uuml;gen');
+define('ML_LABEL_TO_SELECTION_SELECT_ADD_PAGE', 'w&auml;hle Produkte dieser Seite');
+define('ML_LABEL_TO_SELECTION_SELECT_ADD_FILTERED', 'w&auml;hle alle Produkte (gefilterte)');
+define('ML_LABEL_TO_SELECTION_SELECT_SUB', 'entfernen');
+define('ML_LABEL_TO_SELECTION_SELECT_SUB_PAGE', 'Auswahl dieser Seite aufheben');
+define('ML_LABEL_TO_SELECTION_SELECT_SUB_ALL', 'Auswahl aller Produkte aufheben');
 
+define('ML_OPTION_FILTER_CATEGORY_ARTICLES_ALL', 'Filter: Kategorien');
+
+define('ML_OPTION_FILTER_ARTICLES_ALL', 'Filter: Marktplatzstatus');
+define('ML_OPTION_FILTER_ARTICLES_NOTTRANSFERRED', 'Zeige noch nicht auf %s eingestellte');
+define('ML_OPTION_FILTER_ARTICLES_NOTACTIVE', 'Zeige nicht auf %s vorhandene');
+define('ML_OPTION_FILTER_ARTICLES_ACTIVE', 'Zeige auf %s vorhandene');
+define('ML_OPTION_FILTER_ARTICLES_DELETEDBY_SYNC', 'Zeige beendete durch Ausverkauf');
+define('ML_OPTION_FILTER_ARTICLES_DELETEDBY_BUTTON', 'Zeige beendete durch man. L&ouml;schen');
+define('ML_OPTION_FILTER_ARTICLES_DELETEDBY_EXPIRED', 'Zeige beendete durch Laufzeitende');
+
+define('ML_OPTION_FILTER_PREPARESTATUS_ARTICLES_ALL', 'Filter: Vorbereitungsstatus');
+define('ML_OPTION_FILTER_PREPARESTATUS_ARTICLES_NOTPREPARED', 'nicht vorbereitete');
+define('ML_OPTION_FILTER_PREPARESTATUS_ARTICLES_FAILED', 'fehlerhaft vorbereitete');
+define('ML_OPTION_FILTER_PREPARESTATUS_ARTICLES_PREPARED', 'vorbereitete');
 /* Statistics Labels */
 define('ML_LABEL_STATS_ORDERS_PER_MARKETPLACE_PERCENT', 'Bestellungen pro Marketplace (Prozentual)');
 define('ML_LABEL_STATS_PERCENT_OF_ORDERS', '% der Bestellungen');
@@ -200,11 +218,13 @@ define('ML_MODULE_PREISSUCHMASCHINE', 'preissuchmaschine.de');
 define('ML_MODULE_KELKOO', 'kelkoo');
 define('ML_MODULE_HITMEISTER', 'Hitmeister');
 define('ML_MODULE_HOOD', 'Hood');
+define('ML_MODULE_DAWANDA', 'DaWanda');
 define('ML_MODULE_MEINPAKET', 'MeinPaket.de');
 define('ML_MODULE_LAARY', 'Laary.eu');
 define('ML_MODULE_TWENGA', 'Twenga');
 define('ML_MODULE_GLOBAL_CONFIG', 'Globale Konfiguration');
 define('ML_MODULE_GUIDE', 'Hilfe');
+define('ML_MODULE_TRADORIA', 'Rakuten');
 
 
 /* Fi Button Labels */
@@ -303,10 +323,10 @@ define('ML_TEXT_MORE_MODULES', '<p>Sie haben keine weiteren Anbindungen gebucht,
 	<p>Sollten Sie eine Anbindung w&uuml;nschen, die wir noch nicht im Programm haben, senden Sie uns bitte eine Nachricht &ndash; 
 	   wir sind f&uuml;r Ihre Anregungen und Vorschl&auml;ge dankbar:<br />
 	   <a href="'.MAGNA_PUBLIC_SERVER.'support" title="Support" target="_blank">'.str_replace('http://', 'www.', MAGNA_PUBLIC_SERVER).'support</a></p>');
-define('ML_TEXT_BUTTON_CHECKIN_ADD', 'Wenn Sie auf <span class="button">'.ML_BUTTON_LABEL_CHECKIN_ADD.'</span> klicken,
+define('ML_TEXT_BUTTON_CHECKIN_ADD', 'Wenn Sie auf <span class="ml-button">'.ML_BUTTON_LABEL_CHECKIN_ADD.'</span> klicken,
 	wird die CSV um	die &uuml;bermittelten Artikel erg&auml;nzt. Bzw. wenn die Artikel schon in der CSV sind, werden sie 
 	&uuml;berschrieben/aktualisiert.');
-define('ML_TEXT_BUTTON_CHECKIN_PURGE', 'Wenn Sie auf <span class="button">'.ML_BUTTON_LABEL_CHECKIN_PURGE.'</span> klicken,
+define('ML_TEXT_BUTTON_CHECKIN_PURGE', 'Wenn Sie auf <span class="ml-button">'.ML_BUTTON_LABEL_CHECKIN_PURGE.'</span> klicken,
 	wird die alte CSV gel&ouml;scht und nur die &uuml;bermittelten Artikel sind enthalten');
 define('ML_TEXT_CONFIG_SAVED_SUCCESSFULLY', 'Die Konfiguration wurde erfolgreich gespeichert.');
 define('ML_TEXT_CONFIG_SAVED_SEMI_SUCCESSFULLY', 'Einige &Auml;nderungen konnten nicht gespeichert werden, da diese fehlerhaft sind.
@@ -481,6 +501,9 @@ define('ML_GENERIC_ITEM', 'Artikel');
 define('ML_GENERIC_EACH', 'Einzelpreis');
 define('ML_GENERIC_TOTAL', 'Gesamtpreis');
 
+define('ML_GENERIC_FILTER_MP_SYNC_DELETED', 'Gleiche gel&ouml;schte Artikel ab.');
+define('ML_GENERIC_FILTER_MP_SYNC_INVENTORY', 'Gleiche Artikel mit Marketplace Inventar ab.');
+
 define('ML_GENERIC_AUTOMATIC_ORDER', 'Dies ist eine von magnalister automatisiert angelegte Bestellung aus Ihrem Marketplace.');
 define('ML_GENERIC_AUTOMATIC_ORDER_MP', 'magnalister-Verarbeitung (%s)');
 define('ML_GENERIC_AUTOMATIC_ORDER_MP_SHORT', 'magnalister-Verarbeitung (%s)');
@@ -561,6 +584,7 @@ define('ML_AMAZON_LABEL_APPLY_SELECT_MAIN_CAT_FIRST', 'Bitte erst Hauptkategorie
 define('ML_AMAZON_LABEL_APPLY_BROWSENODE_NOT_SELECTED', 'Nicht vergeben');
 define('ML_AMAZON_LABEL_APPLY_PLEASE_SELECT', 'Bitte w&auml;hlen');
 define('ML_AMAZON_LABEL_APPLY_REQUIRED_ATTRIBUTES', 'Pflichtattribute');
+define('ML_AMAZON_LABEL_APPLY_ATTRIBUTES', 'Attribute');
 define('ML_AMAZON_LABEL_APPLY_BROWSENODES', 'Browsenodes');
 define('ML_AMAZON_LABEL_APPLY_BULLETPOINTS', 'Bulletpoints');
 define('ML_AMAZON_LABEL_APPLY_KEYWORDS', 'Allgemeine Schl&uuml;sselw&ouml;rter');
@@ -765,8 +789,8 @@ define('ML_EBAY_LABEL_LISTINGDURATION_DAYS_120', '120 Tage');
 define('ML_EBAY_LABEL_LISTINGDURATION_GTC', 'unbegrenzt');
 define('ML_LABEL_EBAY_LISTINGTIME', 'Eingestellt von-bis');
 
-define('ML_EBAY_CONDITION_NEW', 'Neu');
-define('ML_EBAY_CONDITION_NEW_OTHER', 'Neu / Sonstige (s. Artikelbeschreibung)');
+define('ML_EBAY_CONDITION_NEW', 'Neu / Neu mit Karton');
+define('ML_EBAY_CONDITION_NEW_OTHER', 'Neu / Sonstige (s. Artikelbeschreibung) / Neu ohne Karton');
 define('ML_EBAY_CONDITION_NEW_WITH_DEFECTS', 'Neu mit Fehlern');
 define('ML_EBAY_CONDITION_MANUF_REFURBISHED', 'Vom Hersteller general&uuml;berholt');
 define('ML_EBAY_CONDITION_SELLER_REFURBISHED', 'Vom Verk&auml;fer general&uuml;berholt');
@@ -790,6 +814,7 @@ define('ML_LABEL_EBAY_TITLE', 'eBay Titel');
 define('ML_PRICE_SHOP_PRICE_EBAY', 'Preis Shop / eBay');
 define('ML_STOCK_SHOP_STOCK_EBAY', 'Bestand Shop / eBay');
 define('ML_LAST_SYNC', 'Letzter Abgleich');
+define('ML_EBAY_N_PENDING_UPDATES_ESTIMATED_TIME_M', '%s Artikel werden derzeit synchronisiert. Restdauer ca. %s Minuten.');
 define('ML_LABEL_EBAY_DELETION_REASON', 'Gel&ouml;scht durch');
 define('ML_SYNCHRONIZATION', 'Lagerabgleich');
 define('ML_DELETION_BUTTON', 'L&ouml;sch-Button');
@@ -810,6 +835,7 @@ define('ML_EBAY_CATEGORY_PREPARED_ALL', 'Die Kategorie enth&auml;lt nur vorberei
 define('ML_EBAY_PRODUCT_MATCHED_NO', 'Das Produkt wurde noch nicht vorbereitet');
 define('ML_EBAY_PRODUCT_PREPARED_FAULTY', 'Die Vorbereitung des Produkts ist bisher gescheitert');
 define('ML_EBAY_PRODUCT_PREPARED_OK', 'Das Produkt ist korrekt vorbereitet und kann eingestellt werden');
+define('ML_EBAY_PRODUCT_PREPARED_FAULTY_BUT_MP', 'Das Produkt wurde noch nicht vorbereitet ist aber im Marktplatz vorhanden.');
 define('ML_EBAY_LISTING_TYPE', 'Art der Auktion');
 define('ML_EBAY_DURATION', 'Dauer der Auktion');
 define('ML_EBAY_DURATION_SHORT', 'Laufzeit');
@@ -892,6 +918,8 @@ define('ML_EBAY_SHIPPING_INTL_DESC', 'Angebotene ausl&auml;ndische Versandarten'
 define('ML_EBAY_SHIPPING_PROFILE', 'Rabatte Kombizahlung und Versand');
 define('ML_EBAY_SHIPPING_DISCOUNT', 'Regeln f&uuml;r Versand zum Sonderpreis anwenden');
 define('ML_EBAY_LABEL_EBAYERROR', 'eBay Fehler %s');
+
+define('ML_EBAY_LABEL_ADDITEM_COSTS', 'Das Speichern der Vorbereitung war erfolgreich. Die Einstellgeb&uuml;hr f&uuml;r den getesteten Artikel betr&auml;gt: %01.2f Euro.');
 
 define('ML_EBAY_LABEL_CHANGE_SITE', 'eBay Site &auml;ndern');
 define('ML_EBAY_TEXT_CHANGE_SITE', 'Sie haben eine andere eBay-Site ausgew&auml;hlt. Das wirkt sich auf weitere Optionen auf, da die eBay-L&auml;nderseiten unterschiedliche W&auml;hrungen sowie Zahlungs- und Versandarten anbieten. Soll die neue Einstellung &uuml;bernommen werden?');
@@ -997,17 +1025,35 @@ define('ML_MEINPAKET_LABEL_MP_PRICE_SHORT', 'Mein MeinPaket Preis');
 define('ML_MEINPAKET_LABEL_MEINPAKETID', 'MeinPaketID');
 define('ML_MEINPAKET_LABEL_ORDER_ID', 'MeinPaket-Bestellnummer');
 define('ML_MEINPAKET_ERROR_CHECKIN_VARIATION_CONFIG_EMPTY', 'Variationen sind nicht konfiguriert.');
-define('ML_MEINPAKET_ERROR_CHECKIN_VARIATION_CONFIG_MISSING_NAMEID', 'Es konnte keine Zuordnung f&uuml;r das Meinpaket Attribut \'%s\' der Varianten-SKU \'%s\' gefunden werden.');
+define('ML_MEINPAKET_ERROR_CHECKIN_VARIATION_CONFIG_MISSING_NAMEID', 'Es konnte keine Zuordnung f&uuml;r das Shop Attribut "{#Attribute#}" bei der gew&auml;hlten Meinpaket Variantengruppe "{#MpIdentifier#}" f&uuml;r den Varianten Artikel mit der SKU "{#SKU#}" gefunden werden.');
 define('ML_MEINPAKET_ERROR_CHECKIN_VARIATION_CONFIG_CANNOT_CALC_VARIATIONS', 'Es konnten keine Variationen errechnet werden.');
 define('ML_MEINPAKET_ERROR_ACCESS_DENIED', 'Die Zugangsdaten zum MeinPaket.de-Admin scheinen nicht zu stimmen: Der
 	magnalister-Server kann mit den Zugangsdaten keine Verbindung herstellen.
 	Bitte &uuml;berpr&uuml;fen Sie die bei der Konfiguration hinterlegten Zugangsdaten und
 	korrigieren Sie diese gegebenenfalls.');
 
+define('ML_MEINPAKET_VARMATCH_DEFINE_NAME', 'Bitte geben Sie einen Bezeichner ein.');
+define('ML_MEINPAKET_VARMATCH_AJAX_ERROR', 'Ein Fehler ist aufgetreten.');
+define('ML_MEINPAKET_VARMATCH_SELECT_VARIANT_GROUP', 'Bitte w&auml;hlen Sie eine Variantengruppe aus.');
+define('ML_MEINPAKET_VARMATCH_ALL_ATTRIBS_MUST_BE_DEFINED', 'Bitte weisen Sie allen Meinpaket Attributen ein Shop-Attribut zu.');
+define('ML_MEINPAKET_VARMATCH_PLEASE_SELECT', 'Bitte w&auml;hlen...');
+define('ML_MEINPAKET_VARMATCH_SHOP_VALUE', 'Shop-Wert');
+define('ML_MEINPAKET_VARMATCH_MP_VALUE', 'Meinpaket-Wert');
+define('ML_MEINPAKET_VARMATCH_DONT_TRANSMIT', 'Nicht &uuml;bertragen');
+define('ML_MEINPAKET_VARMATCH_WEBSHOP_ATTRIB', 'Web-Shop Attribut');
+define('ML_MEINPAKET_VARMATCH_DELETE_CUSTOM_BTN_TITLE', 'Varianten-Matching-Gruppe l&ouml;schen');
+define('ML_MEINPAKET_VARMATCH_DELETE_CUSTOM_BTN_CONTENT', 'Wollen Sie die eigene Gruppe wirklich l&ouml;schen?<br />Alle zugeh&ouml;rigen Variantenmatchings werden dann ebenfalls gel&ouml;scht.');
+define('ML_MEINPAKET_VARMATCH_DELETE_CUSTOM_BTN_OK', 'Ok');
+define('ML_MEINPAKET_VARMATCH_DELETE_CUSTOM_BTN_CANCEL', 'Abbrechen');
+
+
 /* MagnaCompat */
 define('ML_MAGNACOMPAT_CATEGORYMATCHING_ASSIGN_MP_CAT', 'Marktplatz Kategorie zuweisen');
 define('ML_MAGNACOMPAT_LABEL_CATEGORY', 'Marktplatz Kategorie');
 define('ML_MAGNACOMPAT_LABEL_PREPARED', 'Vorbereitet');
+define('ML_MAGNACOMPAT_LABEL_CATMATCH_NOT_PREPARED', 'Nicht vorbereitet');
+define('ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_COMPLETE', 'Vollst&auml;ndig');
+define('ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE', 'Unvollst&auml;ndig');
 define('ML_MAGNACOMPAT_LABEL_MP_PRICE_SHORT', 'Mein Marktplatz Preis');
 define('ML_MAGNACOMPAT_LABEL_MP_ITEMID', 'Marktplatz ID');
 define('ML_MAGNACOMPAT_ERROR_ACCESS_DENIED', 'Die Zugangsdaten zu %s scheinen nicht zu stimmen: Der
@@ -1089,11 +1135,7 @@ define('ML_LABEL_HOOD_ITEM_ID', 'Hood Angebots-Nr.');
 define('ML_LABEL_HOOD_TITLE', 'Hood Titel');
 define('ML_PRICE_SHOP_PRICE_HOOD', 'Preis Shop / Hood');
 define('ML_STOCK_SHOP_STOCK_HOOD', 'Bestand Shop / Hood');
-define('ML_LAST_SYNC', 'Letzter Abgleich');
 define('ML_LABEL_HOOD_DELETION_REASON', 'Gel&ouml;scht durch');
-define('ML_SYNCHRONIZATION', 'Lagerabgleich');
-define('ML_DELETION_BUTTON', 'L&ouml;sch-Button');
-define('ML_NOT_BY_ML', 'extern (nicht ml)');
 define('ML_HOOD_TEXT_NO_MATCHED_PRODUCTS', 'Es sind noch keine Produkte f&uuml;r Hood vorbereitet worden. Bevor Sie Produkte hier hochladen k&ouml;nnen, m&uuml;ssen Sie diese unter dem Reiter "Produkte vorbereiten" bearbeiten.<br>
        Falls Sie an der Stelle Artikel vermissen sollten, die Sie bereits vorbereitet haben, &uuml;berpr&uuml;fen Sie, ob diese ggf. auf Inaktiv gesetzt sind und Sie die Konfiguration entsprechend eingestellt haben.');
 define('ML_HOOD_LABEL_PREPARE', 'Vorbereiten');
@@ -1170,7 +1212,6 @@ define('ML_HOOD_BESTPRICE_YES_NO', '\'Preisvorschlag\' aktivieren (nur f&uuml;r 
 define('ML_HOOD_BESTPRICE', 'Wenn aktiv, k&ouml;nnen K&auml;ufer eigene Preise vorschlagen');
 define('ML_HOOD_START_TIME_SHORT', 'Startzeit<br />(falls vorbelegt)');
 define('ML_HOOD_START_TIME', 'Im Normalfall ist ein Hood-Artikel sofort nach dem Hochladen aktiv. Aber wenn Sie dieses Feld f&uuml;llen, erst ab Startzeit (kostenpflichtig).');
-define('ML_HITCOUNTER_SHORT', 'Besucherz&auml;hler');
 define('ML_HOOD_NO_HITCOUNTER', 'keiner');
 define('ML_HOOD_BASIC_HITCOUNTER', 'Einfach');
 define('ML_HOOD_RETRO_HITCOUNTER', 'Retro-Style');
@@ -1179,9 +1220,9 @@ define('ML_HOOD_NOTE_VARIATIONS_ENABLED', '<div class="successBox"><b>Hinweis</b
 define('ML_HOOD_NOTE_VARIATIONS_DISABLED', '<div class="errorBox"><b class="error">Hinweis</b>: F&uuml;r diese Kategorie sieht Hood keine Varianten vor, es wird nur der Stammartikel hochgeladen.</div>');
 define('ML_HOOD_PRICE_FOR_HOOD_LONG', 'Preis zu dem der Artikel bei Hood eingestellt wird');
 define('ML_HOOD_CATEGORY', 'Hood-Kategorie');
-define('ML_HOOD_CATEGORY_DESC', 'Die 2. Hood-Hategorie ist kostenpflichtig auf hood.de');
-define('ML_HOOD_PRIMARY_CATEGORY', '1. Hood-Hategorie');
-define('ML_HOOD_SECONDARY_CATEGORY', '2. Hood-Hategorie');
+define('ML_HOOD_CATEGORY_DESC', 'Die 2. Hood-Kategorie ist kostenpflichtig auf hood.de');
+define('ML_HOOD_PRIMARY_CATEGORY', '1. Hood-Kategorie');
+define('ML_HOOD_SECONDARY_CATEGORY', '2. Hood-Kategorie');
 define('ML_HOOD_STORE_CATEGORY', '1. Store Kategorie');
 define('ML_HOOD_SECONDARY_STORE_CATEGORY', '2. Store Kategorie');
 define('ML_HOOD_TERTIARY_STORE_CATEGORY', '3. Store Kategorie');
@@ -1193,7 +1234,7 @@ define('ML_HOOD_SHIPPING_INTL_OPTIONAL', 'Versand Ausland (Optional)');
 define('ML_HOOD_SHIPPING_INTL_DESC', 'Angebotene ausl&auml;ndische Versandarten');
 define('ML_HOOD_LABEL_HOODERROR', 'Hood meldet: Fehler %s');
 define('ML_HOOD_PICTURES', 'Bilder');
-define('ML_HOOD_PICTURES_DESC', 'Das erste Bild wird als Hauptbild verwendet.');
+define('ML_HOOD_PICTURES_DESC', 'Das erste Bild wird als Hauptbild verwendet.<br>Je nach Hood Tarif kosten <span style="color:red;">weitere Bilder 0,09&euro;</span> pro Bild.');
 define('ML_HOOD_PICTURE_PATH', 'Bildpfad');
 define('ML_HOOD_AGE_PROTECTION', 'Altersbeschr&auml;nkung');
 define('ML_HOOD_ADDITIONAL_FEATURES', 'Zusatzoptionen');
@@ -1220,3 +1261,27 @@ define('ML_HOOD_ORDER_PAID', "magnalister-Verarbeitung:\nZahlung bei Hood eingeg
 
 define('ML_LABEL_HOOD_SALES_RECORD_NUMBER', 'Verkaufsprotokollnummer');
 define('ML_HOOD_LABEL_ADDITEM_COSTS', 'Das Speichern der Vorbereitung war erfolgreich. Die Einstellgeb&uuml;hr f&uuml;r den getesteten Artikel betr&auml;gt: %01.2f Euro.');
+
+/* DaWanda */
+define('ML_DAWANDA_PREPARE_LISTING_DURATION_RENEW_ENABLED', 'Automatisches wiedereinstellen nach 120 Tagen');
+define('ML_DAWANDA_PREPARE_LISTING_DURATION_RENEW_DISABLED', 'Kein automatisches wiedereinstellen');
+define('ML_DAWANDA_SHIPPING_SERVICE', 'Versand-Profil');
+define('ML_DAWANDA_NO_SHIPPING_SERVICE_AVAILABLE', 'Keine Versand-Profile vorhanden');
+define('ML_DAWANDA_CATEGORY', 'DaWanda Kategorien');
+define('ML_DAWANDA_MARKETPLACE_PRODUCT_COLORS', 'Produkt Farben');
+define('ML_DAWANDA_MARKETPLACE_PRODUCT_COLOR', 'Produkt Farbe');
+define('ML_DAWANDA_MARKETPLACE_PRODUCT_COLORS_NO_CHOOSE', 'Keine Farbe');
+define('ML_DAWANDA_LABEL_ERROR', 'DaWanda meldet: ');
+define('ML_DAWANDA_LABEL_SHIPPINGTIME', 'Versand');
+define('ML_DAWANDA_LABEL_LANGUAGE', 'DaWanda Sprache');
+define('ML_DAWANDA_LABEL_RETURNPOLICY', 'Widerrufsbelehrung');
+define('ML_DAWANDA_LABEL_PRODUCTTYPE', 'Art des Produktes');
+
+/* ML_GENERIC */
+define('ML_GENERIC_LISTING_DURATION', 'Laufzeit');
+define('ML_GENERIC_PREPARE_SETTINGS', 'Produktdetails');
+define('ML_GENERIC_CATEGORIES_MARKETPLACE_CATEGORIE', 'Marktplatz-Kategorie');
+define('ML_GENERIC_CATEGORIES_MARKETPLACE_STORE_CATEGORIE', 'Shop-Kategorie');
+define('ML_GENERIC_CATEGORIES_CHOOSE', 'W&auml;hlen');
+define('ML_GENERIC_PREPARE_BUTTON_UNPREPARE', 'Vorbereitung f&uuml;r komplette Auswahl aufheben');
+define('ML_GENERIC_ERROR_ORDERSYNC_FAILED', 'Der Bestellstatus konnte nicht synchronisiert werden.');

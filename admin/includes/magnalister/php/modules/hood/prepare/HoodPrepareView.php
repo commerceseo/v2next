@@ -44,6 +44,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 	protected function hasStore() {
 		$info = HoodApiConfigValues::gi()->getHasStore();
 		$this->shopType = $info['Info.ShopType'];
+		#$this->shopType = 'noShop';
 		if ('noShop' == $this->shopType) {
 			$this->defaultListingType = 'buyItNow';
 		} else {
@@ -55,20 +56,22 @@ class HoodPrepareView extends MagnaCompatibleBase {
 	protected function getSelection() {
 		$shortDescColumnExists = MagnaDB::gi()->columnExistsInTable('products_short_description', TABLE_PRODUCTS_DESCRIPTION);
 		
+		$keytypeIsArtNr = (getDBConfigValue('general.keytype', '0') == 'artNr');
+		
 		# Daten aus magnalister_hood_properties (bereits frueher vorbereitet)
 		$dbOldSelectionQuery = '
 		    SELECT ep.products_id, ep.products_model,
 		           ep.Manufacturer, ep.ManufacturerPartNumber,
-		           ep.Title, ep.Subtitle, ep.Description, ep.StartPrice,
+		           ep.Title, ep.Subtitle, ep.Description, ep.StartPrice, ep.StartTime,
 		           ep.ShortDescription, ep.ConditionType, ep.noIdentifierFlag,
-		           ep.PrimaryCategory, ep.SecondaryCategory, ep.StoreCategory, ep.StoreCategory2,
+		           ep.PrimaryCategory, ep.SecondaryCategory, ep.StoreCategory, ep.StoreCategory2, ep.StoreCategory3,
 		           ep.ListingType, ep.ListingDuration, ep.PaymentMethods, ep.ShippingServiceOptions,
 		           pd.products_name, pd.products_description,
 		           '.($shortDescColumnExists ? 'pd.products_short_description' : '"" AS products_short_description').',
 		           ep.GalleryPictures, ep.Features, ep.FSK, ep.USK
 		      FROM ' . TABLE_MAGNA_HOOD_PROPERTIES . ' ep
 		';
-		if ('artNr' == getDBConfigValue('general.keytype', '0')) {
+		if ($keytypeIsArtNr) {
 			$dbOldSelectionQuery .= '
 		INNER JOIN ' . TABLE_PRODUCTS . ' p ON ep.products_model = p.products_model
 		INNER JOIN ' . TABLE_MAGNA_SELECTION . ' ms ON  p.products_id = ms.pID AND ep.mpID = ms.mpID 
@@ -92,20 +95,16 @@ class HoodPrepareView extends MagnaCompatibleBase {
 		$oldProducts = array();
 		if (is_array($dbOldSelection)) {
 			foreach ($dbOldSelection as $row) {
-				$oldProducts[] = $row['products_id'];
+				$oldProducts[] = MagnaDB::gi()->escape($keytypeIsArtNr ? $row['products_model'] : $row['products_id']);
 			}
 		}
-		$oldProductsList = trim(implode(', ', $oldProducts), ', ');
-		if (empty($oldProductsList)) {
-			$oldProductsList = "''";
-		}
+		
 		# Daten fuer magnalister_hood_properties
 		# die Namen schon fuer diese Tabelle
 		# products_short_description nicht bei OsC, nur bei xtC, Gambio und Klonen
 		$dbNewSelectionQuery = '
-		    SELECT p.products_id products_id, 
-		           p.products_model products_model, 
-		           p.products_price Price, 
+		    SELECT p.products_id, p.products_model,
+		           p.products_price Price,
 		           ms.mpID mpID, 
 		           pd.products_name products_name,
 		           '.($shortDescColumnExists ? 'pd.products_short_description' : '"" AS products_short_description').',
@@ -115,14 +114,17 @@ class HoodPrepareView extends MagnaCompatibleBase {
 		INNER JOIN ' . TABLE_MAGNA_SELECTION . ' ms ON ms.pID = p.products_id 
 		 LEFT JOIN ' . TABLE_PRODUCTS_DESCRIPTION . ' pd ON pd.products_id = p.products_id
 		 LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id
-		     WHERE p.products_id NOT IN (' . $oldProductsList . ') 
+		     WHERE '.($keytypeIsArtNr ? 'p.products_model' : 'p.products_id').' NOT IN ("' . implode('", "', $oldProducts) . '") 
 		           AND pd.language_id = "' . getDBConfigValue($this->marketplace.'.lang', $this->mpID) . '" 
 		           AND ms.mpID = "' . $this->mpID . '" 
 		           AND selectionname="prepare" 
 		           AND session_id="' . session_id() . '"
 		';
 		$dbNewSelection = MagnaDB::gi()->fetchArray($dbNewSelectionQuery);
-		$dbSelection = array_merge(is_array($dbOldSelection) ? $dbOldSelection : array(), $dbNewSelection);
+		$dbSelection = array_merge(
+			is_array($dbOldSelection) ? $dbOldSelection : array(),
+			is_array($dbNewSelection) ? $dbNewSelection : array()
+		);
 		if (false) { # DEBUG
 			echo print_m("dbOldSelectionQuery == \n$dbOldSelectionQuery\n");
 			echo print_m($dbOldSelection, '$dbOldSelection');
@@ -155,7 +157,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 			}
 			
 			// Prepare the gallery
-			$current_row['GalleryPictures'] = json_decode($current_row['GalleryPictures'], true);
+			$current_row['GalleryPictures'] = isset($current_row['GalleryPictures']) ? json_decode($current_row['GalleryPictures'], true) : array();
 			if (!is_array($current_row['GalleryPictures'])
 				|| !isset($current_row['GalleryPictures']['BaseUrl']) || !is_string($current_row['GalleryPictures']['BaseUrl']) || empty($current_row['GalleryPictures']['BaseUrl'])
 				|| !isset($current_row['GalleryPictures']['Images'])  || !is_array($current_row['GalleryPictures']['Images'])   || empty($current_row['GalleryPictures']['Images'])
@@ -171,7 +173,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 			}
 			
 			// Prepare the features
-			$current_row['Features'] = json_decode($current_row['Features'], true);
+			$current_row['Features'] = isset($current_row['Features']) ? json_decode($current_row['Features'], true) : array();
 			if (empty($current_row['Features'])) {
 				$current_row['Features'] = array();
 			}
@@ -268,7 +270,15 @@ class HoodPrepareView extends MagnaCompatibleBase {
 		
 		$productImagesHTML = '';
 		if (!empty($data['GalleryPictures']['Images'])) {
+			$maxImages = getDBConfigValue($this->marketplace.'.prepare.maximagecount', $this->mpID, 'all');
+			$maxImages = $maxImages == 'all'
+				? true
+				: (int)$maxImages;
+			
 			foreach ($data['GalleryPictures']['Images'] as $img => $checked) {
+				if ((int)$maxImages <= 0) {
+					$checked = false;
+				}
 				$productImagesHTML .= '
 					<table class="imageBox"><tbody>
 						<tr><td class="image"><label for="image_'.$img.'">'.generateProductCategoryThumb($img, 60, 60).'</label></td></tr>
@@ -278,6 +288,9 @@ class HoodPrepareView extends MagnaCompatibleBase {
 							       value="true" '.($checked ? 'checked="checked"' : '').'/>
 						</td></tr>
 					</tbody></table>';
+				if ($checked && ($maxImages !== true)) {
+					--$maxImages;
+				}
 			}
 			$productImagesHTML .= '<br style="clear:both">'.ML_HOOD_PICTURE_PATH.': <input class="fullwidth" type="text" name="GalleryPictures[BaseUrl]" value="'.htmlspecialchars($data['GalleryPictures']['BaseUrl']).'">';
 		}
@@ -372,7 +385,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 		$pConf = HoodHelper::loadPriceSettings($this->mpID);
 		
 		$allowBuyItNow = getDBConfigValue(array($this->marketplace.'.auction.buyitnowprice.active', 'val'), $this->mpID, false);
-		if ((float)$data['StartPrice'] > 0) {
+		if (isset($data['StartPrice']) && ((float)$data['StartPrice'] > 0)) {
 			$auctionStartPrice = $data['StartPrice'];
 		} else {
 			$auctionStartPrice = $this->price
@@ -450,17 +463,19 @@ class HoodPrepareView extends MagnaCompatibleBase {
 			'ConditionType' => array(),
 			'PaymentMethods' => array(),
 			'ShippingServiceOptions' => array(),
+			'StartTime' => array(),
 			'noIdentifierFlag' => array(),
 			'FSK' => array(),
 			'USK' => array(),
 			'Features' => array(),
 		);
+		#echo print_m($data, '$data');
 		
 		$loadedPIds = array();
 		foreach ($data as $row) {
 			$loadedPIds[] = $row['products_id'];
 			foreach ($preSelected as $field => $collection) {
-				$preSelected[$field][] = $row[$field];
+				$preSelected[$field][] = isset($row[$field]) ? $row[$field] : '';
 			}
 		}
 		foreach ($preSelected as $field => $collection) {
@@ -474,7 +489,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 		
 		// add some usefull defaults in case of multiple selections
 		if ($preSelected['ListingType'] === null) {
-			$preSelected['ListingType'] = $this->defaultListingTyp;
+			$preSelected['ListingType'] = $this->defaultListingType;
 		}
 		if ($preSelected['ListingDuration'] === null) {
 			$preSelected['ListingDuration'] = ($preSelected['ListingType'] == 'classic')
@@ -526,7 +541,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 				$preSelected[$kat.'Name'] = $categoryMatcher->getHoodCategoryPath($preSelected[$kat], true);
 			}
 		}
-
+		
 		#echo print_m($preSelected, '$preSelected');
 		
 		/*
@@ -597,7 +612,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 				<tr class="' . (($oddEven = !$oddEven) ? 'odd' : 'even') . '">
 					<th>' . ML_HOOD_START_TIME_SHORT . '</th>
 					<td class="input">
-						' . renderDateTimePicker('startTime', $startTime, true) . '
+						' . renderDateTimePicker('startTime', $preSelected['StartTime'], true) . '
 					</td>
 					<td class="info">' . ML_HOOD_START_TIME . '</td>
 				</tr>
@@ -711,27 +726,27 @@ class HoodPrepareView extends MagnaCompatibleBase {
 							<tr>
 								<td class="label">' . ML_HOOD_PRIMARY_CATEGORY . ':</td>
 								<td>
-									<div class="hoodCatVisual" id="PrimaryCategoryVisual">
+									<div class="catVisual" id="PrimaryCategoryVisual">
 										<select id="PrimaryCategory" name="PrimaryCategory" style="width:100%">
 											' . $this->renderCategoryOptions('PrimaryCategory', $preSelected['PrimaryCategory'], $preSelected['PrimaryCategoryName']) . '
 										</select>
 									</div>
 								</td>
 								<td class="buttons">
-									<input class="fullWidth button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectPrimaryCategory"/>
+									<input class="fullWidth ml-button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectPrimaryCategory"/>
 								</td>
 							</tr>
 							<tr>
 								<td class="label">' . ML_HOOD_SECONDARY_CATEGORY . ':</td>
 								<td>
-									<div class="hoodCatVisual" id="SecondaryCategoryVisual">
+									<div class="catVisual" id="SecondaryCategoryVisual">
 										<select id="SecondaryCategory" name="SecondaryCategory" style="width:100%">
 											' . $this->renderCategoryOptions('SecondaryCategory', $preSelected['SecondaryCategory'], $preSelected['SecondaryCategoryName']) . '
 										</select>
 									</div>
 								</td>
 								<td class="buttons">
-									<input class="fullWidth button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectSecondaryCategory"/>
+									<input class="fullWidth ml-button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectSecondaryCategory"/>
 								</td>
 							</tr>';
 		if ('noShop' != $this->shopType) {
@@ -739,14 +754,14 @@ class HoodPrepareView extends MagnaCompatibleBase {
 							<tr>
 								<td class="label">' . ML_HOOD_STORE_CATEGORY . ':</td>
 								<td>
-									<div class="hoodCatVisual" id="StoreCategoryVisual">
+									<div class="catVisual" id="StoreCategoryVisual">
 										<select id="StoreCategory" name="StoreCategory" style="width:100%">
 											' . $this->renderCategoryOptions('StoreCategory', $preSelected['StoreCategory'], $preSelected['StoreCategoryName']) . '
 										</select>
 									</div>
 								</td>
 								<td class="buttons">
-									<input class="fullWidth button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectStoreCategory"/>
+									<input class="fullWidth ml-button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectStoreCategory"/>
 								</td>
 							</tr>
 							<tr>
@@ -759,7 +774,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 									</div>
 								</td>
 								<td class="buttons">
-									<input class="fullWidth button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectStoreCategory2"/>
+									<input class="fullWidth ml-button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectStoreCategory2"/>
 								</td>
 							</tr>
 							<tr>
@@ -772,7 +787,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 									</div>
 								</td>
 								<td class="buttons">
-									<input class="fullWidth button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectStoreCategory3"/>
+									<input class="fullWidth ml-button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectStoreCategory3"/>
 								</td>
 							</tr>';
 		}
@@ -854,81 +869,19 @@ class HoodPrepareView extends MagnaCompatibleBase {
 			</tbody>';
 		ob_start();
 		?>
-		<style>
-			table.attributesTable table.inner
-			table.attributesTable table.inlinetable {
-				border: none;
-				border-spacing: 0px;
-				border-collapse: collapse;
-			}
-			table.attributesTable td.fullwidth {
-				width: 100%;
-			}
-			table.attributesTable table.fullwidth {
-				width: 100%;
-			}
-			table.attributesTable table.inner tr td {
-				border: none;
-				padding: 1px 2px;
-			}
-			table.attributesTable table.inner.middle tr td {
-				vertical-align: middle;
-			}
-			table.attributesTable table.categorySelect tr td.buttons {
-				width: 6em;
-			}
-			table.attributesTable table.categorySelect tr td.label {
-				width: 1em;
-				white-space: nowrap;
-			}
-			table.attributesTable table.inlinetable tr td {
-				border: none;
-				padding: 0;
-			}
-			table.attributesTable table.shippingDetails {
-				margin-bottom: 0.7em;
-			}
-			table.attributesTable table.shippingDetails:last-child {
-				margin-bottom: 0;
-			}
-			table.lightstlye {
-				border-collapse: collapse;
-			}
-			table.lightstlye td {
-				border-left: none;
-				border-right: none;
-				border-top: 1px dashed #ccc;
-				border-bottom: 1px dashed #ccc;
-			}
-			table.lightstlye tr:first-child td {
-				border-top: none;
-			}
-			table.lightstlye tr:last-child td {
-				border-bottom: none;
-			}
-			.line15 {
-				line-height: 1.5em;
-			}
-			.iceCrystal {
-				margin-left: 3px;
-			}
-			div.hoodCatVisual {
-				display: inline-block;
-				width: 100%;
-				height: 1.5em;
-				line-height: 1.5em;
-				background: #fff;
-				color: #000;
-				border: 1px solid #999;
-			}
-			textarea.resizableVert {
-				resize: vertical;
-			}
-		</style>
 		<script type="text/javascript">/*<![CDATA[*/
+			$(document).ajaxStart(function() {
+				myConsole.log('ajaxStart');
+				jQuery.blockUI(blockUILoading);
+			}).ajaxStop(function() {
+				myConsole.log('ajaxStop');
+				jQuery.unblockUI();
+			});
+			// Start blockui right now because the ajaxStart event gets registered to late.
+			jQuery.blockUI(blockUILoading);
+			
 			function getListingDurations() {
 				var preselectedDuration = '<?php echo $preSelected['ListingDuration']; ?>';
-				jQuery.blockUI(blockUILoading);
 				jQuery.ajax({
 					type: 'POST',
 					url: '<?php echo toURL($this->resources['url'], array('where' => 'prepareView', 'kind' => 'ajax'), true); ?>',
@@ -938,7 +891,6 @@ class HoodPrepareView extends MagnaCompatibleBase {
 						'preselected': preselectedDuration
 					},
 					success: function(data) {
-						jQuery.unblockUI();
 						if ('' === data) {
 							$('#TrListingDuration').css('display', 'none');
 						} else {
@@ -947,7 +899,6 @@ class HoodPrepareView extends MagnaCompatibleBase {
 						}
 					},
 					error: function() {
-						jQuery.unblockUI();
 					},
 					dataType: 'html'
 				});
@@ -1065,12 +1016,12 @@ class HoodPrepareView extends MagnaCompatibleBase {
 							<table><tbody><tr>
 								<td class="firstChild">'.(
 									($prepareView == 'single')
-										? '<input class="button" type="submit" name="unprepare" id="unprepare" value="' . ML_BUTTON_LABEL_REVERT . '"/>'
+										? '<input class="ml-button" type="submit" name="unprepare" id="unprepare" value="' . ML_BUTTON_LABEL_REVERT . '"/>'
 										: ''
 									).'
 								</td>
 								<td class="lastChild">
-									<input class="button" type="submit" name="savePrepareData" id="savePrepareData" value="' . ML_BUTTON_LABEL_SAVE_DATA . '"/>
+									<input class="ml-button" type="submit" name="savePrepareData" id="savePrepareData" value="' . ML_BUTTON_LABEL_SAVE_DATA . '"/>
 								</td>
 							</tr></tbody></table>
 						</td></tr>
@@ -1083,7 +1034,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 	public function process() {
 		$this->price = new SimplePrice(null, getCurrencyFromMarketplace($this->mpID));
 		$ycm = new HoodCategoryMatching('view');
-		return $ycm->render().$this->renderPrepareView($this->getSelection());
+		return $this->renderPrepareView($this->getSelection()).$ycm->render();
 	}
 	
 	public function renderAjax() {
@@ -1116,6 +1067,7 @@ class HoodPrepareView extends MagnaCompatibleBase {
 					$args = $_POST;
 					unset($args['function']);
 					unset($args['action']);
+					global $_url;
 					$tmpURL = $_url;
 					$tmpURL['where'] = 'prepareView';
 					if ('true' == $args['international']) {

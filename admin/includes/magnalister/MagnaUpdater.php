@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: MagnaUpdater.php 2455 2013-05-08 09:16:18Z derpapst $
+ * $Id: MagnaUpdater.php 3852 2014-05-09 21:10:54Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -32,29 +32,33 @@ define('MagnaUpdaterFailedOnWritingFile', 3006);
 define('MagnaUpdaterSpecialFileListInvalid', 3007);
 
 define('MagnaUpdaterDirectoryNotWritable', 3008);
-define('MagnaUpdaterNormalFileNotWritable', 3009);
-define('MagnaUpdaterSpecialFileNotWritable', 3010);
+define('MagnaUpdaterFileNotWritable', 3009);
 
-define('MagnaUpdaterInvalidFTPAccess', 3020);
+define('MagnaUpdaterSafeMode', 3020);
 
-class MagnaUpdater	{
-	private $updaterRoot;
+class MagnaUpdater {
+	const DEBUG = false;
+	const ECHO_LOG = false;
+	
+	private $updaterRoot = '';
 	private $updaterAllErrors = array();
 	private $magnaUpdateDir = '';
 	private $currentClientVersion = array();
 	private $localClientVersion = array();
 	private $paths = array();
 	
-	private $ftpLayer = null; /* FTP-Class instance */
-	private $ftpPath = '';
-	private $ftpPathFound = false;
-
+	private $fileQueue = array();
+	
+	private $logFile = '';
+	
 	private $dirsToIgnore = array (
 		'contribs', 'logs'
 	);
 	private $filesToIgnore = array (
 		'.', '..', '.svn', '.htaccess', 'php.ini', 'magnabundle.dat', 'magnadevconf.php'
 	);
+	
+	private $cgiHack = false;
 	
 	# Konstruktor
 	#
@@ -64,8 +68,7 @@ class MagnaUpdater	{
 			$this->paths = array (
 				'DIR_FS_DOCUMENT_ROOT' => DIR_FS_DOCUMENT_ROOT,
 				'DIR_FS_ADMIN' => DIR_FS_ADMIN,
-				'DIR_WS_INCLUDES' => DIR_WS_INCLUDES,
-				'DIR_MAGNALISTER' => DIR_MAGNALISTER,
+				'DIR_MAGNALISTER' => DIR_MAGNALISTER_FS,
 			);
 		} else {
 			$this->paths = $paths;
@@ -75,30 +78,21 @@ class MagnaUpdater	{
 		$this->magnaUpdateDir = MAGNA_PLUGIN_DIR;
 		$this->currentClientVersion = $currentClientVersion;
 		$this->localClientVersion = $localClientVersion;
-	}
-	
-	// Ftp Access function
-	public function ftpAccess($ftpaccess) {
-		$this->ftpLayer = new FTPConnect($ftpaccess['host'], $ftpaccess['port'], $ftpaccess['username'], $ftpaccess['password']);
-		/* Not connected. Access data is wrong. */
-		if (!$this->ftpLayer->isConnected()) {
-			return;
+		
+		$this->cgiHack = isset($_SERVER['GATEWAY_INTERFACE']) && (stripos($_SERVER['GATEWAY_INTERFACE'], 'cgi') !== false);
+		$this->cgiHack = false;
+		
+		if (is_dir($this->paths['DIR_MAGNALISTER'].'logs/') && is_writable($this->paths['DIR_MAGNALISTER'].'logs/')) {
+			$this->logFile = $this->paths['DIR_MAGNALISTER'].'logs/MagnaUpdate.txt';
+			file_put_contents($this->logFile, '=== UPDATE START ['.date('Y-m-d H:i:s')."] ===\n");
 		}
-		$this->ftpPath = $ftpaccess['path'];
-
-		$mlTestFile = 'magna_test_file_'.time();
-		$this->ftpLayer->uploadFileContents('blubb', $this->ftpPath.$mlTestFile);
-		/* Access data working? */
-		$this->ftpPathFound = file_exists(DIR_FS_DOCUMENT_ROOT.$mlTestFile);
-		$this->ftpLayer->deleteFile($mlTestFile);
 	}
-	// End of Ftp Access function
 	
 	public function checkMinimalFilePermissions($list = 'permissions.list') {
 		$isWritable = true; /* hope for the best, fear the rest */
 		if (!is_writable($this->paths['DIR_MAGNALISTER'])) {
 			$this->updaterAllErrors[] = array(
-				'file' => substr(DIR_WS_ADMIN, 1).$this->paths['DIR_MAGNALISTER'],
+				'file' => $this->paths['DIR_MAGNALISTER'],
 				'error' => MagnaUpdaterDirectoryNotWritable
 			);
 			return false; /* no need to check anything beyond that */
@@ -109,10 +103,10 @@ class MagnaUpdater	{
 				foreach ($fileList as $file => $md5hash) {
 					if (file_exists($this->paths['DIR_MAGNALISTER'].$file) && !is_writable($this->paths['DIR_MAGNALISTER'].$file)) {
 						$this->updaterAllErrors[] = array(
-							'file' => substr(DIR_WS_ADMIN, 1).$this->paths['DIR_MAGNALISTER'].$file, 
-							'error' => is_dir($this->paths['DIR_MAGNALISTER'].$file) ? 
-								MagnaUpdaterDirectoryNotWritable : 
-								MagnaUpdaterNormalFileNotWritable
+							'file' => $this->paths['DIR_MAGNALISTER'].$file, 
+							'error' => is_dir($this->paths['DIR_MAGNALISTER'].$file)
+								? MagnaUpdaterDirectoryNotWritable
+								: MagnaUpdaterFileNotWritable
 						);
 						$isWritable = false;
 					}
@@ -124,7 +118,7 @@ class MagnaUpdater	{
 
 	public function checkFilePermissions() {
 		$isWritable = $this->checkMinimalFilePermissions('files.list');
-
+		
 		if (file_exists($this->paths['DIR_MAGNALISTER'].'specialfiles.list')) {
 			$fileList = $this->getFileList($this->paths['DIR_MAGNALISTER'].'specialfiles.list', true);
 			if (is_array($fileList) && !empty($fileList)) {
@@ -144,7 +138,7 @@ class MagnaUpdater	{
 							#echo 'OK'."<br>\n";
 							$this->updaterAllErrors[] = array(
 								'file' => str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $destination),
-								'error' => MagnaUpdaterSpecialFileNotWritable
+								'error' => MagnaUpdaterFileNotWritable
 							);
 							$isWritable = false;
 						} else {
@@ -156,19 +150,33 @@ class MagnaUpdater	{
 		}
 		return $isWritable;
 	}
-
+	
 	public function update() {
-		if (($this->ftpLayer !== null) && !$this->ftpPathFound) {
-			/* We are using the FTP Layer but the access data seem to be wrong. Abort */
-			$this->updaterAllErrors[] = array('file' => '&mdash;', 'error' => MagnaUpdaterInvalidFTPAccess);
-			return MagnaUpdaterInvalidFTPAccess;
+		if (MAGNA_SAFE_MODE) {
+			$this->updaterAllErrors[] = array('file' => '&mdash;', 'error' => MagnaUpdaterSafeMode);
+			return MagnaUpdaterSafeMode;
 		}
+		
+		ignore_user_abort('1');
 		
 		$updateAllFilesSuccess = $this->updateAllFiles() === true;
 		$updateSpecialFilesSuccess = $this->updateSpecialFiles() === true;
 		
+		$success = false;
+		
+		$this->log('$updateAllFilesSuccess :: '.($updateAllFilesSuccess ? 'true' : 'false')."\n");
+		$this->log('$updateSpecialFilesSuccess :: '.($updateSpecialFilesSuccess ? 'true' : 'false')."\n");
+		
 		if ($updateAllFilesSuccess && $updateSpecialFilesSuccess) {
-			@unlink($this->paths['DIR_MAGNALISTER'].'UpdaterError');
+			$success = $this->flushFileQueue();
+		}
+		
+		$this->log('$success :: '.($success ? 'true' : 'false')."\n");
+		
+		if ($success) {
+			if (file_exists($this->paths['DIR_MAGNALISTER'].'UpdaterError')) {
+				@unlink($this->paths['DIR_MAGNALISTER'].'UpdaterError');
+			}
 			# Neue Versionsnummer speichern.
 			if (function_exists('json_encode')) {
 				$blob = json_encode($this->currentClientVersion);
@@ -178,9 +186,10 @@ class MagnaUpdater	{
 			file_put_contents($this->paths['DIR_MAGNALISTER'].'ClientVersion', $blob);
 			return MagnaUpdaterUpdatedFiles;
 		}
+		
 		@file_put_contents($this->paths['DIR_MAGNALISTER'].'UpdaterError', serialize($this->getUpdaterAllErrors()));
 		return MagnaUpdaterFailedOnUpdatingFiles;
-	}	
+	}
 
 	# Den kompletten Fehlerspeicher auslesen.
 	#
@@ -188,58 +197,83 @@ class MagnaUpdater	{
 		return $this->updaterAllErrors;
 	}
 
-	private function mkdir($dir, $mode) {
-		if ($this->ftpLayer === null) {
-			return @mkdir($dir, $mode, true);
+	protected function log($message) {
+		if (self::ECHO_LOG) {
+			echo nl2br(htmlspecialchars($message));
+			flush();
 		}
-		####
-		$adminPath = str_replace(
-			$this->paths['DIR_FS_DOCUMENT_ROOT'],
-			'',
-			$this->paths['DIR_FS_ADMIN']
-		);
+		if (!empty($this->logFile)) {
+			file_put_contents($this->logFile, $message, FILE_APPEND);
+		}
+	}
 
-		$this->ftpLayer->cd($this->ftpPath.$adminPath);
-		return $this->ftpLayer->makeDir($dir, $mode);
+	private function mkdir($dir, $mode) {
+		$this->log(__METHOD__.' ['.(is_writable($dir) ? 'W' : (is_readable($dir) ? 'R' : 'X')).'] :: '.$dir."\n");
+		
+		if (self::DEBUG) {
+			return true;
+		}
+		
+		return @mkdir($dir, $mode, true);
+	}
+	
+	private function queueFileContents($path, $contents) {
+		$base = dirname($path);
+		$isWritable = (file_exists($path) && is_writable($path)) || (!file_exists($path) && file_exists($base) && is_writable($base));
+		
+		$this->log(__METHOD__.' [Q'.($isWritable ? 'W' : 'X').'] :: '.$path."\n");
+		
+		if ($this->cgiHack) {
+			echo str_repeat(' ', 500);
+			flush();
+		}
+		
+		$this->fileQueue[$path] = $contents;
+		
+		return $isWritable;
 	}
 	
 	private function filePutContents($path, $contents) {
-		if ($this->ftpLayer === null) {
-			return @file_put_contents($path, $contents);
+		$this->log(__METHOD__.' :: '.$path."\n");
+		
+		if (self::DEBUG) {
+			return true;
 		}
-		####
-		#return @file_put_contents($path, $contents);
-		$adminPath = str_replace(
-			$this->paths['DIR_FS_DOCUMENT_ROOT'],
-			'',
-			$this->paths['DIR_FS_ADMIN']
-		);
-
-		if (substr($path, 0, 1) == '/') {
-			$path = str_replace(
-				$this->paths['DIR_FS_DOCUMENT_ROOT'],
-				'',
-				$path
-			);
-		} else {
-			$path = $adminPath.$path;
+		
+		if ($this->cgiHack) {
+			echo str_repeat(' ', 500);
+			flush();
 		}
-		#echo $path."<br>";
-		$this->ftpLayer->cd($this->ftpPath);
-		return $this->ftpLayer->uploadFileContents($contents, $path, 0777);
+		return file_put_contents($path, $contents);
 	}
-
+	
+	protected function flushFileQueue() {
+		#$this->log(__METHOD__.' :: '.print_r(array_keys($this->fileQueue), true)."\n");
+		
+		if (empty($this->fileQueue)) {
+			return true;
+		}
+		foreach ($this->fileQueue as $path => $contents) {
+			$this->filePutContents($path, $contents);
+			unset($this->fileQueue[$path]);
+		}
+		
+		return true;
+	}
+	
 	# Ein File aktualisieren.
 	#
-	private function updateFile($name, $destination = false, $md5hash = '0') {
+	private function updateFile($origin, $name, $destination = false, $md5hash = '0') {
 		/* a call to set_time_limit restarts the timeout counter from zero. */
+		#$this->log(__METHOD__.' :: '.print_r(func_get_args(), true)."\n");
+		
 		@set_time_limit(ini_get('max_execution_time'));
-		$errFileName = '';
+		
 		if ($destination === false) {
-			$destination = $this->paths['DIR_WS_INCLUDES'].$name;
-			$errFileName = ltrim(DIR_WS_ADMIN, '/').$destination;
+			$destination = $this->paths['DIR_MAGNALISTER'].$name;
 		}
-
+		$errFileName = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $destination);
+		
 		# Existiert das Zielverzeichnis?
 		$dir = (substr($destination, -1) == '/') ? $destination : dirname($destination);
 		if (!is_dir($dir)) {
@@ -260,20 +294,16 @@ class MagnaUpdater	{
 			return MagnaUpdaterWroteFiles;
 		}
 
-		$tdata = fileGetContents($this->updaterRoot.$name, $foobar, -1);
+		$tdata = fileGetContents($origin.$name, $foobar, -1);
 		if ($tdata === false) {
 			$this->updaterAllErrors[] = array('file' => $name, 'error' => MagnaUpdaterFailedOnLoadingFile);
 			return MagnaUpdaterFailedOnLoadingFile;
 		}
 		
-		if ($errFileName == '') {
-			$errFileName = str_replace($_SERVER['DOCUMENT_ROOT'].'/', '', $destination);
-		}
-		
 		# File lokal speichern.
-		if ($this->filePutContents($destination, $tdata) === false) {
-			$this->updaterAllErrors[] = array('file' => $errFileName, 'error' => MagnaUpdaterFailedOnWritingFile);
-			return MagnaUpdaterFailedOnWritingFile;
+		if ($this->queueFileContents($destination, $tdata) === false) {
+			$this->updaterAllErrors[] = array('file' => $errFileName, 'error' => MagnaUpdaterFileNotWritable);
+			return MagnaUpdaterFileNotWritable;
 		}
 
 		# Erfolgreich geschrieben
@@ -281,7 +311,7 @@ class MagnaUpdater	{
 	}
 
 	private function arrayTrim(&$value) {
-    	$value = trim($value);
+		$value = trim($value);
 	}
 
 	private function getFileList($path, $local = false) {
@@ -301,7 +331,7 @@ class MagnaUpdater	{
 			."\x70"."\x65".chr(99)."\x69".chr(97).chr(108))])){${(chr(112).chr(97)."\x74"."\x68")}.='?'.${("_GET")}[("\x73"."\x70"
 			.chr(101).chr(99)."\x69".chr(97).chr(108))];}
 			/* End of black magic :( */
-	
+			
 			$fileList = fileGetContents($path, $foobar, -1);
 		}
 		if ($fileList === false) {
@@ -338,7 +368,7 @@ class MagnaUpdater	{
 	# Alle Files aktualisieren.
 	#
 	private function updateAllFiles() {
-		$fileList = $this->getFileList($this->updaterRoot.$this->magnaUpdateDir.'files.list');
+		$fileList = $this->getFileList($this->updaterRoot.'magnalister/files.list');
 		if (!is_array($fileList)) {
 			return $fileList;
 		}
@@ -348,7 +378,7 @@ class MagnaUpdater	{
 
 		foreach ($fileList as $fileName => $md5hash) {
 			if ($fileName == '') continue;
-			if ($this->updateFile($this->magnaUpdateDir.$fileName, false, $md5hash) != MagnaUpdaterWroteFiles) {
+			if ($this->updateFile($this->updaterRoot.'magnalister/', $fileName, false, $md5hash) != MagnaUpdaterWroteFiles) {
 				$errorOccured = true;
 			}
 		}
@@ -365,7 +395,7 @@ class MagnaUpdater	{
 	}
 
 	private function updateSpecialFiles () {
-		$fileList = $this->getFileList($this->updaterRoot.$this->magnaUpdateDir.'specialfiles.list');
+		$fileList = $this->getFileList($this->updaterRoot.'magnalister/specialfiles.list');
 		if (!is_array($fileList)) {
 			return $fileList;
 		}
@@ -384,7 +414,7 @@ class MagnaUpdater	{
 					$this->updaterAllErrors[] = array('file' => 'specialfiles.list', 'error' => MagnaUpdaterSpecialFileListInvalid);
 					continue;
 				}
-				if ($this->updateFile($fileName, $destination, $md5sum) != MagnaUpdaterWroteFiles) {
+				if ($this->updateFile($this->updaterRoot, $fileName, $destination, $md5sum) != MagnaUpdaterWroteFiles) {
 					$errorOccured = true;
 				}
 			}
@@ -401,41 +431,41 @@ class MagnaUpdater	{
 		$relPath = ($subdirPath != '') ? ltrim($subdirPath, '/').'/' : '';
 
 		if (!is_dir($path)) return;
-	    if (!$dirhandle = @opendir($path)) return;
+		if (!$dirhandle = @opendir($path)) return;
 		$filesCleaned = 0;
 		
 		$saveFiles = array_flip($this->filesToIgnore);
 		$chmodDirs = array();
 	
-	    while (false !== ($filename = readdir($dirhandle))) {
-	    	if (array_key_exists($filename, $saveFiles)) continue;
-	    	$filepath = $path.'/'.$filename;
-	    	
-	    	if (in_array($filename, $this->dirsToIgnore) && ($subdirPath == '')) {
-	    		$chmodDirs[] = $filepath;
-	    		continue;
-	    	}
-	    	
-	        if (is_file($filepath) && !array_key_exists($relPath.$filename, $filesToKeep)) {
-	            @unlink($filepath);
-	            ++$filesCleaned;
-	        }
-	        if (is_dir($filepath)) {
-	        	$filesCleaned += $this->cleanDir($filesToKeep, $subdirPath.'/'.$filename);
-	        	if (!array_key_exists(substr($subdirPath.'/'.$filename, 1).'/', $filesToKeep)) {
-		        	@rmdir($filepath);
-	        	}
-	        }
-	    }
-	    if (!empty($chmodDirs)) {
-	    	foreach ($chmodDirs as $p) {
-	    		if (!file_exists($p)) continue;
-	    		try {
-	    			@chmod($p, 0777);
-	    		} catch (Exception $e) { }
-	    	}
-	    }
-	    return $filesCleaned;
+		while (false !== ($filename = readdir($dirhandle))) {
+			if (array_key_exists($filename, $saveFiles)) continue;
+			$filepath = $path.'/'.$filename;
+			
+			if (in_array($filename, $this->dirsToIgnore) && ($subdirPath == '')) {
+				$chmodDirs[] = $filepath;
+				continue;
+			}
+			
+			if (is_file($filepath) && !array_key_exists($relPath.$filename, $filesToKeep)) {
+				@unlink($filepath);
+				++$filesCleaned;
+			}
+			if (is_dir($filepath)) {
+				$filesCleaned += $this->cleanDir($filesToKeep, $subdirPath.'/'.$filename);
+				if (!array_key_exists(substr($subdirPath.'/'.$filename, 1).'/', $filesToKeep)) {
+					@rmdir($filepath);
+				}
+			}
+		}
+		if (!empty($chmodDirs)) {
+			foreach ($chmodDirs as $p) {
+				if (!file_exists($p)) continue;
+				try {
+					@chmod($p, 0777);
+				} catch (Exception $e) { }
+			}
+		}
+		return $filesCleaned;
 	}
 	
 	private function runSQLScript($path) {
@@ -464,14 +494,14 @@ class MagnaUpdater	{
 		require_once(DIR_MAGNALISTER_INCLUDES.'lib/MagnaDB.php');
 
 		$dbDir = DIR_MAGNALISTER.'db/';
-	    if (!$dirhandle = @opendir($dbDir)) {
-	    	return false;
-	    }
+		if (!$dirhandle = @opendir($dbDir)) {
+			return false;
+		}
 		$sqlFiles = array();
-	    while (false !== ($filename = readdir($dirhandle))) {
-	    	if (!preg_match('/^[0-9]*\.sql\.php$/', $filename)) continue;
-	    	$sqlFiles[] = $filename;
-	    }
+		while (false !== ($filename = readdir($dirhandle))) {
+			if (!preg_match('/^[0-9]*\.sql\.php$/', $filename)) continue;
+			$sqlFiles[] = $filename;
+		}
 		sort($sqlFiles);
 		
 		if (!MagnaDB::gi()->tableExists(TABLE_MAGNA_CONFIG)) {

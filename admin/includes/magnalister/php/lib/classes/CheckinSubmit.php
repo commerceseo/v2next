@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: CheckinSubmit.php 3576 2014-03-07 11:45:24Z derpapst $
+ * $Id: CheckinSubmit.php 4349 2014-08-07 13:24:07Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -61,15 +61,11 @@ abstract class CheckinSubmit {
 		$this->settings = array_merge(array(
 			'itemsPerBatch'   => 50,
 			'selectionName'   => 'checkin',
-			'language'        => $_SESSION['languages_id'],
+			'language'        => getDBConfigValue($settings['marketplace'].'.lang', $_MagnaSession['mpID'], $_SESSION['languages_id']),
 			'currency'        => DEFAULT_CURRENCY,
 			'mlProductsUseLegacy' => true,
 		), $settings);
-		
-		$tLang = getDBConfigValue($settings['marketplace'].'.lang', $_MagnaSession['mpID'], false);
-		if ($tLang !== false) {
-			$this->settings['language'] = $tLang;
-		}
+
 		$this->_magnasession = &$_MagnaSession;
 		$this->_magnashopsession = &$_MagnaShopSession;
 		$this->magnaConfig = &$magnaConfig;
@@ -77,7 +73,7 @@ abstract class CheckinSubmit {
 		$this->realUrl = array (
 			'mp' => $this->mpID,
 			'mode' => $_magnaQuery['mode'],
-			'view' => (isset($_magnaQuery['view'])?$_magnaQuery['view']:'')
+			'view' => (isset($_magnaQuery['view']) ? $_magnaQuery['view'] : '')
 		);
 		
 		$this->simpleprice = new SimplePrice();
@@ -199,7 +195,7 @@ abstract class CheckinSubmit {
 				$product = MLProduct::gi()->getProductByIdOld($pID, $this->settings['language']);
 			} else {
 				// @todo: Do not always purge the variations.
-				$product = MLProduct::gi()->getProductById($pID, true);
+				$product = MLProduct::gi()->getProductById($pID, array('purgeVariations' => true));
 			}
 
 			if (!$this->checkSingleItem($pID, $product, $data) || !is_array($product)) {
@@ -340,10 +336,13 @@ abstract class CheckinSubmit {
 	}
 
 	public function submit($abort = false) {
-		unset($_SESSION['magna_deletedFilter']); // Reset ebay inventory infos. @see CheckinCategoryView
+		if (isset($_SESSION['magna_deletedFilter'])) {
+			// Reset inventory infos. @see CheckinCategoryView
+			unset($_SESSION['magna_deletedFilter'][$this->mpID]);
+		}
 		$this->initSelection(0, $this->settings['itemsPerBatch']);
 		$this->ajaxReply['itemsPerBatch'] = $this->settings['itemsPerBatch'];
-
+		
 		/* Spaetestens beim 2. Durchgang muessen die Artukel hinzugefuegt werden,
 		   da sie sonst die Artikel des 1. Durchganges zuvor loeschen wuerden. */
 		if ($this->submitSession['state']['submitted'] > 0) {
@@ -470,7 +469,7 @@ abstract class CheckinSubmit {
 		';
 		
 		ob_start();?>
-<script type="text/javascript" src="includes/magnalister/js/classes/CheckinSubmit.js?<?php echo CLIENT_BUILD_VERSION?>"></script>
+<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/classes/CheckinSubmit.js?<?php echo CLIENT_BUILD_VERSION?>"></script>
 <script type="text/javascript">/*<![CDATA[*/
 $(document).ready(function() {
 	var csaj = new GenericCheckinSubmitAjaxController();

@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: column_top.php 1012 2014-05-08 13:02:25Z akausch $
+ * 	$Id: column_top.php 1144 2014-07-10 09:31:57Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -32,7 +32,15 @@ $p = $p[0];
 			<ul class="nav navbar-nav">
 				<!-- Produkte -->
 				<li class="dropdown menu">
-					<a href="<?php echo xtc_href_link(FILENAME_CATEGORIES); ?>" class="dropdown-toggle"><?php echo PRODUCTS ?> <b class="caret"></b></a>			
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT categories FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['categories'] == '1') {
+							$plink = 'href="'.xtc_href_link(FILENAME_CATEGORIES).'"';
+						} else {
+							$plink = '';
+						}
+					?>
+					<a <?php echo $plink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-folder-open"></span><?php echo PRODUCTS; ?> <span class="caret"></span></a>			
 					<ul class="dropdown-menu">
 						<?php
 						$navi_products_sql = xtc_db_query("SELECT 
@@ -40,17 +48,19 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
-																subsite = 'products' 
+																an.subsite = 'products' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
-															ORDER BY an.sort");
+															ORDER BY an.sort, an.name");
 						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
 							if ($navi['gid'] == '') {
 								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
 							} elseif ($navi['gid'] != '') {
 								echo '<li ' . ($_GET['gID'] == $navi['gid'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename'], 'gID=' . $navi['gid']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							}
 							}
 						}
 						?>
@@ -61,10 +71,18 @@ $p = $p[0];
 					<?php
 					$order_count = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_ORDERS . " WHERE orders_status = '1'"));
 					if ($order_count['count'] > 0) {
-						$counter = '&nbsp;<b class="numberRed">' . $order_count['count'] . '</b>';
+						$counter = '<span class="label label-danger">' . $order_count['count'] . '</span>';
 					}
 					?>
-					<a href="<?php echo xtc_href_link('orders.php'); ?>" class="dropdown-toggle"><?php echo CUSTOMERS . $counter ?> <b class="caret"></b></a>
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT orders FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['orders'] == '1') {
+							$olink = 'href="'.xtc_href_link('orders.php').'"';
+						} else {
+							$olink = '';
+						}
+					?>
+					<a <?php echo $olink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-user"></span><?php echo CUSTOMERS . $counter; ?><span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<?php
 						$navi_products_sql = xtc_db_query("SELECT 
@@ -72,17 +90,19 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'customers' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");
 						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
 							if ($navi['gid'] == '') {
 								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
 							} elseif ($navi['gid'] != '') {
 								echo '<li ' . ($_GET['gID'] == $navi['gid'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename'], 'gID=' . $navi['gid']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							}
 							}
 						}
 						?>
@@ -91,7 +111,15 @@ $p = $p[0];
 				</li>
 				<!-- Module -->
 				<li class="dropdown menu">
-					<a href="<?php echo xtc_href_link(FILENAME_MODULES, 'set=payment'); ?>" class="dropdown-toggle"> <?php echo MODULES ?> <b class="caret"></b></a>
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT modules FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['modules'] == '1') {
+							$mlink = 'href="'.xtc_href_link(FILENAME_MODULES, 'set=payment').'"';
+						} else {
+							$mlink = '';
+						}
+					?>
+					<a <?php echo $mlink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-tasks"></span><?php echo MODULES; ?><span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<?php
 						$navi_products_sql = xtc_db_query("SELECT 
@@ -99,26 +127,36 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'modules' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");
 						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
 							if ($navi['nav_set'] == '') {
 								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
 							} elseif ($navi['nav_set'] != '') {
 								echo '<li ' . ($_GET['set'] == $navi['nav_set'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename'], 'set=' . $navi['nav_set']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							}
 							}
 						}
 						?>
 					</ul>
 				</li>			
 				<!-- Gutscheine -->
-	<?php if (ACTIVATE_GIFT_SYSTEM == 'true') { ?>
+				<?php if (ACTIVATE_GIFT_SYSTEM == 'true') { ?>
 					<li class="dropdown menu">
-						<a href="<?php echo xtc_href_link(FILENAME_COUPON_ADMIN); ?>" class="dropdown-toggle"><?php echo GIFT; ?> <b class="caret"></b></a>
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT coupon_admin FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['coupon_admin'] == '1') {
+							$glink = 'href="'.xtc_href_link(FILENAME_COUPON_ADMIN).'"';
+						} else {
+							$glink = '';
+						}
+					?>
+						<a <?php echo $glink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-gift"></span><?php echo GIFT; ?><span class="caret"></span></a>
 						<ul class="dropdown-menu">
 							<?php
 							$navi_products_sql = xtc_db_query("SELECT 
@@ -126,15 +164,17 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'gift' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");
 							while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+							if($navi[$navi['name']] != '0'){
 								if ($navi['nav_set'] == '') {
 									echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+								}
 								}
 							}
 							?>
@@ -145,9 +185,17 @@ $p = $p[0];
 				<li class="dropdown menu">
 					<?php
 					$who_count = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_WHOS_ONLINE));
-					$counters = '&nbsp;<b class="numberGreen">' . $who_count['count'] . '</b>';
+					$counters = '<span class="label label-success">' . $who_count['count'] . '</span>';
 					?>
-					<a href="<?php echo xtc_href_link('whos_online.php'); ?>" class="dropdown-toggle"><?php echo HEADER_TITLE_STATISTICS . $counters ?> <b class="caret"></b></a>
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT whos_online FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['whos_online'] == '1') {
+							$slink = 'href="'.xtc_href_link('whos_online.php').'"';
+						} else {
+							$slink = '';
+						}
+					?>
+					<a <?php echo $slink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-stats"></span><?php echo HEADER_TITLE_STATISTICS . $counters; ?><span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<?php
 						$navi_products_sql = xtc_db_query("SELECT 
@@ -155,15 +203,17 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'statistics' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");
 						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
 							if ($navi['nav_set'] == '') {
 								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							}
 							}
 						}
 						?>
@@ -171,7 +221,15 @@ $p = $p[0];
 				</li>
 				<!-- Tools -->
 				<li class="dropdown menu">
-					<a href="<?php echo xtc_href_link(FILENAME_CONTENT_MANAGER); ?>" class="dropdown-toggle"><?php echo TOOLS ?> <b class="caret"></b></a>
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT content_manager FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['content_manager'] == '1') {
+							$tlink = 'href="'.xtc_href_link(FILENAME_CONTENT_MANAGER).'"';
+						} else {
+							$tlink = '';
+						}
+					?>
+					<a <?php echo $tlink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-cog"></span><?php echo TOOLS; ?><span class="caret"></span></a>
 					<ul class="dropdown-menu">
 						<?php
 						$navi_products_sql = xtc_db_query("SELECT 
@@ -179,15 +237,17 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'tools' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");
 						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
 							if ($navi['nav_set'] == '') {
 								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							}
 							}
 						}
 						?>
@@ -195,7 +255,15 @@ $p = $p[0];
 				</li>
 				<!-- SEO Config -->
 				<li class="dropdown menu">
-					<a href="<?php echo xtc_href_link(FILENAME_CONFIGURATION, 'gID=155'); ?>" class="dropdown-toggle">Einstellungen <b class="caret"></b></a>			
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT configuration FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['configuration'] == '1') {
+							$cslink = 'href="'.xtc_href_link(FILENAME_CONFIGURATION, 'gID=155').'"';
+						} else {
+							$cslink = '';
+						}
+					?>
+					<a <?php echo $cslink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-wrench"></span>Einstellungen<span class="caret"></span></a>			
 					<ul class="dropdown-menu">
 						<?php
 						$navi_products_sql = xtc_db_query("SELECT 
@@ -203,17 +271,19 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'seo_config' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");
 						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
 							if ($navi['gid'] == '') {
 								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
 							} elseif ($navi['gid'] != '') {
 								echo '<li ' . ($_GET['gID'] == $navi['gid'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename'], 'gID=' . $navi['gid']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							}
 							}
 						}
 						?>
@@ -221,7 +291,15 @@ $p = $p[0];
 				</li>
 				<!-- Country Config -->
 				<li class="dropdown menu">
-					<a href="<?php echo xtc_href_link(FILENAME_LANGUAGES); ?>" class="dropdown-toggle"><?php echo COUNRTY ?> <b class="caret"></b></a>			
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT languages FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['languages'] == '1') {
+							$llink = 'href="'.xtc_href_link(FILENAME_LANGUAGES).'"';
+						} else {
+							$llink = '';
+						}
+					?>
+					<a <?php echo $llink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-map-marker"></span><?php echo COUNRTY; ?><span class="caret"></span></a>			
 					<ul class="dropdown-menu">
 						<?php
 						$navi_products_sql = xtc_db_query("SELECT 
@@ -229,17 +307,19 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'zones' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");
 						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
 							if ($navi['gid'] == '') {
 								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
 							} elseif ($navi['gid'] != '') {
 								echo '<li ' . ($_GET['gID'] == $navi['gid'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename'], 'gID=' . $navi['gid']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							}
 							}
 						}
 						?>
@@ -247,7 +327,15 @@ $p = $p[0];
 				</li>
 				<!-- Config -->
 				<li class="dropdown menu">
-					<a href="<?php echo xtc_href_link(FILENAME_CONFIGURATION, 'gID=1'); ?>" class="dropdown-toggle"><?php echo CONFIG ?> <b class="caret"></b></a>			
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT configuration FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['configuration'] == '1') {
+							$cclink = 'href="'.xtc_href_link(FILENAME_CONFIGURATION, 'gID=1').'"';
+						} else {
+							$cclink = '';
+						}
+					?>
+					<a <?php echo $cclink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-wrench"></span><?php echo CONFIG; ?><span class="caret"></span></a>			
 					<ul class="dropdown-menu">
 						<?php
 						$navi_products_sql = xtc_db_query("SELECT 
@@ -255,44 +343,34 @@ $p = $p[0];
 															FROM 
 																" . TABLE_ADMIN_NAVIGATION . " AS an
 															LEFT JOIN 
-																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' AND an.name = '1')
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'config' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");
 						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
 							if ($navi['gid'] == '') {
 								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
 							} elseif ($navi['gid'] != '') {
 								echo '<li ' . ($_GET['gID'] == $navi['gid'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename'], 'gID=' . $navi['gid']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
 							}
+							}
 						}
 						?>
 					</ul>
 				</li>
+				<!-- Shopgate -->
+				 <?php include_once DIR_FS_DOCUMENT_ROOT.'includes/external/shopgate/base/admin/includes/column_left.php'; ?>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-			<li class="dropdown menu">
-			<a href="#" class="dropdown-toggle">Tools <b class="caret"></b></a>
-			<ul class="dropdown-menu navright">
-			<?php
-			$languages = xtc_get_languages_head();
-			for ($i = 0, $n = sizeof($languages); $i < $n; $i++) {
-				echo '<li><a href="' . basename($_SERVER['SCRIPT_NAME']) . '?language=' . $languages[$i]['code'] . '">' . xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']) . '</a></li>';
-			}
-			?>
-    <li class="divider"></li>
-        <li><b>Version: <?php echo $version['version']; ?></b></li>
-		<li class="divider"></li>
-        <li><a href="http://www.commerce-seo.de/support/" target="_blank">Support</a></li>
-        <li><a href="<?php echo xtc_href_link('cseo_center_security.php', 'subsite=tools'); ?>">Security-Center</a></li>
-<li><a href="../index.php" target="_blank">Shop</a></li>
-<li><a href="<?php echo xtc_href_link(FILENAME_LOGOUT); ?>">Logout</a></li>
-<li><a href="<?php echo xtc_href_link('delete_cache.php', 'subsite=tools'); ?>">Cache leeren</a></li>
-<li><a href="<?php echo xtc_href_link('module_system.php', 'subsite=modules&set=&module=commerce_seo_url'); ?>">SEO-URL</a></li>
-			</ul>
-			</li>
+				<?php
+				$languages = xtc_get_languages_head();
+				for ($i = 0, $n = sizeof($languages); $i < $n; $i++) {
+					echo '<li><a href="' . basename($_SERVER['SCRIPT_NAME']) . '?language=' . $languages[$i]['code'] . '">' . xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']) . '</a></li>';
+				}
+				?>
 			</ul>
 		</div>
 	</div>

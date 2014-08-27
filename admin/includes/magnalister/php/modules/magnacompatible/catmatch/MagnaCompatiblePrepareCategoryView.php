@@ -29,7 +29,13 @@ class MagnaCompatiblePrepareCategoryView extends SimpleCategoryView {
 			$this->simplePrice->setCurrency(getCurrencyFromMarketplace($this->_magnasession['mpID']));
 		}
 	}
-
+	
+	protected function init() {
+		parent::init();
+		
+		$this->productIdFilterRegister('ManufacturerFilter', array());
+	}
+	
 	public function getAdditionalHeadlines() {
 		return '
 			<td class="lowestprice">'.ML_MAGNACOMPAT_LABEL_CATEGORY.'</td>
@@ -71,35 +77,35 @@ class MagnaCompatiblePrepareCategoryView extends SimpleCategoryView {
 				/* Keine Artikel beantragt */
 				return $html.'
 					<td title="'.ML_MAGNACOMPAT_LABEL_CATMATCH_NOT_PREPARED.'">'.
-						html_image(DIR_MAGNALISTER_IMAGES . 'status/grey_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_NOT_PREPARED, 12, 12).
+						html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/grey_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_NOT_PREPARED, 12, 12).
 					'</td>';
 			}
 			if ($itemsApplied['incompleteCount'] == $totalItems) {
 				/* Alle Artikel in Kategorie unvollstaendig beantragt */
 				return $html.'
 					<td title="'.ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE.'">'.
-						html_image(DIR_MAGNALISTER_IMAGES . 'status/red_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE, 12, 12).
+						html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/red_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE, 12, 12).
 					'</td>';
 			}
 			if (($itemsApplied['itemsCount'] == $totalItems) && ($itemsApplied['incompleteCount'] == 0)) {
 				/* Alle Artikel in Kategorie beantragt */
 				return $html.'
 					<td title="'.ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_COMPLETE.'">'.
-						html_image(DIR_MAGNALISTER_IMAGES . 'status/green_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_COMPLETE, 12, 12).
+						html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/green_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_COMPLETE, 12, 12).
 					'</td>';
 			}
 			if ($itemsApplied['itemsCount'] > 0) {
 				/* Einige nicht beantragt */
 				return $html.'
 					<td title="'.ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE.'">'.
-						html_image(DIR_MAGNALISTER_IMAGES . 'status/yellow_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE, 12, 12).
+						html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/yellow_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE, 12, 12).
 					'</td>';
 			}
 		}
 		return $html.'
 			<td title="'.ML_ERROR_UNKNOWN.' $itemsApplied:'.print_m($itemsApplied, true).' $totalItems:'.$totalItems.'">'.
-				html_image(DIR_MAGNALISTER_IMAGES . 'status/red_dot.png', ML_ERROR_UNKNOWN, 12, 12).
-				html_image(DIR_MAGNALISTER_IMAGES . 'status/red_dot.png', ML_ERROR_UNKNOWN, 12, 12).
+				html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/red_dot.png', ML_ERROR_UNKNOWN, 12, 12).
+				html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/red_dot.png', ML_ERROR_UNKNOWN, 12, 12).
 			'</td>';
 	}
 
@@ -115,7 +121,7 @@ class MagnaCompatiblePrepareCategoryView extends SimpleCategoryView {
 			</tbody></table>';
 	}
 
-	public function getAdditionalProductInfo($pID, $product) {
+	public function getAdditionalProductInfo($pID, $product=false) {
 		$a = MagnaDB::gi()->fetchRow(eecho('
 			SELECT products_id, mp_category_id, store_category_id
 			  FROM '.TABLE_MAGNA_COMPAT_CATEGORYMATCHING.' 
@@ -130,16 +136,16 @@ class MagnaCompatiblePrepareCategoryView extends SimpleCategoryView {
 			if ($a['mp_category_id'] != '') {
 				return '
 					<td>'.$this->renderCatBlock($a).'</td>
-					<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/green_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_COMPLETE, 12, 12).'</td>';				
+					<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/green_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_COMPLETE, 12, 12).'</td>';				
 			} else {
 				return '
 					<td>'.$this->renderCatBlock($a).'</td>
-					<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/red_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE, 12, 12).'</td>';				
+					<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/red_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_PREPARE_INCOMPLETE, 12, 12).'</td>';				
 			}
 		}
 		return '
 			<td>&mdash;</td>
-			<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/grey_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_NOT_PREPARED, 12, 12).'</td>';
+			<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/grey_dot.png', ML_MAGNACOMPAT_LABEL_CATMATCH_NOT_PREPARED, 12, 12).'</td>';
 	}
 
 	public function getFunctionButtons() {
@@ -153,7 +159,7 @@ class MagnaCompatiblePrepareCategoryView extends SimpleCategoryView {
 			<table class="right"><tbody>
 				<tr>
 					<td class="texcenter inputCell">
-						<input type="submit" class="fullWidth button smallmargin" value="'.ML_EBAY_LABEL_PREPARE.'" id="prepare" name="prepare"/>
+						<input type="submit" class="fullWidth ml-button smallmargin" value="'.ML_EBAY_LABEL_PREPARE.'" id="prepare" name="prepare"/>
 					</td>
 				</tr>
 			</tbody></table>
@@ -162,6 +168,6 @@ class MagnaCompatiblePrepareCategoryView extends SimpleCategoryView {
 	}
 
 	public function getLeftButtons() {
-		return '<input type="submit" class="button" value="'.ML_EBAY_BUTTON_UNPREPARE.'" id="unprepare" name="unprepare"/>';
+		return '<input type="submit" class="ml-button" value="'.ML_EBAY_BUTTON_UNPREPARE.'" id="unprepare" name="unprepare"/>';
 	}
 }

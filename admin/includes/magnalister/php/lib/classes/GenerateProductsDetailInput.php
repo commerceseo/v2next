@@ -633,7 +633,7 @@ class GenerateProductsDetailInput {
 		if (!$this->tinyMCEInited) {
 			$this->tinyMCEInited = true;
 			return '
-				<script type="text/javascript" src="includes/magnalister/js/tinymce/tinymce.min.js"></script>
+				<script type="text/javascript" src="'.DIR_MAGNALISTER_WS.'js/tinymce/tinymce.min.js"></script>
 				<script type="text/javascript">/*<![CDATA[*/
 '.getTinyMCEDefaultConfigObject().'
 				/*]]>*/</script>';

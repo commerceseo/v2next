@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: CheckinManager.php 2332 2013-04-04 16:12:19Z derpapst $
+ * $Id: CheckinManager.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -216,7 +216,8 @@ class CheckinManager {
 			(array_key_exists('checkin_add', $_POST) 
 				|| array_key_exists('checkin_purge', $_POST)
 				|| array_key_exists('checkin_add_debug', $_POST)
-			) && ($_SESSION['post_timestamp'] != $_POST['timestamp'])
+			) 
+			&& (!isset($_SESSION['post_timestamp']) || ($_SESSION['post_timestamp'] != $_POST['timestamp']))
 		) {
 			/* we are... */
 			$_SESSION['post_timestamp'] = $_POST['timestamp'];
@@ -262,9 +263,9 @@ class CheckinManager {
 						<table class="right"><tbody>
 							<tr>
 								<td class="textleft">
-									<input type="button" class="fullWidth button smallmargin" value="'.ML_BUTTON_LABEL_CHECKIN_ADD.'" id="checkin_add" name="checkin_add"/>
+									<input type="button" class="fullWidth ml-button smallmargin" value="'.ML_BUTTON_LABEL_CHECKIN_ADD.'" id="checkin_add" name="checkin_add"/>
 									'.(MAGNA_DEBUG || (isset($_GET['MLDEBUG']) && ($_GET['MLDEBUG'] == 'true'))
-										? '<input type="button" class="button smallmargin" style="margin-top: -21px; position: absolute; right: 30px;" '.
+										? '<input type="button" class="ml-button smallmargin" style="margin-top: -21px; position: absolute; right: 30px;" '.
 									             'value=" " id="checkin_add_debug" name="checkin_add_debug"/>'
 									    : '').'
 								</td>
@@ -275,7 +276,7 @@ class CheckinManager {
 							'.(($this->settings['hasPurge']) ? '
 							<tr>
 								<td class="textleft">
-									<input type="button" class="fullWidth button smallmargin" value="'.ML_BUTTON_LABEL_CHECKIN_PURGE.'" id="checkin_purge" name="checkin_purge"/>
+									<input type="button" class="fullWidth ml-button smallmargin" value="'.ML_BUTTON_LABEL_CHECKIN_PURGE.'" id="checkin_purge" name="checkin_purge"/>
 								</td>
 								<td>
 									<div class="desc" id="desc_ci_purge" title="'.ML_LABEL_INFOS.'"><span>'.ML_TEXT_BUTTON_CHECKIN_PURGE.'</span></div>
@@ -284,14 +285,13 @@ class CheckinManager {
 						</tbody></table>
 						<div id="confirmPurgeDiag" class="dialog2" title="'.ML_HINT_HEADLINE_CONFIRM_PURGE.'">'.ML_TEXT_CONFIRM_PURGE.'</div>
 						<input type="hidden" id="actionType" value="_" name="checkin"/>
-						'.str_replace('type="submit"', 'type="button"', $addActions).'
 						<div id="confirmDiag" class="dialog2" title="'.ML_HINT_HEADLINE_EXCEEDING_INCLUSIVE_LISTINGS.'">
 							'.sprintf(
 								ML_TEXT_LISTING_GOING_TO_EXCEED, 
 								($listings['used'] + $items - $listings['available']),
 								$magnaConfig['maranon']['ShopID']
 							).'
-						</div>						
+						</div>
 						<div id="infoDiag" class="dialog2" title="'.ML_LABEL_INFORMATION.'"></div>
 				';
 				ob_start();?>
@@ -420,17 +420,26 @@ $(document).ready(function() {
 			if (array_key_exists('selectTemplate', $_POST)) {
 				$this->loadTemplate($_POST['selectTemplate']);
 			}
-		
-			$this->_url['cPath'] = isset($_GET['cPath']) ? $_GET['cPath'] : '';
-			global $current_category_id;
-			/* $current_category_id is a global variable from xt:Commerce */
-
-			$aCV = new $this->views['checkinView']($current_category_id, array(), isset($_GET['sorting']) ? $_GET['sorting'] : false, '');
-			if ($this->isAjax) {
-				return $aCV->renderAjaxReply();
-			} else {
-				$aCV->prependTopHTML($this->renderTemplateSelector());
-				return $aCV->printForm();
+			
+			if (isset($_GET['cPath'])) {
+				$this->_url['cPath'] = $_GET['cPath'];
+			}
+			
+			if (
+					defined('MAGNA_DEV_PRODUCTLIST') 
+					&& (MAGNA_DEV_PRODUCTLIST === true)
+					&& (strpos(strtolower($this->views['checkinView']), 'productlist') !== false)
+			) {
+				$aCV = new $this->views['checkinView']();
+				echo $aCV;
+			}else{
+				$aCV = new $this->views['checkinView'](null, array(), isset($_GET['sorting']) ? $_GET['sorting'] : false, '');
+				if ($this->isAjax) {
+					return $aCV->renderAjaxReply();
+				} else {
+					$aCV->prependTopHTML($this->renderTemplateSelector());
+					return $aCV->printForm();
+				}
 			}
 		}
 	}

@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: ApplyCategoryView.php 3149 2013-09-02 18:35:31Z markus.bauer $
+ * $Id: ApplyCategoryView.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -40,37 +40,37 @@ class ApplyCategoryView extends QuickCategoryView {
 					(getDBConfigValue('general.keytype', '0') == 'artNr') ? 'products_model' : 'products_id'
 				).'
 				  FROM '.TABLE_MAGNA_AMAZON_PROPERTIES.' 
-				 WHERE `asin`<>\'\' 
+				 WHERE `asin`<>"" 
 				       AND `asin` IS NOT NULL 
-				       AND mpID=\''.$_MagnaSession['mpID'].'\'
+				       AND mpID="'.$_MagnaSession['mpID'].'"
 			', true)) !== false
 		) {
 			if (getDBConfigValue('general.keytype', '0') == 'artNr') {
 				$filter[] = array(
 					'join' => '',
-					'where' => 'p.products_model NOT IN (\''.implode('\', \'', MagnaDB::gi()->escape($matchedItems)).'\')'
+					'where' => 'p.products_model NOT IN ("'.implode('", "', MagnaDB::gi()->escape($matchedItems)).'")'
 				);
 			} else {
 				$filter[] = array(
 					'join' => '',
-					'where' => 'p2c.products_id NOT IN (\''.implode('\', \'', $matchedItems).'\')'
+					'where' => 'p2c.products_id NOT IN ("'.implode('", "', $matchedItems).'")'
 				);
 			}
 		}
 
 		if (defined('MAGNA_FIELD_ATTRIBUTES_EAN') && (
 			($attrWEAN = MagnaDB::gi()->fetchArray('
-				SELECT DISTINCT products_id FROM '.TABLE_PRODUCTS_ATTRIBUTES.' WHERE '.MAGNA_FIELD_ATTRIBUTES_EAN.'<>\'\'
+				SELECT DISTINCT products_id FROM '.TABLE_PRODUCTS_ATTRIBUTES.' WHERE '.MAGNA_FIELD_ATTRIBUTES_EAN.'<>""
 			', true)) !== false
 		)) {
 			$filter[] = array(
 				'join' => '',
-				'where' => '(p.'.MAGNA_FIELD_PRODUCTS_EAN.'<>\'\' OR p2c.products_id IN (\''.implode('\', \'', $attrWEAN).'\'))'
+				'where' => '(p.'.MAGNA_FIELD_PRODUCTS_EAN.'<>"" OR p2c.products_id IN ("'.implode('", "', $attrWEAN).'"))'
 			);
 		} else {
 			$filter[] = array(
 				'join' => '',
-				'where' => 'p.'.MAGNA_FIELD_PRODUCTS_EAN.'<>\'\''
+				'where' => 'p.'.MAGNA_FIELD_PRODUCTS_EAN.'<>""'
 			);
 		}
 		$this->setCat2ProdCacheQueryFilter($filter);
@@ -83,107 +83,107 @@ class ApplyCategoryView extends QuickCategoryView {
 			$this->simplePrice->setCurrency(getCurrencyFromMarketplace($this->_magnasession['mpID']));
 		}
 	}
-	
+
+	protected function init() {
+		parent::init();
+		
+		$this->productIdFilterRegister('ManufacturerFilter', array());
+	}
+
 	/**
 	 * see parent, adding ean to filter
 	 * @param type $iId
 	 * @return type 
 	 */
-	protected function getProductsCountOfCategoryInfo($iId){
+	protected function getProductsCountOfCategoryInfo($iId) {
 		if (!isset($this->aCatInfo[$iId])) {
-			$aOut = array('iTotal' => 0, 'iMatched' => 0, 'iFailed' => 0);
-			$aCatIds = $this->getAllSubCategoriesOfCategory($iId);
+			$aOut = array(
+				'iTotal' => 0,
+				'iMatched' => 0,
+				'iFailed' => 0
+			);
+			$aCatIds   = $this->getAllSubCategoriesOfCategory($iId);
 			$aCatIds[] = $iId;
-			$sIdent = (getDBConfigValue('general.keytype', '0') == 'artNr')
-					? 'products_model'
-					: 'products_id';
-				
+			$sIdent    = (getDBConfigValue('general.keytype', '0') == 'artNr') ? 'products_model' : 'products_id';
+			
 			/** @var array $aCategoryProducts all products in category */
 			$aCategoryProducts = MagnaDB::gi()->fetchArray('
-				    SELECT DISTINCT p.products_id , p.'.$sIdent.', p.'.MAGNA_FIELD_PRODUCTS_EAN.'
-				      FROM '.TABLE_PRODUCTS_TO_CATEGORIES.' p2c
-				INNER JOIN '.TABLE_PRODUCTS.' p on p2c.products_id=p.products_id
+				    SELECT DISTINCT p.products_id , p.' . $sIdent . ', p.' . MAGNA_FIELD_PRODUCTS_EAN . '
+				      FROM ' . TABLE_PRODUCTS_TO_CATEGORIES . ' p2c
+				INNER JOIN ' . TABLE_PRODUCTS . ' p on p2c.products_id=p.products_id
 				     WHERE p2c.categories_id IN(' . implode(', ', $aCatIds) . ')
-				           '.($this->showOnlyActiveProducts
-								? 'AND p.products_status<>0'
-								: ''
-							).'
-				            '.(($sIdent == 'products_model')
-								? 'AND p.products_model != "" AND p.products_model IS NOT NULL'
-								: ''
-							).'
+				           '.($this->showOnlyActiveProducts ? 'AND p.products_status<>0' : '').'
+				           '.(($sIdent == 'products_model') ? 'AND p.products_model != "" AND p.products_model IS NOT NULL' : '').'
 			');
-
+			
 			/** @var array $aProducts all valid products of this category */
-			$aProducts=array();
+			$aProducts = array();
 			if (!empty($aCategoryProducts)) {
 				/** @var array $aSimpleProducts products which *don't need* attributes_ean to be valid */
-				$aSimpleProducts = array();
+				$aSimpleProducts       = array();
 				/** @var array $aAttributePreProducts products which *need* attributes_ean to be valid */
 				$aAttributePreProducts = array();
 				/** @var array $aAttributeProducts products which *have* valid attributes_ean */
-				$aAttributeProducts = array();
+				$aAttributeProducts    = array();
 				foreach ($aCategoryProducts as $aProduct) {
-					if (
-					    $aProduct[MAGNA_FIELD_PRODUCTS_EAN]!==''
-					    &&
-					    $aProduct[MAGNA_FIELD_PRODUCTS_EAN]!==null
-					) {//have ean
-						$aSimpleProducts[] = array($sIdent=>$aProduct[$sIdent]);
-					} else {//need attribute ean => more complex query
+					if (($aProduct[MAGNA_FIELD_PRODUCTS_EAN] !== '') && ($aProduct[MAGNA_FIELD_PRODUCTS_EAN] !== null)) { // have ean
+						$aSimpleProducts[] = array(
+							$sIdent => $aProduct[$sIdent]
+						);
+					} else { //need attribute ean => more complex query
 						$aAttributePreProducts[] = $aProduct['products_id'];
 					}
 				}
 				if (!empty($aAttributePreProducts) && defined('MAGNA_FIELD_ATTRIBUTES_EAN')) {
-					$sSql='
-						SELECT DISTINCT p.'.$sIdent.'
-						FROM            '.TABLE_PRODUCTS.' p
-						LEFT JOIN       '.TABLE_PRODUCTS_ATTRIBUTES.' pa on p.products_id=pa.products_id 
-						WHERE           p.products_id IN(' . implode(', ', $aAttributePreProducts) . ')
-						AND             pa.'.MAGNA_FIELD_ATTRIBUTES_EAN.'!=""
+					$sSql = '
+						   SELECT DISTINCT p.' . $sIdent . '
+						     FROM ' . TABLE_PRODUCTS . ' p
+						LEFT JOIN ' . TABLE_PRODUCTS_ATTRIBUTES . ' pa on p.products_id=pa.products_id 
+						    WHERE p.products_id IN(' . implode(', ', $aAttributePreProducts) . ')
+						          AND pa.' . MAGNA_FIELD_ATTRIBUTES_EAN . '!=""
 					';
 					$aAttributeProducts = MagnaDB::gi()->fetchArray($sSql);
-				}else{
+				} else {
 					$aAttributeProducts = array();
 				}
 				$aProducts = array_merge($aAttributeProducts, $aSimpleProducts);
 			}
-			$aProductIds=array();
-            foreach($aProducts as $aRow){
-                $aProductIds[$aRow[$sIdent]]=$aRow[$sIdent];
-            }
-            if(count($aProductIds)>0){
-                $aAll=MagnaDb::gi()->fetchArray("
-                    SELECT distinct ".$sIdent." from ".TABLE_MAGNA_AMAZON_PROPERTIES." 
-                    WHERE           ".$sIdent." in('".implode("', '",$aProductIds)."')
-                    AND             mpID='".$this->_magnasession['mpID']."'
-                ");
-                foreach($aAll as $aRow){
-                    unset($aProductIds[$aRow[$sIdent]]);
-                }
-            }
-            $aOut['iTotal']=count($aProductIds);
-            if(count($aProductIds)){
-                $sSql= "
-                    select distinct count(products_id) as count, is_incomplete 
-                    from ".TABLE_MAGNA_AMAZON_APPLY." 
-                    where ".$sIdent."  in('".implode("', '",$aProductIds)."')
-					AND mpid='".$this->_magnasession['mpID']."'
-                    group by is_incomplete;
-                ";
-                foreach(MagnaDB::gi()->fetchArray($sSql) as $aInfo){
-                    if($aInfo['is_incomplete']=='true'){
-                        $aOut['iFailed']+=$aInfo['count'];
-                    }else{
-                        $aOut['iMatched']+=$aInfo['count'];
-                    }
-                }
-            }
-            $this->aCatInfo[$iId]=$aOut;
-        }
-        return $this->aCatInfo[$iId];
-    }
-    
+			$aProductIds = array();
+			foreach ($aProducts as $aRow) {
+				$aProductIds[$aRow[$sIdent]] = $aRow[$sIdent];
+			}
+			if (count($aProductIds) > 0) {
+				$aAll = MagnaDB::gi()->fetchArray("
+					SELECT DISTINCT " . $sIdent . " from " . TABLE_MAGNA_AMAZON_PROPERTIES . " 
+					 WHERE " . $sIdent . " in('" . implode("', '", $aProductIds) . "')
+					       AND mpID='" . $this->_magnasession['mpID'] . "'
+				");
+				foreach ($aAll as $aRow) {
+					unset($aProductIds[$aRow[$sIdent]]);
+				}
+			}
+			$aOut['iTotal'] = count($aProductIds);
+			if (count($aProductIds)) {
+				$sSql = "
+					  SELECT DISTINCT COUNT(products_id) AS count, is_incomplete 
+					    FROM " . TABLE_MAGNA_AMAZON_APPLY . " 
+					   WHERE " . $sIdent . "  IN('" . implode("', '", $aProductIds) . "')
+					         AND mpid='" . $this->_magnasession['mpID'] . "'
+					GROUP BY is_incomplete;
+				";
+				foreach (MagnaDB::gi()->fetchArray($sSql) as $aInfo) {
+					if ($aInfo['is_incomplete'] == 'true') {
+						$aOut['iFailed'] += $aInfo['count'];
+					} else {
+						$aOut['iMatched'] += $aInfo['count'];
+					}
+				}
+			}
+			$this->aCatInfo[$iId] = $aOut;
+		}
+		return $this->aCatInfo[$iId];
+	}
+	
 	public function getAdditionalHeadlines() {
 		return '
 			<td class="matched">'. ML_LABEL_DATA_PREPARED.'</td>';
@@ -198,22 +198,22 @@ class ApplyCategoryView extends QuickCategoryView {
 			SELECT products_id, is_incomplete
 			  FROM '.TABLE_MAGNA_AMAZON_APPLY.' 
 			 WHERE '.((getDBConfigValue('general.keytype', '0') == 'artNr')
-						? 'products_model=\''.MagnaDB::gi()->escape($product['products_model']).'\''
-						: 'products_id=\''.$pID.'\''
+						? 'products_model="'.MagnaDB::gi()->escape($product['products_model']).'"'
+						: 'products_id="'.$pID.'"'
 					).'
-				   AND mpID=\''.$this->_magnasession['mpID'].'\'
+			       AND mpID="'.$this->_magnasession['mpID'].'"
 		');
 		if ($a !== false) {
 			if ($a['is_incomplete'] == 'true') {
 				return '
-					<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/red_dot.png', ML_AMAZON_LABEL_APPLY_PREPARE_INCOMPLETE, 12, 12).'</td>';				
+					<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/red_dot.png', ML_AMAZON_LABEL_APPLY_PREPARE_INCOMPLETE, 12, 12).'</td>';				
 			} else {
 				return '
-					<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/green_dot.png', ML_AMAZON_LABEL_APPLY_PREPARE_COMPLETE, 12, 12).'</td>';				
+					<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/green_dot.png', ML_AMAZON_LABEL_APPLY_PREPARE_COMPLETE, 12, 12).'</td>';				
 			}
 		}
 		return '
-			<td>'.html_image(DIR_MAGNALISTER_IMAGES . 'status/grey_dot.png', ML_AMAZON_LABEL_APPLY_NOT_PREPARED, 12, 12).'</td>';
+			<td>'.html_image(DIR_MAGNALISTER_WS_IMAGES . 'status/grey_dot.png', ML_AMAZON_LABEL_APPLY_NOT_PREPARED, 12, 12).'</td>';
 	}
 	
 	public function getFunctionButtons() {
@@ -224,7 +224,7 @@ class ApplyCategoryView extends QuickCategoryView {
 				<tr>
 					<td class="texcenter inputCell">
 						<table class="right"><tbody>
-							<tr><td><input type="submit" class="fullWidth button smallmargin" value="'. ML_AMAZON_BUTTON_PREPARE.'" id="apply" name="apply"/></td></tr>
+							<tr><td><input type="submit" class="fullWidth ml-button smallmargin" value="'. ML_AMAZON_BUTTON_PREPARE.'" id="apply" name="apply"/></td></tr>
 						</tbody></table>
 					</td>
 				</tr>
@@ -236,8 +236,8 @@ class ApplyCategoryView extends QuickCategoryView {
 	public function getLeftButtons() {
 		// ML_AMAZON_BUTTON_APPLY_DELETE
 		return '
-			<input type="submit" class="button" value="'.ML_EBAY_BUTTON_UNPREPARE.'" id="removeapply" name="removeapply"/><br>
-			<input type="submit" class="button" value="'.ML_EBAY_BUTTON_RESET_DESCRIPTION.'" id="resetapply" name="resetapply"/>';
+			<input type="submit" class="ml-button" value="'.ML_EBAY_BUTTON_UNPREPARE.'" id="removeapply" name="removeapply"/><br>
+			<input type="submit" class="ml-button" value="'.ML_EBAY_BUTTON_RESET_DESCRIPTION.'" id="resetapply" name="resetapply"/>';
 	}
 	
 	protected function getEmptyInfoText() {

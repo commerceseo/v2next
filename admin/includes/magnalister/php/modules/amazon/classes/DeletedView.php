@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: DeletedView.php 2332 2013-04-04 16:12:19Z derpapst $
+ * $Id: DeletedView.php 4283 2014-07-24 22:00:04Z derpapst $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -122,7 +122,7 @@ class DeletedView {
 								<input type="text" id="toDate" readonly="readonly"/>
 								<input type="hidden" id="toActualDate" name="date[to]" value=""/>
 							</td>
-							<td><input class="button" type="submit" value="Los"/></td>
+							<td><input class="ml-button" type="submit" value="Los"/></td>
 						</tr>
 					</tbody></table>
 				</td></tr></tbody>
@@ -181,7 +181,7 @@ class DeletedView {
 						<td>'.$this->simpleprice->setPrice($item['Price'])->format().'</td>
 						<td>'.$item['Quantity'].'</td>
 						<td>'.date("d.m.Y", $item['DateAdded']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['DateAdded']).'</span>'.'</td>
-						<td title="'.ML_GENERIC_DELETED.'"><img src="'.DIR_MAGNALISTER_IMAGES.'status/green_dot.png" alt="'.ML_GENERIC_DELETED.'"/></td>
+						<td title="'.ML_GENERIC_DELETED.'"><img src="'.DIR_MAGNALISTER_WS_IMAGES.'status/green_dot.png" alt="'.ML_GENERIC_DELETED.'"/></td>
 					</tr>';
 			}
 			$html .= '

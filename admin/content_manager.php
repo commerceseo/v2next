@@ -25,7 +25,7 @@ $languages = xtc_get_languages();
 
 if ($_GET['special'] == 'delete') {
     xtc_db_query("DELETE FROM " . TABLE_CONTENT_MANAGER . " where content_id='" . (int) $_GET['coID'] . "'");
-    if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True' && CSEO_URL_ADMIN_ON == 'true')
+    if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True')
         $commerceSeo->createSeoDBTable();
     xtc_redirect(xtc_href_link(FILENAME_CONTENT_MANAGER));
 }
@@ -128,12 +128,12 @@ if ($_GET['id'] == 'update' || $_GET['id'] == 'insert') {
 
         if ($_GET['id'] == 'update') {
             xtc_db_perform(TABLE_CONTENT_MANAGER, $sql_data_array, 'update', "content_id = '" . $coID . "'");
-            if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True' && CSEO_URL_ADMIN_ON == 'true') {
+            if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True') {
                 $commerceSeo->updateSeoDBTable('content', 'update', $group_id);
             }
         } else {
             xtc_db_perform(TABLE_CONTENT_MANAGER, $sql_data_array);
-            if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True' && CSEO_URL_ADMIN_ON == 'true')
+            if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True')
                 $commerceSeo->createSeoDBTable();
         }
         xtc_redirect(xtc_href_link(FILENAME_CONTENT_MANAGER));
@@ -181,7 +181,7 @@ if ($_GET['id'] == 'update_product' || $_GET['id'] == 'insert_product') {
         $error = true;
         $messageStack->add(ERROR_TITLE, 'error');
     }
-    if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True' && CSEO_URL_ADMIN_ON == 'true')
+    if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True')
         $commerceSeo->createSeoDBTable();
 
     if ($error == false) {
@@ -234,7 +234,7 @@ if ($_GET['id'] == 'update_product' || $_GET['id'] == 'insert_product') {
         }
 
         // rename filename
-        if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True' && CSEO_URL_ADMIN_ON == 'true') {
+        if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True') {
             $commerceSeo->createSeoDBTable();
         }
         xtc_redirect(xtc_href_link(FILENAME_CONTENT_MANAGER, 'pID=' . $product));

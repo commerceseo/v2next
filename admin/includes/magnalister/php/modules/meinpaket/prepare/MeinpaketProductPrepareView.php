@@ -70,7 +70,7 @@ table.attributesTable table.inner tr td {
 table.attributesTable table.inner.middle tr td {
 	vertical-align: middle;
 }
-table.attributesTable table.categorySelect tr td.buttons {
+table.attributesTable table.categorySelect tr td.ml-buttons {
 	width: 6em;
 }
 table.attributesTable table.categorySelect tr td.label {
@@ -101,7 +101,7 @@ div.catVisual {
 									<input type="hidden" id="mpCategory" name="prepare[MarketplaceCategory]" value="'.$data['MarketplaceCategory'].'"/>
 								</td>
 								<td class="buttons">
-									<input class="fullWidth button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectMPCategory"/>
+									<input class="fullWidth ml-button smallmargin" type="button" value="' . ML_HOOD_CHOOSE . '" id="selectMPCategory"/>
 								</td>
 							</tr>
 							'.(!getDBConfigValue(array($this->marketplace.'.catmatch.mpshopcats', 'val'), $this->mpId, false)
@@ -113,7 +113,7 @@ div.catVisual {
 									<input type="hidden" id="storeCategory" name="prepare[StoreCategory]" value="'.$data['StoreCategory'].'"/>
 								</td>
 								<td class="buttons">
-									<input class="fullWidth button smallmargin" type="button" value="'.ML_HOOD_CHOOSE.'" id="selectStoreCategory"/>
+									<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_HOOD_CHOOSE.'" id="selectStoreCategory"/>
 								</td>
 							</tr>
 								')
@@ -157,9 +157,10 @@ $(document).ready(function() {
 			SELECT MpIdentifier, CustomIdentifier
 			  FROM '.TABLE_MAGNA_MEINPAKET_VARIANTMATCHING.'
 			 WHERE MpId = '.$this->mpId.'
+			       AND MpIdentifier <> ""
 		');
 		
-		$html .= '
+		$html = '
 				<tr class="headline">
 					<td colspan="3"><h4>' . ML_MEINPAKET_VARIATIONCONFIG . '</h4></td>
 				</tr>
@@ -196,7 +197,8 @@ $(document).ready(function() {
 		
 		return $html;
 	}
-	protected function renderShippingDetailsJs(){
+	
+	protected function renderShippingDetailsJs() {
 		ob_start();
 		?>
 			<script type="text/javascript">/*<![CDATA[*/
@@ -301,12 +303,12 @@ $(document).ready(function() {
 							<table><tbody><tr>
 								<td class="firstChild">'.(
 									($prepareView == 'single' && false)
-										? '<input class="button" type="submit" name="unprepare" id="unprepare" value="' . ML_BUTTON_LABEL_REVERT . '"/>'
+										? '<input class="ml-button" type="submit" name="unprepare" id="unprepare" value="' . ML_BUTTON_LABEL_REVERT . '"/>'
 										: ''
 									).'
 								</td>
 								<td class="lastChild">
-									<input class="button" type="submit" name="savePrepareData" id="savePrepareData" value="' . ML_BUTTON_LABEL_SAVE_DATA . '"/>
+									<input class="ml-button" type="submit" name="savePrepareData" id="savePrepareData" value="' . ML_BUTTON_LABEL_SAVE_DATA . '"/>
 								</td>
 							</tr></tbody></table>
 						</td></tr>

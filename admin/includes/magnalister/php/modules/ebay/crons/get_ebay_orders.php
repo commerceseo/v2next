@@ -55,7 +55,10 @@ function variation_products_model2pOpt($variation_products_model, $products_id, 
 				 AND products_id = '.$products_id.'
 				ORDER BY variation_id DESC LIMIT 1') > 0)
 			) {
-			require_once(DIR_MAGNALISTER_CALLBACK.'updateVariationsTable.php');
+			if (false == setProductVariations($products_id, false, false)) {
+				return false;
+			}
+			#require_once(DIR_MAGNALISTER_CALLBACK.'updateVariationsTable.php');
 			$variation_attributes = MagnaDB::gi()->fetchOne($variation_attributes_select);
 			if (!$variation_attributes) {
 				return false;
@@ -230,7 +233,7 @@ function magnaImportEbayOrders($mpID) {
 	$simplePrice = new SimplePrice();
 	
 	$ShopInfo = array(
-		'CustomerGroup' => getDBConfigValue($mp.'.CustomerGroup', $mpID),
+		'CustomerGroup' => getDBConfigValue($mp.'.CustomerGroup', $mpID, null),
 		'OrderStatusOpen' => getDBConfigValue($mp.'.orderstatus.open', $mpID),
         # OrderStatusClosed als kommagetrennte Liste fuer MySQL queries
 		'OrderStatusClosed' => (is_array(getDBConfigValue($mp.'.orderstatus.closed', $mpID, array('99')))
@@ -276,12 +279,11 @@ function magnaImportEbayOrders($mpID) {
 	}
 	if ($verbose) echo var_dump_pre($displayPriceWithTax, '$displayPriceWithTax');
 	
+	$dateRegexp = '/^([1-2][0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])'.
+		'(\s([0-1][0-9]|2[0-4]):([0-5][0-9]):([0-5][0-9]))?$/';
+	
 	$lastImport = getDBConfigValue($mp.'.orderimport.lastrun', $mpID, 0);
-	if (preg_match('
-			/^([1-2][0-9]{3})-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])\s'.
-			'([0-1][0-9]|2[0-4]):([0-5][0-9]):([0-5][0-9])$/',
-			$lastImport
-	)) {
+	if (preg_match($dateRegexp, $lastImport)) {
 		# Since we only request non acknowledged orders, we go back in time by 7 days.
 		$lastImport = strtotime($lastImport.' +0000') - 60 * 60 * 24 * 7;
 	} else {
@@ -300,6 +302,10 @@ function magnaImportEbayOrders($mpID) {
 
 	if ( ($lastImport > 0) && ($begin < $lastImport) ) {
 		$begin = $lastImport;
+	}
+	
+	if (isset($_GET['ForceBeginImportDate']) && preg_match($dateRegexp, $_GET['ForceBeginImportDate'])) {
+		$begin = strtotime($_GET['ForceBeginImportDate']);
 	}
 	#$begin -= 60 * 60 * 24 * 30 * 12;
 
@@ -451,7 +457,9 @@ function magnaImportEbayOrders($mpID) {
 				$customers_password = randomString(10);
 				$order['customer']['customers_password'] = md5($customers_password);
 				
-				if (MagnaDB::gi()->columnExistsInTable('customers_status', TABLE_CUSTOMERS)) {
+				if (    (MagnaDB::gi()->columnExistsInTable('customers_status', TABLE_CUSTOMERS))
+				     && (null !== $ShopInfo['CustomerGroup'])
+				) {
 					$order['customer']['customers_status'] = $ShopInfo['CustomerGroup'];
 				}
 				if (MagnaDB::gi()->columnExistsInTable('account_type', TABLE_CUSTOMERS)) {
@@ -706,7 +714,8 @@ function magnaImportEbayOrders($mpID) {
 							 WHERE products_id='.(int)$prodOrderData['products_id'].'
 						');
 						/* Varianten-Bestand reduzieren, falls Produkt mit Varianten (gibt es bei osCommerce nicht) */
-						if ((!empty($attrValues[0]['options_name']))
+						if ((false != $attrValues)
+						    && (!empty($attrValues[0]['options_name']))
 						    && (MagnaDB::gi()->columnExistsInTable('attributes_stock',TABLE_PRODUCTS_ATTRIBUTES)) 
 						) {
 							foreach($attrValues as $attrValue) {

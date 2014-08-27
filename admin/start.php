@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: start.php 943 2014-04-08 13:26:37Z akausch $
+ * 	$Id: start.php 1158 2014-07-21 12:53:34Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -137,35 +137,6 @@ if (($cs == '0') && ($aa['stats_sales_report'] == '1')) {
 
 }
 
-function getDataFromMasterServer() {
-    $version = xtc_db_fetch_array(xtc_db_query("SELECT version FROM database_version"));
-    $params = 'vnumber=' . urlencode($version['version']);
-
-    if (function_exists('curl_init')) {
-        $url = 'http://www.commerce-seo.de/1v2nextcheck.php?' . $params;
-        $output = '';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        if (!empty($output))
-            return $output;
-        else
-            return 'Der Server konnte nicht erreicht werden.';
-    } elseif (ini_get(allow_url_fopen) !== false && function_exists(file_get_contents)) {
-        $data = file_get_contents('http://www.commerce-seo.de/1v2nextcheck.php?' . $params);
-
-        if (!empty($data)) {
-            return $data;
-        } else {
-            return 'Der Server konnte nicht erreicht werden.';
-        }
-    } else {
-        return 'Der Server konnte nicht erreicht werden.';
-    }
-}
 
 require(DIR_WS_INCLUDES . 'header.php');
 ?>
@@ -500,7 +471,11 @@ require(DIR_WS_INCLUDES . 'header.php');
 						<!--BOF - Barzahlen - 2013-05-17: Barzahlen Version Check-->
 						<?php include(DIR_WS_MODULES . "barzahlen_version_check.php"); ?>
 						<!--EOF - Barzahlen - 2013-05-17: Barzahlen Version Check-->
-						<?php echo getDataFromMasterServer(); ?>
+						<?php 
+						$version = xtc_db_fetch_array(xtc_db_query("SELECT version FROM database_version"));
+						echo $version['version'].'<br>';
+						echo getDataFromMasterServer(); 
+						?>
                     </td>
                 </tr>
             </table>

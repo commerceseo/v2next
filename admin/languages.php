@@ -360,8 +360,7 @@ while ($languages = xtc_db_fetch_array($languages_query)) {
     } else {
         $td_row_lang = $languages['name'];
     }
-
-
+	
     if ($languages['status'] == 1) {
         $td_row_status_lang = '<a href="' . xtc_href_link(FILENAME_LANGUAGES, xtc_get_all_get_params(array('page', 'action', 'lID')) . 'action=setlflag&flag=0&lID=' . $languages['languages_id'] . '&page=' . $_GET['page']) . '"><button class="btn btn-success btn-xs">Online</button></a>';
     } else {
@@ -391,9 +390,6 @@ while ($languages = xtc_db_fetch_array($languages_query)) {
         'LANG_ICON' => $lang_icon);
 }
 $smarty->assign('languagearray', $languagearray);
-
-
-
 
 $direction_options = array(array('id' => '', 'text' => TEXT_INFO_LANGUAGE_DIRECTION_DEFAULT),
     array('id' => 'ltr', 'text' => TEXT_INFO_LANGUAGE_DIRECTION_LEFT_TO_RIGHT),

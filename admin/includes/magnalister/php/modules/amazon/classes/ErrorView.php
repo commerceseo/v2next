@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: ErrorView.php 2444 2013-05-07 09:23:02Z tim.neumann $
+ * $Id: ErrorView.php 4319 2014-08-01 13:49:42Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -47,7 +47,8 @@ class ErrorView {
 
 		/* Download new Error Messages */
 		$begin = MagnaDB::gi()->fetchOne('
-			SELECT dateadded FROM '.TABLE_MAGNA_AMAZON_ERRORLOG.' 
+		    SELECT dateadded FROM '.TABLE_MAGNA_AMAZON_ERRORLOG.'
+		     WHERE mpID = '.$this->mpID.'
 		  ORDER BY dateadded DESC 
 		     LIMIT 1
 		');
@@ -200,17 +201,17 @@ class ErrorView {
 		return '
 			<span class="nowrap">
 				<a href="'.toURL($this->url, array('sorting' => $type.'')).'" title="'.ML_LABEL_SORT_ASCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_up.png" />
+					<img alt="'.ML_LABEL_SORT_ASCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_up.png" />
 				</a>
 				<a href="'.toURL($this->url, array('sorting' => $type.'-desc')).'" title="'.ML_LABEL_SORT_DESCENDING.'" class="sorting">
-					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_IMAGES.'sort_down.png" />
+					<img alt="'.ML_LABEL_SORT_DESCENDING.'" src="'.DIR_MAGNALISTER_WS_IMAGES.'sort_down.png" />
 				</a>
 			</span>';
 	}
 
 	public function renderActionBox() {
-		$left = '<input type="button" class="button" value="'.ML_BUTTON_LABEL_DELETE.'" id="errorLogDelete" name="errorLog[delete]"/>';
-		$right = '<input type="submit" class="button" value="'.ML_BUTTON_LABEL_DELETE_COMPLETE_LOG.'" name="deleteall"/>';
+		$left = '<input type="button" class="ml-button" value="'.ML_BUTTON_LABEL_DELETE.'" id="errorLogDelete" name="errorLog[delete]"/>';
+		$right = '<input type="submit" class="ml-button" value="'.ML_BUTTON_LABEL_DELETE_COMPLETE_LOG.'" name="deleteall"/>';
 
 		ob_start();?>
 <script type="text/javascript">/*<![CDATA[*/
@@ -261,22 +262,31 @@ $(document).ready(function() {
 	
 	private function additionalDataHandler($data) {
 		$fData = array();
-		if (array_key_exists('SKU', $data) && !empty($data['SKU'])) {
-			$fData['SKU'] = htmlspecialchars($data['SKU']);
-			$pID = magnaSKU2pID($data['SKU']);
+		if ((array_key_exists('SKU', $data) && !empty($data['SKU'])) || (array_key_exists('PID', $data) && !empty($data['PID']))) {
+			if (isset($data['PID'])) {
+				$fData[ML_LABEL_PRODUCT_ID] = $data['PID'];
+				$pID = $data['PID'];
+			}
+
+			if (isset($data['SKU'])) {
+				$fData['SKU'] = htmlspecialchars($data['SKU']);
+				if (!isset($pID)) {
+					$pID = magnaSKU2pID($data['SKU']);
+				}
+			}
 
 			$title = MagnaDB::gi()->fetchOne('
-				SELECT products_name
-				  FROM '.TABLE_PRODUCTS_DESCRIPTION.' 
-				 WHERE products_id=\''.(string)$pID.'\' 
-				       AND language_id = \''.$_SESSION['languages_id'].'\'
-			');
+					SELECT products_name
+					  FROM '.TABLE_PRODUCTS_DESCRIPTION.'
+					 WHERE products_id=\''.(string)$pID.'\'
+						   AND language_id = \''.$_SESSION['languages_id'].'\'
+				');
 			if (!empty($title)) {
 				$fData[ML_LABEL_SHOP_TITLE] = '<a title="'.ML_LABEL_EDIT.'" '.
 					'target="_blank" href="categories.php?pID='.$pID.'&action=new_product">'.
 					$title.'</a>';
 			}
-		} else if (array_key_exists('AmazonOrderID', $data)) {
+		} elseif (array_key_exists('AmazonOrderID', $data)) {
 			if (!empty($data['AmazonOrderID'])) {
 				$fData['AmazonOrderID'] = $data['AmazonOrderID'];
 				$oID = MagnaDB::gi()->fetchOne('
@@ -309,7 +319,7 @@ $(document).ready(function() {
 		$html .= '
 			<form action="'.toURL($this->url).'" method="POST">
 				<table class="listingInfo"><tbody><tr>
-					<td class="pagination">
+					<td class="ml-pagination">
 						<span class="bold">'.ML_LABEL_CURRENT_PAGE.' &nbsp;&nbsp; '.$this->currentPage.'</span>
 					</td>
 					<td class="textright">

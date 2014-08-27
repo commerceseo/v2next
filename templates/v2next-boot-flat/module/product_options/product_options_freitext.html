@@ -1,0 +1,29 @@
+{if $options!=''}
+	{foreach name=outer item=options_data from=$options} 
+	   {if $options_data.DATA.0.TEXT == 'Freitext'}
+			<input type="hidden" name="product_options_id_freitext" value="{$options_data.ID}"/>
+			<dt class="col-xs-6"><b>{$options_data.NAME}</b>:</dt>
+			<dd class="col-xs-6"><input type="text" name="freitext" maxlength="15"/></dd>
+		{/if}
+		{if $options_data.DATA.0.TEXT == 'Freitext1'}
+			<input type="hidden" name="product_options_id_freitext1" value="{$options_data.ID}"/>
+			<dt class="col-xs-6"><b>{$options_data.NAME}</b>:</dt>
+			<dd class="col-xs-6"><input type="text" name="freitext1" maxlength="15"/></dd>
+		{/if}
+		{if $options_data.DATA.0.TEXT == 'Freitext2'}
+			<input type="hidden" name="product_options_id_freitext2" value="{$options_data.ID}"/>
+			<dt class="col-xs-6"><b>{$options_data.NAME}</b>:</dt>
+			<dd class="col-xs-6"><input type="text" name="freitext2" maxlength="15"/></dd>
+		{/if}
+		{if $options_data.DATA.0.TEXT != 'Freitext' && $options_data.DATA.0.TEXT != 'Freitext1' && $options_data.DATA.0.TEXT != 'Freitext2'}
+			<dt class="col-xs-6"><b>{$options_data.NAME}</b>:</dt>
+			<dd class="col-xs-6">
+				<select name="id[{$options_data.ID}]" class="option">
+					{foreach key=key_data item=item_data from=$options_data.DATA}
+						<option value="{$item_data.ID}">{$item_data.TEXT} {if $item_data.PRICE !='' }{$item_data.PREFIX} {$item_data.PRICE}{/if} {if $item_data.VPE}/ {$item_data.VPE}{/if}</option>
+					{/foreach}
+				</select>
+			</dd>
+		{/if}
+	{/foreach}
+{/if}

@@ -34,7 +34,7 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 				<li><a href="<?php echo xtc_href_link('cseo_center_security.php'); ?>" title="Security"><span class="glyphicon glyphicon-lock"></span><span class="hidden-sm hidden-md hidden-lg">Security</span></a></li>
 				<li><a href="<?php echo xtc_href_link('delete_cache.php'); ?>" title="Cache leeren"><span class="glyphicon glyphicon-trash"></span><span class="hidden-sm hidden-md hidden-lg">Cache leeren</span></a></li>
 				<li><a href="<?php echo xtc_href_link('module_system.php', 'set=&module=commerce_seo_url'); ?>" title="SEO-URL"><span class="glyphicon glyphicon-link"></span><span class="hidden-sm hidden-md hidden-lg">SEO-URL</span></a></li>
-				<li><a href="http://plussupport.commerce-seo.de/" target="_blank" title="Support"><span class="glyphicon glyphicon-comment"></span><span class="hidden-sm hidden-md hidden-lg">Support</span></a></li>
+				<li><a href="https://www.commerce-seo.de/support/" target="_blank" title="Support"><span class="glyphicon glyphicon-comment"></span><span class="hidden-sm hidden-md hidden-lg">Support</span></a></li>
 				<li><a href="https://www.facebook.com/commerce.seo.v2" target="_blank" title="Like"><span class="glyphicon glyphicon-thumbs-up"></span><span class="hidden-sm hidden-md hidden-lg">Like</span></a></li>
 				<li><a href="<?php echo xtc_href_link(FILENAME_CREDITS) ?>" title="Credits"><span class="glyphicon glyphicon-copyright-mark"></span><span class="hidden-sm hidden-md hidden-lg">Credits</span></a></li>
 				<li><a href="<?php echo xtc_href_link(FILENAME_LOGOUT) ?>" title="Logout"><span class="glyphicon glyphicon-off"></span><span class="hidden-sm hidden-md hidden-lg">Logout</span></a></li>

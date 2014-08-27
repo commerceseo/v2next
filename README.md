@@ -1,4 +1,4 @@
-v2next
+Onlineshop Software commerce:seo v2next
 ======
 
 NUTZUNGSBEDINGUNGEN UND LIZENZHINWEISE
@@ -39,7 +39,7 @@ Der Installer wird beim 1. Mal automatisch aufgerufen.
 
 Hilfestellung erhalten Sie auch hier:
 
-http://www.commerce-seo.de/support/
+https://www.commerce-seo.de/support/
 
 Eine Kurzanleitung finden Sie hier: 
-http://www.commerce-seo.de/
+https://www.commerce-seo.de/

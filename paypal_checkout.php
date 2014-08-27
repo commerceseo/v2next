@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: paypal_checkout.php 928 2014-03-31 13:56:47Z akausch $
+ * 	$Id: paypal_checkout.php 1099 2014-06-12 14:51:40Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -228,7 +228,9 @@ if (isset($_POST['action']) && ($_POST['action'] == 'process')) {
         xtc_redirect(xtc_href_link(FILENAME_PAYPAL_CHECKOUT, '', 'SSL'));
     }
 }
-
+if ($kein_versand == 1) {
+    $_SESSION['shipping'] = false;
+}
 // get all available shipping quotes
 $quotes = $shipping_modules->quote();
 // if no shipping method has been selected, automatically select the cheapest method.
@@ -237,8 +239,6 @@ $quotes = $shipping_modules->quote();
 // method if more than one module is now enabled
 if (!isset($_SESSION['shipping']) || (isset($_SESSION['shipping']) && ($_SESSION['shipping'] == false) && (xtc_count_shipping_modules() > 1))) {
     $_SESSION['shipping'] = $shipping_modules->cheapest();
-} else {
-	$_SESSION['shipping'] = false;
 }
 
 if ($kein_versand == 1) {

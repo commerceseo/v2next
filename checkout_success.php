@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_success.php 934 2014-04-02 15:40:06Z akausch $
+ * 	$Id: checkout_success.php 1068 2014-05-22 12:11:34Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -63,6 +63,7 @@ if (TRUSTED_SHOP_STATUS == 'true') {
     include(DIR_WS_MODULES . 'module_trusted_shops.php');
 }
 
+$smarty->assign('oID', $last_order);
 $smarty->assign('FORM_ACTION', xtc_draw_form('order', xtc_href_link(FILENAME_CHECKOUT_SUCCESS, 'action=update', 'SSL')));
 $smarty->assign('BUTTON_CONTINUE', xtc_image_submit('button_continue.gif', IMAGE_BUTTON_CONTINUE));
 $smarty->assign('BUTTON_PRINT', '<a href="javascript:void(0)" onclick="javascript:window.open(\'' . xtc_href_link(FILENAME_PRINT_ORDER, 'oID=' . $orders['orders_id']) . '\', \'popup\', \'toolbar=0, width=640, height=600\')">' . xtc_image_button('print.gif', IMAGE_BUTTON_PRINT) . '</a>');

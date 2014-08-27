@@ -233,6 +233,59 @@ class billsafe_3_base {
 	}
 
 	function install() {
+		if (table_exists('orders_billsafe') == false) {
+		xtc_db_query("CREATE TABLE orders_billsafe (
+		orders_id INT UNSIGNED NOT NULL ,
+		transaction_id VARCHAR( 255 ) NOT NULL ,
+		PRIMARY KEY ( orders_id ) ,
+		INDEX ( transaction_id )
+		);");
+
+		xtc_db_query("CREATE TABLE billsafe_products_shipped (
+		id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		orders_id INT UNSIGNED NOT NULL ,
+		transaction_id VARCHAR( 255 ) NOT NULL ,
+		shipping_date DATE NOT NULL ,
+		parcel_service VARCHAR( 255 ) NOT NULL ,
+		parcel_trackingid VARCHAR( 255 ) NOT NULL ,
+		article_number VARCHAR( 255 ) NOT NULL ,
+		article_name VARCHAR( 255 ) NOT NULL ,
+		article_type VARCHAR( 20 ) NOT NULL ,
+		article_quantity INT( 5 ) NOT NULL ,
+		article_grossprice DECIMAL( 15, 4 ) NOT NULL ,
+		article_tax DECIMAL( 4, 2 ) NOT NULL ,
+		INDEX ( orders_id )
+		);");
+
+		xtc_db_query("CREATE TABLE billsafe_directpayments (
+		id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY ,
+		orders_id INT UNSIGNED NOT NULL ,
+		amount DECIMAL( 15, 4 ) NOT NULL ,
+		date DATE NOT NULL ,
+		INDEX ( orders_id )
+		);");
+
+		xtc_db_query("CREATE TABLE billsafe_paymentinfo (
+		  orders_id int(11) NOT NULL,
+		  received datetime NOT NULL,
+		  transaction_id varchar(255) NOT NULL,
+		  recipient varchar(100) NOT NULL,
+		  bankCode varchar(8) NOT NULL,
+		  accountNumber varchar(10) NOT NULL,
+		  bankName varchar(100) NOT NULL,
+		  bic varchar(11) NOT NULL,
+		  iban varchar(34) NOT NULL,
+		  reference varchar(50) NOT NULL,
+		  amount decimal(15,4) NOT NULL,
+		  currencyCode varchar(3) NOT NULL,
+		  paymentPeriod int(11) NOT NULL,
+		  note varchar(200) NOT NULL,
+		  legalNote text NOT NULL,
+		  PRIMARY KEY (orders_id),
+		  KEY transaction_id (transaction_id)
+		);");
+		}
+		
 		$config = $this->_configuration();
 		$sort_order = 0;
 		foreach($config as $key => $data) {
@@ -241,6 +294,7 @@ class billsafe_3_base {
 			xtc_db_query($install_query);
 			$sort_order++;
 		}
+		
 	}
 
 	function remove() {

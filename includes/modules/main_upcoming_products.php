@@ -21,7 +21,7 @@ $module_content = array();
 
 $fsk_lock = '';
 if ($_SESSION['customers_status']['customers_fsk18_display'] == '0')
-    $fsk_lock = ' and p.products_fsk18!=1';
+    $fsk_lock = ' and p.products_fsk18 !=1';
 
 if (GROUP_CHECK == 'true')
     $group_check = "and p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . "=1 ";
@@ -41,6 +41,7 @@ $expected_query = xtDBquery("SELECT
 									" . $fsk_lock . "
 								AND 
 									pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
+								GROUP BY p.products_id
 								ORDER BY 
 									p.products_date_available " . EXPECTED_PRODUCTS_SORT . "
 								LIMIT 

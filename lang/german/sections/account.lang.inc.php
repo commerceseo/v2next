@@ -59,7 +59,7 @@ $t_language_text_section_content_array = array(
     'cost_estimate_no' => 'Nein',
     'cost_estimate' => 'Kostenvoranschlag',
     'text_products' => 'Bitte einen Artikel auswählen',
-    'text_ean' => 'EAN-Nummer eigeben',
+    'text_ean' => 'EAN-Nummer eingeben',
 	//Account History
     'heading_history_info' => 'Bestellinformationen',
     'text_pdf_bill_print' => 'Ihre PDF Rechnung zum Download: ',

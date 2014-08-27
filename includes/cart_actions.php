@@ -213,16 +213,15 @@ if (isset($_GET['action'])) {
 					}
 				}
 			}
-			
-			unset($_SESSION['cart_freitext'][$_SESSION['new_products_id_in_cart']]);
+
 			if($_POST['product_options_id_freitext']) {
-				$_SESSION['cart_freitext'][$_SESSION['new_products_id_in_cart']][] = array('freitext' => $_POST['freitext'],'option_id'=>$_POST['product_options_id_freitext'], 'product_id'=>$_SESSION['new_products_id_in_cart']);
+				$_SESSION['cart']->add_cart2($_SESSION['new_products_id_in_cart'], array($_POST['product_options_id_freitext'] => array($_POST['id'][$_POST['product_options_id_freitext']] => $_POST['freitext'])));
 			}
 			if($_POST['product_options_id_freitext1']) {
-				$_SESSION['cart_freitext'][$_SESSION['new_products_id_in_cart']][] = array('freitext1' => $_POST['freitext1'],'option_id'=>$_POST['product_options_id_freitext1'], 'product_id'=>$_SESSION['new_products_id_in_cart']);
+				$_SESSION['cart']->add_cart2($_SESSION['new_products_id_in_cart'], array($_POST['product_options_id_freitext1'] => array($_POST['id'][$_POST['product_options_id_freitext1']] => $_POST['freitext1'])));
 			}
 			if($_POST['product_options_id_freitext2']) {
-				$_SESSION['cart_freitext'][$_SESSION['new_products_id_in_cart']][] = array('freitext2' => $_POST['freitext2'],'option_id'=>$_POST['product_options_id_freitext2'], 'product_id'=>$_SESSION['new_products_id_in_cart']);
+				$_SESSION['cart']->add_cart2($_SESSION['new_products_id_in_cart'], array($_POST['product_options_id_freitext2'] => array($_POST['id'][$_POST['product_options_id_freitext2']] => $_POST['freitext2'])));
 			}			
 			if (PRODUCT_DETAILS_TAB_ACCESSORIES == 'true') {
 				xtc_redirect(xtc_href_link($goto, 'products_id=' .(int)$_POST['products_id'][0] . '&' . xtc_get_all_get_params($parameters)));

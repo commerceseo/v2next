@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: commerce_seo.inc.php 903 2014-03-27 18:52:03Z akausch $
+ * 	$Id: commerce_seo.inc.php 1166 2014-08-25 10:37:23Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -451,11 +451,15 @@ class CommerceSeo {
 							WHERE
 								cd.language_id = l.languages_id
 							AND 
+								cd.categories_contents = '0'
+							AND 
+								cd.categories_blogs = '0'
+							AND 
 								cd.categories_name != ''
 							");
 
         // Kategorien durchlaufen und Indexierung fueÂr SEO Tabelle vornehmen
-        while ($categoryList = xtc_db_fetch_array($category_query, true)) {
+        while ($categoryList = xtc_db_fetch_array($category_query)) {
             $categoryPath = $this->getCategoryPathForCategory($categoryList['categories_id'], $categoryList['language_id']);
             if ($useLanguageUrl) {
                 $categoryLink = $categoryList['code'] . $categoryPath;
@@ -488,11 +492,11 @@ class CommerceSeo {
 										bc.language_id = l.languages_id");
 
             // Blog Datensaetze durchlaufen und Indexierung fueÂr SEO Tabelle vornehmen
-            while ($blogList = xtc_db_fetch_array($blog_data, true)) {
+            while ($blogList = xtc_db_fetch_array($blog_data)) {
                 if ($useLanguageUrl)
-                    $blogLink = $blogList['code'] . '/blog/' . cseo_get_url_friendly_text($blogList['blog_cat_titel']);
+                    $blogLink = $blogList['code'] . '/' . cseo_get_url_friendly_text($blogList['blog_cat_titel']);
                 else
-                    $blogLink = 'blog/' . cseo_get_url_friendly_text($blogList['blog_cat_titel']);
+                    $blogLink = cseo_get_url_friendly_text($blogList['blog_cat_titel']);
 
                 $blogLink = $this->validateDBKeyLink($blogLink, '');
                 if (!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LOWERCASE'] && MODULE_COMMERCE_SEO_URL_LOWERCASE === 'True' || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LOWERCASE'] === 'True') {
@@ -523,11 +527,11 @@ class CommerceSeo {
 							 AND
 							 	bi.categories_id = bc.categories_id");
 
-            while ($blogList = xtc_db_fetch_array($blog_data, true)) {
+            while ($blogList = xtc_db_fetch_array($blog_data)) {
                 if ($useLanguageUrl) {
-                    $blogLink = $blogList['code'] . '/blog/' . cseo_get_url_friendly_text($blogList['blog_cat_titel']) . '/' . cseo_get_url_friendly_text($blogList['blog_item_title']) . '.html';
+                    $blogLink = $blogList['code'] . '/' . cseo_get_url_friendly_text($blogList['blog_cat_titel']) . '/' . cseo_get_url_friendly_text($blogList['blog_item_title']) . '.html';
                 } else {
-                    $blogLink = 'blog/' . cseo_get_url_friendly_text($blogList['blog_cat_titel']) . '/' . cseo_get_url_friendly_text($blogList['blog_item_title']) . '.html';
+                    $blogLink = cseo_get_url_friendly_text($blogList['blog_cat_titel']) . '/' . cseo_get_url_friendly_text($blogList['blog_item_title']) . '.html';
                 }
 
                 $blogLink = $this->validateDBKeyLink($blogLink, '');
@@ -557,7 +561,7 @@ class CommerceSeo {
 										cm.languages_id = l.languages_id");
 
         // Content Datensaetze durchlaufen und Indexierung fuer SEO Tabelle vornehmen
-        while ($contentList = xtc_db_fetch_array($content_query, false)) {
+        while ($contentList = xtc_db_fetch_array($content_query)) {
             if ($contentList['content_url_alias'] != '') {
                 $content_url = $contentList['content_url_alias'];
             } else {
@@ -602,7 +606,7 @@ class CommerceSeo {
 								" . TABLE_PRODUCTS_DESCRIPTION . "
 							WHERE products_id=" . $productID);
 
-        while ($productList = xtc_db_fetch_array($product_query, true)) {
+        while ($productList = xtc_db_fetch_array($product_query)) {
             if ((!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] && MODULE_COMMERCE_SEO_URL_LENGHT == 'True') || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] == 'True') {
                 $productPath = '';
                 if ((!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] && MODULE_COMMERCE_SEO_URL_LENGHT == 'True') || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] == 'True' && (!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_OLD_REWRITE'] && MODULE_COMMERCE_SEO_URL_OLD_REWRITE == 'True') || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_OLD_REWRITE'] == 'True') {
@@ -693,7 +697,7 @@ class CommerceSeo {
 											pd.language_id  = l.languages_id
 										");
 
-                while ($resultList = xtc_db_fetch_array($result_query, false)) {
+                while ($resultList = xtc_db_fetch_array($result_query)) {
                     if (MODULE_COMMERCE_SEO_URL_LENGHT == 'True') {
                         if ((!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] && MODULE_COMMERCE_SEO_URL_LENGHT == 'True') || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] == 'True' && (!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_OLD_REWRITE'] && MODULE_COMMERCE_SEO_URL_OLD_REWRITE == 'True') || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_OLD_REWRITE'] == 'True') {
                             $productPath = '';
@@ -770,7 +774,7 @@ class CommerceSeo {
 											AND
 												cd.language_id = l.languages_id");
 
-                while ($resultList = xtc_db_fetch_array($result_query, true)) {
+                while ($resultList = xtc_db_fetch_array($result_query)) {
                     $categoryPath = $this->getCategoryPathForCategory($resultList['categories_id'], $resultList['language_id']);
                     if (MODULE_COMMERCE_SEO_INDEX_LANGUAGEURL == 'True') {
                         $categoryLink = $resultList['code'] . $categoryPath;
@@ -818,7 +822,7 @@ class CommerceSeo {
 									AND
 										cm.languages_id = l.languages_id");
 
-                while ($content = xtc_db_fetch_array($content_query, true)) {
+                while ($content = xtc_db_fetch_array($content_query)) {
                     if ($content['content_url_alias'] != '') {
                         $content_url = $content['content_url_alias'];
                     } else {
@@ -879,7 +883,7 @@ class CommerceSeo {
 										AND 
 											bi.categories_id = bc.id");
 
-                    while ($blogList = xtc_db_fetch_array($result_query, true)) {
+                    while ($blogList = xtc_db_fetch_array($result_query)) {
                         // URL mit oder ohne ISO Code anlegen
                         if (MODULE_COMMERCE_SEO_INDEX_LANGUAGEURL == 'True') {
                             $blogLink = $blogList['code'] . cseo_get_url_friendly_text($blogList['blog_cat_titel']) . '/' . cseo_get_url_friendly_text($blogList['blog_item_title']) . '.html';
@@ -926,7 +930,7 @@ class CommerceSeo {
 										pd.url_text IS NULL;");
 
                 // Anlegen der neuen Datensaetze
-                while ($resultList = xtc_db_fetch_array($result_query, true)) {
+                while ($resultList = xtc_db_fetch_array($result_query)) {
                     if (MODULE_COMMERCE_SEO_URL_LENGHT == 'True') {
                         $productPath = '';
                     } else {
@@ -986,7 +990,7 @@ class CommerceSeo {
 									WHERE 
 										cseo.categories_id IS NULL");
 
-                while ($resultList = xtc_db_fetch_array($result_query, true)) {
+                while ($resultList = xtc_db_fetch_array($result_query)) {
                     $categoryPath = $this->getCategoryPathForCategory($resultList['categories_id'], $resultList['language_id']);
 
                     // URL mit oder ohne ISO Code anlegen

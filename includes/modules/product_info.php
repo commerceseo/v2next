@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: product_info.php 1065 2014-05-22 12:08:08Z akausch $
+ * 	$Id: product_info.php 1096 2014-06-12 14:47:41Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -242,7 +242,7 @@ if (!is_object($product) || !$product->isProduct()) {
         $man_pic = xtc_db_fetch_array(xtDBquery("SELECT manufacturers_image, manufacturers_name  FROM manufacturers WHERE manufacturers_id='" . $product->data['manufacturers_id'] . "'"));
         $info_smarty->assign('PRODUCTS_MANUFACTURERS_NAME', $man_pic['manufacturers_name']);
         $info_smarty->assign('PRODUCTS_MANUFACTURERS_DESC', $man['manufacturers_description']);
-        $info_smarty->assign('PRODUCTS_MANUFACTURERS_IMG', '<img src="' . DIR_WS_CATALOG . DIR_WS_IMAGES . $man_pic['manufacturers_image'] . ' "title="' . $man_pic['manufacturers_name'] . '" />');
+        $info_smarty->assign('PRODUCTS_MANUFACTURERS_IMG', xtc_image(DIR_WS_IMAGES . $man_pic['manufacturers_image'],$man_pic['manufacturers_name']));
     }
 
     if (PRODUCT_DETAILS_TAB_PRODUCT == 'true') {

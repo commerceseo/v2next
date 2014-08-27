@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: main_random_specials.php 522 2013-07-24 11:44:51Z akausch $
+ * 	$Id: main_random_specials.php 1118 2014-06-25 19:54:28Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -25,7 +25,7 @@ if (MAX_RANDOM_PRODUCTS > 0) {
     }
 
     if ($_SESSION['customers_status']['customers_fsk18_display'] == '0') {
-        $fsk_lock = ' AND p.products_fsk18!=1';
+        $fsk_lock = ' AND p.products_fsk18 !=1';
     }
 
     $random_products_query = xtDBquery("SELECT
@@ -47,6 +47,7 @@ if (MAX_RANDOM_PRODUCTS > 0) {
 										AND
 											(p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
 										" . $fsk_lock . $group_check . "	
+										GROUP BY p.products_id
 										ORDER BY rand() 
 										LIMIT " . MAX_RANDOM_PRODUCTS . ";");
 

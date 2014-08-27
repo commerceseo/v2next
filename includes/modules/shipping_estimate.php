@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: shipping_estimate.php 1040 2014-05-12 19:22:49Z akausch $
+ * 	$Id: shipping_estimate.php 1140 2014-07-09 14:06:19Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -14,7 +14,6 @@
  * --------------------------------------------------------------- */
 
 require_once (DIR_FS_INC . 'xtc_get_country_list.inc.php');
-// require_once (DIR_WS_CLASSES . 'class.shipping_estimate.php');
 require_once (DIR_WS_CLASSES . 'class.shipping.php');
 
 $order = new order();
@@ -101,6 +100,32 @@ if ($free_shipping == true) {
         $module_smarty->assign('FREE_SHIPPING_INFO', sprintf(FREE_SHIPPING_DESCRIPTION, $xtPrice->xtcFormat(MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING_OVER, true, 0, true)));
     }
     $i = 0;
+	//Beginn von Modul Versandsperre
+	for($i = 0, $n = count($order->products);$i < $n; $i++ ) {
+		$id = $order->products[$i]['id'];
+		$forbidden_shipping_query = xtc_db_query("SELECT products_forbidden_shipping FROM " . TABLE_PRODUCTS . " WHERE products_id='$id' ");
+		if($i == '0') {
+			$forbidden_shipping_data = xtc_db_fetch_array($forbidden_shipping_query);
+		} else  {
+			$puffer = xtc_db_fetch_array($forbidden_shipping_query);
+			if($puffer['products_forbidden_shipping'] != '') {
+				$forbidden_shipping_data['products_forbidden_shipping'] .= "|";
+				$forbidden_shipping_data['products_forbidden_shipping'] .= $puffer['products_forbidden_shipping'];
+			}
+		}
+	}
+	$forbidden_shipping_data = explode("|",$forbidden_shipping_data['products_forbidden_shipping']);
+	$n = sizeof($quotes);
+	foreach($forbidden_shipping_data AS $forbidden_shipping) {
+		for ($i = 0; $i <= $n; $i++) {
+			$name = explode('.', $forbidden_shipping);
+			if($quotes[$i]['id'] == $name[0]) {
+				unset($quotes[$i]);
+			}
+		}
+	}
+
+	//Ende von Modul Versandsperre
     foreach ($quotes AS $quote) {
         if ($quote['id'] != 'freeamount') {
             $total += ((isset($quote['tax']) && $quote['tax'] > 0) ? $xtPrice->xtcAddTax($quote['methods'][0]['cost'], $quote['tax']) : (!empty($quote['methods'][0]['cost']) ? $xtPrice->xtcCalculateCurr($quote['methods'][0]['cost']) : '0'));

@@ -101,6 +101,7 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
 	if(isset($_REQUEST['ret_errormsg'])) {
 		$smarty->assign('silent_error', strip_tags($_REQUEST['ret_errormsg']));
 	}
+	$smarty->caching = false;
 	$smarty->assign('language', $_SESSION['language']);
 	$smarty->assign('formfields', $formfields);
 	$smarty->assign('returned_fields', $_REQUEST);
@@ -117,10 +118,10 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
 	$smarty->assign('action_url', $formfields['action']);
 	$smarty->assign('orders_id', $_SESSION['tmp_oID']);
 	$smarty->assign('back_url', basename(__FILE__).'?back_button=go');
-	$main_content = $smarty->fetch(CURRENT_TEMPLATE.'/module/checkout_ipayment.html');
+	$smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_ipayment.html', USE_TEMPLATE_DEVMODE));
 
 	$smarty->assign('main_content', $main_content);
-	$smarty->caching = false;
 	$smarty->display(CURRENT_TEMPLATE.'/index.html');
 	include ('includes/application_bottom.php');
 }

@@ -54,7 +54,7 @@ function cseo_truncate($text, $length = 100, $ending = '...', $exact = true, $co
                         }
                     }
                 }
-                $truncate .= substr($line_matchings[2], 0, $left + $entities_length);
+                $truncate .= mb_substr($line_matchings[2], 0, $left + $entities_length);
                 break;
             } else {
                 $truncate .= $line_matchings[2];

@@ -698,3 +698,4 @@ $cseo_application_bottom_extender_component->set_data('GET', $_GET);
 $cseo_application_bottom_extender_component->set_data('POST', $_POST);
 $cseo_application_bottom_extender_component->proceed();
 
+define('CHECKOUT_AJAX_STAT', 'false');

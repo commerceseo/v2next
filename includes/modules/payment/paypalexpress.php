@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: paypalexpress.php 728 2013-11-11 16:45:24Z akausch $
+ * 	$Id: paypalexpress.php 1166 2014-08-25 10:37:23Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -157,6 +157,7 @@ class paypalexpress {
 
         $new_config = array();
         $new_config[] = array('', 'PAYPAL_MODE', 'live', 25, 1, '', 'xtc_cfg_select_option(array("live", "sandbox"),');
+		$new_config[] = array('', 'PAYPAL_PAYMENT_MODE', 'Sale', 25, 1, '', 'xtc_cfg_select_option(array("Sale", "Authorization"),');
         $new_config[] = array('', 'PAYPAL_API_USER', '', 25, 2, '', '');
         $new_config[] = array('', 'PAYPAL_API_PWD', '', 25, 3, '', '');
         $new_config[] = array('', 'PAYPAL_API_SIGNATURE', '', 25, 4, '', '');

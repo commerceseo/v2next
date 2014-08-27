@@ -39,10 +39,12 @@ if (STORE_SESSIONS == 'mysql') {
 
     function _sess_write($key, $val) {
         global $SESS_LIFE;
+
         $expiry = time() + $SESS_LIFE;
         $value = base64_encode($val);
-
-        $total = xtc_db_fetch_array(xtc_db_query("SELECT count(*) AS total FROM " . TABLE_SESSIONS . " WHERE sesskey = '" . xtc_db_input($key) . "';"));
+		$sesscount= xtc_db_query("SELECT count(*) AS total FROM " . TABLE_SESSIONS . " WHERE sesskey = '" . xtc_db_input($key) . "';");
+		$total = xtc_db_fetch_array($sesscount);
+        // $total = xtc_db_fetch_array(xtc_db_query("SELECT count(*) AS total FROM " . TABLE_SESSIONS . " WHERE sesskey = '" . xtc_db_input($key) . "';"));
 
         if ($total['total'] > 0) {
             return xtc_db_query("UPDATE " . TABLE_SESSIONS . " SET expiry = '" . $expiry . "', VALUE = '" . $value . "' WHERE sesskey = '" . xtc_db_input($key) . "';");

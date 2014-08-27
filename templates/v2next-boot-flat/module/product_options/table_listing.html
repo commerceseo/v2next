@@ -1,43 +1,37 @@
 {if $options!=''}
-<fieldset class="productinfooption">
-	<dl>
-		<div style="width:100%">
-			{foreach name=outer item=options_data from=$options} 
-				<div style="border-bottom: 1px solid;"><strong>{$options_data.NAME}:</strong></div>
-				<table width="100%">
-				  {assign var="n" value=0}
-					{foreach key=key_data item=item_data from=$options_data.DATA}
-					<tr class="{cycle values="row1,row2"}">
-						<td width="5%">
-							<input class="option" type="radio" name="id[{$options_data.ID}]" value="{$item_data.ID}" {if $n == 0}checked="checked"{/if} n="{$n}" />
-							{assign var="n" value="`$n+1`"}
-						</td>
-						<td width="40%">
-							<b>{$item_data.TEXT}</b>
-						</td>
-						<td class="ac" width="25%">
-							{$item_data.STOCK}
-						</td>
-						<td class="ar"  width="30%">
-							<nobr><b>{if $item_data.PRICE !='' }{$item_data.PREFIX} {$item_data.PRICE}{/if}</b>{if $item_data.VPE} / {$item_data.VPE}{/if}</nobr>
-						</td>
-					</tr>
-					<tr class="{cycle values="row1,row2"}">
-						<td>&nbsp;</td>
-						<td>
-							{if $item_data.MODEL !=''}ArtNr.: {$item_data.MODEL}<br>{/if}
-							{if $item_data.DESC}{$item_data.DESC}{/if}
-						</td>
-						<td>&nbsp;</td>
-						<td class="ac">
-							{if $item_data.IMAGE !=''}<br><img style="max-width: 80px; max-height:80px" src="{$item_data.IMAGE}" alt="{$item_data.TEXT}" />{/if}
-						</td>
-					</tr>
-					{/foreach}
-				</table>
-				
-			{/foreach} 
-		</div>
-	</dl>
-</fieldset>
+	{foreach name=outer item=options_data from=$options} 
+		<b>{$options_data.NAME}:</b>
+		<table class="table table-striped">
+		  {assign var="n" value=0}
+			{foreach key=key_data item=item_data from=$options_data.DATA}
+			<tr>
+				<td>
+					<input class="option" type="radio" name="id[{$options_data.ID}]" value="{$item_data.ID}" {if $n == 0}checked="checked"{/if} n="{$n}" />
+					{assign var="n" value="`$n+1`"}
+				</td>
+				<td>
+					<b>{$item_data.TEXT}</b>
+				</td>
+				<td class="text-center">
+					{$item_data.STOCK}
+				</td>
+				<td class="tex-right">
+					<b>{if $item_data.PRICE !='' }{$item_data.PREFIX} {$item_data.PRICE}{/if}</b>{if $item_data.VPE} / {$item_data.VPE}{/if}
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>
+					{if $item_data.MODEL !=''}ArtNr.: {$item_data.MODEL}<br>{/if}
+					{if $item_data.DESC}{$item_data.DESC}{/if}
+				</td>
+				<td>&nbsp;</td>
+				<td class="ac">
+					{if $item_data.IMAGE !=''}<br><img style="max-width: 80px; max-height:80px" src="{$item_data.IMAGE}" alt="{$item_data.TEXT}" />{/if}
+				</td>
+			</tr>
+			{/foreach}
+		</table>
+		
+	{/foreach}
 {/if}

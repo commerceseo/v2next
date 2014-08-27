@@ -1,16 +1,12 @@
 {if $options!=''}
-	<fieldset class="productinfooption">
-		<dl>
-			{foreach name=outer item=options_data from=$options}
-				<dt class="w126"><b>{$options_data.NAME}</b>:</dt>
-				<dd>
-					<select name="id[{$options_data.ID}]" class="option">
-						{foreach key=key_data item=item_data from=$options_data.DATA}
-							<option value="{$item_data.ID}">{$item_data.TEXT} {if $item_data.PRICE !='' }{$item_data.PREFIX} {$item_data.PRICE}{/if} {if $item_data.VPE}/ {$item_data.VPE}{/if}</option>
-						{/foreach}
-					</select>
-				</dd>
-			{/foreach}
-		</dl>
-	</fieldset> 
+	{foreach name=outer item=options_data from=$options}
+		<dt class="col-xs-6"><b>{$options_data.NAME}</b>:</dt>
+		<dd class="col-xs-6">
+			<select name="id[{$options_data.ID}]" class="option">
+				{foreach key=key_data item=item_data from=$options_data.DATA}
+					<option value="{$item_data.ID}">{$item_data.TEXT} {if $item_data.PRICE !='' }{$item_data.PREFIX} {$item_data.PRICE}{/if} {if $item_data.VPE}/ {$item_data.VPE}{/if}</option>
+				{/foreach}
+			</select>
+		</dd>
+	{/foreach}
 {/if}

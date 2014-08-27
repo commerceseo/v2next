@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: specials_gratis.inc.php 1068 2014-05-22 12:11:34Z akausch $
+ * 	$Id: specials_gratis.inc.php 1081 2014-05-28 12:11:50Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -19,15 +19,10 @@ function getspecial_gratis() {
     $cartqyt = $_SESSION['wk_summe'];
     $cartgratis = $_SESSION['cart']->total;
     $meine_gratis = array();
-    $meine_gratis = '';
     $special_gratis = array();
-    $special_gratis = '';
     $cart_cat = array();
-    $cart_cat = '';
     $cart_man = array();
-    $cart_man = '';
     $product_id_arr = array();
-    $product_id_arr = '';
 
     $config_query = xtc_db_query("SELECT 
 									p.products_id,
@@ -46,9 +41,6 @@ function getspecial_gratis() {
 									s.status = 1
 								AND 
 									s.specials_gratis_quantity > 0;");
-	// echo '<pre>';
-	// print_r(xtc_db_fetch_array($config_query));
-	// echo '</pre>';
     while ($maingratis = xtc_db_fetch_array($config_query)) {
         $meine_gratis[$maingratis["products_id"]] = $maingratis;
     }
@@ -72,11 +64,14 @@ function getspecial_gratis() {
 										p.products_image,
 										p.manufacturers_id AS manufac_id,
 										p.products_price,
+										sd.*,
 										s.* 
 									FROM
 										" . TABLE_PRODUCTS . " AS p
 									INNER JOIN
 										" . TABLE_SPECIALS_GRATIS . " AS s ON(s.products_id = p.products_id)
+									INNER JOIN
+										" . TABLE_SPECIALS_GRATIS_DESCRIPTION . " AS sd ON(sd.specials_gratis_id = s.specials_gratis_id AND sd.language_id = '" . (int)$_SESSION['languages_id'] . "')
 									INNER JOIN
 										" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(s.products_id = pd.products_id AND pd.language_id = '" . (int)$_SESSION['languages_id'] . "')
 									INNER JOIN
@@ -105,12 +100,12 @@ function getspecial_gratis() {
 					} else {
 						$special_gratis_ob['gratis_image'] = xtc_image(DIR_WS_MINI_IMAGES . 'no_img.jpg', $special_gratis_ob['products_name']);
 					}
-                    $special_gratis[$special_gratis_ob['products_id']] = $special_gratis_ob;
 					if (GRATISARTIKEL_OPTION == 'select') {
 						$special_gratis_ob['select'] = '<input type="checkbox" id="prodg_'.$special_gratis_ob['products_id'].'" class="gratisChecked" />';
 					} else {
 						$special_gratis_ob['select'] = '<input type="radio" name="id" value="'.$special_gratis_ob['products_id'].'" id="prodg_'.$special_gratis_ob['products_id'].'" class="gratisChecked" />';
 					}
+                    $special_gratis[$special_gratis_ob['products_id']] = $special_gratis_ob;
                 }
             }
         }

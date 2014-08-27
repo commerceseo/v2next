@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: header.php 936 2014-04-04 17:03:14Z akausch $
+* 	$Id: header.php 1124 2014-06-29 12:23:10Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -33,6 +33,11 @@ header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 
 $browser = new Browser();
 
+if(strstr($_REQUEST['linkurl'], substr(FILENAME_CHECKOUT, 0, -5)) || strstr($_REQUEST['linkurl'], substr('checkout.php', 0, -5)) || strstr($PHP_SELF, substr(FILENAME_CHECKOUT, 0, -5)) || strstr($PHP_SELF, substr('checkout.php', 0, -5))) {
+	//include('includes/xajax.checkout.php');
+} else {
+	include('includes/xajax/xajax.cseofunctions.php');
+}
 /******** SHOPGATE **********/
 if(strpos(MODULE_PAYMENT_INSTALLED, 'shopgate.php') !== false && strpos($_SESSION['customers_status']['customers_status_payment_unallowed'], 'shopgate') === false){
   include_once (DIR_FS_CATALOG.'includes/external/shopgate/base/includes/header.php');

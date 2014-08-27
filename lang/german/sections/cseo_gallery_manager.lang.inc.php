@@ -17,5 +17,5 @@ $t_language_text_section_content_array = array
 	'TABLE_HEADING_STATUS' => 'Status',
 	'TABLE_HEADING_ACTION' => 'Aktion',
 	'BUTTON_NEW_ELEMENT' => 'Neues Sliderset',
+	'TABLE_HEADING_LANG' => 'Sprache',
 );
-?>

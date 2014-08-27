@@ -59,7 +59,9 @@ if(!$box_smarty->isCached(CURRENT_TEMPLATE.'/boxes/box.html', $cache_id) || !$ca
 			SELECT	c.categories_id,
 					c.categories_nav_image,  
 					cd.categories_heading_title, 
-					cd.categories_name 
+					cd.categories_name,
+					cd.categories_contents,
+					cd.categories_blogs	 
 			FROM	".TABLE_CATEGORIES." c
 			INNER JOIN	".TABLE_CATEGORIES_DESCRIPTION." cd ON(cd.categories_id = c.categories_id)
 			WHERE 	c.parent_id = ".intval($CatID)." 
@@ -89,10 +91,22 @@ if(!$box_smarty->isCached(CURRENT_TEMPLATE.'/boxes/box.html', $cache_id) || !$ca
 				} else {
 					$nav_pic = '';
 				}
+				if ($dbQueryResult['categories_blogs'] != '0') {
+					$mylink = xtc_href_link(FILENAME_BLOG, 'blog_cat=' . $dbQueryResult['categories_blogs']);
+				} elseif ($dbQueryResult['categories_contents'] != '0') {
+					$my_contlink = xtc_db_fetch_array(xtc_db_query("select content_out_link from ".TABLE_CONTENT_MANAGER." where content_group = ". $dbQueryResult['categories_contents']." "));
+					if($my_contlink['content_out_link'] != ''){
+						$mylink = xtc_href_link($my_contlink['content_out_link']);
+					}else{
+						$mylink = xtc_href_link(FILENAME_CONTENT, 'coID=' . $dbQueryResult['categories_contents']);
+					}
+				} else {
+					$mylink = xtc_href_link(FILENAME_DEFAULT, xtc_category_link($dbQueryResult['categories_id'], $dbQueryResult['categories_name']));
+				}				
 				$Return 	.= 	"\n"
 							.	'<li class="main_level_'.$Level.'">'
 							.	'<a'.$Current.' href="'
-							.	xtc_href_link(FILENAME_DEFAULT,xtc_category_link($dbQueryResult['categories_id'],$dbQueryResult['categories_name']))
+							.	$mylink
 							.	'" title="'.$dbQueryResult['categories_heading_title'].'">'
 							. 	$nav_pic 
 							.	$dbQueryResult['categories_name'];

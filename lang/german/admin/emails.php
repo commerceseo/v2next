@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: emails.php 420 2013-06-19 18:04:39Z akausch $
+* 	$Id: emails.php 1100 2014-06-13 00:43:53Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -36,3 +36,5 @@ define('RECOVER_CART_SALES_TITLE','Offene Warenkörbe');
 define('ASKAQUESTION_TITLE','Frage zum Produkt Vorlage');
 define('STOCK_MAIL_TITLE','Lagerbestandswarnung');
 define('WITHDRAWAL_TITLE','Widerrufsformular-Bestätigung');
+define('NEW_RMA_TITLE','Neuer RMA-Auftrag');
+define('CHANGE_RMA_TITLE','Änderung RMA-Auftrag');

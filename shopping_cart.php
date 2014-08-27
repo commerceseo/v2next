@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: shopping_cart.php 869 2014-03-18 16:57:50Z akausch $
+ * 	$Id: shopping_cart.php 1107 2014-06-18 07:27:22Z sbraeutig $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -144,7 +144,6 @@ if ($_SESSION['cart']->count_contents() > 0) {
         $products = $_SESSION['cart']->get_products();
         for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
             // Push all attributes information in an array
-
             if (isset($products[$i]['attributes'])) {
                 while (list ($option, $value) = each($products[$i]['attributes'])) {
                     $hidden_options .= xtc_draw_hidden_field('id[' . $products[$i]['id'] . '][' . $option . ']', $value);
@@ -176,6 +175,41 @@ if ($_SESSION['cart']->count_contents() > 0) {
                     $products[$i][$option]['attributes_vpe_value'] = $attributes_values['attributes_vpe_value'];
                     $products[$i][$option]['attributes_shippingtime'] = $attributes_values['attributes_shippingtime'];
                     $products[$i][$option]['attributes_model'] = $attributes_values['attributes_model'];
+                }
+            }
+            if (isset($products[$i]['freitext'])) {
+                while (list ($option, $value) = each($products[$i]['freitext'])) {
+					while (list ($foption, $fvalue) = each($value)) {
+                    $hidden_options .= xtc_draw_hidden_field('id[' . $products[$i]['id'] . '][' . $option . ']', $value);
+                    $attributes_values = xtc_db_fetch_array(xtc_db_query("SELECT 
+													*
+												FROM 
+													" . TABLE_PRODUCTS_OPTIONS . " popt 
+												INNER JOIN
+													" . TABLE_PRODUCTS_OPTIONS_VALUES . " poval ON(poval.language_id = '" . (int) $_SESSION['languages_id'] . "')
+												INNER JOIN
+													" . TABLE_PRODUCTS_ATTRIBUTES . " pa ON(pa.options_id = popt.products_options_id AND pa.products_id = '" . $products[$i]['id'] . "' AND pa.options_id = '" . $option . "' )
+												WHERE 
+													pa.options_values_id = poval.products_options_values_id
+												AND 
+													popt.language_id = '" . (int) $_SESSION['languages_id'] . "';"));
+                    $products[$i][$option]['products_options_name'] = $attributes_values['products_options_name'];
+					$products[$i][$option]['options_values_scale_price'] = $attributes_values['options_values_scale_price'];
+                    $products[$i][$option]['options_values_id'] = $fvalue;
+                    $products[$i][$option]['products_options_values_name'] = $attributes_values['products_options_values_name'];
+                    $products[$i][$option]['options_values_price'] = $attributes_values['options_values_price'];
+                    $products[$i][$option]['price_prefix'] = $attributes_values['price_prefix'];
+                    $products[$i][$option]['weight_prefix'] = $attributes_values['weight_prefix'];
+                    $products[$i][$option]['options_values_weight'] = $attributes_values['options_values_weight'];
+                    $products[$i][$option]['attributes_stock'] = $attributes_values['attributes_stock'];
+                    $products[$i][$option]['products_attributes_id'] = $attributes_values['products_attributes_id'];
+                    $products[$i][$option]['attributes_ean'] = $attributes_values['attributes_ean'];
+                    $products[$i][$option]['attributes_vpe_status'] = $attributes_values['attributes_vpe_status'];
+                    $products[$i][$option]['attributes_vpe'] = $attributes_values['attributes_vpe'];
+                    $products[$i][$option]['attributes_vpe_value'] = $attributes_values['attributes_vpe_value'];
+                    $products[$i][$option]['attributes_shippingtime'] = $attributes_values['attributes_shippingtime'];
+                    $products[$i][$option]['attributes_model'] = $attributes_values['attributes_model'];
+					}
                 }
             }
         }
@@ -304,7 +338,11 @@ if ($_SESSION['cart']->count_contents() > 0) {
 //Bezahlsperre END
         $smarty->assign('BUTTON_RELOAD', xtc_image_submit('button_update_cart.gif', IMAGE_BUTTON_UPDATE_CART));
         $smarty->assign('BUTTON_BACK', '<a href="javascript:history.back();">' . xtc_image_button('button_back.gif', IMAGE_BUTTON_BACK) . '</a>');
-		$file = FILENAME_CHECKOUT_SHIPPING;
+        if (CHECKOUT_AJAX_STAT == 'true') {
+            $file = FILENAME_CHECKOUT;
+        } else {
+            $file = FILENAME_CHECKOUT_SHIPPING;
+        }
         $smarty->assign('BUTTON_CHECKOUT', '<a title="' . IMAGE_BUTTON_CHECKOUT . '" href="' . xtc_href_link($file, '', 'SSL') . '">' . cseo_wk_image_button('button_checkout.gif', IMAGE_BUTTON_CHECKOUT) . '</a>');
     }
 } else {

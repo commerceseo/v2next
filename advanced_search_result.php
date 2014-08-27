@@ -39,44 +39,6 @@ if (isset($_GET['n']) && ($_GET['n'] == '1') && !empty($_GET['keywords']) && MOD
 }
 
 
-// filter box
-if (isset($_POST['manufacturers'])) {
-	if (!empty($_SESSION['fb_manufacturer_id']) && !isset($_REQUEST['keywords'])) {
-		$_GET['manufacturers_id'] = $_SESSION['fb_manufacturer_id'];
-	}
-	
-	if (!empty($_SESSION['fb_category_id']) && !isset($_REQUEST['keywords'])) {
-		$_GET['categories_id'] = ($_SESSION['fb_subcategory_id'] ? $_SESSION['fb_subcategory_id'] : $_SESSION['fb_category_id']);
-	}
-	
-	if (!isset($_REQUEST['keywords'])) {
-		$att_ids = array();
-		foreach ($_POST as $key=>$value) {
-			if (strpos($key, 'sel_options_'.$_SESSION['fb_category_id']) !== false && $value != '_all_' && !empty($value)) {
-				$att_ids[] = $value;
-			}
-		}
-	}
-} elseif (isset($_POST['manufacturers_fb2'])) {
-	if (!empty($_SESSION['fb2_manufacturer_id']) && !isset($_REQUEST['keywords'])) {
-		$_GET['manufacturers_id'] = $_SESSION['fb2_manufacturer_id'];
-	}
-	
-	if (!empty($_SESSION['fb2_subcategory_id']) && !isset($_REQUEST['keywords'])) {
-		$_GET['categories_id'] = $_SESSION['fb2_subcategory_id'];
-	}
-	
-	if (!isset($_REQUEST['keywords'])) {
-		$att_ids = array();
-		foreach ($_POST as $key=>$value) {
-			if (strpos($key, 'sel_options_') !== false && $value != '_all_' && !empty($value)) {
-				$att_ids[] = $value;
-			}
-		}
-	}
-}
-
-
 $error = 0;
 $errorno = 0;
 $keyerror = 0;
@@ -255,6 +217,7 @@ if ($error == 1 && $keyerror != 1) {
                             $where_str .= "AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "'";
                         }
                         $where_str .= "OR pd.products_name LIKE ('%" . addslashes($search_keywords[$i]) . "%') ";
+                        $where_str .= "OR p.products_ean LIKE ('%" . addslashes($search_keywords[$i]) . "%') ";
                         $where_str .= "OR p.products_model LIKE ('%" . addslashes($search_keywords[$i]) . "%') ";
                         if (column_exists('products', 'products_model2')) {
                             $where_str .= "OR p.products_model2 LIKE ('%" . addslashes($search_keywords[$i]) . "%') ";

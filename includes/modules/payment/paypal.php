@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: paypal.php 728 2013-11-11 16:45:24Z akausch $
+ * 	$Id: paypal.php 1166 2014-08-25 10:37:23Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -187,16 +187,17 @@ class paypal {
         xtc_db_query("insert into " . TABLE_CONFIGURATION . $m_fields . "values ('MODULE_PAYMENT_PAYPAL_ALLOWED', '', '6', '0', NULL, now(), '', '')");
         xtc_db_query("insert into " . TABLE_CONFIGURATION . $m_fields . "values ('MODULE_PAYMENT_PAYPAL_ZONE', '0', '6', '2', NULL, now(), 'xtc_get_zone_class_title', 'xtc_cfg_pull_down_zone_classes(')");
         // Config Daten auslesen - falls schon vorhanden durch PayPal Modul
-        $rest_query = xtc_db_query("select * from " . TABLE_CONFIGURATION . " where configuration_key like 'PAYPAL\_%'");
+        $rest_query = xtc_db_query("SELECT * FROM " . TABLE_CONFIGURATION . " WHERE configuration_key like 'PAYPAL\_%'");
         $rest_array = array();
         while ($rest_values = xtc_db_fetch_array($rest_query)) {
             $rest_array[] = $rest_values;
         }
         // Config Daten loeschen - falls noch Teile von alten Modulen da sind
-        xtc_db_query("delete from " . TABLE_CONFIGURATION . " where configuration_key like 'PAYPAL\_%'");
+        xtc_db_query("DELETE FROM " . TABLE_CONFIGURATION . " WHERE configuration_key like 'PAYPAL\_%'");
         // Config Daten restaurieren oder installieren mit Standard Werten
         $new_config = array();
         $new_config[] = array('', 'PAYPAL_MODE', 'live', 25, 1, '', 'xtc_cfg_select_option(array("live", "sandbox"),');
+        $new_config[] = array('', 'PAYPAL_PAYMENT_MODE', 'Sale', 25, 1, '', 'xtc_cfg_select_option(array("Sale", "Authorization"),');
         $new_config[] = array('', 'PAYPAL_API_USER', '', 25, 2, '', '');
         $new_config[] = array('', 'PAYPAL_API_PWD', '', 25, 3, '', '');
         $new_config[] = array('', 'PAYPAL_API_SIGNATURE', '', 25, 4, '', '');

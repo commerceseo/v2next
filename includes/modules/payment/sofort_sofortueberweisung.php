@@ -10,7 +10,7 @@
  * Released under the GNU General Public License (Version 2)
  * [http://www.gnu.org/licenses/gpl-2.0.html]
  *
- * $Id: sofort_sofortueberweisung.php 743 2013-11-18 10:14:09Z akausch $
+ * $Id: sofort_sofortueberweisung.php 420 2013-06-19 18:04:39Z akausch $
  */
 require_once(DIR_FS_CATALOG . 'callback/sofort/sofort.php');
 require_once(DIR_FS_CATALOG . 'callback/sofort/library/sofortLib.php');
@@ -102,7 +102,7 @@ class sofort_sofortueberweisung extends sofort {
     function _setImageText($image, $text) {
         $lng = HelperFunctions::getShortCode($_SESSION['language']);
         $image = 'https://images.sofort.com/' . $lng . '/su/' . $image;
-        $image = '<img src="'.$image.'" alt="'.MODULE_PAYMENT_SOFORT_SU_TEXT_DESCRIPTION_CHECKOUT_PAYMENT_IMAGEALT.'" title="'.MODULE_PAYMENT_SOFORT_SU_TEXT_DESCRIPTION_CHECKOUT_PAYMENT_IMAGEALT.'" />';
+		$image = '<img src="'.$image.'" title="'.MODULE_PAYMENT_SOFORT_SU_TEXT_DESCRIPTION_CHECKOUT_PAYMENT_IMAGEALT.'" alt="'.MODULE_PAYMENT_SOFORT_SU_TEXT_DESCRIPTION_CHECKOUT_PAYMENT_IMAGEALT.'" />';
         $title = MODULE_PAYMENT_SOFORT_SU_TEXT_DESCRIPTION_CHECKOUT_PAYMENT_IMAGE;
         $title = str_replace('{{image}}', $image, $title);
         $title = str_replace('{{text}}', $text, $title);

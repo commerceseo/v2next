@@ -826,7 +826,7 @@ function WriteArtikel() {
 					if (file_exists(DIR_FS_CATALOG_GALLERY_IMAGES))
 					{
 
-						require(DIR_FS_DOCUMENT_ROOT.'admin/includes/product_gallery_images.php');
+						// require(DIR_FS_DOCUMENT_ROOT.'admin/includes/product_gallery_images.php');
 					}
 
 					// generate resampled images
@@ -857,7 +857,7 @@ function WriteArtikel() {
 */
 						if (file_exists(DIR_FS_CATALOG_GALLERY_IMAGES)) {
 
-							require(DIR_FS_DOCUMENT_ROOT.'admin/includes/product_gallery_images.php');
+							// require(DIR_FS_DOCUMENT_ROOT.'admin/includes/product_gallery_images.php');
 						}
 
 						// generate resampled images

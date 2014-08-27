@@ -66,7 +66,7 @@ INSERT INTO admin_navigation VALUES (NULL, 'cseo_product_export', 'Export Produc
 INSERT INTO admin_navigation VALUES (NULL, 'novalnet', 'Novalnet', 'modules', 'novalnet.php', NULL, 1, NULL, 6);
 INSERT INTO admin_navigation VALUES (NULL, 'novalnet', 'Novalnet', 'modules', 'novalnet.php', NULL, 2, NULL, 6);
 INSERT INTO admin_navigation VALUES (NULL, 'magnalister', 'magnalister', 'modules', 'magnalister.php', NULL, 1, NULL, 7);
-INSERT INTO admin_navigation VALUES (NULL, 'magnalister', 'Magnalister', 'modules', 'magnalister.php', NULL, 2, NULL, 7);
+INSERT INTO admin_navigation VALUES (NULL, 'magnalister', 'magnalister', 'modules', 'magnalister.php', NULL, 2, NULL, 7);
 INSERT INTO admin_navigation VALUES (NULL, 'haendlerbund', 'Haendlerbund', 'modules', 'haendlerbund.php', NULL, 1, NULL, 8);
 INSERT INTO admin_navigation VALUES (NULL, 'haendlerbund', 'Haendlerbund', 'modules', 'haendlerbund.php', NULL, 2, NULL, 8);
 
@@ -161,6 +161,8 @@ INSERT INTO admin_navigation VALUES (NULL, 'janolaw', 'Janolaw', 'seo_config', '
 INSERT INTO admin_navigation VALUES (NULL, 'janolaw', 'Janolaw', 'seo_config', 'janolaw.php', NULL, 2, NULL, 1);
 INSERT INTO admin_navigation VALUES (NULL, 'configuration', 'Tracking & Analytics', 'seo_config', 'configuration.php', 361, 1, NULL, 1);
 INSERT INTO admin_navigation VALUES (NULL, 'configuration', 'Tracking & Analytics', 'seo_config', 'configuration.php', 361, 2, NULL, 1);
+INSERT INTO admin_navigation VALUES (NULL, 'configuration', 'Retouren Einstellungen', 'seo_config', 'configuration.php', 1005, 1, NULL, 30);
+INSERT INTO admin_navigation VALUES (NULL, 'configuration', 'RMA Settings', 'seo_config', 'configuration.php', 1005, 2, NULL, 30);
 
 INSERT INTO admin_navigation VALUES (NULL, 'languages', 'Languages', 'zones', 'languages.php', NULL, 1, NULL, 1);
 INSERT INTO admin_navigation VALUES (NULL, 'languages', 'Sprachen', 'zones', 'languages.php', NULL, 2, NULL, 1);

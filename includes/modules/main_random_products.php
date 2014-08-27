@@ -25,37 +25,36 @@ if (MAX_RANDOM_PRODUCTS > 0) {
     }
 
     if ($_SESSION['customers_status']['customers_fsk18_display'] == '0') {
-        $fsk_lock = ' AND p.products_fsk18!=1';
+        $fsk_lock = ' AND p.products_fsk18 !=1';
     }
 
     $random_products_query = xtDBquery("SELECT 
-											p.*, 
-											pd.* 
+											p.*,
+											pd.products_name,
+											pd.products_description,
+											pd.products_short_description
 										FROM 
 											" . TABLE_PRODUCTS . " p
-										LEFT JOIN 
-											" . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id)
-										LEFT JOIN 
+										INNER JOIN 
+											" . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+										INNER JOIN 
 											" . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON (p.products_id = p2c.products_id)
-										LEFT JOIN 
-											" . TABLE_CATEGORIES . " c ON (p2c.categories_id = c.categories_id)
+										INNER JOIN 
+											" . TABLE_CATEGORIES . " c ON (p2c.categories_id = c.categories_id AND c.categories_status = '1')
 										WHERE 
-											pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-										AND
-											c.categories_status='1'
-										AND 
 											p.products_status = '1' 
 										AND 
 											(p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
 										" . $fsk_lock . $group_check . "	
+										GROUP BY p.products_id
 										ORDER BY rand()
 										LIMIT " . MAX_RANDOM_PRODUCTS);
 
     $module_content = array();
-    $row = 0;
-    while ($random_products = xtc_db_fetch_array($random_products_query, true)) {
-        $row++;
+    $row = 1;
+    while ($random_products = xtc_db_fetch_array($random_products_query)) {
         $module_content[] = $product->buildDataArray($random_products, 'thumbnail', 'random_products', $row);
+        $row++;
     }
 
     if (sizeof($module_content) >= 1) {

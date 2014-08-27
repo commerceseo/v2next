@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.order.php 995 2014-04-29 17:59:27Z akausch $
+ * 	$Id: class.order.php 1107 2014-06-18 07:27:22Z sbraeutig $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -377,6 +377,26 @@ class order_ORIGINAL {
                         'price' => $attributes['options_values_price']);
 
                     $subindex++;
+                }
+            }
+		//	print_r($products[$i]['freitext']);
+            if ($products[$i]['freitext']) {
+                $subindex = 0;
+                reset($products[$i]['freitext']);
+                while (list($option, $value) = each($products[$i]['freitext'])) {
+					while (list($foption, $fvalue) = each($value)) {
+                    $attributes_query = xtc_db_query("select popt.products_options_name, poval.products_options_values_name, pa.options_values_price, pa.price_prefix, pa.attributes_shippingtime from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa where pa.products_id = '" . $products[$i]['id'] . "' and pa.options_id = '" . $option . "' and pa.options_id = popt.products_options_id  and popt.language_id = '" . $_SESSION['languages_id'] . "' and poval.language_id = '" . $_SESSION['languages_id'] . "'");
+                    $attributes = xtc_db_fetch_array($attributes_query);
+
+                    $this->products[$index]['freitext'][$subindex] = array('option' => $attributes['products_options_name'],
+                        'value' => $attributes['products_options_values_name'],
+                        'option_id' => $foption,
+                        'value_id' => $fvalue,
+                        'prefix' => $attributes['price_prefix'],
+                        'attributes_shippingtime' => $attributes['attributes_shippingtime'],
+                        'price' => $attributes['options_values_price']);
+                    $subindex++;
+					}
                 }
             }
 

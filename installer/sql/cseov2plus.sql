@@ -259,6 +259,7 @@ cseo_gallery_manager INT(1) NOT NULL DEFAULT '0',
 cseo_rma INT(1) NOT NULL DEFAULT '0',
 specials_gratis INT(1) NOT NULL DEFAULT '0',
 it_recht_kanzlei INT(1) NOT NULL DEFAULT '0',
+magnalister INT(1) NOT NULL DEFAULT '0',
 PRIMARY KEY (customers_id)
 );
 
@@ -367,21 +368,6 @@ banners_shown INT(5) NOT NULL DEFAULT '0',
 banners_clicked INT(5) NOT NULL DEFAULT '0',
 banners_history_date datetime NOT NULL,
 PRIMARY KEY (banners_history_id)
-);
-
-DROP TABLE IF EXISTS commerce_seo_url;
-CREATE TABLE commerce_seo_url (
-url_id int(32) NOT NULL AUTO_INCREMENT,
-url_md5 VARCHAR(32) NOT NULL DEFAULT '',
-url_text VARCHAR(255) NOT NULL DEFAULT '',
-products_id INT(11) DEFAULT NULL,
-categories_id INT(11) DEFAULT NULL,
-blog_id INT(11) DEFAULT NULL,
-blog_cat INT(11) DEFAULT NULL,
-content_group INT(11) DEFAULT NULL,
-language_id INT(11) NOT NULL DEFAULT '0',
-PRIMARY KEY (url_id),
-KEY url_text (url_id,url_text)
 );
 
 DROP TABLE IF EXISTS categories;
@@ -562,6 +548,7 @@ customers_basket_attributes_id INT NOT NULL auto_increment,
 customers_id INT NOT NULL,
 products_id INT(11) NOT NULL,
 products_options_id INT NOT NULL,
+products_option_ft VARCHAR(50) NOT NULL,
 products_options_value_id INT NOT NULL,
 PRIMARY KEY (customers_basket_attributes_id),
 KEY products_id (products_id)
@@ -805,6 +792,7 @@ final_price decimal(15,4) NOT NULL,
 products_tax decimal(7,4) NOT NULL,
 products_quantity INT(2) NOT NULL,
 allow_tax INT(1) NOT NULL,
+product_type INT(1) NOT NULL DEFAULT '1',
 PRIMARY KEY (orders_products_id),
 KEY idx_orders_id (orders_id),
 KEY idx_products_id (products_id)
@@ -826,6 +814,7 @@ shipping_status_id INT DEFAULT '0' NOT NULL,
 language_id INT DEFAULT '1' NOT NULL,
 shipping_status_name VARCHAR(32) NOT NULL,
 shipping_status_image VARCHAR(32) NOT NULL,
+info_link_active TINYINT NOT NULL DEFAULT '1',
 PRIMARY KEY (shipping_status_id, language_id),
 KEY idx_shipping_status_name (shipping_status_name),
 KEY language_id (language_id)
@@ -1049,6 +1038,7 @@ products_google_gender VARCHAR( 128 ) NULL,
 products_google_age_group VARCHAR( 128 ) NULL,
 products_google_color VARCHAR( 128 ) NULL,
 products_google_size VARCHAR( 128 ) NULL,
+product_type TINYINT( 1 ) NOT NULL DEFAULT '1',
 PRIMARY KEY (products_id),
 KEY idx_products_date_added (products_date_added),
 KEY products_id (products_id,products_status,products_date_added),
@@ -1455,6 +1445,7 @@ content_col_left TINYINT(1) NOT NULL DEFAULT 1,
 content_col_right TINYINT(1) NOT NULL DEFAULT 1,
 content_col_bottom TINYINT(1) NOT NULL DEFAULT 1,
 slider_set INT( 64 ) NOT NULL,
+last_modified DATETIME NOT NULL,
 PRIMARY KEY (content_id),
 KEY languages_id (languages_id,file_flag,content_status,sort_order),
 KEY content_id (content_id,languages_id),
@@ -2076,6 +2067,7 @@ CREATE TABLE blog_items (
   meta_description text,
   lenght int(5) DEFAULT NULL,
   item_viewed int(10) NOT NULL DEFAULT '0',
+  blog_image VARCHAR( 254 ) NULL,
   PRIMARY KEY (id,language_id)
 );
 
@@ -2349,3 +2341,26 @@ CREATE TABLE specials_gratis_description (
   language_id int(11) NOT NULL,
   FULLTEXT (specials_gratis_description)
 );
+
+DROP TABLE IF EXISTS withdrawals;
+CREATE TABLE withdrawals (
+  withdrawal_id int(11) NOT NULL AUTO_INCREMENT,
+  order_id int(11) NOT NULL,
+  customer_id int(11) NOT NULL,
+  customer_gender varchar(16) NOT NULL,
+  customer_firstname varchar(255) NOT NULL,
+  customer_lastname varchar(255) NOT NULL,
+  customer_street_address varchar(255) NOT NULL,
+  customer_postcode varchar(255) NOT NULL,
+  customer_city varchar(255) NOT NULL,
+  customer_country varchar(255) NOT NULL,
+  customer_email varchar(255) NOT NULL,
+  order_date varchar(12) NOT NULL,
+  delivery_date varchar(12) NOT NULL,
+  withdrawal_date varchar(12) NOT NULL,
+  withdrawal_content text NOT NULL,
+  date_created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  created_by_admin tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (withdrawal_id)
+);
+

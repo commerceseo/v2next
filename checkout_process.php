@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_process.php 1039 2014-05-12 16:01:33Z akausch $
+ * 	$Id: checkout_process.php 1107 2014-06-18 07:27:22Z sbraeutig $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -30,12 +30,6 @@ if (DISPLAY_CONDITIONS_ON_CHECKOUT == 'true') {
 }
 if (CHECKOUT_CHECKBOX_REVOCATION == 'true') {
     if (is_array($_SESSION['nvpReqArray']) && $_POST['widerrufsrecht'] != 'widerrufsrecht' && $_SESSION['payment'] == 'paypalexpress') {
-        $error_mess = '3';
-    }
-    if (is_array($_SESSION['nvpReqArray']) && $_POST['revocationdownload'] != 'revocationdownload' && $_SESSION['payment'] == 'paypalexpress') {
-        $error_mess = '3';
-    }
-    if (is_array($_SESSION['nvpReqArray']) && $_POST['revocationservice'] != 'revocationservice' && $_SESSION['payment'] == 'paypalexpress') {
         $error_mess = '3';
     }
 }
@@ -280,7 +274,7 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
             'products_discount_made' => $order->products[$i]['discount_allowed'],
             'products_quantity' => $order->products[$i]['qty'],
             'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax'],
-			'product_type' => $order->products[$i]['product_type']);
+            'product_type' => $order->products[$i]['product_type']);
 
         xtc_db_perform(TABLE_ORDERS_PRODUCTS, $sql_data_array);
         $order_products_id = xtc_db_insert_id();
@@ -300,7 +294,7 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
         //------insert customer choosen option to order--------
         $attributes_exist = '0';
         $products_ordered_attributes = '';
-        if (isset($order->products[$i]['attributes'])) {
+        if (isset($order->products[$i]['attributes']) || isset($order->products[$i]['freitext'])) {
             $attributes_exist = '1';
             for ($j = 0, $n2 = sizeof($order->products[$i]['attributes']); $j < $n2; $j++) {
                 if (DOWNLOAD_ENABLED == 'true') {
@@ -470,6 +464,88 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
 										options_values_id = '" . $order->products[$i]['attributes'][$j]['value_id'] . "'
 									AND 
 										options_id='" . $order->products[$i]['attributes'][$j]['option_id'] . "';");
+                    }
+                }
+            }
+
+            for ($j = 0, $n2 = sizeof($order->products[$i]['freitext']); $j < $n2; $j++) {
+
+                $attributes2_query = "SELECT 
+											popt.products_options_name,
+											poval.products_options_values_name,
+											pa.products_attributes_id,
+											pa.options_values_price,
+											pa.sortorder,
+											pa.attributes_model,
+											pa.price_prefix,
+											pa.attributes_shippingtime
+										FROM 
+											" . TABLE_PRODUCTS_OPTIONS . " popt, 
+											" . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, 
+											" . TABLE_PRODUCTS_ATTRIBUTES . " pa
+										WHERE 
+											pa.products_id = '" . $order->products[$i]['id'] . "'
+										AND 
+											pa.options_id = popt.products_options_id
+										AND 
+											pa.options_values_id = '" . $order->products[$i]['freitext'][$j]['option_id'] . "'
+										AND 
+											pa.options_values_id = poval.products_options_values_id
+										AND 
+											popt.language_id = '" . $_SESSION['languages_id'] . "'
+										AND 
+											poval.language_id = '" . $_SESSION['languages_id'] . "'";
+
+
+                $attributes2 = xtc_db_query($attributes2_query);
+
+                xtc_db_query("UPDATE 
+									" . TABLE_PRODUCTS_ATTRIBUTES . " 
+								SET
+									attributes_stock = attributes_stock - '" . $order->products[$i]['qty'] . "'
+								WHERE
+									products_id = '" . $order->products[$i]['id'] . "'
+								AND 
+									options_values_id = '" . $order->products[$i]['freitext'][$j]['option_id'] . "'
+								");
+
+                $attributes2_values = xtc_db_fetch_array($attributes2);
+
+                $sql_data_array2 = array('orders_id' => $insert_id,
+                    'orders_products_id' => $order_products_id,
+                    'products_options' => $attributes2_values['products_options_name'],
+                    'products_options_values' => $order->products[$i]['freitext'][$j]['value_id'],
+                    'options_values_price' => $attributes2_values['options_values_price'],
+                    'price_prefix' => $attributes_values2['price_prefix']);
+
+                xtc_db_perform(TABLE_ORDERS_PRODUCTS_ATTRIBUTES, $sql_data_array2);
+                if ($main->getShippingStatusName($attributes_values['attributes_shippingtime']) != $order->products[$i]['shipping_time']) {
+                    xtc_db_query("UPDATE " . TABLE_ORDERS_PRODUCTS . " SET products_shipping_time = '" . $main->getShippingStatusName($attributes_values2['attributes_shippingtime']) . "' WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "' AND orders_id = '" . $insert_id . "' AND orders_products_id = '" . $order_products_id . "';");
+                }
+
+                $stock_query_attr = xtc_db_query("SELECT 
+													attributes_stock 
+												FROM 
+													" . TABLE_PRODUCTS_ATTRIBUTES . " 
+												WHERE 
+													products_id = '" . $order->products[$i]['id'] . "' 
+												AND 
+													options_values_id = '" . $order->products[$i]['freitext'][$j]['option_id'] . "'
+												;");
+
+                if (xtc_db_num_rows($stock_query_attr) > 0) {
+                    $stock_values = xtc_db_fetch_array($stock_query_attr);
+                    $stock_left = $stock_values['attributes_stock'];
+                    if (($stock_left < 1) && (STOCK_LEVEL_SHIPPINGTIME == 'True')) {
+                        xtc_db_query("UPDATE 
+										" . TABLE_PRODUCTS_ATTRIBUTES . " 
+									SET 
+										attributes_shippingtime = '" . STOCK_LEVEL_SHIPPINGTIME_ID . "' 
+									WHERE 
+										products_id = '" . xtc_get_prid($order->products[$i]['id']) . "'
+									AND 
+										options_values_id = '" . $order->products[$i]['attributes'][$j]['option_id'] . "'
+									;");
                     }
                 }
             }

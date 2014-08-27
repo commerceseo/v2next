@@ -762,3 +762,13 @@ define('TEXT_PDF_LIFERADRESSE', 'Delivery: ');
 define('TEXT_PDF_INVOICE', 'Note on the invoice: ');
 
 define('SUBCAT_PRODUCTS', 'more categorys: ');
+
+
+define('SHIPPING_AUSLAND', '(Ausland abweichend)');
+define('SHIPPING_AUSLAND_CART1', 'Für Lieferungen ausserhalb');
+define('SHIPPING_AUSLAND_CART2', 'finden Sie hier Informationen zu Liefer- und Versandkosten.');
+
+define('NAVBAR_TITLE_WITHDRAWAL', 'Widerrufsformular');
+define('BUTTON_WITHDRAWAL', 'Online-Formular');
+define('BUTTON_WITHDRAWAL_PDF', 'PDF-Download');
+define('BUTTON_WITHDRAWAL_PDF_DOWNLOAD', ' Widerruf zum Download');

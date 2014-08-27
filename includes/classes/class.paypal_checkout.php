@@ -215,7 +215,7 @@ class paypal_checkout_ORIGINAL {
         $paymentAmount = urlencode(number_format($paymentAmount, $xtPrice->get_decimal_places($order->info['currency']), '.', ','));
         $currencyCodeType = urlencode($order->info['currency']);
         // Payment Type
-        $paymentType = 'Sale';
+        $paymentType = PAYPAL_PAYMENT_MODE;
         // The returnURL is the location where buyers return when a
         // payment has been succesfully authorized.
         $returnURL = urlencode($this->RETURN_URL);
@@ -364,7 +364,7 @@ class paypal_checkout_ORIGINAL {
         $nvp_products = $this->paypal_get_products($paymentAmount, $order_tax, $order_discount, $order_fee, $order_shipping, $order_gs, True);
         $paymentAmount = urlencode(number_format($paymentAmount, $xtPrice->get_decimal_places($order->info['currency']), '.', ','));
         $currencyCodeType = urlencode($order->info['currency']);
-        $paymentType = 'Sale';
+        $paymentType = PAYPAL_PAYMENT_MODE;
         $returnURL = urlencode($this->EXPRESS_RETURN_URL);
         $cancelURL = urlencode($this->EXPRESS_CANCEL_URL);
         $gpsucssesURL = urlencode($this->GIROPAY_SUCCESS_URL);
@@ -435,7 +435,7 @@ class paypal_checkout_ORIGINAL {
         $nvp_products = $this->paypal_get_products($paymentAmount, $order_tax, $order_discount, $order_fee, $order_shipping, $order_gs);
         $paymentAmount = urlencode(number_format($paymentAmount, $xtPrice->get_decimal_places($order->info['currency']), '.', ','));
         $currencyCodeType = urlencode($order->info['currency']);
-        $paymentType = 'Sale';
+        $paymentType = PAYPAL_PAYMENT_MODE;
         $returnURL = urlencode($this->EXPRESS_CANCEL_URL);
         $cancelURL = urlencode($this->EXPRESS_CANCEL_URL);
         $gpsucssesURL = urlencode($this->GIROPAY_SUCCESS_URL);
@@ -519,7 +519,7 @@ class paypal_checkout_ORIGINAL {
         $payer = (($data['PayerID'] != '') ? $data['PayerID'] : $_SESSION['reshash']['PAYERID']);
         $token = urlencode($tkn);
         $payerID = urlencode($payer);
-        $paymentType = 'Sale';
+        $paymentType = PAYPAL_PAYMENT_MODE;
         $notify_url = urlencode($this->NOTIFY_URL);
         $inv_num = urlencode(PAYPAL_INVOICE . $insert_id);
         $button_source = urlencode($this->ppAPIec);

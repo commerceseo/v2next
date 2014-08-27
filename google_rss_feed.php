@@ -120,9 +120,9 @@ while ($listing = xtc_db_fetch_array($listing_query, true)) {
     $products_name = str_replace("\n", " ", $products_name);
 
     if ($listing['products_description'] != '')
-        $beschreibung = htmlentities($listing['products_description']);
+        $beschreibung = $listing['products_description'];
     elseif ($listing['products_short_description'] != '')
-        $beschreibung = htmlentities($listing['products_short_description']);
+        $beschreibung = $listing['products_short_description'];
     else
         $beschreibung = $products_name;
 
@@ -208,9 +208,9 @@ while ($listing = xtc_db_fetch_array($listing_query, true)) {
 
     // Marke / Hersteller
     if ($listing['manufacturers_id'] > '0' && $listing['products_brand_name'] == '') {
-        echo "\t\t<g:brand>" . htmlentities($marke['manufacturers_name']) . "</g:brand>\n";
+        echo "\t\t<g:brand>" . urlencode($marke['manufacturers_name']) . "</g:brand>\n";
 	} elseif ($listing['products_brand_name'] != '') {
-		echo "\t\t<g:brand>" . htmlentities($listing['products_brand_name']) . "</g:brand>\n";
+		echo "\t\t<g:brand>" . urlencode($listing['products_brand_name']) . "</g:brand>\n";
 	}
 
     // Produktbilder, jedoch nicht mehr als insgesamt 10

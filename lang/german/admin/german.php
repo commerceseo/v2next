@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: german.php 1051 2014-05-14 17:07:17Z akausch $
+* 	$Id: german.php 1139 2014-07-09 10:35:27Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -969,7 +969,6 @@ define('TEXT_DELETE','Löschen');
 define('TEXT_EDIT','Bearbeiten');
 define('TEXT_PREVIEW','Vorschau');
 define('CONFIRM_DELETE','Wollen Sie den Content wirklich löschen ?');
-define('CONTENT_NOTE','Content markiert mit <font color="ff0000">*</font> gehört zum System und kann nicht gelöscht werden!');
 define('TEXT_LANGUAGE','Sprache:');
 define('TEXT_STATUS','Sichtbar:');
 define('TEXT_STATUS_DESCRIPTION','Wenn ausgewählt, wird ein Link in der Info Box angezeigt');
@@ -1052,7 +1051,6 @@ define('TEXT_PDF_EINZELPREIS', 'Einzelpreis');
 define('TEXT_PDF_PREIS', 'Gesamtpreis');
 define('TEXT_PDF_KOMMENTAR', 'Kommentare');
 define('TEXT_PDF_LIFERADRESSE', 'Lieferanschrift: ');
-
 define('HEADING_TITLE_NEWSLETTER','Rundschreiben/Newsletter');
 define('TITLE_CUSTOMERS','Kundengruppe');
 define('TITLE_STK','Abonniert');
@@ -1128,12 +1126,7 @@ define('P_HELP_G_MPN','Die eindeutige MPN Nummer des Produktes');
 define('P_HELP_G_BRAND','Die Marke des Produktes');
 define('P_HELP_G_AVAILABILITY','Die Verfügbarkeit des Produktes');
 define('P_HELP_G_SHIPPING_STATUS','Die Shipping Status ID des Produktes');
-
-
-
-
 define('HEADING_TITLE_MAIN_SORT', 'Startseiten Sortierung');
-
 define('MAIN_SORT_HOWTO', 'Hier können Sie ganz einfach per Drag & Drop die Reihenfolge der Boxen auf der Startseite Ihren Wünschen entsprechend anpassen.');
 define('MAIN_SORT_MODULES', 'Kategorien');
 define('MAIN_SORT_MODULES_DESC', '');
@@ -1269,6 +1262,7 @@ include_once (DIR_FS_CATALOG.'includes/external/shopgate/base/lang/german/admin/
 
 define('TEXT_PDF_INVOICE', 'Hinweis zur Rechnung: ');
 define('BUTTON_NEW_BOX', 'Neue Box');
+define('BUTTON_NEW_BOX_POS', 'Neue Position');
 define('ERROR_GALERIE_TITLE_REQUIRED', 'Bitte geben Sie dem Sliderset einen Namen');
 define('TEXT_SLIEDER_SET', 'Slider Set:');
 define('HEAD_ADDONS', 'Erweiterungen');
@@ -1300,3 +1294,4 @@ define('BUTTON_EDIT_KONFIGURATOR','Konfigurator');
 define('TEXT_DOWNLOAD', 'Download');
 define('TEXT_SERVICE', 'Dienstleistung');
 define('TEXT_PRODUCT_TYPE', 'Produkt Typ:');
+define('DETAILS', 'Details');

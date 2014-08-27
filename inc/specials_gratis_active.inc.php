@@ -58,11 +58,14 @@ function getspecial_gratis_active() {
                                             p.products_image,
                                             p.manufacturers_id AS manufac_id,
                                             p.products_price,
+                                            sd.*, 
                                             s.* 
 										FROM
                                             " . TABLE_PRODUCTS . " AS p
 										INNER JOIN
                                             " . TABLE_SPECIALS_GRATIS . " AS s ON(s.products_id = p.products_id)
+										INNER JOIN
+											" . TABLE_SPECIALS_GRATIS_DESCRIPTION . " AS sd ON(sd.specials_gratis_id = s.specials_gratis_id AND sd.language_id = '" . (int)$_SESSION['languages_id'] . "')
 										INNER JOIN
                                             " . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON(s.products_id = pd.products_id AND pd.language_id = '" . (int)$_SESSION['languages_id'] . "')
 										INNER JOIN

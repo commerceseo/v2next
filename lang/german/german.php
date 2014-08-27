@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: german.php 1099 2014-06-12 14:51:40Z akausch $
+* 	$Id: german.php 1100 2014-06-13 00:43:53Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -756,3 +756,4 @@ define('SHIPPING_AUSLAND_CART2', 'finden Sie hier Informationen zu Liefer- und V
 define('NAVBAR_TITLE_WITHDRAWAL', 'Widerrufsformular');
 define('BUTTON_WITHDRAWAL', 'Online-Formular');
 define('BUTTON_WITHDRAWAL_PDF', 'PDF-Download');
+define('BUTTON_WITHDRAWAL_PDF_DOWNLOAD', ' Widerruf zum Download');

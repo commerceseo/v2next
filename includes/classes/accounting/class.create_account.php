@@ -22,14 +22,14 @@ class create_account_ORIGINAL {
     function create_account_smarty($site) {
         require_once (DIR_FS_INC . 'xtc_get_country_list.inc.php');
         if ($site == 'login') {
-			$create_account_smarty['FORM_ACTION'] = xtc_draw_form('create_account', xtc_href_link(FILENAME_LOGIN, '', 'SSL'), 'post', 'autocomplete="off"') . xtc_draw_hidden_field('action', 'process_create_account');
-		} elseif ($site == 'checkout') {
-			$create_account_smarty['FORM_ACTION'] = xtc_draw_form('create_account', xtc_href_link(FILENAME_CHECKOUT, '', 'SSL'), 'post', 'autocomplete="off"') . xtc_draw_hidden_field('action', 'process_create_account');
+            $create_account_smarty['FORM_ACTION'] = xtc_draw_form('create_account', xtc_href_link(FILENAME_LOGIN, '', 'SSL'), 'post', 'autocomplete="off"') . xtc_draw_hidden_field('action', 'process_create_account');
+        } elseif ($site == 'checkout') {
+            $create_account_smarty['FORM_ACTION'] = xtc_draw_form('create_account', xtc_href_link(FILENAME_CHECKOUT, '', 'SSL'), 'post', 'autocomplete="off"') . xtc_draw_hidden_field('action', 'process_create_account');
         } elseif ($site == 'create_account') {
-			$create_account_smarty['FORM_ACTION'] = xtc_draw_form('create_account', xtc_href_link(FILENAME_CREATE_ACCOUNT, '', 'SSL'), 'post', 'autocomplete="off"') . xtc_draw_hidden_field('action', 'process_create_account');
-		} else {
-			$create_account_smarty['FORM_ACTION'] = xtc_draw_form('create_account', xtc_href_link(FILENAME_CREATE_GUEST_ACCOUNT, '', 'SSL'), 'post', 'autocomplete="off"') . xtc_draw_hidden_field('action', 'process_create_account');
-		}
+            $create_account_smarty['FORM_ACTION'] = xtc_draw_form('create_account', xtc_href_link(FILENAME_CREATE_ACCOUNT, '', 'SSL'), 'post', 'autocomplete="off"') . xtc_draw_hidden_field('action', 'process_create_account');
+        } else {
+            $create_account_smarty['FORM_ACTION'] = xtc_draw_form('create_account', xtc_href_link(FILENAME_CREATE_GUEST_ACCOUNT, '', 'SSL'), 'post', 'autocomplete="off"') . xtc_draw_hidden_field('action', 'process_create_account');
+        }
 
         if (ACCOUNT_GENDER == 'true') {
             $create_account_smarty['gender'] = '1';
@@ -39,8 +39,8 @@ class create_account_ORIGINAL {
             $create_account_smarty['gender'] = '0';
         }
 
-		$create_account_smarty['INPUT_FIRSTNAME'] = xtc_draw_input_fieldNote(array('name' => 'firstname', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_FIRST_NAME_TEXT) ? '<span class="inputRequirement">' . ENTRY_FIRST_NAME_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['firstname']), 'size="29" class="create_account_firstname" required id="create_firstname"');
-		$create_account_smarty['INPUT_LASTNAME'] = xtc_draw_input_fieldNote(array('name' => 'lastname', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_LAST_NAME_TEXT) ? '<span class="inputRequirement">' . ENTRY_LAST_NAME_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['lastname']), 'size="29" class="create_account_lastname" required id="create_lastname"');
+        $create_account_smarty['INPUT_FIRSTNAME'] = xtc_draw_input_fieldNote(array('name' => 'firstname', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_FIRST_NAME_TEXT) ? '<span class="inputRequirement">' . ENTRY_FIRST_NAME_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['firstname']), 'size="29" class="create_account_firstname" required id="create_firstname"');
+        $create_account_smarty['INPUT_LASTNAME'] = xtc_draw_input_fieldNote(array('name' => 'lastname', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_LAST_NAME_TEXT) ? '<span class="inputRequirement">' . ENTRY_LAST_NAME_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['lastname']), 'size="29" class="create_account_lastname" required id="create_lastname"');
 
         if (ACCOUNT_DOB == 'true') {
             $create_account_smarty['birthdate'] = '1';
@@ -48,7 +48,7 @@ class create_account_ORIGINAL {
                 $create_account_smarty['INPUT_DOB'] = xtc_draw_input_fieldNote(array('name' => 'dob', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_DATE_OF_BIRTH_TEXT) ? '<span class="inputRequirement">' . ENTRY_DATE_OF_BIRTH_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['dob']), 'size="29" required class="create_account_dob" id="create_dob"', 'text');
             } else {
                 $create_account_smarty['INPUT_DOB'] = xtc_draw_input_fieldNote(array('name' => 'dob', 'text' => ''), '', 'size="29" required class="create_account_dob" id="create_dob"', 'text');
-			}
+            }
         } else {
             $create_account_smarty['birthdate'] = '0';
         }
@@ -111,12 +111,12 @@ class create_account_ORIGINAL {
             $create_account_smarty['SELECT_COUNTRY'] = xtc_draw_hidden_field('country', $selected);
         }
         if (ACCOUNT_TELEFON == 'true') {
-			$create_account_smarty['INPUT_TEL'] = xtc_draw_input_fieldNote(array('name' => 'telephone', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_TELEPHONE_NUMBER_TEXT) ? '<span class="inputRequirement">' . ENTRY_TELEPHONE_NUMBER_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['telephone']), 'size="29" required class="telephone" id="create_telephone"');
+            $create_account_smarty['INPUT_TEL'] = xtc_draw_input_fieldNote(array('name' => 'telephone', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_TELEPHONE_NUMBER_TEXT) ? '<span class="inputRequirement">' . ENTRY_TELEPHONE_NUMBER_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['telephone']), 'size="29" required class="telephone" id="create_telephone"');
         }
-		if (ACCOUNT_FAX == 'true') {
-			$create_account_smarty['INPUT_FAX'] = xtc_draw_input_fieldNote(array('name' => 'fax', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_FAX_NUMBER_TEXT) ? '<span>' . ENTRY_FAX_NUMBER_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['fax']), 'size="29" id="create_fax"');
+        if (ACCOUNT_FAX == 'true') {
+            $create_account_smarty['INPUT_FAX'] = xtc_draw_input_fieldNote(array('name' => 'fax', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_FAX_NUMBER_TEXT) ? '<span>' . ENTRY_FAX_NUMBER_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['fax']), 'size="29" id="create_fax"');
         }
-		$create_account_smarty['INPUT_PASSWORD'] = xtc_draw_password_fieldNote(array('name' => 'password', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_PASSWORD_TEXT) ? '<span class="inputRequirement">' . ENTRY_PASSWORD_TEXT . '</span>' : '')), '', 'size="29" id="create_password" onkeyup="passwordStrength(this.value)"');
+        $create_account_smarty['INPUT_PASSWORD'] = xtc_draw_password_fieldNote(array('name' => 'password', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_PASSWORD_TEXT) ? '<span class="inputRequirement">' . ENTRY_PASSWORD_TEXT . '</span>' : '')), '', 'size="29" id="create_password" onkeyup="passwordStrength(this.value)"');
         $create_account_smarty['INPUT_CONFIRMATION'] = xtc_draw_password_fieldNote(array('name' => 'confirmation', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_PASSWORD_CONFIRMATION_TEXT) ? '<span class="inputRequirement">' . ENTRY_PASSWORD_CONFIRMATION_TEXT . '</span>' : '')), '', 'size="29" class="password" id="create_confirmation"');
         $create_account_smarty['INPUT_NEWSLETTER'] = xtc_draw_checkbox_field('newsletter', '1', false, 'id="create_newsletter"');
         $create_account_smarty['CHECKBOX_NEWSLETTER'] = xtc_draw_checkbox_field('newsletter', '1', false, 'id="create_newsletter"');
@@ -142,17 +142,17 @@ class create_account_ORIGINAL {
         }
         $create_account_smarty['BUTTON_SUBMIT'] = xtc_image_submit('button_send.gif', IMAGE_BUTTON_CONTINUE);
         $create_account_smarty['FORM_END'] = '</form>';
-	
-		if (isset($_POST['action']) && ($_POST['action'] == 'process_create_account')) {
-			$check_create_account = $this->check_create_account($site);
-			$create_account_smarty['error'] = $check_create_account;
-		}
-		
+
+        if (isset($_POST['action']) && ($_POST['action'] == 'process_create_account')) {
+            $check_create_account = $this->check_create_account($site);
+            $create_account_smarty['error'] = $check_create_account;
+        }
+
         return $create_account_smarty;
     }
 
     function check_create_account($site) {
-		$messageStack = new messageStack;
+        $messageStack = new messageStack;
         require_once (DIR_FS_INC . 'xtc_write_user_info.inc.php');
         require_once (DIR_FS_INC . 'xtc_get_country_list.inc.php');
         require_once (DIR_FS_INC . 'xtc_validate_email.inc.php');
@@ -161,7 +161,7 @@ class create_account_ORIGINAL {
         $process = false;
         if (isset($_POST['action']) && ($_POST['action'] == 'process_create_account')) {
             $process = true;
-			$smarty = new Smarty;
+            $smarty = new Smarty;
 
             if (ACCOUNT_GENDER == 'true') {
                 $gender = xtc_db_prepare_input($_POST['gender']);
@@ -184,12 +184,12 @@ class create_account_ORIGINAL {
             if (TRUSTED_SHOP_CREATE_ACCOUNT_DS == 'true') {
                 $datensg = xtc_db_prepare_input($_POST['datensg']);
             }
-			if (ACCOUNT_TELEFON == 'true') {
-				$telephone = xtc_db_prepare_input($_POST['telephone']);
-			}
-			if (ACCOUNT_FAX == 'true') {
-				$fax = xtc_db_prepare_input($_POST['fax']);
-			}
+            if (ACCOUNT_TELEFON == 'true') {
+                $telephone = xtc_db_prepare_input($_POST['telephone']);
+            }
+            if (ACCOUNT_FAX == 'true') {
+                $fax = xtc_db_prepare_input($_POST['fax']);
+            }
             $firstname = xtc_db_prepare_input($_POST['firstname']);
             $lastname = xtc_db_prepare_input($_POST['lastname']);
             $email_address = xtc_db_prepare_input($_POST['email_address']);
@@ -200,11 +200,11 @@ class create_account_ORIGINAL {
             $zone_id = xtc_db_prepare_input($_POST['zone_id']);
             $country = xtc_db_prepare_input($_POST['country']);
             $newsletter = xtc_db_prepare_input($_POST['newsletter']);
-            
-			if ($site != 'create_guest_account') {
-				$password = xtc_db_prepare_input($_POST['password']);
-				$confirmation = xtc_db_prepare_input($_POST['confirmation']);
-			}
+
+            if ($site != 'create_guest_account') {
+                $password = xtc_db_prepare_input($_POST['password']);
+                $confirmation = xtc_db_prepare_input($_POST['confirmation']);
+            }
 
             $error = false;
 
@@ -315,40 +315,44 @@ class create_account_ORIGINAL {
                 }
             }
             if (ACCOUNT_DOB == 'true') {
-				$date_kunde = substr(xtc_date_raw($dob), 0, 4);
-				$date_aktuell = date('Y');
-				$min_age = (int)ACCOUNT_MIN_AGE;
+                $date_kunde = substr(xtc_date_raw($dob), 0, 4);
+                $date_aktuell = date('Y');
+                $min_age = (int) ACCOUNT_MIN_AGE;
                 if (ENTRY_DOB_MIN_LENGTH > 0 && $dob != '') {
                     if (checkdate(substr(xtc_date_raw($dob), 4, 2), substr(xtc_date_raw($dob), 6, 2), substr(xtc_date_raw($dob), 0, 4)) == false) {
                         $error = true;
                         $messageStack->add('create_account', ENTRY_DATE_OF_BIRTH_ERROR);
-                    } elseif ($date_aktuell-$date_kunde < $min_age && ACCOUNT_AGE_VERIFICATION == 'true'){
+                    } elseif ($date_aktuell - $date_kunde < $min_age && ACCOUNT_AGE_VERIFICATION == 'true') {
                         $error = true;
                         $messageStack->add('create_account', ENTRY_DATE_OF_BIRTH_OLD);
-					}
+                    }
                 } elseif (ENTRY_DOB_MIN_LENGTH > 0 && $dob == '') {
                     $error = true;
                     $messageStack->add('create_account', ENTRY_DATE_OF_BIRTH_ERROR);
                 }
             }
-			if ($site == 'create_guest_account') {
-				if (ACCOUNT_COMPANY_VAT_CHECK == 'true' && $vatID->vat_info['error'] == '' && $vatID->vat_info['vat_id_status'] == '1') {
-					$customers_status = $customers_status;
-				} else {
-					$customers_status = DEFAULT_CUSTOMERS_STATUS_ID_GUEST;
-				}
-				$account_type = '1';
-				$_SESSION['account_type'] = '1';
-			}
-			
-            if ($customers_status == 0 || !$customers_status) {
-				$customers_status = DEFAULT_CUSTOMERS_STATUS_ID;
-				$account_type = '0';
+            if ($site == 'create_guest_account') {
+                if (ACCOUNT_COMPANY_VAT_CHECK == 'true' && $vatID->vat_info['error'] == '' && $vatID->vat_info['vat_id_status'] == '1') {
+                    if ($customers_status != 0 || $customers_status) {
+						$customers_status = $customers_status;
+					} else {
+						$customers_status = DEFAULT_CUSTOMERS_STATUS_ID_GUEST;
+					}
+                } else {
+                    $customers_status = DEFAULT_CUSTOMERS_STATUS_ID_GUEST;
+                }
+                $account_type = '1';
+                $_SESSION['account_type'] = '1';
             }
-			if ($site == 'create_guest_account') {
-				require_once (DIR_FS_INC . 'xtc_create_password.inc.php');
-				$password = xtc_create_password(8);
-			}
+
+            if ($customers_status == 0 || !$customers_status) {
+                $customers_status = DEFAULT_CUSTOMERS_STATUS_ID;
+                $account_type = '0';
+            }
+            if ($site == 'create_guest_account') {
+                require_once (DIR_FS_INC . 'xtc_create_password.inc.php');
+                $password = xtc_create_password(8);
+            }
 
             if ($error == false) {
                 $sql_data_array = array('customers_vat_id' => $vat,
@@ -361,7 +365,7 @@ class create_account_ORIGINAL {
                     'customers_fax' => $fax,
                     'customers_password' => xtc_encrypt_password($password),
                     'customers_newsletter' => $newsletter,
-					'account_type' => $account_type,
+                    'account_type' => $account_type,
                     'customers_date_added' => 'now()',
                     'customers_last_modified' => 'now()',
                     'datensg' => 'now()');
@@ -488,9 +492,9 @@ class create_account_ORIGINAL {
                 $smarty->assign('language', $_SESSION['language']);
                 if (ACCOUNT_GENDER == 'true') {
                     $smarty->assign('GENDER', $gender);
-				}
-				require_once (DIR_FS_INC.'cseo_get_mail_data.inc.php');
-				$mail_data = cseo_get_mail_data('create_account');
+                }
+                require_once (DIR_FS_INC . 'cseo_get_mail_data.inc.php');
+                $mail_data = cseo_get_mail_data('create_account');
                 $smarty->assign('MAIL_REPLY_ADDRESS', $mail_data['EMAIL_ADDRESS']);
                 $smarty->assign('VNAME', $_SESSION['customer_first_name']);
                 $smarty->assign('NNAME', $_SESSION['customer_last_name']);
@@ -524,7 +528,7 @@ class create_account_ORIGINAL {
                         $insert_query = xtc_db_query("insert into " . TABLE_COUPONS . " (coupon_code, coupon_type, coupon_amount, date_created) values ('" . $coupon_code . "', 'G', '" . NEW_SIGNUP_GIFT_VOUCHER_AMOUNT . "', now())");
                         $insert_id = xtc_db_insert_id($insert_query);
                         $insert_query = xtc_db_query("insert into " . TABLE_COUPON_EMAIL_TRACK . " (coupon_id, customer_id_sent, sent_firstname, emailed_to, date_sent) values ('" . $insert_id . "', '0', 'Admin', '" . $email_address . "', now() )");
-						$xtPrice = new xtcPrice($_SESSION['currency'], $_SESSION['customers_status']['customers_status_id']);
+                        $xtPrice = new xtcPrice($_SESSION['currency'], $_SESSION['customers_status']['customers_status_id']);
                         $smarty->assign('SEND_GIFT', 'true');
                         $smarty->assign('GIFT_AMMOUNT', $xtPrice->xtcFormat(NEW_SIGNUP_GIFT_VOUCHER_AMOUNT, true));
                         $smarty->assign('GIFT_CODE', $coupon_code);
@@ -544,28 +548,31 @@ class create_account_ORIGINAL {
                         $smarty->assign('COUPON_CODE', $coupon['coupon_code']);
                     }
                 }
-				if ($site != 'create_guest_account') {
-					require_once (DIR_FS_INC . 'cseo_get_mail_body.inc.php');
-					$smarty->caching = false;
-					$html_mail = $smarty->fetch('html:create_account');
-					$html_mail .= $signatur_html;
-					$smarty->caching = false;
-					$txt_mail = $smarty->fetch('txt:create_account');
-					$txt_mail .= $signatur_text;
-					require_once (DIR_FS_INC . 'cseo_get_mail_data.inc.php');
-					$mail_data = cseo_get_mail_data('create_account');
+            }
 
-					xtc_php_mail($mail_data['EMAIL_ADDRESS'], $mail_data['EMAIL_ADDRESS_NAME'], $email_address, $name, $mail_data['EMAIL_FORWARD'], $mail_data['EMAIL_REPLAY_ADDRESS'], $mail_data['EMAIL_REPLAY_ADDRESS_NAME'], '', '', $mail_data['EMAIL_SUBJECT'], $html_mail, $txt_mail);
-				}
+            if ($error == false) {
+                if ($site != 'create_guest_account') {
+                    require_once (DIR_FS_INC . 'cseo_get_mail_body.inc.php');
+                    $smarty->caching = false;
+                    $html_mail = $smarty->fetch('html:create_account');
+                    $html_mail .= $signatur_html;
+                    $smarty->caching = false;
+                    $txt_mail = $smarty->fetch('txt:create_account');
+                    $txt_mail .= $signatur_text;
+                    require_once (DIR_FS_INC . 'cseo_get_mail_data.inc.php');
+                    $mail_data = cseo_get_mail_data('create_account');
+
+                    xtc_php_mail($mail_data['EMAIL_ADDRESS'], $mail_data['EMAIL_ADDRESS_NAME'], $email_address, $name, $mail_data['EMAIL_FORWARD'], $mail_data['EMAIL_REPLAY_ADDRESS'], $mail_data['EMAIL_REPLAY_ADDRESS_NAME'], '', '', $mail_data['EMAIL_SUBJECT'], $html_mail, $txt_mail);
+                }
                 if (!isset($mail_error)) {
                     if ($_SESSION['cart']->count_contents() > 0) {
                         xtc_redirect(xtc_href_link(FILENAME_SHOPPING_CART, '', 'SSL'));
                     } else {
                         xtc_redirect(xtc_href_link(FILENAME_DEFAULT, '', 'SSL'));
-					}
+                    }
                 } else {
                     echo $mail_error;
-				}
+                }
             }
         }
 

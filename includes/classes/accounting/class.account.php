@@ -75,10 +75,10 @@ class account_ORIGINAL {
             $account_smarty['LINK_ORDERS'] = xtc_href_link(FILENAME_ACCOUNT_HISTORY, '', 'SSL');
             $account_smarty['LINK_NEWSLETTER'] = xtc_href_link(FILENAME_NEWSLETTER, '', 'SSL');
             $account_smarty['LINK_ALL'] = xtc_href_link(FILENAME_ACCOUNT_HISTORY, '', 'SSL');
-			if(RMA_MODUL_ON == 'true'){
-				$account_smarty['RMA_STEP1'] = xtc_href_link(FILENAME_RMA_STEP1, '', 'SSL');
-			}
-          
+            if (RMA_MODUL_ON == 'true') {
+                $account_smarty['RMA_STEP1'] = xtc_href_link(FILENAME_RMA_STEP1, '', 'SSL');
+            }
+
             return $account_smarty;
         }
     }
@@ -338,20 +338,20 @@ class account_ORIGINAL {
             $account_smarty['state'] = '1';
             $check = xtc_db_fetch_array(xtc_db_query("SELECT count(*) AS total FROM " . TABLE_ZONES . " WHERE zone_country_id = '" . (int) $entry['entry_country_id'] . "';"));
             if ($check['total'] > 0) {
-				$entry_state_has_zones = true;
-			} else {
-				$entry_state_has_zones = false;
-			}
-			if ($entry_state_has_zones) {
-				$zones_array = array();
-				$zones_query = xtc_db_query("SELECT zone_id, zone_name FROM " . TABLE_ZONES . " WHERE zone_country_id = '" . (isset($entry['entry_country_id']) ? (int) $entry['entry_country_id'] : STORE_COUNTRY) . "' ORDER BY zone_name");
-				while ($zones_values = xtc_db_fetch_array($zones_query)) {
-					$zones_array[] = array('id' => $zones_values['zone_id'], 'text' => $zones_values['zone_name']);
-				}
-				$account_smarty['INPUT_STATE'] = xtc_draw_pull_down_menuNote(array('name' => 'state', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_STATE_TEXT) ? '<span class="inputRequirement">' . ENTRY_STATE_TEXT . '</span>' : '')), $zones_array, xtc_db_prepare_input($entry['entry_zone_id']), ' class="create_account_state" id="create_state"');
-			} else {
-				$account_smarty['INPUT_STATE'] = 'false';
-			}
+                $entry_state_has_zones = true;
+            } else {
+                $entry_state_has_zones = false;
+            }
+            if ($entry_state_has_zones) {
+                $zones_array = array();
+                $zones_query = xtc_db_query("SELECT zone_id, zone_name FROM " . TABLE_ZONES . " WHERE zone_country_id = '" . (isset($entry['entry_country_id']) ? (int) $entry['entry_country_id'] : STORE_COUNTRY) . "' ORDER BY zone_name");
+                while ($zones_values = xtc_db_fetch_array($zones_query)) {
+                    $zones_array[] = array('id' => $zones_values['zone_id'], 'text' => $zones_values['zone_name']);
+                }
+                $account_smarty['INPUT_STATE'] = xtc_draw_pull_down_menuNote(array('name' => 'state', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_STATE_TEXT) ? '<span class="inputRequirement">' . ENTRY_STATE_TEXT . '</span>' : '')), $zones_array, xtc_db_prepare_input($entry['entry_zone_id']), ' class="create_account_state" id="create_state"');
+            } else {
+                $account_smarty['INPUT_STATE'] = 'false';
+            }
         } else {
             $account_smarty['state'] = '0';
         }
@@ -443,10 +443,10 @@ class account_ORIGINAL {
             $zone_id = 0;
             $check = xtc_db_fetch_array(xtc_db_query("SELECT count(*) AS total FROM " . TABLE_ZONES . " WHERE zone_country_id = '" . (int) $country . "';"));
             if ($check['total'] > 0) {
-				$entry_state_has_zones = true;
-			} else {
-				$entry_state_has_zones = false;
-			}
+                $entry_state_has_zones = true;
+            } else {
+                $entry_state_has_zones = false;
+            }
             if ($entry_state_has_zones == true) {
                 $zone_query = xtc_db_query("SELECT zone_id, zone_name from " . TABLE_ZONES . " WHERE zone_country_id = '" . (int) $country . "' AND zone_id = '" . (int) $state . "' ");
                 if (xtc_db_num_rows($zone_query) >= 1) {
@@ -537,36 +537,36 @@ class account_ORIGINAL {
                 }
             }
             $messageStack->add_session('addressbook', SUCCESS_ADDRESS_BOOK_ENTRY_UPDATED, 'success');
-			
+
             if ($messageStack->size('addressbook') > 0) {
                 return $messageStack->output('addressbook');
             }
             xtc_redirect(xtc_href_link(FILENAME_ADDRESS_BOOK, '', 'SSL'));
         }
     }
-	
-	function account_history_info($Oid) {
-		$order = new order($Oid);
-		// Delivery Info
-		if ($order->delivery != false) {
-			$account_smarty['DELIVERY_LABEL'] = xtc_address_format($order->delivery['format_id'], $order->delivery, 1, ' ', '<br />');
-			if ($order->info['shipping_method']) {
-				$account_smarty['SHIPPING_METHOD'] = $order->info['shipping_method'];
-			}
-		}
 
-		$order_total = $order->getTotalData($Oid);
-		$account_smarty['order_data'] = $order->getOrderData($Oid);
-		$account_smarty['order_total'] = $order_total['data'];
+    function account_history_info($Oid) {
+        $order = new order($Oid);
+        // Delivery Info
+        if ($order->delivery != false) {
+            $account_smarty['DELIVERY_LABEL'] = xtc_address_format($order->delivery['format_id'], $order->delivery, 1, ' ', '<br />');
+            if ($order->info['shipping_method']) {
+                $account_smarty['SHIPPING_METHOD'] = $order->info['shipping_method'];
+            }
+        }
 
-		// Payment Method
-		if ($order->info['payment_method'] != '' && $order->info['payment_method'] != 'no_payment') {
-			include (DIR_WS_LANGUAGES . '/' . $_SESSION['language'] . '/modules/payment/' . $order->info['payment_method'] . '.php');
-			$account_smarty['PAYMENT_METHOD'] = constant(MODULE_PAYMENT_ . strtoupper($order->info['payment_method']) . _TEXT_TITLE);
-		}
+        $order_total = $order->getTotalData($Oid);
+        $account_smarty['order_data'] = $order->getOrderData($Oid);
+        $account_smarty['order_total'] = $order_total['data'];
 
-		// Order History
-		$statuses_query = xtc_db_query("SELECT 
+        // Payment Method
+        if ($order->info['payment_method'] != '' && $order->info['payment_method'] != 'no_payment') {
+            include (DIR_WS_LANGUAGES . '/' . $_SESSION['language'] . '/modules/payment/' . $order->info['payment_method'] . '.php');
+            $account_smarty['PAYMENT_METHOD'] = constant(MODULE_PAYMENT_ . strtoupper($order->info['payment_method']) . _TEXT_TITLE);
+        }
+
+        // Order History
+        $statuses_query = xtc_db_query("SELECT 
 											os.orders_status_name, 
 											osh.date_added, 
 											osh.comments 
@@ -579,39 +579,39 @@ class account_ORIGINAL {
 										AND 
 											os.language_id = '" . (int) $_SESSION['languages_id'] . "'
 										ORDER BY osh.date_added;");
-		while ($statuses = xtc_db_fetch_array($statuses_query)) {
-			$history_block .= xtc_date_short($statuses['date_added']);
-			$history_block .= ' <b>' . $statuses['orders_status_name'] . '</b><br />';
-			$history_block .= (empty($statuses['comments']) ? '' : '<em>' . nl2br(htmlspecialchars($statuses['comments'])) . '</em><br />');
-		}
+        while ($statuses = xtc_db_fetch_array($statuses_query)) {
+            $history_block .= xtc_date_short($statuses['date_added']);
+            $history_block .= ' <b>' . $statuses['orders_status_name'] . '</b><br />';
+            $history_block .= (empty($statuses['comments']) ? '' : '<em>' . nl2br(htmlspecialchars($statuses['comments'])) . '</em><br />');
+        }
 
-		$account_smarty['HISTORY_BLOCK'] = $history_block;
-		// Download-PDF Bill
-		if (file_exists('download_pdf_bill.php')) {
-			//PDF Rechnung Download
-			$pdf_bill_query = xtc_db_fetch_array(xtc_db_query("SELECT order_id, bill_name FROM " . TABLE_ORDERS_PDF . " WHERE order_id = '" . $Oid . "';"));
-			$pdfbill = xtc_href_link(FILENAME_DOWNLOAD_PDF_BILL, 'order=' . $pdf_bill_query['order_id']);
-			if ($pdf_bill_query['order_id'] != '') {
-				$account_smarty['IPDFBILL_INVOICE_DOWNLOAD'] = $pdfbill;
-			}
-		}
+        $account_smarty['HISTORY_BLOCK'] = $history_block;
+        // Download-PDF Bill
+        if (file_exists('download_pdf_bill.php')) {
+            //PDF Rechnung Download
+            $pdf_bill_query = xtc_db_fetch_array(xtc_db_query("SELECT order_id, bill_name FROM " . TABLE_ORDERS_PDF . " WHERE order_id = '" . $Oid . "';"));
+            $pdfbill = xtc_href_link(FILENAME_DOWNLOAD_PDF_BILL, 'order=' . $pdf_bill_query['order_id']);
+            if ($pdf_bill_query['order_id'] != '') {
+                $account_smarty['IPDFBILL_INVOICE_DOWNLOAD'] = $pdfbill;
+            }
+        }
 
-		$account_smarty['ORDER_NUMBER'] = $Oid;
-		$account_smarty['ORDER_DATE'] = xtc_date_short($order->info['date_purchased']);
-		$account_smarty['ORDER_STATUS'] = $order->info['orders_status'];
-		$account_smarty['BILLING_LABEL'] = xtc_address_format($order->billing['format_id'], $order->billing, 1, ' ', '<br />');
-		$account_smarty['PRODUCTS_EDIT'] = xtc_href_link(FILENAME_SHOPPING_CART, '', 'SSL');
-		$account_smarty['SHIPPING_ADDRESS_EDIT'] = xtc_href_link(FILENAME_CHECKOUT_SHIPPING_ADDRESS, '', 'SSL');
-		$account_smarty['BILLING_ADDRESS_EDIT'] = xtc_href_link(FILENAME_CHECKOUT_PAYMENT_ADDRESS, '', 'SSL');
-		$account_smarty['BUTTON_PRINT'] = '<a class="shipping" href="' . xtc_href_link(FILENAME_PRINT_ORDER, 'oID=' . $Oid) . '">' . xtc_image_button('button_print.gif', IMAGE_BUTTON_PRINT) . '</a>';
-		
-		if(WITHDRAWAL_WEBFORM_ACTIVE == 'true'){
-			$account_smarty['WITHDRAWAL_BUTTON'] = '<a href="' . xtc_href_link(FILENAME_WITHDRAWAL, 'order='.$Oid.'', 'SSL') . '">' . BUTTON_WITHDRAWAL . '</a>';
-		}
-		if(WRCHECKOUT == 'true' && WRCHECKOUTFILE != ''){
-			$account_smarty['WITHDRAWAL_BUTTON_PDF'] = '<a href="' . xtc_href_link(WRCHECKOUTFILE, '', 'SSL') . '">' . BUTTON_WITHDRAWAL_PDF . '</a>';
-		}
-		return $account_smarty;
-	}
+        $account_smarty['ORDER_NUMBER'] = $Oid;
+        $account_smarty['ORDER_DATE'] = xtc_date_short($order->info['date_purchased']);
+        $account_smarty['ORDER_STATUS'] = $order->info['orders_status'];
+        $account_smarty['BILLING_LABEL'] = xtc_address_format($order->billing['format_id'], $order->billing, 1, ' ', '<br />');
+        $account_smarty['PRODUCTS_EDIT'] = xtc_href_link(FILENAME_SHOPPING_CART, '', 'SSL');
+        $account_smarty['SHIPPING_ADDRESS_EDIT'] = xtc_href_link(FILENAME_CHECKOUT_SHIPPING_ADDRESS, '', 'SSL');
+        $account_smarty['BILLING_ADDRESS_EDIT'] = xtc_href_link(FILENAME_CHECKOUT_PAYMENT_ADDRESS, '', 'SSL');
+        $account_smarty['BUTTON_PRINT'] = '<a class="shipping" href="' . xtc_href_link(FILENAME_PRINT_ORDER, 'oID=' . $Oid) . '">' . xtc_image_button('button_print.gif', IMAGE_BUTTON_PRINT) . '</a>';
+
+        if (WITHDRAWAL_WEBFORM_ACTIVE == 'true') {
+            $account_smarty['WITHDRAWAL_BUTTON'] = '<a href="' . xtc_href_link(FILENAME_WITHDRAWAL, 'order=' . $Oid . '', 'SSL') . '">' . BUTTON_WITHDRAWAL . '</a>';
+        }
+        if (WRCHECKOUT == 'true' && WRCHECKOUTFILE != '') {
+            $account_smarty['WITHDRAWAL_BUTTON_PDF'] = '<a href="' . xtc_href_link(WRCHECKOUTFILE, '', 'SSL') . '">' . BUTTON_WITHDRAWAL_PDF . '</a>';
+        }
+        return $account_smarty;
+    }
 
 }

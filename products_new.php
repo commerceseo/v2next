@@ -30,7 +30,7 @@ require (DIR_WS_INCLUDES . 'header.php');
 $fsk_lock = '';
 $group_check = '';
 if ($_SESSION['customers_status']['customers_fsk18_display'] == '0') {
-    $fsk_lock = ' AND p.products_fsk18! = 1';
+    $fsk_lock = ' AND p.products_fsk18 != 1';
 }
 if (GROUP_CHECK == 'true') {
     $group_check = " AND p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . " = 1 ";

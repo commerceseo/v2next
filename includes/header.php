@@ -188,30 +188,6 @@ if (isset($_SESSION['info_message']) && xtc_not_null($_SESSION['info_message']))
 unset($_SESSION['info_message']);
 include(DIR_WS_INCLUDES.FILENAME_BANNER);
 
-// BillSAFE-Layer Start
-if (preg_match('/checkout_payment/',$_SERVER['PHP_SELF']) || (strstr($_REQUEST['linkurl'], substr(FILENAME_CHECKOUT, 0, -5)) || strstr($PHP_SELF, substr(FILENAME_CHECKOUT, 0, -5))) && MODULE_PAYMENT_BILLSAFE_2_LAYER == 'True') {
-	if (isset($_GET['payment_error'])) {
-		$bs_error = stripslashes('payment_error='.$_GET['payment_error'].'&error_message='.urlencode(html_entity_decode($_GET['error_message'])));
-	} else {
-		$bs_error = '';
-	}
-	if (CHECKOUT_AJAX_STAT == 'true') {
-		echo '<script type="text/javascript"><!--
-			if (top.lpg) top.lpg.close("'.str_replace('&amp;', '&', xtc_href_link(FILENAME_CHECKOUT, $bs_error, 'SSL')).'");
-		--></script>';
-	} else {
-		echo '<script type="text/javascript"><!--
-			if (top.lpg) top.lpg.close("'.str_replace('&amp;', '&', xtc_href_link(FILENAME_CHECKOUT_PAYMENT, $bs_error, 'SSL')).'");
-		--></script>';
-	}
-}
-if (preg_match('/checkout_success/',$_SERVER['PHP_SELF']) && MODULE_PAYMENT_BILLSAFE_2_LAYER == 'True') {
-	echo '<script type="text/javascript"><!--
-		if (top.lpg) top.lpg.close("'.xtc_href_link(FILENAME_CHECKOUT_SUCCESS, '', 'SSL').'");
-	--></script>';
-}
-// BillSAFE-Layer End
-
 $cseo_header_extender_component = cseohookfactory::create_object('HeaderExtenderComponent');
 $cseo_header_extender_component->set_data('GET', $_GET);
 $cseo_header_extender_component->set_data('POST', $_POST);

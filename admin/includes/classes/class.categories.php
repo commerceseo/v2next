@@ -656,7 +656,7 @@ class categories_ORIGINAL {
             } elseif (IMAGE_NAME_PRODUCT == 'p_name') {
                 $new_movie_name = cseo_get_url_friendly_text(xtc_db_prepare_input($products_data['products_name'][(int) $_SESSION['languages_id']]));
             } else {
-                $new_movie_name = cseo_get_url_friendly_text($pname_arr[0]);
+                $new_movie_name = $pname_arr[0];
             }
 
             $products_movies_name = $new_movie_name . '.' . strtolower($nsuffix);
@@ -699,7 +699,7 @@ class categories_ORIGINAL {
             } elseif (IMAGE_NAME_PRODUCT == 'p_name') {
                 $products_image_name = cseo_get_url_friendly_text(xtc_db_prepare_input($products_data['products_name'][(int) $_SESSION['languages_id']])) . '_' . $products_id . '.' . strtolower($nsuffix);
             } else {
-                $products_image_name = cseo_get_url_friendly_text($pname_arr[0]) . '.' . strtolower($nsuffix);
+                $products_image_name = $pname_arr[0] . '.' . strtolower($nsuffix);
             }
 
             $dup_check_query = xtc_db_query("SELECT COUNT(*) AS total FROM " . TABLE_PRODUCTS . " WHERE products_image = '" . $products_data['products_previous_image_0'] . "'");

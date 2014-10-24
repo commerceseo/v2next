@@ -670,11 +670,7 @@ if (MODULE_CUSTOMERS_ADMINMAIL_STATUS == 'true') {
 	include_once(DIR_WS_FUNCTIONS . 'stock_mails.php');
 	sendstockmails();
 }
-//PDF invoice
-if (MODULE_CUSTOMERS_PDF_INVOICE_STATUS == 'true') {
-	include_once(DIR_WS_FUNCTIONS . 'pdf_invoice.php');
-	pdfinvoice();
-}
+
 //Delete Guest inactive Account 
 if (DELETE_GUEST_ACCOUNT == 'true') {
 	include_once(DIR_WS_FUNCTIONS . 'delete_unused_guest_account.php');

@@ -2,29 +2,14 @@
 /**
  * Barzahlen Payment Module (commerce:SEO)
  *
- * NOTICE OF LICENSE
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 2 of the License
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * @copyright   Copyright (c) 2013 Zerebro Internet GmbH (http://www.barzahlen.de)
+ * @copyright   Copyright (c) 2014 Cash Payment Solutions GmbH (https://www.barzahlen.de)
  * @author      Alexander Diebler
  * @license     http://opensource.org/licenses/GPL-2.0  GNU General Public License, version 2 (GPL-2.0)
  */
 
-require_once('model.notification.php');
+require_once dirname(__FILE__) . '/../../includes/modules/payment/barzahlen/loader.php';
 
-class BZ_Ipn
+class Barzahlen_IPN
 {
     /**
      * array for the received and checked data
@@ -34,26 +19,21 @@ class BZ_Ipn
     var $receivedData = array();
 
     /**
-     * id of corresponding order
+     * Main function.
      *
-     * @var integer
+     * @param array $receivedData
+     * @return bool
      */
-    var $orderId;
+    function callback($receivedData)
+    {
+        $this->receivedData = $receivedData;
 
-    /**
-     * @const STATE_PEDNING state for unpaid transactions
-     */
-    const STATE_PENDING = 'pending';
+        if(!$this->validateParameters()) {
+            return false;
+        }
 
-    /**
-     * @const STATE_PAID state for paid transactions
-     */
-    const STATE_PAID = 'paid';
-
-    /**
-     * @const STATE_EXPIRED state for expired transactions
-     */
-    const STATE_EXPIRED = 'expired';
+        return $this->updateDatabase();
+    }
 
     /**
      * Checks received data and validates hash.
@@ -61,114 +41,62 @@ class BZ_Ipn
      * @param string $receivedData received data
      * @return boolean
      */
-    function sendResponseHeader($receivedData)
+    function validateParameters()
     {
-        $notification = new BZ_Notification;
+        $notification = new Barzahlen_Notification(
+            MODULE_PAYMENT_BARZAHLEN_SHOPID,
+            MODULE_PAYMENT_BARZAHLEN_NOTIFICATIONKEY,
+            $this->receivedData
+        );
 
-        if (!$notification->checkReceivedData($receivedData) || !$this->confirmHash($receivedData)) {
+        try {
+            $notification->validate();
+        } catch (Exception $e) {
+            $this->bzLog('barzahlen/ipn: ' . $e);
             return false;
         }
 
-        $this->receivedData = $receivedData;
-        return true;
-    }
-
-    /**
-     * Generates expected hash out of received data and compares it to received hash.
-     *
-     * @param array $receivedData received data
-     * @return boolean
-     */
-    function confirmHash(array $receivedData)
-    {
-        $hashArray = array();
-        $hashArray[] = $receivedData['state'];
-        $hashArray[] = $receivedData['transaction_id'];
-        $hashArray[] = $receivedData['shop_id'];
-        $hashArray[] = $receivedData['customer_email'];
-        $hashArray[] = $receivedData['amount'];
-        $hashArray[] = $receivedData['currency'];
-        $hashArray[] = array_key_exists('order_id', $receivedData) ? $receivedData['order_id'] : '';
-        $hashArray[] = '';
-        $hashArray[] = '';
-        $hashArray[] = '';
-        $hashArray[] = MODULE_PAYMENT_BARZAHLEN_NOTIFICATIONKEY;
-
-        if ($receivedData['hash'] != hash('sha512', implode(';', $hashArray))) {
-            $this->_bzLog('model/ipn: Hash not valid - ' . serialize($receivedData));
-            return false;
-        }
-
-        return true;
+        return $notification->isValid();
     }
 
     /**
      * Parent function to update the database with all information.
+     *
+     * @return boolean
      */
     function updateDatabase()
     {
-        if ($this->checkDatasets() && $this->canUpdateTransaction()) {
-            switch ($this->receivedData['state']) {
-                case 'paid':
-                    $this->setOrderPaid();
-                    break;
-                case 'expired':
-                    $this->setOrderExpired();
-                    break;
-                default:
-                    $this->_bzLog('model/ipn: Not able to handle state - ' . serialize($this->receivedData));
-                    break;
-            }
-        }
-    }
-
-    /**
-     * Checks received data against datasets for order and order total.
-     *
-     * @return boolean (TRUE if all values are valid, FALSE if not)
-     */
-    function checkDatasets()
-    {
-        // check order
-        $query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS . "
-                           WHERE barzahlen_transaction_id = '" . $this->receivedData['transaction_id'] . "'");
-        if (xtc_db_num_rows($query) != 1) {
-            $this->_bzLog('model/ipn: No corresponding order found in database - ' . serialize($this->receivedData));
+        if(!$this->checkDatabase('pending')) {
             return false;
         }
-        $result = xtc_db_fetch_array($query);
-        $this->orderId = $result['orders_id'];
 
-        if (array_key_exists('order_id', $this->receivedData)) {
-            if ($this->orderId != $this->receivedData['order_id']) {
-                $this->_bzLog('model/ipn: Order id doesn\'t match - ' . serialize($this->receivedData));
+        switch ($this->receivedData['state']) {
+            case 'paid':
+                return $this->setOrderPaid();
+            case 'expired':
+                return $this->setOrderExpired();
+            default:
+                $this->bzLog('barzahlen/ipn: Not able to handle state - ' . serialize($this->receivedData));
                 return false;
-            }
         }
-
-        // check shop id
-        if ($this->receivedData['shop_id'] != MODULE_PAYMENT_BARZAHLEN_SHOPID) {
-            $this->_bzLog('model/ipn: Shop id doesn\'t match - ' . serialize($this->receivedData));
-            return false;
-        }
-
-        return true;
     }
 
     /**
-     * Checks that transaction can be updated by notification. (Only pending ones can.)
+     * Checks received data against database for the order.
      *
-     * @return boolean (TRUE if transaction is pending, FALSE if not)
+     * @param string $state
+     * @return boolean
      */
-    function canUpdateTransaction()
+    function checkDatabase($state)
     {
-        $query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS . "
-                           WHERE barzahlen_transaction_state = '" . self::STATE_PENDING . "'
-                             AND barzahlen_transaction_id = '" . $this->receivedData['transaction_id'] . "'
-                             AND orders_id = '" . $this->orderId . "'");
+        $query = xtc_db_query("SELECT *
+                                 FROM " . TABLE_ORDERS . "
+                                WHERE orders_id = '" . $this->receivedData['order_id'] . "'
+                                  AND barzahlen_transaction_id = '" . $this->receivedData['transaction_id'] . "'
+                                  AND barzahlen_transaction_state = '" . $state . "'");
 
         if (xtc_db_num_rows($query) != 1) {
-            $this->_bzLog('model/ipn: Transaction for this order already paid / expired - ' . serialize($this->receivedData));
+            $this->bzLog('barzahlen/ipn: No ' . $state . ' order found in database - ' . serialize($this->receivedData));
             return false;
         }
 
@@ -177,36 +105,60 @@ class BZ_Ipn
 
     /**
      * Sets order and transaction to paid. Adds an entry to order status history table.
+     *
+     * @return boolean
      */
     function setOrderPaid()
     {
-        xtc_db_query("UPDATE " . TABLE_ORDERS . "
-                      SET orders_status = '" . MODULE_PAYMENT_BARZAHLEN_PAID_STATUS . "',
-                          barzahlen_transaction_state = '" . self::STATE_PAID . "'
-                      WHERE orders_id = '" . $this->orderId . "'");
+        $this->updateOrder(MODULE_PAYMENT_BARZAHLEN_PAID_STATUS);
+        $this->addOrderHistory(MODULE_PAYMENT_BARZAHLEN_PAID_STATUS, MODULE_PAYMENT_BARZAHLEN_TEXT_TRANSACTION_PAID);
 
-        xtc_db_query("INSERT INTO " . TABLE_ORDERS_STATUS_HISTORY . "
-                      (orders_id, orders_status_id, date_added, customer_notified, comments)
-                      VALUES
-                      ('" . $this->orderId . "', '" . MODULE_PAYMENT_BARZAHLEN_PAID_STATUS . "',
-                      now(), 1, '" . MODULE_PAYMENT_BARZAHLEN_TEXT_TRANSACTION_PAID . "')");
+        return $this->checkDatabase('paid');
     }
 
     /**
      * Cancels the order and sets the transaction to expired. Adds an entry to order status history table.
+     *
+     * @return boolean
      */
     function setOrderExpired()
     {
-        xtc_db_query("UPDATE " . TABLE_ORDERS . "
-                      SET orders_status = '" . MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS . "',
-                          barzahlen_transaction_state = '" . self::STATE_EXPIRED . "'
-                      WHERE orders_id = '" . $this->orderId . "'");
+        $this->updateOrder(MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS);
+        $this->addOrderHistory(MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS, MODULE_PAYMENT_BARZAHLEN_TEXT_TRANSACTION_EXPIRED);
 
-        xtc_db_query("INSERT INTO " . TABLE_ORDERS_STATUS_HISTORY . "
-                      (orders_id, orders_status_id, date_added, customer_notified, comments)
-                      VALUES
-                      ('" . $this->orderId . "', '" . MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS . "',
-                      now(), 1, '" . MODULE_PAYMENT_BARZAHLEN_TEXT_TRANSACTION_EXPIRED . "')");
+        return $this->checkDatabase('expired');
+    }
+
+    /**
+     * Update order in database.
+     *
+     * @param integer $statusId
+     */
+    public function updateOrder($statusId)
+    {
+        xtc_db_query("UPDATE " . TABLE_ORDERS . "
+                         SET orders_status = '" . $statusId . "',
+                             barzahlen_transaction_state = '" . $this->receivedData['state'] . "'
+                       WHERE orders_id = '" . $this->receivedData['order_id'] . "'");
+    }
+
+    /**
+     * Add history comment to database.
+     *
+     * @param integer $statusId
+     * @param string $comment
+     */
+    public function addOrderHistory($statusId, $comment)
+    {
+        $sql_data_history = array(
+            'orders_id' => $this->receivedData['order_id'],
+            'orders_status_id' => $statusId,
+            'date_added' => 'now()',
+            'customer_notified' => 1,
+            'comments' => $comment
+        );
+
+        xtc_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_history);
     }
 
     /**
@@ -214,7 +166,7 @@ class BZ_Ipn
      *
      * @param string $message error message
      */
-    function _bzLog($message)
+    function bzLog($message)
     {
         $time = date("[Y-m-d H:i:s] ");
         $logFile = DIR_FS_CATALOG . 'logfiles/barzahlen.log';

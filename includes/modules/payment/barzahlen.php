@@ -2,60 +2,22 @@
 /**
  * Barzahlen Payment Module (commerce:SEO)
  *
- * NOTICE OF LICENSE
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 2 of the License
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * @copyright   Copyright (c) 2013 Zerebro Internet GmbH (http://www.barzahlen.de)
+ * @copyright   Copyright (c) 2014 Cash Payment Solutions GmbH (https://www.barzahlen.de)
  * @author      Alexander Diebler
  * @license     http://opensource.org/licenses/GPL-2.0  GNU General Public License, version 2 (GPL-2.0)
  */
 
+require_once dirname(__FILE__) . '/barzahlen/loader.php';
+
 class barzahlen
 {
-    /**
-     * @const APIDOMAIN call domain (productive use)
-     */
-    const APIDOMAIN = 'https://api.barzahlen.de/v1/transactions/';
-
-    /**
-     * @const APIDOMAINSANDBOX sandbox call domain (productive use)
-     */
-    const APIDOMAINSANDBOX = 'https://api-sandbox.barzahlen.de/v1/transactions/';
-
-    /**
-     * @const HASHSEPARATOR hash separator for hash string
-     */
-    const HASHSEPARATOR = ';';
-
-    /**
-     * @const HASHALGORITHM algorithm for hash generation
-     */
-    const HASHALGORITHM = 'sha512';
-
-    /**
-     * @const MAXATTEMPTS maximum connect attempts per request
-     */
-    const MAXATTEMPTS = 2;
-
     /**
      * Constructor class, sets the settings.
      */
     function barzahlen()
     {
         $this->code = 'barzahlen';
-        $this->version = '1.0.5';
+        $this->version = '1.1.0';
         $this->title = MODULE_PAYMENT_BARZAHLEN_TEXT_TITLE;
         $this->description = '<div align="center">' . xtc_image('https://cdn.barzahlen.de/images/barzahlen_logo.png', MODULE_PAYMENT_BARZAHLEN_TEXT_TITLE) . '</div><br>' . MODULE_PAYMENT_BARZAHLEN_TEXT_DESCRIPTION;
         $this->sort_order = MODULE_PAYMENT_BARZAHLEN_SORT_ORDER;
@@ -65,11 +27,13 @@ class barzahlen
         $this->tmpStatus = MODULE_PAYMENT_BARZAHLEN_NEW_STATUS;
         $this->form_action_url = '';
 
-        $this->cert = DIR_FS_CATALOG . 'includes/modules/payment/ca-bundle.crt';
         $this->logFile = DIR_FS_CATALOG . 'logfiles/barzahlen.log';
         $this->currencies = array('EUR');
         $this->countries = array('DE');
-        $this->connectAttempts = 0;
+
+        if ($this->check() && $this->checkLastAutoCancel()) {
+            $this->autoCancel();
+        }
     }
 
     /**
@@ -110,27 +74,19 @@ class barzahlen
         }
 
         if (!preg_match('/^[0-9]{1,3}(\.[0-9][0-9]?)?$/', MODULE_PAYMENT_BARZAHLEN_MAXORDERTOTAL)) {
-            $this->_bzLog('Maximum order amount (' . MODULE_PAYMENT_BARZAHLEN_MAXORDERTOTAL . ') is not valid.' .
-                ' Should be between 0.00 and 999.99 Euros.');
+            $this->bzLog('barzahlen/selection: Maximum order amount (' . MODULE_PAYMENT_BARZAHLEN_MAXORDERTOTAL . ') is not valid. Should be between 0.00 and 999.99 Euros.');
             return false;
         }
 
-        if ($order->info['total'] < MODULE_PAYMENT_BARZAHLEN_MAXORDERTOTAL) {
+        if ($order->info['total'] <= MODULE_PAYMENT_BARZAHLEN_MAXORDERTOTAL) {
             $title = $this->title;
-            $description = str_replace('{{image}}', xtc_image_shopcore('https://cdn.barzahlen.de/images/barzahlen_logo.png'), MODULE_PAYMENT_BARZAHLEN_TEXT_FRONTEND_DESCRIPTION);
-            $description = str_replace('{{special}}', xtc_image_shopcore('https://cdn.barzahlen.de/images/barzahlen_special.png', '', '', '', 'style="float: right; margin-left: 10px; max-width: 180px; max-height: 180px;"'), $description);
 
-            if (MODULE_PAYMENT_BARZAHLEN_SANDBOX == 'True') {
-                $title .= ' [SANDBOX]';
-                $description .= MODULE_PAYMENT_BARZAHLEN_TEXT_FRONTEND_SANDBOX;
-            }
-
-            $description .= MODULE_PAYMENT_BARZAHLEN_TEXT_FRONTEND_PARTNER;
-
+            $description = MODULE_PAYMENT_BARZAHLEN_TEXT_FRONTEND_DESCRIPTION . MODULE_PAYMENT_BARZAHLEN_TEXT_FRONTEND_PARTNER;
             for ($i = 1; $i <= 10; $i++) {
                 $count = str_pad($i, 2, "0", STR_PAD_LEFT);
-                $description .= '<img src="https://cdn.barzahlen.de/images/barzahlen_partner_' . $count . '.png" alt="" style="vertical-align: middle; height: 25px;" />';
+                $description .= '<img src="https://cdn.barzahlen.de/images/barzahlen_partner_' . $count . '.png" alt="" style="vertical-align: middle; height: 25px;">';
             }
+            $description .= '<script src="https://cdn.barzahlen.de/js/selection.js"></script>';
 
             return array('id' => $this->code, 'module' => $title, 'description' => $description);
         } else {
@@ -185,54 +141,61 @@ class barzahlen
     {
         global $order, $insert_id;
 
-        $transData = array();
-        $transData['customer_email'] = $order->customer['email_address'];
-        $transData['amount'] = number_format($order->info['total'], 2, '.', '');
-        $transData['currency'] = $order->info['currency'];
-        $transData['language'] = $_SESSION['language_code'];
-        $transData['order_id'] = $insert_id;
-        $transData['customer_street_nr'] = $this->_isoConvert($order->customer['street_address']);
-        $transData['customer_zipcode'] = $order->customer['postcode'];
-        $transData['customer_city'] = $this->_isoConvert($order->customer['city']);
-        $transData['customer_country'] = $order->customer['country']['iso_code_2'];
-        $transData['custom_var_0'] = '';
-        $transData['custom_var_1'] = '';
-        $transData['custom_var_2'] = '';
-        $transArray = $this->_buildTransArray($transData);
-        $xmlArray = $this->_connectToApi('create', $transArray);
-
-        // select last order history comment for this order
-        $query = xtc_db_query("SELECT orders_status_history_id, comments FROM " . TABLE_ORDERS_STATUS_HISTORY . "
-                           WHERE orders_id = '" . $insert_id . "'
-                           ORDER BY orders_status_history_id DESC");
-        $last = xtc_db_fetch_array($query);
-
-        if ($xmlArray != null) {
-            $_SESSION['infotext-1'] = $this->_convertISO($xmlArray['infotext-1']);
-
-            // set transaction details
-            xtc_db_query("UPDATE " . TABLE_ORDERS . "
-                    SET barzahlen_transaction_id = '" . $xmlArray['transaction-id'] . "' ,
-                        barzahlen_transaction_state = 'pending',
-                        orders_status = '" . MODULE_PAYMENT_BARZAHLEN_NEW_STATUS . "'
-                    WHERE orders_id = '" . $insert_id . "'");
-
-            // insert create success comment
-            xtc_db_query("UPDATE " . TABLE_ORDERS_STATUS_HISTORY . "
-                    SET orders_status_id = '" . MODULE_PAYMENT_BARZAHLEN_NEW_STATUS . "',
-                        comments = '" . MODULE_PAYMENT_BARZAHLEN_TEXT_X_ATTEMPT_SUCCESS . "'
-                    WHERE orders_status_history_id = '" . $last['orders_status_history_id'] . "'");
+        if ($_SESSION['customers_status']['customers_status_show_price_tax'] == 0 && $_SESSION['customers_status']['customers_status_add_tax_ot'] == 1) {
+            $total = $order->info['total'] + $order->info['tax'];
         } else {
-            // set order status
-            xtc_db_query("UPDATE " . TABLE_ORDERS . "
-                    SET orders_status = '" . MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS . "'
-                    WHERE orders_id = '" . $insert_id . "'");
+            $total = $order->info['total'];
+        }
 
-            // insert create failure comment
-            xtc_db_query("UPDATE " . TABLE_ORDERS_STATUS_HISTORY . "
-                    SET orders_status_id = '" . MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS . "',
-                        comments = '" . $this->_convertISO(MODULE_PAYMENT_BARZAHLEN_TEXT_PAYMENT_ATTEMPT_FAILED) . "'
-                    WHERE orders_status_history_id = '" . $last['orders_status_history_id'] . "'");
+        $payment = new Barzahlen_Request_Payment(
+            $order->customer['email_address'],
+            $order->customer['street_address'],
+            $order->customer['postcode'],
+            $order->customer['city'],
+            $order->customer['country']['iso_code_2'],
+            $total,
+            $order->info['currency'],
+            $insert_id
+        );
+
+        $api = $this->createApi();
+
+        try {
+            $api->handleRequest($payment);
+        } catch (Exception $e) {
+            $this->bzLog('barzahlen/payment: ' . $e);
+        }
+
+        if($payment->isValid()) {
+            $_SESSION['infotext-1'] = $this->convertISO($payment->getInfotext1());
+
+            xtc_db_query("UPDATE " . TABLE_ORDERS . "
+                             SET barzahlen_transaction_id = '" . $payment->getTransactionId() . "' ,
+                                 barzahlen_transaction_state = 'pending',
+                                 orders_status = '" . MODULE_PAYMENT_BARZAHLEN_NEW_STATUS . "'
+                           WHERE orders_id = '" . $insert_id . "'");
+
+            $sql_data_history = array(
+                'orders_id' => $insert_id,
+                'orders_status_id' => MODULE_PAYMENT_BARZAHLEN_NEW_STATUS,
+                'date_added' => 'now()',
+                'customer_notified' => 1,
+                'comments' => MODULE_PAYMENT_BARZAHLEN_TEXT_X_ATTEMPT_SUCCESS
+            );
+            xtc_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_history);
+        } else {
+            xtc_db_query("UPDATE " . TABLE_ORDERS . "
+                             SET orders_status = '" . MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS . "'
+                           WHERE orders_id = '" . $insert_id . "'");
+
+            $sql_data_history = array(
+                'orders_id' => $insert_id,
+                'orders_status_id' => MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS,
+                'date_added' => 'now()',
+                'customer_notified' => 1,
+                'comments' => MODULE_PAYMENT_BARZAHLEN_TEXT_PAYMENT_ATTEMPT_FAILED
+            );
+            xtc_db_perform(TABLE_ORDERS_STATUS_HISTORY, $sql_data_history);
         }
 
         xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PROCESS, session_name() . '=' . session_id(), 'SSL'));
@@ -247,20 +210,21 @@ class barzahlen
     {
         global $insert_id;
 
-        // check if payment was successful
         $query = xtc_db_query("SELECT barzahlen_transaction_id FROM " . TABLE_ORDERS . "
-                           WHERE orders_id = '" . $insert_id . "'
-                           AND barzahlen_transaction_state = 'pending'  LIMIT 1");
+                                WHERE orders_id = '" . $insert_id . "'
+                                  AND barzahlen_transaction_state = 'pending'  LIMIT 1");
 
         // if not, redirect to payment method selection
         if (xtc_db_num_rows($query) == 0) {
             // check if ajax checkout is enabled
-			$payment_error_return = 'payment_error=barzahlen';
+            $query = xtc_db_query("SELECT configuration_id FROM " . TABLE_CONFIGURATION . "
+                                    WHERE configuration_key = 'CHECKOUT_AJAX_STAT'
+                                      AND configuration_value = 'true' LIMIT 1");
 
-            if (CHECKOUT_AJAX_STAT == 'true') {
-                $_SESSION['checkout_payment_error'] = $payment_error_return;
+            if (xtc_db_num_rows($query) == 1) {
+                xtc_redirect(xtc_href_link(FILENAME_CHECKOUT, 'payment_error=barzahlen', 'SSL'));
             } else {
-                xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, $payment_error_return, 'SSL'));
+                xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, 'payment_error=barzahlen', 'SSL'));
             }
         }
         return false;
@@ -274,10 +238,11 @@ class barzahlen
     function get_error()
     {
         $error = false;
-
         if (!empty($_GET['payment_error'])) {
-            $error = array('title' => MODULE_PAYMENT_BARZAHLEN_TEXT_ERROR,
-                'error' => $this->_convertISO(MODULE_PAYMENT_BARZAHLEN_TEXT_PAYMENT_ERROR));
+            $error = array(
+                'title' => MODULE_PAYMENT_BARZAHLEN_TEXT_ERROR,
+                'error' => $this->convertISO(MODULE_PAYMENT_BARZAHLEN_TEXT_PAYMENT_ERROR)
+            );
         }
 
         return $error;
@@ -300,12 +265,13 @@ class barzahlen
      */
     function check()
     {
-        if (!isset($this->_check)) {
-            $check_query = xtc_db_query("SELECT configuration_value FROM " . TABLE_CONFIGURATION . "
-                                   WHERE configuration_key = 'MODULE_PAYMENT_BARZAHLEN_STATUS'");
-            $this->_check = xtc_db_num_rows($check_query);
+        if (!isset($this->check)) {
+            $check_query = xtc_db_query("SELECT configuration_value
+                                           FROM " . TABLE_CONFIGURATION . "
+                                          WHERE configuration_key = 'MODULE_PAYMENT_BARZAHLEN_STATUS'");
+            $this->check = xtc_db_num_rows($check_query);
         }
-        return $this->_check;
+        return $this->check;
     }
 
     /**
@@ -315,47 +281,49 @@ class barzahlen
     {
         xtc_db_query(
             "INSERT INTO " . TABLE_CONFIGURATION . "
-      (configuration_key, configuration_value, configuration_group_id, sort_order, set_function, date_added)
-      VALUES
-      ('MODULE_PAYMENT_BARZAHLEN_STATUS', 'False', '6', '1', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_SANDBOX', 'True', '6', '2', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_DEBUG', 'False', '6', '12', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now())");
+            (configuration_key, configuration_value, configuration_group_id, sort_order, set_function, date_added)
+            VALUES
+            ('MODULE_PAYMENT_BARZAHLEN_STATUS', 'False', '6', '1', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_SANDBOX', 'True', '6', '2', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_DEBUG', 'False', '6', '12', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now())");
 
         xtc_db_query(
             "INSERT INTO " . TABLE_CONFIGURATION . "
-      (configuration_key, configuration_value, configuration_group_id, sort_order, date_added)
-      VALUES
-      ('MODULE_PAYMENT_BARZAHLEN_ALLOWED', 'DE', '6', '0', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_SHOPID', '', '6', '3', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_PAYMENTKEY', '', '6', '4', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_NOTIFICATIONKEY', '', '6', '5', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_MAXORDERTOTAL', '999.99', '6', '6', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_SORT_ORDER', '-1', '6', '11', now())");
+            (configuration_key, configuration_value, configuration_group_id, sort_order, date_added)
+            VALUES
+            ('MODULE_PAYMENT_BARZAHLEN_ALLOWED', 'DE', '6', '0', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_SHOPID', '', '6', '3', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_PAYMENTKEY', '', '6', '4', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_NOTIFICATIONKEY', '', '6', '5', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_MAXORDERTOTAL', '999.99', '6', '6', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_SORT_ORDER', '-1', '6', '11', now())");
 
         xtc_db_query(
             "INSERT INTO " . TABLE_CONFIGURATION . "
-      (configuration_key, configuration_value, configuration_group_id, sort_order, set_function, use_function, date_added)
-      VALUES
-      ('MODULE_PAYMENT_BARZAHLEN_NEW_STATUS', '0', '6', '8', 'xtc_cfg_pull_down_order_statuses(', 'xtc_get_order_status_name', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_PAID_STATUS', '0', '6', '9', 'xtc_cfg_pull_down_order_statuses(', 'xtc_get_order_status_name', now()),
-      ('MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS', '0', '6', '10', 'xtc_cfg_pull_down_order_statuses(', 'xtc_get_order_status_name', now())");
+            (configuration_key, configuration_value, configuration_group_id, sort_order, set_function, use_function, date_added)
+            VALUES
+            ('MODULE_PAYMENT_BARZAHLEN_NEW_STATUS', '0', '6', '8', 'xtc_cfg_pull_down_order_statuses(', 'xtc_get_order_status_name', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_PAID_STATUS', '0', '6', '9', 'xtc_cfg_pull_down_order_statuses(', 'xtc_get_order_status_name', now()),
+            ('MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS', '0', '6', '10', 'xtc_cfg_pull_down_order_statuses(', 'xtc_get_order_status_name', now())");
 
         $query = xtc_db_query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS
-                           WHERE table_name = '" . TABLE_ORDERS . "'
-                             AND table_schema = '" . DB_DATABASE . "'
-                             AND column_name = 'barzahlen_transaction_id'");
+                                WHERE table_name = '" . TABLE_ORDERS . "'
+                                  AND table_schema = '" . DB_DATABASE . "'
+                                  AND column_name = 'barzahlen_transaction_id'");
 
         if (xtc_db_num_rows($query) == 0) {
             xtc_db_query("ALTER TABLE `" . TABLE_ORDERS . "` ADD `barzahlen_transaction_id` int(11) NOT NULL default '0';");
         }
 
         $query = xtc_db_query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS
-                           WHERE table_name = '" . TABLE_ORDERS . "'
-                             AND table_schema = '" . DB_DATABASE . "'
-                             AND column_name = 'barzahlen_transaction_state'");
+                                WHERE table_name = '" . TABLE_ORDERS . "'
+                                  AND table_schema = '" . DB_DATABASE . "'
+                                  AND column_name = 'barzahlen_transaction_state'");
 
         if (xtc_db_num_rows($query) == 0) {
-            xtc_db_query("ALTER TABLE `" . TABLE_ORDERS . "` ADD `barzahlen_transaction_state` varchar(7) NOT NULL default '';");
+            xtc_db_query("ALTER TABLE `" . TABLE_ORDERS . "` ADD `barzahlen_transaction_state` varchar(15) NOT NULL default '';");
+        } else {
+            xtc_db_query("ALTER TABLE `" . TABLE_ORDERS . "` CHANGE `barzahlen_transaction_state` `barzahlen_transaction_state` varchar(15) NOT NULL default '';");
         }
     }
 
@@ -364,9 +332,10 @@ class barzahlen
      */
     function remove()
     {
-
         $parameters = $this->keys();
         $parameters[] = 'MODULE_PAYMENT_BARZAHLEN_ALLOWED';
+        $parameters[] = 'MODULE_PAYMENT_BARZAHLEN_LAST_AUTO_CANCEL';
+        $parameters[] = 'MODULE_PAYMENT_BARZAHLEN_LAST_UPDATE_CHECK';
         xtc_db_query("DELETE FROM " . TABLE_CONFIGURATION . " WHERE configuration_key IN ('" . implode("', '", $parameters) . "')");
     }
 
@@ -377,7 +346,8 @@ class barzahlen
      */
     function keys()
     {
-        return array('MODULE_PAYMENT_BARZAHLEN_STATUS',
+        return array(
+            'MODULE_PAYMENT_BARZAHLEN_STATUS',
             'MODULE_PAYMENT_BARZAHLEN_SANDBOX',
             'MODULE_PAYMENT_BARZAHLEN_SHOPID',
             'MODULE_PAYMENT_BARZAHLEN_PAYMENTKEY',
@@ -387,161 +357,96 @@ class barzahlen
             'MODULE_PAYMENT_BARZAHLEN_PAID_STATUS',
             'MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS',
             'MODULE_PAYMENT_BARZAHLEN_SORT_ORDER',
-            'MODULE_PAYMENT_BARZAHLEN_DEBUG');
+            'MODULE_PAYMENT_BARZAHLEN_DEBUG'
+        );
     }
 
     /**
-     * Prepares the transaction array with shop id and hash. Removes empty entires.
+     * Gets settings and creates API object.
      *
-     * @param array $data request details data
-     * @return array with shop id and hash
+     * @return Barzahlen_Api
      */
-    function _buildTransArray(array $data)
+    function createApi()
     {
-        $transArray = array();
-        $transArray['shop_id'] = MODULE_PAYMENT_BARZAHLEN_SHOPID;
+        $sandbox = MODULE_PAYMENT_BARZAHLEN_SANDBOX == 'True' ? true : false;
+        $debug = MODULE_PAYMENT_BARZAHLEN_DEBUG == 'True' ? true : false;
+        $api = new Barzahlen_Api(MODULE_PAYMENT_BARZAHLEN_SHOPID, MODULE_PAYMENT_BARZAHLEN_PAYMENTKEY, $sandbox);
+        $api->setDebug($debug, $this->logFile);
+        $api->setUserAgent(PROJECT_VERSION . ' / Plugin v' . $this->version);
 
-        foreach ($data as $key => $value) {
-            $transArray[$key] = $value;
-        }
-
-        $transArray['hash'] = $this->_getHash($transArray);
-
-        foreach ($transArray as $key => $value) {
-            if ($value == '') {
-                unset($transArray[$key]);
-            }
-        }
-
-        return $transArray;
+        return $api;
     }
 
     /**
-     * Generates the sha512 hash out of the transaction array.
+     * Checks if automatic cancelation run more than one hour ago.
      *
-     * @param array $array transaction array
-     * @return string sha512 hash
+     * @return bool
      */
-    function _getHash(array $array)
+    function checkLastAutoCancel()
     {
-        $array[] = MODULE_PAYMENT_BARZAHLEN_PAYMENTKEY;
-        $HashString = implode(self::HASHSEPARATOR, $array);
-        return hash(self::HASHALGORITHM, $HashString);
+        $lastQuery = xtc_db_query("SELECT configuration_value
+                                     FROM " . TABLE_CONFIGURATION . "
+                                    WHERE configuration_key = 'MODULE_PAYMENT_BARZAHLEN_LAST_AUTO_CANCEL'");
+        $lastCheck = xtc_db_fetch_array($lastQuery);
+
+        if(!$lastCheck) {
+            $sql_data = array(
+                'configuration_key' => 'MODULE_PAYMENT_BARZAHLEN_LAST_AUTO_CANCEL',
+                'configuration_value' => 'now()',
+                'configuration_group_id' => 6,
+                'date_added' => 'now()'
+            );
+            xtc_db_perform(TABLE_CONFIGURATION, $sql_data);
+
+            return true;
+        }
+        elseif ((time() - strtotime($lastCheck['configuration_value'])) > 3600) {
+            xtc_db_query("UPDATE " . TABLE_CONFIGURATION . "
+                             SET configuration_value = NOW()
+                           WHERE configuration_key = 'MODULE_PAYMENT_BARZAHLEN_LAST_AUTO_CANCEL'");
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
-     * Prepares call domain and request sending.
-     *
-     * @param string $type request type ('create' or 'update')
-     * @param array $transArray transaction data for request
-     * @return null | array with xml response values
+     * Automatic cancel payment slips.
      */
-    function _connectToApi($type, array $transArray)
+    function autoCancel()
     {
-        if (MODULE_PAYMENT_BARZAHLEN_SANDBOX == 'False') {
-            $this->callDomain = self::APIDOMAIN . $type;
-        } else {
-            $this->callDomain = self::APIDOMAINSANDBOX . $type;
-        }
+        $api = $this->createApi();
 
-        $this->connectAttempts++;
-        $this->_bzDebug('Sending transaction array to server - ' . serialize(array($this->callDomain, $transArray)));
-        $xmlResponse = $this->_sendTransArray($transArray);
-        $this->_bzDebug('Received xml response, parsing now - ' . serialize($xmlResponse));
-        $xmlArray = $this->_getResponseData($xmlResponse);
-        $this->_bzDebug('Finished parsing, xml array ready - ' . serialize($xmlArray));
+        $orders_query = xtc_db_query("SELECT orders_id, barzahlen_transaction_id
+                                        FROM " . TABLE_ORDERS . "
+                                       WHERE payment_method = 'barzahlen'
+                                         AND orders_status = '" . MODULE_PAYMENT_BARZAHLEN_EXPIRED_STATUS . "'
+                                         AND barzahlen_transaction_state = 'pending'");
 
-        if ($xmlArray == null && $this->connectAttempts < self::MAXATTEMPTS) {
-            return $this->_connectToApi($type, $transArray);
-        }
-
-        return $xmlArray;
-    }
-
-    /**
-     * Sends the build transaction array to the Barzahlen server.
-     *
-     * @param array $transArray build transaction array
-     * @return string with xml answer | null, if an error occurred
-     */
-    function _sendTransArray(array $transArray)
-    {
-        try {
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $this->callDomain);
-            curl_setopt($ch, CURLOPT_POST, count($transArray));
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $transArray);
-            curl_setopt($ch, CURLOPT_HEADER, 0);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($ch, CURLOPT_CAINFO, $this->cert);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 7);
-            curl_setopt($ch, CURLOPT_HTTP_VERSION, 1.1);
-            $return = curl_exec($ch);
-
-            if ($return === false) {
-                $this->_bzLog(curl_error($ch));
+        while ($orders = xtc_db_fetch_array($orders_query)) {
+            $cancel = new Barzahlen_Request_Cancel($orders['barzahlen_transaction_id']);
+            try {
+                $api->handleRequest($cancel);
+            } catch (Exception $e) {
+                $this->bzLog('barzahlen/cancel: ' . $e);
             }
 
-            curl_close($ch);
-            return $return;
-        } catch (Exception $e) {
-            $this->_bzLog($e);
-            return null;
+            xtc_db_query("UPDATE " . TABLE_ORDERS . "
+                             SET barzahlen_transaction_state = 'canceled'
+                           WHERE orders_id = '" . $orders['orders_id'] . "'");
         }
     }
 
     /**
-     * Extracts the data out of the xml answer and verifies them.
+     * Coverts text to iso-8859-15 encoding.
      *
-     * @param string $xmlResponse received xml answer
-     * @internal param string $type request type ('create' or 'update')
-     * @return null if an error occurred | array with received and valid data
+     * @param string $text utf-8 text
+     * @return string ISO-8859-15 text
      */
-    function _getResponseData($xmlResponse)
+    function convertISO($text)
     {
-        $nodes = array('transaction-id', 'payment-slip-link', 'expiration-notice', 'infotext-1', 'infotext-2', 'result', 'hash');
-
-        try {
-
-            $simpleXML = new SimpleXMLElement($xmlResponse);
-
-            if ($simpleXML->{'result'} != 0) {
-                $this->_bzLog($simpleXML->{'error-message'});
-                return null;
-            }
-
-            $xmlArray = array();
-            foreach ($nodes as $node) {
-                $xmlArray[$node] = (string)$simpleXML->{$node};
-            }
-        } catch (Exception $e) {
-            $this->_bzLog($e);
-            return null;
-        }
-
-        if (!$this->_verifyHash($xmlArray)) {
-            $this->_bzLog('Hash not valid - ' . serialize($xmlArray));
-            return null;
-        }
-
-        return $xmlArray;
-    }
-
-    /**
-     * Verifies that the hash and therefore the xml answer is valid.
-     *
-     * @param array $xmlArray extracted xml data
-     * @return boolean (TRUE if hash is valid, FALSE if not)
-     */
-    function _verifyHash(array $xmlArray)
-    {
-        $responseHash = $xmlArray['hash'];
-        unset($xmlArray['hash']);
-        $generatedHash = $this->_getHash($xmlArray);
-
-        return $responseHash == $generatedHash;
+        return mb_convert_encoding($text, 'iso-8859-15', 'utf-8');
     }
 
     /**
@@ -549,51 +454,9 @@ class barzahlen
      *
      * @param string $message error message
      */
-    function _bzLog($message)
+    function bzLog($message)
     {
         $time = date("[Y-m-d H:i:s] ");
         error_log($time . $message . "\r\r", 3, $this->logFile);
-    }
-
-    /**
-     * Writes transaction steps into Barzahlen log file, if enabled.
-     *
-     * @param string $message debug message
-     */
-    function _bzDebug($message)
-    {
-        if (MODULE_PAYMENT_BARZAHLEN_DEBUG == 'True') {
-            $this->_bzLog($message);
-        }
-    }
-
-    /**
-     * Coverts text to iso-8859-15 encoding if necessary.
-     *
-     * @param string $text utf-8 text
-     * @return string ISO-8859-15 / UTF-8 text
-     */
-    function _convertISO($text)
-    {
-        require_once DIR_WS_INCLUDES . 'application_top.php';
-        if (preg_match('/^xt:Commerce/', PROJECT_VERSION)) {
-            $text = mb_convert_encoding($text, 'iso-8859-15', 'utf-8');
-        }
-        return $text;
-    }
-
-    /**
-     * Converts ISO-8859-1 strings to UTF-8 if necessary.
-     *
-     * @param string $string text which is to check
-     * @return string utf-8 encoding
-     */
-    function _isoConvert($string)
-    {
-        if (!preg_match('/\S/u', $string)) {
-            $string = utf8_encode($string);
-        }
-
-        return $string;
     }
 }

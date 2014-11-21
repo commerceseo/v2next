@@ -2,23 +2,9 @@
 /**
  * Barzahlen Payment Module (commerce:SEO)
  *
- * NOTICE OF LICENSE
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; version 2 of the License
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- *
- * @copyright   Copyright (c) 2013 Zerebro Internet GmbH (http://www.barzahlen.de)
+ * @copyright   Copyright (c) 2014 Cash Payment Solutions GmbH (https://www.barzahlen.de)
  * @author      Mathias Hertlein
+ * @author      Alexander Diebler
  * @license     http://opensource.org/licenses/GPL-2.0  GNU General Public License, version 2 (GPL-2.0)
  */
 
@@ -29,7 +15,7 @@ class BarzahlenPluginCheckRequest
 {
     const URL = "https://plugincheck.barzahlen.de/check";
 
-    const CERT_PATH = 'includes/modules/payment/ca-bundle.crt';
+    const CERT_PATH = 'includes/modules/payment/barzahlen/certs/ca-bundle.crt';
 
     /**
      * @var BarzahlenHttpClient
@@ -37,14 +23,10 @@ class BarzahlenPluginCheckRequest
     private $httpClient;
 
     /**
-     * @var array
-     */
-    private $requestArray;
-
-    /**
      * @var string
      */
     private $error;
+
     /**
      * @var string
      */
@@ -53,11 +35,17 @@ class BarzahlenPluginCheckRequest
     /**
      * @var string
      */
-    private $result;
+    private $pluginVersion;
+
     /**
      * @var string
      */
-    private $pluginVersion;
+    private $pluginUrl;
+
+    /**
+     * @var string
+     */
+    private $result;
 
     /**
      * @param BarzahlenHttpClient $httpClient
@@ -69,38 +57,28 @@ class BarzahlenPluginCheckRequest
 
     /**
      * @param array $requestParams
-     * @param string $key
      */
-    public function sendRequest($requestParams, $key)
+    public function sendRequest($requestParams)
     {
-        $this->requestArray = array_merge($requestParams, array(
-            'hash' => $this->hash($requestParams, $key),
-        ));
-
-        $this->doRequest();
+        $this->doRequest($requestParams);
 
         if ($this->error) {
-            throw new RuntimeException("An error occurred while request Barzahlen-API");
+            throw new RuntimeException("An error occurred while request Barzahlen API: " . $this->error);
         }
 
         $this->parseResponse();
 
         if ($this->result > 0) {
-            throw new RuntimeException("Barzahlen-API returned result {$this->result}");
+            throw new RuntimeException("Barzahlen API returned error result: " . $this->result);
         }
     }
 
     /**
-     * @return string
+     * @param array $requestParams
      */
-    public function getPluginVersion()
+    private function doRequest($requestParams)
     {
-        return $this->pluginVersion;
-    }
-
-    private function doRequest()
-    {
-        $result = $this->httpClient->post(self::URL, DIR_FS_CATALOG . self::CERT_PATH, $this->requestArray);
+        $result = $this->httpClient->post(self::URL, DIR_FS_CATALOG . self::CERT_PATH, $requestParams);
 
         $this->response = $result['response'];
         $this->error = $result['error'];
@@ -111,18 +89,24 @@ class BarzahlenPluginCheckRequest
         $domDocument = new DOMDocument();
         $domDocument->loadXML($this->response);
 
-        $this->result = $domDocument->getElementsByTagName("result")->item(0)->nodeValue;
         $this->pluginVersion = $domDocument->getElementsByTagName("plugin-version")->item(0)->nodeValue;
+        $this->pluginUrl = $domDocument->getElementsByTagName("plugin-url")->item(0)->nodeValue;
+        $this->result = $domDocument->getElementsByTagName("result")->item(0)->nodeValue;
     }
 
     /**
-     * @param array $params
-     * @param string $key
      * @return string
      */
-    private function hash($params, $key)
+    public function getPluginVersion()
     {
-        $hashCreate = new BarzahlenHashCreate();
-        return $hashCreate->getHash($params, $key);
+        return $this->pluginVersion;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPluginUrl()
+    {
+        return $this->pluginUrl;
     }
 }

@@ -793,6 +793,8 @@ products_tax decimal(7,4) NOT NULL,
 products_quantity INT(2) NOT NULL,
 allow_tax INT(1) NOT NULL,
 product_type INT(1) NOT NULL DEFAULT '1',
+properties_combi_price DECIMAL( 15, 4 ) NOT NULL DEFAULT  '0.0000',
+properties_combi_model VARCHAR( 64 ) NOT NULL,
 PRIMARY KEY (orders_products_id),
 KEY idx_orders_id (orders_id),
 KEY idx_products_id (products_id)
@@ -861,6 +863,8 @@ options_values_price decimal(15,4) NOT NULL,
 price_prefix CHAR(1) NOT NULL,
 products_attributes_model VARCHAR( 255 ) NULL,
 attributes_shippingtime VARCHAR( 255 ) NOT NULL,
+options_id INT( 11 ) NOT NULL DEFAULT  '0',
+options_values_id INT( 11 ) NOT NULL DEFAULT  '0',
 PRIMARY KEY (orders_products_attributes_id)
 );
 
@@ -1039,6 +1043,11 @@ products_google_age_group VARCHAR( 128 ) NULL,
 products_google_color VARCHAR( 128 ) NULL,
 products_google_size VARCHAR( 128 ) NULL,
 product_type TINYINT( 1 ) NOT NULL DEFAULT '1',
+properties_dropdown_mode VARCHAR( 30 ) NOT NULL,
+properties_show_price VARCHAR( 10 ) NOT NULL,
+use_properties_combis_weight TINYINT( 1 ) NOT NULL,
+use_properties_combis_quantity TINYINT( 1 ) NOT NULL,
+use_properties_combis_shipping_time TINYINT( 1 ) NOT NULL,
 PRIMARY KEY (products_id),
 KEY idx_products_date_added (products_date_added),
 KEY products_id (products_id,products_status,products_date_added),
@@ -2145,118 +2154,6 @@ CREATE TABLE cseo_slider_gallery (
   PRIMARY KEY (slider_id)
 );
 
-
-DROP TABLE IF EXISTS orders_products_properties;
-CREATE TABLE IF NOT EXISTS orders_products_properties (
-  orders_products_properties_id int(10) unsigned NOT NULL auto_increment,
-  orders_products_id int(10) unsigned default NULL,
-  products_properties_combis_id int(10) unsigned default NULL,
-  properties_name varchar(255) NOT NULL,
-  values_name varchar(255) NOT NULL,
-  properties_price_type varchar(8) NOT NULL,
-  properties_price decimal(16,4) NOT NULL,
-  PRIMARY KEY  (orders_products_properties_id)
-);
-
-DROP TABLE IF EXISTS products_properties_admin_select;
-CREATE TABLE  products_properties_admin_select (
-  products_properties_admin_select_id int(11) NOT NULL auto_increment,
-  products_id int(11) NOT NULL,
-  properties_id int(11) NOT NULL,
-  properties_values_id int(11) NOT NULL,
-  PRIMARY KEY  (products_properties_admin_select_id),
-  KEY products_id (products_id)
-);
-
-DROP TABLE IF EXISTS products_properties_combis;
-CREATE TABLE products_properties_combis (
-  products_properties_combis_id int(10) unsigned NOT NULL auto_increment,
-  products_id int(10) unsigned NOT NULL,
-  sort_order int(10) unsigned NOT NULL,
-  combi_model varchar(64) NOT NULL,
-  combi_quantity_type enum('','plus','minus','fix') NULL,
-  combi_quantity int(10) unsigned NOT NULL,
-  combi_shipping_status_id int(11) NOT NULL,
-  combi_weight decimal(15,4) NOT NULL,
-  combi_price_type enum('plus','minus','fix') NOT NULL,
-  combi_price decimal(15,4) NOT NULL,
-  combi_image varchar(255) NOT NULL,
-  products_vpe_id int(11) NOT NULL,
-  vpe_value decimal(16,4) NOT NULL,
-  PRIMARY KEY  (products_properties_combis_id),
-  KEY products_properties_combis_id (products_properties_combis_id,products_id,sort_order),
-  KEY products_id (products_id,sort_order)
-);
-
-DROP TABLE IF EXISTS products_properties_combis_values;
-CREATE TABLE products_properties_combis_values (
-  products_properties_combis_values_id int(10) unsigned NOT NULL auto_increment,
-  products_properties_combis_id int(10) unsigned NOT NULL,
-  properties_values_id int(10) unsigned default NULL,
-  PRIMARY KEY  (products_properties_combis_values_id),
-  KEY products_properties_combis_values_id (products_properties_combis_values_id,products_properties_combis_id,properties_values_id),
-  KEY products_properties_combis_id (products_properties_combis_id,properties_values_id),
-  KEY properties_values_id (properties_values_id,products_properties_combis_id)
-);
-
-DROP TABLE IF EXISTS products_properties_index;
-CREATE TABLE IF NOT EXISTS products_properties_index (
-  products_id int(10) NOT NULL,
-  language_id int(10) NOT NULL,
-  properties_id int(10) NOT NULL,
-  products_properties_combis_id int(10) default '0',
-  properties_values_id int(10) default NULL,
-  properties_name varchar(255) default NULL,
-  properties_sort_order int(10) NOT NULL,
-  values_name varchar(255) default NULL,
-  value_sort_order int(10) default NULL,
-  KEY products_id (products_id,language_id,products_properties_combis_id),
-  KEY products_id_2 (products_id,language_id,properties_id)
-);
-
-DROP TABLE IF EXISTS properties;
-CREATE TABLE properties (
-  properties_id int(10) unsigned NOT NULL auto_increment,
-  sort_order int(10) unsigned NOT NULL,
-  PRIMARY KEY  (properties_id),
-  KEY properties_id (properties_id,sort_order)
-);
-
-DROP TABLE IF EXISTS properties_description;
-CREATE TABLE properties_description (
-  properties_description_id int(10) unsigned NOT NULL auto_increment,
-  properties_id int(10) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  properties_name varchar(255) NOT NULL,
-  properties_admin_name varchar(255) NOT NULL,
-  PRIMARY KEY  (properties_description_id),
-  KEY properties_id (properties_id,language_id)
-);
-
-DROP TABLE IF EXISTS properties_values;
-CREATE TABLE properties_values (
-  properties_values_id int(10) unsigned NOT NULL auto_increment,
-  properties_id int(10) unsigned NOT NULL,
-  sort_order int(10) unsigned NOT NULL,
-  value_model varchar(64) NOT NULL,
-  value_price_type enum('plus','minus','fix') NOT NULL,
-  value_price decimal(9,4) NOT NULL,
-  PRIMARY KEY  (properties_values_id),
-  KEY properties_values_id (properties_values_id,properties_id,sort_order),
-  KEY properties_id (properties_id,sort_order)
-);
-
-DROP TABLE IF EXISTS properties_values_description;
-CREATE TABLE properties_values_description (
-  properties_values_description_id int(10) unsigned NOT NULL auto_increment,
-  properties_values_id int(10) unsigned NOT NULL,
-  language_id int(10) unsigned NOT NULL,
-  values_name varchar(255) NOT NULL,
-  values_image varchar(255) NOT NULL,
-  PRIMARY KEY  (properties_values_description_id),
-  KEY properties_values_description_id (properties_values_description_id,properties_values_id,language_id),
-  KEY properties_values_id (properties_values_id,language_id)
-);
 
 DROP TABLE IF EXISTS rma;
 CREATE TABLE rma (

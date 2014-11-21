@@ -12,6 +12,7 @@ INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'I
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_ADD_A_QUICKIE', 'add', 1);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_UPDATE', 'update', 1);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_UPDATE_CART', 'update shopping cart', 1);
+INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_PRINT_CART', 'print cart', 1);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_WRITE_REVIEW', 'write Evaluation', 1);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_ADMIN', 'admin', 1);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_MOBILE_ADMIN', 'mobile-admin', 1);
@@ -49,6 +50,7 @@ INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'I
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_ADD_A_QUICKIE', 'Bestellen', 2);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_UPDATE', 'Aktualisieren', 2);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_UPDATE_CART', 'Warenkorb aktualisieren', 2);
+INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_PRINT_CART', 'Warenkorb drucken', 2);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_WRITE_REVIEW', 'Bewertung schreiben', 2);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_ADMIN', 'Admin', 2);
 INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_MOBILE_ADMIN', 'Mobile-Admin', 2);

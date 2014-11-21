@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: request_port.php 582 2013-08-27 21:16:03Z akausch $
+ * 	$Id: request_port.php 987 2014-04-22 10:40:42Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------

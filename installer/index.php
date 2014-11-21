@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: index.php 980 2014-04-15 10:22:30Z akausch $
+ * 	$Id: index.php 1077 2014-05-27 08:54:06Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -126,17 +126,10 @@ if (empty($t_wrong_chmod_array) && !isset($_GET['chmod']) && isset($_GET['langua
 <!DOCTYPE html>
 <html lang="de" class="no-js" dir="ltr">
     <head>
-        <title>Installation commerce:SEO v2Next</title>
+        <title>Installation commerce:seo v2next</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link type="text/css" rel="stylesheet" href="css/stylesheet.css" />
-        <!--[if gte IE 9]>
-          <style type="text/css">
-                #main.gradient, #main .gradient.button, #main .gradient.button.red, #main .gradient.button.green {
-                   filter: none;
-                }
-          </style>
-        <![endif]-->
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
         <script type="text/javascript">

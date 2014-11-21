@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: application.php 420 2013-06-19 18:04:39Z akausch $
+ * 	$Id: application.php 1260 2014-11-04 07:07:53Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -18,27 +18,17 @@ if (is_string($t_timezone) && !empty($t_timezone)) {
     @date_default_timezone_set($t_timezone);
 }
 unset($t_timezone);
-
-// $check = '../includes/configure.php';
-// if (file_exists($check) && filesize($check) > 1) {
-// include('../includes/configure.php');
-// if(COMMERCE_SEO_V22_INSTALLED =='true') {
-// $connect = mysql_connect(DB_SERVER,DB_SERVER_USERNAME,DB_SERVER_PASSWORD);
-// mysql_select_db(DB_DATABASE);
-// $res = mysql_query("SELECT * FROM admin_access");
-// if(@mysql_num_rows($res) > 0) {
-// $bn = basename($_SERVER['PHP_SELF']);
-// if(($bn !='install_finished.php') && ($bn !='install_step4.php') && ($bn !='install_step5.php') && ($bn !='install_step6.php') && ($bn !='install_step7.php'))
-// header('Location: '.HTTP_SERVER.DIR_WS_CATALOG);
-// }
-// }
-// }
-// BOF GM_MOD
+// set the level of error reporting
+if (function_exists('ini_set')) {
+	error_reporting(E_ALL & ~E_NOTICE);
+	ini_set("log_errors" , "1");
+	ini_set("error_log" , DIR_FS_CATALOG . "logfiles/Errors.log.txt");
+	ini_set("display_errors" , "0"); 
+}
 function gm_delete_get_parameters($string) {
     if (strpos($string, '?') !== false) {
         $string = substr($string, 0, strpos($string, '?'));
     }
-
     return $string;
 }
 
@@ -121,14 +111,6 @@ function cseo_local_install_path() {
         $gm_relative = gm_delete_get_parameters($gm_relative);
         $local_install_path = str_replace('/installer', '', $gm_relative);
         $local_install_path = str_replace('index.php', '', $local_install_path);
-        $local_install_path = str_replace('install_step1.php', '', $local_install_path);
-        $local_install_path = str_replace('install_step2.php', '', $local_install_path);
-        $local_install_path = str_replace('install_step3.php', '', $local_install_path);
-        $local_install_path = str_replace('install_step4.php', '', $local_install_path);
-        $local_install_path = str_replace('install_step5.php', '', $local_install_path);
-        $local_install_path = str_replace('install_step6.php', '', $local_install_path);
-        $local_install_path = str_replace('install_step7.php', '', $local_install_path);
-        $local_install_path = str_replace('install_finished.php', '', $local_install_path);
         $cseo_local_install_path = $_SERVER['DOCUMENT_ROOT'] . $local_install_path;
     }
 
@@ -138,10 +120,7 @@ function cseo_local_install_path() {
     return $cseo_local_install_path;
 }
 
-// EOF GM_MOD
-
 if (!defined('DIR_FS_DOCUMENT_ROOT')) {
-    // BOF GM_MOD
     define('DIR_FS_DOCUMENT_ROOT', gm_document_root());
     define('DIR_FS_CATALOG', cseo_local_install_path());
     $gm_relative = $_SERVER['PHP_SELF'];
@@ -151,16 +130,7 @@ if (!defined('DIR_FS_DOCUMENT_ROOT')) {
         $gm_relative = $_SERVER['REQUEST_URI'];
     $gm_relative = gm_delete_get_parameters($gm_relative);
     $local_install_path = str_replace('/installer', '', $gm_relative);
-    // EOF GM_MOD
     $local_install_path = str_replace('index.php', '', $local_install_path);
-    $local_install_path = str_replace('install_step1.php', '', $local_install_path);
-    $local_install_path = str_replace('install_step2.php', '', $local_install_path);
-    $local_install_path = str_replace('install_step3.php', '', $local_install_path);
-    $local_install_path = str_replace('install_step4.php', '', $local_install_path);
-    $local_install_path = str_replace('install_step5.php', '', $local_install_path);
-    $local_install_path = str_replace('install_step6.php', '', $local_install_path);
-    $local_install_path = str_replace('install_step7.php', '', $local_install_path);
-    $local_install_path = str_replace('install_finished.php', '', $local_install_path);
 }
 if (!defined('DIR_FS_INC'))
     define('DIR_FS_INC', DIR_FS_CATALOG . 'inc/');
@@ -260,3 +230,17 @@ require_once('inc/xtc_draw_hidden_field_installer.inc.php');
 if (!defined('DIR_WS_ICONS'))
     define('DIR_WS_ICONS', 'images/');
 
+// $check = '../includes/configure.php';
+// if (file_exists($check) && filesize($check) > 1) {
+// include('../includes/configure.php');
+// if(COMMERCE_SEO_V22_INSTALLED =='true') {
+// $connect = mysql_connect(DB_SERVER,DB_SERVER_USERNAME,DB_SERVER_PASSWORD);
+// mysql_select_db(DB_DATABASE);
+// $res = mysql_query("SELECT * FROM admin_access");
+// if(@mysql_num_rows($res) > 0) {
+// $bn = basename($_SERVER['PHP_SELF']);
+// if(($bn !='index.php?chmod=ok&language=german') && ($bn !='index.php?chmod=ok&language=english') && ($bn !='install_step5.php') && ($bn !='install_step6.php') && ($bn !='install_step7.php'))
+// header('Location: '.HTTP_SERVER.DIR_WS_CATALOG);
+// }
+// }
+// }

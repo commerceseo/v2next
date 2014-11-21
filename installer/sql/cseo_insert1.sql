@@ -514,7 +514,7 @@ INSERT INTO configuration VALUES
 #configuration_group_id 333, Ajax Checkout
 INSERT INTO configuration VALUES
 (NULL, 'BOXLESS_CHECKOUT', 'true', 333, 1, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CHECKOUT_AJAX_STAT', 'false', 6, 2, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'CHECKOUT_AJAX_STAT', 'true', 333, 2, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_AJAX_PRODUCTS', 'false', 333, 3, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_MODULES', 'true', 333, 5, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_ADDRESS', 'true', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
@@ -1187,5 +1187,252 @@ INSERT INTO configuration VALUES (NULL, 'WRCHECKOUT', 'false', 333, 33, NULL, NO
 INSERT INTO configuration VALUES (NULL, 'MODULE_MAGNA_STATUS', 'True', 6, 1, NULL, NOW(), NULL, "xtc_cfg_select_option(array('True', 'False'),");
 INSERT INTO configuration VALUES (NULL, 'WRCHECKOUTFILE', '', 333, 34, NULL, NOW(), NULL, NULL);
 
+
+INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_PRINT_CART', 'print cart', 1);
+INSERT INTO cseo_lang_button (id, button, buttontext, language_id) VALUES('', 'IMAGE_BUTTON_PRINT_CART', 'Warenkorb drucken', 2);
+
+
+DROP TABLE IF EXISTS properties;
+CREATE TABLE IF NOT EXISTS properties (
+  properties_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  sort_order int(10) unsigned NOT NULL,
+  PRIMARY KEY (properties_id),
+  KEY properties_id (properties_id,sort_order)
+);
+
+INSERT INTO properties (properties_id, sort_order) VALUES
+(1, 1),
+(2, 2);
+
+DROP TABLE IF EXISTS properties_description;
+CREATE TABLE IF NOT EXISTS properties_description (
+  properties_description_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  properties_id int(10) unsigned NOT NULL,
+  language_id int(10) unsigned NOT NULL,
+  properties_name varchar(255) NOT NULL,
+  properties_admin_name varchar(255) NOT NULL,
+  PRIMARY KEY (properties_description_id),
+  KEY properties_id (properties_id,language_id)
+);
+
+INSERT INTO properties_description (properties_description_id, properties_id, language_id, properties_name, properties_admin_name) VALUES
+(1, 1, 2, 'Größe', ''),
+(2, 1, 1, 'Size', ''),
+(3, 2, 2, 'Farbe', ''),
+(4, 2, 1, 'Color', '');
+
+DROP TABLE IF EXISTS properties_values;
+CREATE TABLE IF NOT EXISTS properties_values (
+  properties_values_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  properties_id int(10) unsigned NOT NULL,
+  sort_order int(10) unsigned NOT NULL,
+  value_model varchar(64) NOT NULL,
+  value_price decimal(9,4) NOT NULL,
+  PRIMARY KEY (properties_values_id),
+  KEY properties_values_id (properties_values_id,properties_id,sort_order),
+  KEY properties_id (properties_id,sort_order)
+);
+
+INSERT INTO properties_values (properties_values_id, properties_id, sort_order, value_model, value_price) VALUES
+(1, 1, 1, 's', '0.0000'),
+(2, 1, 2, 'm', '0.0000'),
+(3, 1, 3, 'l', '5.0000'),
+(4, 2, 1, 'gold', '0.0000'),
+(5, 2, 2, 'red', '0.0000'),
+(6, 2, 3, 'black', '2.0000');
+
+DROP TABLE IF EXISTS properties_values_description;
+CREATE TABLE IF NOT EXISTS properties_values_description (
+  properties_values_description_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  properties_values_id int(10) unsigned NOT NULL,
+  language_id int(10) unsigned NOT NULL,
+  values_name varchar(255) NOT NULL,
+  PRIMARY KEY (properties_values_description_id),
+  UNIQUE KEY unique_description (properties_values_id,language_id),
+  KEY properties_values_description_id (properties_values_description_id,properties_values_id,language_id),
+  KEY properties_values_id (properties_values_id,language_id)
+);
+
+INSERT INTO properties_values_description (properties_values_description_id, properties_values_id, language_id, values_name) VALUES
+(1, 1, 2, 'S'),
+(2, 1, 1, 'S'),
+(3, 2, 2, 'M'),
+(4, 2, 1, 'M'),
+(5, 3, 2, 'L'),
+(6, 3, 1, 'L'),
+(7, 4, 2, 'Gold'),
+(8, 4, 1, 'Gold'),
+(9, 5, 2, 'Rot'),
+(10, 5, 1, 'Red'),
+(11, 6, 2, 'Schwarz'),
+(12, 6, 1, 'Black');
+
+
+
+DROP TABLE IF EXISTS products_properties_admin_select;
+CREATE TABLE IF NOT EXISTS products_properties_admin_select (
+  products_properties_admin_select_id int(11) NOT NULL AUTO_INCREMENT,
+  products_id int(11) NOT NULL,
+  properties_id int(11) NOT NULL,
+  properties_values_id int(11) NOT NULL,
+  PRIMARY KEY (products_properties_admin_select_id),
+  UNIQUE KEY unique_value_assignment (products_id,properties_values_id),
+  KEY products_id (products_id)
+);
+
+INSERT INTO products_properties_admin_select (products_properties_admin_select_id, products_id, properties_id, properties_values_id) VALUES
+(1, 1, 1, 1),
+(2, 1, 1, 2),
+(3, 1, 1, 3),
+(4, 1, 2, 4),
+(5, 1, 2, 5),
+(6, 1, 2, 6);
+
+DROP TABLE IF EXISTS products_properties_combis;
+CREATE TABLE IF NOT EXISTS products_properties_combis (
+  products_properties_combis_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  products_id int(10) unsigned NOT NULL,
+  sort_order int(10) unsigned NOT NULL,
+  combi_model varchar(64) NOT NULL,
+  combi_ean varchar(20) NOT NULL,
+  combi_quantity decimal(15,4) NOT NULL DEFAULT '0.0000',
+  combi_shipping_status_id int(11) NOT NULL,
+  combi_weight decimal(15,4) NOT NULL,
+  combi_price_type enum('calc','fix') NOT NULL,
+  combi_price decimal(15,4) NOT NULL,
+  combi_image varchar(255) NOT NULL,
+  products_vpe_id int(11) NOT NULL,
+  vpe_value decimal(15,4) NOT NULL,
+  PRIMARY KEY (products_properties_combis_id),
+  KEY products_properties_combis_id (products_properties_combis_id,products_id,sort_order),
+  KEY products_id (products_id,sort_order)
+);
+
+INSERT INTO products_properties_combis (products_properties_combis_id, products_id, sort_order, combi_model, combi_ean, combi_quantity, combi_shipping_status_id, combi_weight, combi_price_type, combi_price, combi_image, products_vpe_id, vpe_value) VALUES
+(1, 1, 1, 's-gold', '123456789', '100.0000', 2, '2.0000', 'calc', '0.0000', '', 0, '0.0000'),
+(2, 1, 2, 's-red', '123456789', '100.0000', 2, '2.0000', 'calc', '0.0000', '', 0, '0.0000'),
+(3, 1, 3, 's-black', '123456789', '100.0000', 2, '2.0000', 'calc', '1.6807', '', 0, '0.0000'),
+(4, 1, 4, 'm-gold', '123456789', '100.0000', 2, '2.0000', 'calc', '0.0000', '', 0, '0.0000'),
+(5, 1, 5, 'm-red', '123456789', '100.0000', 2, '2.0000', 'calc', '0.0000', '', 0, '0.0000'),
+(6, 1, 6, 'm-black', '123456789', '100.0000', 2, '2.0000', 'calc', '1.6807', '', 0, '0.0000'),
+(7, 1, 7, 'l-gold', '123456789', '100.0000', 2, '2.0000', 'calc', '4.2017', '', 0, '0.0000'),
+(8, 1, 8, 'l-red', '123456789', '100.0000', 2, '2.0000', 'calc', '4.2017', '', 0, '0.0000'),
+(9, 1, 9, 'l-black', '123456789', '100.0000', 2, '2.0000', 'calc', '5.8824', '', 0, '0.0000');
+
+DROP TABLE IF EXISTS products_properties_combis_defaults;
+CREATE TABLE IF NOT EXISTS products_properties_combis_defaults (
+  products_properties_combis_defaults_id int(11) unsigned NOT NULL AUTO_INCREMENT,
+  products_id int(10) unsigned NOT NULL,
+  combi_ean varchar(20) NOT NULL,
+  combi_quantity decimal(15,4) NOT NULL DEFAULT '0.0000',
+  combi_shipping_status_id int(11) NOT NULL,
+  combi_weight decimal(15,4) NOT NULL,
+  combi_price_type enum('calc','fix') NOT NULL,
+  combi_price decimal(15,4) NOT NULL,
+  products_vpe_id int(11) NOT NULL,
+  vpe_value decimal(15,4) NOT NULL,
+  PRIMARY KEY (products_properties_combis_defaults_id)
+);
+
+INSERT INTO products_properties_combis_defaults (products_properties_combis_defaults_id, products_id, combi_ean, combi_quantity, combi_shipping_status_id, combi_weight, combi_price_type, combi_price, products_vpe_id, vpe_value) VALUES
+(1, 1, '123456789', '100.0000', 2, '2.0000', 'calc', '0.0000', 0, '0.0000');
+
+DROP TABLE IF EXISTS products_properties_combis_values;
+CREATE TABLE IF NOT EXISTS products_properties_combis_values (
+  products_properties_combis_values_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  products_properties_combis_id int(10) unsigned NOT NULL,
+  properties_values_id int(10) unsigned DEFAULT NULL,
+  PRIMARY KEY (products_properties_combis_values_id),
+  UNIQUE KEY unique_value_assignment (products_properties_combis_id,properties_values_id),
+  KEY products_properties_combis_values_id (products_properties_combis_values_id,products_properties_combis_id,properties_values_id),
+  KEY products_properties_combis_id (products_properties_combis_id,properties_values_id),
+  KEY properties_values_id (properties_values_id,products_properties_combis_id)
+) ENGINE=MyISAM;
+
+INSERT INTO products_properties_combis_values (products_properties_combis_values_id, products_properties_combis_id, properties_values_id) VALUES
+(1, 1, 1),
+(2, 1, 4),
+(3, 2, 1),
+(4, 2, 5),
+(5, 3, 1),
+(6, 3, 6),
+(7, 4, 2),
+(8, 4, 4),
+(9, 5, 2),
+(10, 5, 5),
+(11, 6, 2),
+(12, 6, 6),
+(13, 7, 3),
+(14, 7, 4),
+(15, 8, 3),
+(16, 8, 5),
+(17, 9, 3),
+(18, 9, 6);
+
+DROP TABLE IF EXISTS products_properties_index;
+CREATE TABLE IF NOT EXISTS products_properties_index (
+  products_id int(10) NOT NULL,
+  language_id int(10) NOT NULL,
+  properties_id int(10) NOT NULL,
+  products_properties_combis_id int(10) NOT NULL DEFAULT '0',
+  properties_values_id int(10) NOT NULL DEFAULT '0',
+  properties_name varchar(255) DEFAULT NULL,
+  properties_admin_name varchar(255) NOT NULL,
+  properties_sort_order int(10) NOT NULL,
+  values_name varchar(255) DEFAULT NULL,
+  values_price decimal(9,4) NOT NULL,
+  value_sort_order int(10) DEFAULT NULL,
+  PRIMARY KEY (products_properties_combis_id,language_id,properties_values_id),
+  KEY products_id (products_id,language_id,properties_id),
+  KEY products_id_2 (products_id,language_id,properties_values_id,products_properties_combis_id)
+);
+
+INSERT INTO products_properties_index (products_id, language_id, properties_id, products_properties_combis_id, properties_values_id, properties_name, properties_admin_name, properties_sort_order, values_name, values_price, value_sort_order) VALUES
+(1, 1, 1, 1, 1, 'Size', '', 1, 'S', '0.0000', 1),
+(1, 1, 1, 2, 1, 'Size', '', 1, 'S', '0.0000', 1),
+(1, 1, 1, 3, 1, 'Size', '', 1, 'S', '0.0000', 1),
+(1, 1, 1, 4, 2, 'Size', '', 1, 'M', '0.0000', 2),
+(1, 1, 1, 5, 2, 'Size', '', 1, 'M', '0.0000', 2),
+(1, 1, 1, 6, 2, 'Size', '', 1, 'M', '0.0000', 2),
+(1, 1, 1, 7, 3, 'Size', '', 1, 'L', '5.0000', 3),
+(1, 1, 1, 8, 3, 'Size', '', 1, 'L', '5.0000', 3),
+(1, 1, 1, 9, 3, 'Size', '', 1, 'L', '5.0000', 3),
+(1, 1, 2, 1, 4, 'Color', '', 2, 'Gold', '0.0000', 1),
+(1, 1, 2, 4, 4, 'Color', '', 2, 'Gold', '0.0000', 1),
+(1, 1, 2, 7, 4, 'Color', '', 2, 'Gold', '0.0000', 1),
+(1, 1, 2, 2, 5, 'Color', '', 2, 'Red', '0.0000', 2),
+(1, 1, 2, 5, 5, 'Color', '', 2, 'Red', '0.0000', 2),
+(1, 1, 2, 8, 5, 'Color', '', 2, 'Red', '0.0000', 2),
+(1, 1, 2, 3, 6, 'Color', '', 2, 'Black', '2.0000', 3),
+(1, 1, 2, 6, 6, 'Color', '', 2, 'Black', '2.0000', 3),
+(1, 1, 2, 9, 6, 'Color', '', 2, 'Black', '2.0000', 3),
+(1, 2, 1, 1, 1, 'Größe', '', 1, 'S', '0.0000', 1),
+(1, 2, 1, 2, 1, 'Größe', '', 1, 'S', '0.0000', 1),
+(1, 2, 1, 3, 1, 'Größe', '', 1, 'S', '0.0000', 1),
+(1, 2, 1, 4, 2, 'Größe', '', 1, 'M', '0.0000', 2),
+(1, 2, 1, 5, 2, 'Größe', '', 1, 'M', '0.0000', 2),
+(1, 2, 1, 6, 2, 'Größe', '', 1, 'M', '0.0000', 2),
+(1, 2, 1, 7, 3, 'Größe', '', 1, 'L', '5.0000', 3),
+(1, 2, 1, 8, 3, 'Größe', '', 1, 'L', '5.0000', 3),
+(1, 2, 1, 9, 3, 'Größe', '', 1, 'L', '5.0000', 3),
+(1, 2, 2, 1, 4, 'Farbe', '', 2, 'Gold', '0.0000', 1),
+(1, 2, 2, 4, 4, 'Farbe', '', 2, 'Gold', '0.0000', 1),
+(1, 2, 2, 7, 4, 'Farbe', '', 2, 'Gold', '0.0000', 1),
+(1, 2, 2, 2, 5, 'Farbe', '', 2, 'Rot', '0.0000', 2),
+(1, 2, 2, 5, 5, 'Farbe', '', 2, 'Rot', '0.0000', 2),
+(1, 2, 2, 8, 5, 'Farbe', '', 2, 'Rot', '0.0000', 2),
+(1, 2, 2, 3, 6, 'Farbe', '', 2, 'Schwarz', '2.0000', 3),
+(1, 2, 2, 6, 6, 'Farbe', '', 2, 'Schwarz', '2.0000', 3),
+(1, 2, 2, 9, 6, 'Farbe', '', 2, 'Schwarz', '2.0000', 3);
+
+DROP TABLE IF EXISTS orders_products_quantity_units;
+CREATE TABLE orders_products_quantity_units (
+  orders_products_id int(11) NOT NULL,
+  quantity_unit_id int(11) NOT NULL,
+  unit_name varchar(45) NOT NULL,
+  PRIMARY KEY (orders_products_id)
+);
+
+
 #database Version
-INSERT INTO database_version VALUES ('commerce:SEO v2next 2.5.10 CE');
+INSERT INTO database_version VALUES ('commerce:SEO v2next 2.5.11 CE');

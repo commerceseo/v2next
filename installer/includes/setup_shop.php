@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: setup_shop.php 791 2014-01-02 11:54:43Z akausch $
+ * 	$Id: setup_shop.php 991 2014-04-24 07:38:43Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -114,10 +114,10 @@ if (isset($_POST['action']) && ($_POST['action'] == 'setup_shop')) {
         xtc_db_query("INSERT INTO customers_status (customers_status_id, language_id, customers_status_name, customers_status_public, customers_status_image, customers_status_discount, customers_status_ot_discount_flag, customers_status_ot_discount, customers_status_graduated_prices, customers_status_show_price, customers_status_show_price_tax, customers_status_add_tax_ot) VALUES (3, 2, 'Händler', 0, 'merchant_status.png', '0.00', '0', '0.00', '1', 1, 0, 1)");
 
         // create Group prices (Admin wont get own status!)
-        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_ (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity));");
-        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_0 (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity));");
-        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_1 (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity));");
-        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_2 (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity));");
-        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_3 (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity));");
+        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_ (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity), KEY products_id_2 (products_id));");
+        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_0 (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity), KEY products_id_2 (products_id));");
+        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_1 (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity), KEY products_id_2 (products_id));");
+        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_2 (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity), KEY products_id_2 (products_id));");
+        xtc_db_query("CREATE TABLE personal_offers_by_customers_status_3 (price_id int(11) NOT NULL auto_increment, products_id int(11) NOT NULL, quantity int(11) default NULL, personal_offer decimal(15,4) default NULL, PRIMARY KEY  (price_id), KEY products_id (products_id,quantity), KEY products_id_2 (products_id));");
     }
 }

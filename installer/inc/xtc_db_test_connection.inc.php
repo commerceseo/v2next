@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: xtc_db_test_connection.inc.php 420 2013-06-19 18:04:39Z akausch $
+ * 	$Id: xtc_db_test_connection.inc.php 987 2014-04-22 10:40:42Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: create_account.php 839 2014-02-01 17:04:02Z akausch $
+ * 	$Id: create_account.php 1268 2014-11-19 07:00:44Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -21,6 +21,7 @@ require_once(DIR_FS_INC . 'xtc_redirect.inc.php');
 require_once(DIR_FS_INC . 'xtc_href_link.inc.php');
 require_once(DIR_FS_INC . 'cseo_form.inc.php');
 require_once(DIR_FS_INC . 'xtc_get_country_list.inc.php');
+require_once(DIR_FS_INC . 'strlen_wrapper.inc.php');
 
 // connect do database
 xtc_db_connect() or die('Unable to connect to database server!');
@@ -108,26 +109,33 @@ if (isset($_POST['action']) && ($_POST['action'] == 'create_account')) {
     }
 
     if (strlen($telephone) < ENTRY_TELEPHONE_MIN_LENGTH) {
-        $error = true;
+        $error_code = "Telefon zu kurz";
+		$error = true;
     }
 
 
     if (strlen($password) < ENTRY_PASSWORD_MIN_LENGTH) {
-        $error = true;
+        $error_code = "Passwort zu kurz";
+		$error = true;
     } elseif ($password != $confirmation) {
+		$error_code = "Passwort falsch";
         $error = true;
     }
 
     if (strlen($store_name) < '3') {
+		$error_code = "Store Name zu kurz";
         $error = true;
     }
     if (strlen($company) < '2') {
+		$error_code = "Company Name zu kurz";
         $error = true;
     }
 
     if (strlen($email_from) < ENTRY_EMAIL_ADDRESS_MIN_LENGTH) {
+		$error_code = "E-Mail From zu kurz";
         $error = true;
     } elseif (xtc_validate_email($email_from) == false) {
+		$error_code = "E-Mail From falsch";
         $error = true;
     }
     if (($zone_setup != 'yes') && ($zone_setup != 'no')) {
@@ -213,6 +221,11 @@ if (isset($_POST['action']) && ($_POST['action'] == 'create_account')) {
         xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($email_from) . "' WHERE configuration_key = 'EMAIL_BILLING_ADDRESS'");
         xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($email_from) . "' WHERE configuration_key = 'CONTACT_US_EMAIL_ADDRESS'");
         xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($email_from) . "' WHERE configuration_key = 'EMAIL_SUPPORT_ADDRESS'");
+        xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($firstname) . "' WHERE configuration_key = 'TRADER_FIRSTNAME'");
+        xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($lastname) . "' WHERE configuration_key = 'TRADER_NAME'");
+        xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($street_address) . "' WHERE configuration_key = 'TRADER_STREET'");
+        xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($postcode) . "' WHERE configuration_key = 'TRADER_ZIPCODE'");
+        xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($city) . "' WHERE configuration_key = 'TRADER_LOCATION'");
         xtc_db_query("UPDATE " . TABLE_CONFIGURATION . " SET configuration_value='" . ($company . '\n' . $firstname . ' ' . $lastname . '\n' . $street_address . '\n' . $postcode . ' ' . $city) . "' WHERE configuration_key = 'STORE_NAME_ADDRESS'");
         xtc_db_query("UPDATE " . TABLE_COUNTRIES . " SET status='0' WHERE countries_id != '" . ($country) . " '");
 
@@ -345,8 +358,6 @@ if (isset($_POST['action']) && ($_POST['action'] == 'create_account')) {
                     break;
             }
 
-
-
             if ($country == '204' || $country == '122') {
                 // Steuersätze / tax_rates
                 xtc_db_query("INSERT INTO tax_rates (tax_rates_id, tax_zone_id, tax_class_id, tax_priority, tax_rate, tax_description, last_modified, date_added) VALUES (1, 5, 1, 1, '0.0000', '0% MwSt.', '', '')");
@@ -385,6 +396,7 @@ if (isset($_POST['action']) && ($_POST['action'] == 'create_account')) {
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (14, 14, 0, 5, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (21, 21, 0, 5, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (33, 33, 0, 5, NULL, now())");
+			xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (53, 53, 0, 5, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (55, 55, 0, 5, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (56, 56, 0, 5, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (57, 57, 0, 5, NULL, now())");
@@ -460,7 +472,6 @@ if (isset($_POST['action']) && ($_POST['action'] == 'create_account')) {
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (50, 50, 0, 6, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (51, 51, 0, 6, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (52, 52, 0, 6, NULL, now())");
-            xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (53, 53, 0, 6, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (54, 54, 0, 6, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (58, 58, 0, 6, NULL, now())");
             xtc_db_query("INSERT INTO zones_to_geo_zones VALUES (59, 59, 0, 6, NULL, now())");
@@ -638,7 +649,8 @@ if (isset($_POST['action']) && ($_POST['action'] == 'create_account')) {
             }
         }
     } else {
-		echo 'Error';
+		echo 'Error: ';
+		echo $error_code;
 		xtc_redirect('index.php');
 	}
 }

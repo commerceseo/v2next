@@ -338,11 +338,7 @@ if ($_SESSION['cart']->count_contents() > 0) {
 //Bezahlsperre END
         $smarty->assign('BUTTON_RELOAD', xtc_image_submit('button_update_cart.gif', IMAGE_BUTTON_UPDATE_CART));
         $smarty->assign('BUTTON_BACK', '<a href="javascript:history.back();">' . xtc_image_button('button_back.gif', IMAGE_BUTTON_BACK) . '</a>');
-        if (CHECKOUT_AJAX_STAT == 'true') {
-            $file = FILENAME_CHECKOUT;
-        } else {
-            $file = FILENAME_CHECKOUT_SHIPPING;
-        }
+        $file = FILENAME_CHECKOUT_SHIPPING;
         $smarty->assign('BUTTON_CHECKOUT', '<a title="' . IMAGE_BUTTON_CHECKOUT . '" href="' . xtc_href_link($file, '', 'SSL') . '">' . cseo_wk_image_button('button_checkout.gif', IMAGE_BUTTON_CHECKOUT) . '</a>');
     }
 } else {

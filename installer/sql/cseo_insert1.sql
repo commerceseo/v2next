@@ -514,8 +514,8 @@ INSERT INTO configuration VALUES
 #configuration_group_id 333, Ajax Checkout
 INSERT INTO configuration VALUES
 (NULL, 'BOXLESS_CHECKOUT', 'true', 333, 1, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CHECKOUT_AJAX_STAT', 'true', 333, 2, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CHECKOUT_AJAX_PRODUCTS', 'false', 333, 3, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'CHECKOUT_AJAX_STAT', 'false', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'CHECKOUT_AJAX_PRODUCTS', 'false', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_MODULES', 'true', 333, 5, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_ADDRESS', 'true', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_PAYMENT_MODULES', 'true', 333, 7, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),

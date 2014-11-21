@@ -1,6 +1,6 @@
 <?php
 /**
- * @version SOFORT Gateway 5.2.0 - $Date: 2013-06-05 15:01:19 +0200 (Mi, 05 Jun 2013) $
+ * @version SOFORT Gateway 5.2.0 - $Date: 2012-09-06 13:49:09 +0200 (Thu, 06 Sep 2012) $
  * @author SOFORT AG (integration@sofort.com)
  * @link http://www.sofort.com/
  *
@@ -9,7 +9,7 @@
  * Released under the GNU General Public License (Version 2)
  * [http://www.gnu.org/licenses/gpl-2.0.html]
  *
- * $Id: testAuth_2.php 420 2013-06-19 18:04:39Z akausch $
+ * $Id: testAuth.php 5326 2012-09-06 11:49:09Z boehm $
  */
 chdir('../../../../');
 require_once('includes/application_top.php');
@@ -31,11 +31,11 @@ if ($_SESSION['customers_status']['customers_status_id'] == '0') {
 		xtc_db_query("UPDATE ".TABLE_CONFIGURATION." SET configuration_value = '".MODULE_PAYMENT_SOFORT_KEYTEST_ERROR_DESC."' WHERE configuration_key = 'MODULE_PAYMENT_SOFORT_MULTIPAY_AUTH'");
 		xtc_db_query("UPDATE ".TABLE_CONFIGURATION." SET configuration_value = '' WHERE configuration_key = 'MODULE_PAYMENT_SOFORT_MULTIPAY_APIKEY'");
 		ob_end_clean();
-		echo "f".MODULE_PAYMENT_SOFORT_KEYTEST_ERROR;
+		echo "f".HelperFunctions::convertEncoding(MODULE_PAYMENT_SOFORT_KEYTEST_ERROR, 3);
 	} else {
 		xtc_db_query("UPDATE ".TABLE_CONFIGURATION." SET configuration_value = '".MODULE_PAYMENT_SOFORT_KEYTEST_SUCCESS_DESC." ".date("d.m.Y")."' WHERE configuration_key = 'MODULE_PAYMENT_SOFORT_MULTIPAY_AUTH'");
 		xtc_db_query("UPDATE ".TABLE_CONFIGURATION." SET configuration_value = '".HelperFunctions::escapeSql($configKey)."' WHERE configuration_key = 'MODULE_PAYMENT_SOFORT_MULTIPAY_APIKEY'");
 		ob_end_clean();
-		echo "t".MODULE_PAYMENT_SOFORT_KEYTEST_SUCCESS;
+		echo "t".HelperFunctions::convertEncoding(MODULE_PAYMENT_SOFORT_KEYTEST_SUCCESS, 3);
 	}
 }

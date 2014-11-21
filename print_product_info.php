@@ -103,13 +103,19 @@ if ($_SESSION['customers_status']['customers_status_public'] == 1 && $_SESSION['
 if ($product_info['products_vpe_status'] == 1 && $product_info['products_vpe_value'] != 0.0 && $products_price['plain'] > 0)
     $smarty->assign('PRODUCTS_VPE', $xtPrice->xtcFormat($products_price['plain'] * (1 / $product_info['products_vpe_value']), true) . TXT_PER . xtc_get_vpe_name($product_info['products_vpe']));
 $smarty->assign('module_content', $module_content);
-
+$canonical_url = xtc_href_link(FILENAME_PRODUCT_INFO, 'products_id=' . $product_info['products_id'] . '&language=' . $_SESSION['language_code'] . (SEARCH_ENGINE_FRIENDLY_URLS == 'true' ? '&cPath=' . xtc_get_product_path($product_info['products_id'], $product_info['products_name']) : ''));
 $header = '<!DOCTYPE html>
 <html lang ="' . HTML_PARAMS . '">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=' . $_SESSION['language_charset'] . '" />
+<meta name="robots" content="noindex,follow,noodp" />
 ';
 
+if (isset($canonical_url)) {
+    $canonical_url = preg_replace('/cSEOid\=[a-z|0-9]{32}/', '', $canonical_url);
+    $canonical_url = (substr($canonical_url, -1) == '?' ? substr($canonical_url, 0, -1) : $canonical_url);
+    $header .= '<link rel="canonical" href="' . $canonical_url . '">';
+}
 $smarty->assign('HEADER', $header);
 
 $mo_images = xtc_get_products_mo_images($product_info['products_id']);

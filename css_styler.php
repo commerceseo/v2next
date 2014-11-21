@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: css_styler.php 480 2013-07-14 10:40:27Z akausch $
+ * 	$Id: css_styler.php 1244 2014-10-21 14:10:31Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -20,10 +20,10 @@ function getHex($value) {
 
 if (CSS_BUTTON_ACTIVE == 'true' && CSS_BUTTON_ACTIVE != 'css') {
     $css = 'input.css_img_button, a span.css_img_button {';
-    if ((CSS_BUTTON_BACKGROUND_1 != '' || CSS_BUTTON_BACKGROUND_2 != '') && CSS_BUTTON_BACKGROUND_PIC == '') {
-        $background = 'background: linear-gradient(' . getHex(CSS_BUTTON_BACKGROUND_1) . ', ' . getHex(CSS_BUTTON_BACKGROUND_2) . ') repeat scroll 0 0 transparent;';
-    } elseif (CSS_BUTTON_BACKGROUND_PIC != '' && CSS_BUTTON_BACKGROUND_PIC != '-' && defined(CSS_BUTTON_BACKGROUND_PIC)) {
+    if (CSS_BUTTON_BACKGROUND_PIC != '' && CSS_BUTTON_BACKGROUND_PIC != '-' && defined(CSS_BUTTON_BACKGROUND_PIC)) {
         $background = 'background: url(images/css_button_bg/' . CSS_BUTTON_BACKGROUND_PIC . ') repeat-x 0 100%;';
+    } elseif (CSS_BUTTON_BACKGROUND_1 != '' || CSS_BUTTON_BACKGROUND_2 != '') {
+        $background = 'background: linear-gradient(' . getHex(CSS_BUTTON_BACKGROUND_1) . ', ' . getHex(CSS_BUTTON_BACKGROUND_2) . ') repeat scroll 0 0 transparent;';
     }
     $css .= 'background:' . getHex(CSS_BUTTON_BACKGROUND) . ';' . $background;
 
@@ -61,10 +61,10 @@ if (CSS_BUTTON_ACTIVE == 'true' && CSS_BUTTON_ACTIVE != 'css') {
     $css .= 'input.css_img_button{height:2.4em; padding: 1px 4px;}';
     $css .= 'a:hover .css_img_button, input.css_img_button:hover {';
 
-    if ((CSS_BUTTON_HOVER_BACKGROUND_1 != '' || CSS_BUTTON_HOVER_BACKGROUND_2 != '') && CSS_BUTTON_BACKGROUND_PIC_HOVER == '') {
-        $background_hover = 'background: linear-gradient(' . getHex(CSS_BUTTON_HOVER_BACKGROUND_1) . ', ' . getHex(CSS_BUTTON_HOVER_BACKGROUND_2) . ') repeat scroll 0 0 transparent;';
-    } elseif (CSS_BUTTON_BACKGROUND_PIC_HOVER != '' && CSS_BUTTON_BACKGROUND_PIC_HOVER != '-' && defined(CSS_BUTTON_BACKGROUND_PIC_HOVER)) {
+    if (CSS_BUTTON_BACKGROUND_PIC_HOVER != '' && CSS_BUTTON_BACKGROUND_PIC_HOVER != '-' && defined(CSS_BUTTON_BACKGROUND_PIC_HOVER)) {
         $background_hover = 'background: url(images/css_button_bg/' . CSS_BUTTON_BACKGROUND_PIC_HOVER . ') repeat-x 0 100%;';
+    } elseif (CSS_BUTTON_HOVER_BACKGROUND_1 != '' || CSS_BUTTON_HOVER_BACKGROUND_2 != '') {
+        $background_hover = 'background: linear-gradient(' . getHex(CSS_BUTTON_HOVER_BACKGROUND_1) . ', ' . getHex(CSS_BUTTON_HOVER_BACKGROUND_2) . ') repeat scroll 0 0 transparent;';
     }
     $css .= 'background:' . getHex(CSS_BUTTON_BACKGROUND_HOVER) . ';' . $background_hover;
     if (CSS_BUTTON_BORDER_COLOR_HOVER != '')
@@ -79,10 +79,10 @@ if (CSS_BUTTON_ACTIVE == 'true' && CSS_BUTTON_ACTIVE != 'css') {
     //Warenkorb button
 
     $css .= 'input.css_wk_img_button, a span.css_wk_img_button {';
-    if ((WK_CSS_BUTTON_BACKGROUND_1 != '' || WK_CSS_BUTTON_BACKGROUND_2 != '') && WK_CSS_BUTTON_BACKGROUND_PIC == '') {
-        $wk_background = 'background: linear-gradient(' . getHex(WK_CSS_BUTTON_BACKGROUND_1) . ', ' . getHex(WK_CSS_BUTTON_BACKGROUND_2) . ') repeat scroll 0 0 transparent;';
-    } elseif (WK_CSS_BUTTON_BACKGROUND_PIC != '' && WK_CSS_BUTTON_BACKGROUND_PIC != '-' && defined(WK_CSS_BUTTON_BACKGROUND_PIC)) {
+    if (WK_CSS_BUTTON_BACKGROUND_PIC != '' && WK_CSS_BUTTON_BACKGROUND_PIC != '-' && defined(WK_CSS_BUTTON_BACKGROUND_PIC)) {
         $wk_background = 'background: url(images/css_button_bg/' . WK_CSS_BUTTON_BACKGROUND_PIC . ') repeat-x 0 100%;';
+    } elseif (WK_CSS_BUTTON_BACKGROUND_1 != '' || WK_CSS_BUTTON_BACKGROUND_2 != '') {
+        $wk_background = 'background: linear-gradient(' . getHex(WK_CSS_BUTTON_BACKGROUND_1) . ', ' . getHex(WK_CSS_BUTTON_BACKGROUND_2) . ') repeat scroll 0 0 transparent;';
     }
     $css .= 'background:' . getHex(WK_CSS_BUTTON_BACKGROUND) . ';' . $wk_background;
 
@@ -122,10 +122,10 @@ if (CSS_BUTTON_ACTIVE == 'true' && CSS_BUTTON_ACTIVE != 'css') {
     $css .= 'input.css_wk_img_button{height:2.3em;padding: 1px 4px;}';
     $css .= 'a:hover .css_wk_img_button, input.css_wk_img_button:hover {';
 
-    if ((WK_CSS_BUTTON_HOVER_BACKGROUND_1 != '' || WK_CSS_BUTTON_HOVER_BACKGROUND_2 != '') && WK_CSS_BUTTON_HOVER_BACKGROUND_PIC == '') {
-        $wk_background_hover = 'background: linear-gradient(' . getHex(WK_CSS_BUTTON_HOVER_BACKGROUND_1) . ', ' . getHex(WK_CSS_BUTTON_HOVER_BACKGROUND_2) . ') repeat scroll 0 0 transparent;';
-    } elseif (WK_CSS_BUTTON_HOVER_BACKGROUND_PIC != '' && WK_CSS_BUTTON_HOVER_BACKGROUND_PIC != '-' && defined(WK_CSS_BUTTON_HOVER_BACKGROUND_PIC)) {
+    if (WK_CSS_BUTTON_HOVER_BACKGROUND_PIC != '' && WK_CSS_BUTTON_HOVER_BACKGROUND_PIC != '-' && defined(WK_CSS_BUTTON_HOVER_BACKGROUND_PIC)) {
         $wk_background_hover = 'background: url(images/css_button_bg/' . WK_CSS_BUTTON_HOVER_BACKGROUND_PIC . ') repeat-x 0 100%;';
+    } elseif ((WK_CSS_BUTTON_HOVER_BACKGROUND_1 != '' || WK_CSS_BUTTON_HOVER_BACKGROUND_2 != '')) {
+        $wk_background_hover = 'background: linear-gradient(' . getHex(WK_CSS_BUTTON_HOVER_BACKGROUND_1) . ', ' . getHex(WK_CSS_BUTTON_HOVER_BACKGROUND_2) . ') repeat scroll 0 0 transparent;';
     }
 
     $css .= 'background:' . getHex(WK_CSS_BUTTON_BACKGROUND_HOVER) . ';' . $wk_background_hover;

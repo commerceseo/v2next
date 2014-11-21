@@ -75,6 +75,7 @@ if (isset($_SESSION['customer_id']) && isset($_SESSION['customers_status']['cust
 		}
 
 	}
+$request_type = (getenv('HTTPS') == '1' || getenv('HTTPS') == 'on') ? 'SSL' : 'NONSSL';
 $box_admin = "<link rel=\"stylesheet\" href=\"".(($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG."templates/admin/admin.css\" type=\"text/css\" media=\"projection, screen\">";
 $box_admin .= '<div class="head_admin">';
 $box_admin .= '<div class="head_admin_left">
@@ -90,22 +91,18 @@ $box_admin .= '<div class="head_admin_left">
 				</div>
 			';
 $box_admin .= '<div class="head_admin_center">
-					<ul>
-					<li>'.ADMIN_CUSTOMERS . ' ' . $customers['count'].'</li>
-					<li>'.ADMIN_PRODUCTS . ' ' . $products['count'].'</li>
-					<li>'.ADMIN_REVIEWS . ' ' . $reviews['count'].'</li>
-					<li>'.ADMIN_TITLE_STATISTICS . ' ' . $online['count'].'</li>
-					</ul>
+				<div>'.ADMIN_CUSTOMERS . ' ' . $customers['count'].'</div>
+				<div>'.ADMIN_PRODUCTS . ' ' . $products['count'].'</div>
+				<div>'.ADMIN_REVIEWS . ' ' . $reviews['count'].'</div>
+				<div>'.ADMIN_TITLE_STATISTICS . ' ' . $online['count'].'</div>
 				</div>
 			';
 $box_admin .= '<div class="head_admin_right">
-					<ul>
-						<li>'.$admin_image.'</li>
-						<li>'.$admin_link.'</li>
-						<li>'.$admin_attributes.'</li>
-						<li>'.$admin_cross_selling.'</li>
-						<li>'.$admin_category.'</li>
-					</ul>
+					<div>'.$admin_image.'</div>
+					<div>'.$admin_link.'</div>
+					<div>'.$admin_attributes.'</div>
+					<div>'.$admin_cross_selling.'</div>
+					<div>'.$admin_category.'</div>
 				</div>
 			';
 $box_admin .= '</div>';	

@@ -17,7 +17,7 @@ $box_smarty = new smarty;
 $box_content = '';
 $box_smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
 $box_smarty->assign('language', $_SESSION['language']);
-if (!CacheCheck()) {
+if (!CacheCheck() && !FORCE_CACHE) {
     $cache = false;
     $box_smarty->caching = false;
 } else {
@@ -25,13 +25,7 @@ if (!CacheCheck()) {
     $box_smarty->caching = true;
     $box_smarty->cache_lifetime = CACHE_LIFETIME;
     $box_smarty->cache_modified_check = CACHE_CHECK;
-    $cache_id = $_SESSION['language'] . '_StatID-' . $_SESSION['customers_status']['customers_status_id'];
-    if (!empty($GLOBALS['cPath']))
-        $cache_id .= '_cPath-' . $GLOBALS['cPath'];
-    elseif (!empty($_GET['coID']))
-        $cache_id .= '_coID-' . $_GET['coID'];
-    else
-        $cache_id .= '_Script-' . basename($_SERVER[SCRIPT_NAME]);
+    $cache_id = $_SESSION['language'] . $_SESSION['customers_status']['customers_status_id'] . $cPath . 'cat_nav';
 }
 
 
@@ -87,14 +81,13 @@ function countProductsInCat($category_id) {
 			SELECT count(*) as total 
 			FROM 
 				" . TABLE_PRODUCTS . " AS p
-			INNER JOIN
-				" . TABLE_PRODUCTS_TO_CATEGORIES . " AS p2c (p.products_id = p2c.products_id AND p2c.categories_id = '" . $category_id . "')
-			WHERE 	 
+			JOIN
+				" . TABLE_PRODUCTS_TO_CATEGORIES . " AS p2c ON (p.products_id = p2c.products_id AND p2c.categories_id = '" . $category_id . "')
+			WHERE 
+				p.products_status = '1'
 				" . $prod_group_check . "
-				" . $fsk_lock . " 
-			AND
-				p.products_status = '1' 
-			;"));
+				" . $fsk_lock . ";"));
+				
     $products_count += $products['total'];
 
     if (GROUP_CHECK == 'true')
@@ -366,7 +359,7 @@ if (!$box_smarty->isCached(CURRENT_TEMPLATE . '/boxes/box_cat_nav.html', $cache_
         // ---------------------------------------------------------------------------
         //	Datenbank ...
         // ---------------------------------------------------------------------------
-        $categories_query = xtc_db_query(" 
+        $categories_query = xtDBquery(" 
 					SELECT	c.categories_id,
 							cd.categories_name, 
 							cd.categories_heading_title, 

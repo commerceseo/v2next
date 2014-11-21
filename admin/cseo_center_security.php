@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
-* 	$Id: cseo_center_security.php 995 2014-04-29 17:59:27Z akausch $
+* 	$Id: cseo_center_security.php 1185 2014-09-09 18:28:57Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -44,7 +44,7 @@ require(DIR_WS_INCLUDES . 'header.php');
 		<td colspan="3">
 			<table class="table_pageHeading" border="0" width="100%" cellspacing="0" cellpadding="0">
 				<tr>
-					<td class="pageHeading">Security Center 1.1</td>
+					<td class="pageHeading">Security Center 1.2 Beta</td>
 				</tr>
 			</table>
 			<?php echo CSEO_SECURITY_HINWEIS; ?>
@@ -61,12 +61,14 @@ require(DIR_WS_INCLUDES . 'header.php');
 					<li><a href="#setting">Setting</a></li>
 				</ul>
 				<div id="overview">
-				
-				
-					<table class="table_pageHeading" border="0" width="100%" cellspacing="0" cellpadding="0">
+					<div class="row">
+						<h1>
+							Overview
+						</h1>
+					<table class="table table-bordered table-striped">
 						<tr>
-							<th class="pageHeading"><?php echo HEADING_SUM_NAME; ?></th>
-							<th class="pageHeading"><?php echo HEADING_SUM_COUNT; ?></th>
+							<th><?php echo HEADING_SUM_NAME; ?></th>
+							<th><?php echo HEADING_SUM_COUNT; ?></th>
 						</tr>
 						
 						
@@ -78,8 +80,8 @@ require(DIR_WS_INCLUDES . 'header.php');
 						$faild_login_counter = '<b style="color:red">'.$faild_login_counter.'<b>';
 					}
 					echo '<tr>';
-					echo '<td class="dataTableContent">Faild Login Counter</td>';
-					echo '<td class="dataTableContent">'.$faild_login_counter.'</td>';
+					echo '<td>Faild Login Counter</td>';
+					echo '<td>'.$faild_login_counter.'</td>';
 					echo '</tr>';
 				
 				?>		
@@ -91,8 +93,8 @@ require(DIR_WS_INCLUDES . 'header.php');
 						$intrusions_counter = '<b style="color:red">'.$intrusions_counter.'<b>';
 					}
 					echo '<tr>';
-					echo '<td class="dataTableContent">Intrusions Counter</td>';
-					echo '<td class="dataTableContent">'.$intrusions_counter.'</td>';
+					echo '<td>Intrusions Counter</td>';
+					echo '<td>'.$intrusions_counter.'</td>';
 					echo '</tr>';
 				
 				?>	
@@ -103,8 +105,8 @@ require(DIR_WS_INCLUDES . 'header.php');
 						$register_globals = '<b style="color:green">Off</b>';
 					}
 					echo '<tr>';
-					echo '<td class="dataTableContent">Register Globals</td>';
-					echo '<td class="dataTableContent">'.$register_globals.'</td>';
+					echo '<td>Register Globals</td>';
+					echo '<td>'.$register_globals.'</td>';
 					echo '</tr>';
 				?>	
 				<?php 
@@ -114,8 +116,8 @@ require(DIR_WS_INCLUDES . 'header.php');
 						$safe_mode = '<b style="color:green">Off</b>';
 					}
 					echo '<tr>';
-					echo '<td class="dataTableContent">Safe Mode</td>';
-					echo '<td class="dataTableContent">'.$safe_mode.'</td>';
+					echo '<td>Safe Mode</td>';
+					echo '<td>'.$safe_mode.'</td>';
 					echo '</tr>';
 				?>
 				
@@ -123,134 +125,142 @@ require(DIR_WS_INCLUDES . 'header.php');
 				
 				
 				</div>
+				</div>
 				<div id="logs">
-					Logs:
-					<?php $logging_table_query = xtc_db_query("SELECT * FROM intrusions");  ?>
-					<table class="table_pageHeading" border="0" width="100%" cellspacing="0" cellpadding="0">
-						<tr>
-							<th class="pageHeading"><?php echo HEADING_CLIENT_IP; ?></th>
-							<th class="pageHeading"><?php echo HEADING_IP; ?></th>
-							<th class="pageHeading"><?php echo HEADING_ORIGIN; ?></th>
-							<th class="pageHeading"><?php echo HEADING_VALUE; ?></th>
-							<th class="pageHeading"><?php echo HEADING_PAGE; ?></th>
-							<th class="pageHeading"><?php echo HEADING_IMPACT; ?></th>
-							<th class="pageHeading"><?php echo HEADING_DATE; ?></th>
-						</tr>
+					<div class="row">
+						<h1>
+							Logs
+						</h1>
+						<?php $logging_table_query = xtc_db_query("SELECT * FROM intrusions");  ?>
+						<table class="table table-bordered table-striped">
+							<tr>
+								<th><?php echo HEADING_CLIENT_IP; ?></th>
+								<th><?php echo HEADING_IP; ?></th>
+								<th><?php echo HEADING_ORIGIN; ?></th>
+								<th><?php echo HEADING_VALUE; ?></th>
+								<th><?php echo HEADING_PAGE; ?></th>
+								<th><?php echo HEADING_IMPACT; ?></th>
+								<th><?php echo HEADING_DATE; ?></th>
+							</tr>
 
-						<?php
-						echo xtc_draw_form('sqllog', 'cseo_center_security.php', 'action=cleansql', 'post', '');
-						if (xtc_db_num_rows($logging_table_query) > 0) {
-						$rows=1;
-							while ($logging_table = xtc_db_fetch_array($logging_table_query)) {
-								if ($rows % 2 == 0) {
-									$f = 'dataTableRow';
-								} else {
-									$f = '';
+							<?php
+							echo xtc_draw_form('sqllog', 'cseo_center_security.php', 'action=cleansql', 'post', '');
+							if (xtc_db_num_rows($logging_table_query) > 0) {
+							$rows=1;
+								while ($logging_table = xtc_db_fetch_array($logging_table_query)) {
+									echo '<tr>';
+									echo '<td>'.htmlentities_wrapper($logging_table['ip']).'</td>';
+									echo '<td>'.htmlentities_wrapper($logging_table['ip2']).'</td>';
+									echo '<td>'.htmlentities_wrapper($logging_table['name']).'</td>';
+									echo '<td>'.htmlentities_wrapper($logging_table['badvalue']).'</td>';
+									echo '<td>'.htmlentities_wrapper($logging_table['page']).'</td>';
+									echo '<td>'.htmlentities_wrapper($logging_table['impact']).'</td>';
+									echo '<td>'.htmlentities_wrapper($logging_table['created']).'</td>';
+									echo '</tr>';
+									$rows++;
 								}
-								echo '<tr class="'.$f.'">';
-								echo '<td class="dataTableContent">'.htmlentities($logging_table['ip']).'</td>';
-								echo '<td class="dataTableContent">'.htmlentities($logging_table['ip2']).'</td>';
-								echo '<td class="dataTableContent">'.htmlentities($logging_table['name']).'</td>';
-								echo '<td class="dataTableContent">'.htmlentities($logging_table['badvalue']).'</td>';
-								echo '<td class="dataTableContent">'.htmlentities($logging_table['page']).'</td>';
-								echo '<td class="dataTableContent">'.htmlentities($logging_table['impact']).'</td>';
-								echo '<td class="dataTableContent">'.htmlentities($logging_table['created']).'</td>';
-								echo '</tr>';
-								$rows++;
 							}
-						}
-						?>
-					</table>
-					<table class="table_pageHeading" border="0" width="100%" cellspacing="0" cellpadding="0">
-						<tr><td class="dataTableContent"><input class="button" type="submit" name ="truncateinjetion" value="Injektion Tabelle leeren"></td></tr>
-					</table>
-					</form>
+							?>
+						</table>
+						<div class="col-xs-12">
+							<input class="btn btn-info" type="submit" name ="truncateinjetion" value="Injektion Tabelle leeren">
+						</div>
+						</form>
+					</div>
 				</div>
 				<div id="serverlog">
-					Shop Logs:
-					<table class="table_pageHeading" border="0" width="100%" cellspacing="0" cellpadding="0">
-					<tr><td class="dataTableContent">Error Log Shop:</td></tr>
-					<?php
-					$userdatei = file("../logfiles/Errors.log.txt");
-					foreach($userdatei AS $meine_datei) {
-						echo '<tr><td class="dataTableContent">'.$meine_datei.'</td></tr>';
-					}
-					echo xtc_draw_form('logfiles', 'cseo_center_security.php', 'action=clean', 'post', '');
-					?>
-					<tr>
-					<td><input class="button" name ="truncatelog" type="submit" value="Logfile leeren"></td>
-					</tr>
-					</form>
-					</table>
+					<div class="row">
+						<h1>
+							Shop Logs
+						</h1>
+						<table class="table table-bordered table-striped">
+						<tr><th>Error Log Shop:</th></tr>
+						<?php
+						$userdatei = file("../logfiles/Errors.log.txt");
+						foreach($userdatei AS $meine_datei) {
+							echo '<tr><td>'.$meine_datei.'</td></tr>';
+						}
+						echo xtc_draw_form('logfiles', 'cseo_center_security.php', 'action=clean', 'post', '');
+						?>
+						<tr>
+						<td></td>
+						</tr>
+						</table>
+						<div class="col-xs-12">
+							<input class="btn btn-info" name ="truncatelog" type="submit" value="Logfile leeren">
+						</div>
+						</form>
+					</div>
 				</div>
 				<div id="faildlogin">
-					faild Logins
+					<div class="row">
+						<h1>
+							faild Logins
+						</h1>
 						<?php $logging_table_query = xtc_db_query("SELECT * FROM customers WHERE login_tries > '0';"); ?>
-					<table class="table_pageHeading" border="0" width="100%" cellspacing="0" cellpadding="0">
-						<tr>
-							<th class="pageHeading"><?php echo HEADING_ID; ?></th>
-							<th class="pageHeading"><?php echo HEADING_CID; ?></th>
-							<th class="pageHeading"><?php echo HEADING_FNAME; ?></th>
-							<th class="pageHeading"><?php echo HEADING_LNAME; ?></th>
-							<th class="pageHeading"><?php echo HEADING_EMAIL; ?></th>
-							<th class="pageHeading"><?php echo HEADING_FLOGIN; ?></th>
-							<th class="pageHeading"><?php echo HEADING_LLOGIN; ?></th>
-						</tr>
+						<table class="table table-bordered table-striped">
+							<tr>
+								<th><?php echo HEADING_ID; ?></th>
+								<th><?php echo HEADING_CID; ?></th>
+								<th><?php echo HEADING_FNAME; ?></th>
+								<th><?php echo HEADING_LNAME; ?></th>
+								<th><?php echo HEADING_EMAIL; ?></th>
+								<th><?php echo HEADING_FLOGIN; ?></th>
+								<th><?php echo HEADING_LLOGIN; ?></th>
+							</tr>
 
-						<?php
-						if (xtc_db_num_rows($logging_table_query) > 0) {
-							$rows = 1;
-							while ($logging_table = xtc_db_fetch_array($logging_table_query)) {
-								if ($rows % 2 == 0) {
-									$f = 'dataTableRow';
-								} else {
-									$f = '';
+							<?php
+							if (xtc_db_num_rows($logging_table_query) > 0) {
+								$rows = 1;
+								while ($logging_table = xtc_db_fetch_array($logging_table_query)) {
+									echo '<tr>';
+									echo '<td>' . htmlentities_wrapper($logging_table['customers_id']) . '</td>';
+									echo '<td>' . htmlentities_wrapper($logging_table['customers_cid']) . '</td>';
+									echo '<td>' . htmlentities_wrapper($logging_table['customers_firstname']) . '</td>';
+									echo '<td>' . htmlentities_wrapper($logging_table['customers_lastname']) . '</td>';
+									echo '<td>' . htmlentities_wrapper($logging_table['customers_email_address']) . '</td>';
+									echo '<td>' . htmlentities_wrapper($logging_table['login_tries']) . '</td>';
+									echo '<td>' . htmlentities_wrapper($logging_table['login_time']) . '</td>';
+									echo '</tr>';
+									$rows++;
 								}
-								echo '<tr class="' . $f . '">';
-								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_id']) . '</td>';
-								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_cid']) . '</td>';
-								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_firstname']) . '</td>';
-								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_lastname']) . '</td>';
-								echo '<td class="dataTableContent">' . htmlentities($logging_table['customers_email_address']) . '</td>';
-								echo '<td class="dataTableContent">' . htmlentities($logging_table['login_tries']) . '</td>';
-								echo '<td class="dataTableContent">' . htmlentities($logging_table['login_time']) . '</td>';
-								echo '</tr>';
-								$rows++;
 							}
-						}
-						?>
-					</table>
+							?>
+						</table>
+					</div>
 				</div>
 				<div id="setting">
-					Settings
-					<table width="100%" height="100%" valign="top" cellpadding="4">
-					<?php 
-					$setting_table_query = xtc_db_query("SELECT * FROM configuration WHERE configuration_group_id = '363';"); 
-						while ($setting_table = xtc_db_fetch_array($setting_table_query)) {
-							if ($setting_table['set_function']) {
-							eval('$value_field = ' . $setting_table['set_function'] . '"' . htmlspecialchars($setting_table['configuration_value']) . '");');
-							} else {
-							$value_field = xtc_draw_input_field($setting_table['configuration_key'], $setting_table['configuration_value'], 'size=40');
+					<div class="row">
+						<h1>
+							Settings
+						</h1>
+						<table class="table table-bordered table-striped">
+							<tr>
+								<th>Settings</th>
+								<th>Value</th>
+								<th>Help</th>
+							</tr>
+						<?php 
+						$setting_table_query = xtc_db_query("SELECT * FROM configuration WHERE configuration_group_id = '363';"); 
+							while ($setting_table = xtc_db_fetch_array($setting_table_query)) {
+								$value_field = $setting_table['configuration_value'];
+								if (strstr($value_field, 'configuration_value'))
+								$value_field = str_replace('configuration_value', $configuration['configuration_key'], $value_field);
+								$i++;
+								echo '<tr>
+										<td><b>' . constant(strtoupper($setting_table['configuration_key'] . '_TITLE')) . '</b></td>
+										<td>' . $value_field . '</td>
+										<td>' . constant(strtoupper($setting_table['configuration_key'] . '_DESC')) . '</td>
+									</tr>';
 							}
-							// add
-
-							if (strstr($value_field, 'configuration_value'))
-							$value_field = str_replace('configuration_value', $configuration['configuration_key'], $value_field);
-							$i++;
-							if ($i % 2 == 0) {
-								$f = '';
-							} else {
-								$f = ' class="dataTableRow"';
-							}
-							echo '<tr' . $f . '>
-												<td width="40%" valign="top"><b>' . constant(strtoupper($setting_table['configuration_key'] . '_TITLE')) . '</b></td>
-												<td valign="top">' . $value_field . '<br />' . constant(strtoupper($setting_table['configuration_key'] . '_DESC')) . '</td>
-											</tr>';
-						}
-					
-					?>
-					</table>
+						
+						?>
+						</table>
+					<div class="col-xs-12">
+						<a class="btn btn-info" href="configuration.php?gID=363"><i class="glyphicon glyphicon-pencil"></i> Zu den Einstellungen</a>
+					</div>
 				</div>
+			</div>
 			</div>
 		</td>
 	</tr>

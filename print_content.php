@@ -24,7 +24,15 @@ $content_data = xtc_db_fetch_array($content_query, true);
         <title><?php echo $content_data['content_heading']; ?></title>
         <base href="<?php echo (getenv('HTTPS') == 'on' ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG; ?>" />
         <link rel="stylesheet" type="text/css" href="<?php echo 'templates/' . CURRENT_TEMPLATE . '/stylesheet2.css'; ?>" />
-		<meta name="robots" content="noindex,nofollow,noodp" />
+		<meta name="robots" content="noindex,follow,noodp" />
+<?php
+$canonical_url = xtc_href_link(FILENAME_CONTENT, 'coID=' . (int) $_GET['coID'] . '&language=' . $_SESSION['language_code']);
+if (isset($canonical_url)) {
+    $canonical_url = preg_replace('/cSEOid\=[a-z|0-9]{32}/', '', $canonical_url);
+    $canonical_url = (substr($canonical_url, -1) == '?' ? substr($canonical_url, 0, -1) : $canonical_url);
+    echo '<link rel="canonical" href="' . $canonical_url . '">' . "\n";
+}
+?>
     </head>
     <body onload="window.print()">
         <h2><?php echo $content_data['content_heading']; ?></h2>

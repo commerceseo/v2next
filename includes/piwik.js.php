@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: piwik.js.php 420 2013-06-19 18:04:39Z akausch $
+* 	$Id: piwik.js.php 1186 2014-09-09 18:29:24Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -11,7 +11,7 @@
 * 	(c) 2005     xt:Commerce - www.xt-commerce.com
 * 	Released under the GNU General Public License
 * ---------------------------------------------------------------*/
-
+$show = '';
 $url = TRACKING_PIWIK_LOCAL_PATH;
 $url = str_replace(array('http://', 'https://'), '', $url);
 $url = trim($url);

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: advanced_search_result.php 1031 2014-05-10 10:04:13Z akausch $
+ * 	$Id: advanced_search_result.php 1200 2014-09-17 06:30:45Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -159,10 +159,11 @@ if ($error == 1 && $keyerror != 1) {
     $select_str = "SELECT p.*,  pd.*";
 
     $from_str = " FROM " . TABLE_PRODUCTS . " AS p
-	LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON (p.products_id = pd.products_id)
-	LEFT JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS pc ON (p.products_id = pc.products_id)
-	LEFT JOIN " . TABLE_CATEGORIES . " AS c ON (pc.categories_id = c.categories_id)
-	LEFT JOIN " . TABLE_CATEGORIES_DESCRIPTION . " AS cd ON (c.categories_id = cd.categories_id)";
+	LEFT OUTER JOIN " . TABLE_SPECIALS . " AS s ON (p.products_id = s.products_id)
+	LEFT OUTER JOIN " . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON (p.products_id = pd.products_id)
+	LEFT OUTER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS pc ON (p.products_id = pc.products_id)
+	LEFT OUTER JOIN " . TABLE_CATEGORIES . " AS c ON (pc.categories_id = c.categories_id)
+	LEFT OUTER JOIN " . TABLE_CATEGORIES_DESCRIPTION . " AS cd ON (c.categories_id = cd.categories_id)";
     $from_str .= $subcat_join;
     if (SEARCH_IN_ATTR == 'true') {
         $from_str .= " LEFT OUTER JOIN " . TABLE_PRODUCTS_ATTRIBUTES . " AS pa ON (p.products_id = pa.products_id) LEFT OUTER JOIN " . TABLE_PRODUCTS_OPTIONS_VALUES . " AS pov ON (pa.options_values_id = pov.products_options_values_id) ";
@@ -272,10 +273,20 @@ if ($error == 1 && $keyerror != 1) {
         }
     }
     if (PRODUCT_LIST_FILTER_SORT == 'true') {
+		// Abfrage, ob Sonderangebote da sind
+		$specials_query_raw = xtDBquery("SELECT 
+											s.products_id
+										FROM 
+											" . TABLE_SPECIALS . " AS s
+										INNER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS ptc ON(ptc.products_id = s.products_id)
+										WHERE status = '1';");
+		$count_specials = xtc_db_num_rows($specials_query_raw);
         $multisort_dropdown = xtc_draw_form('multisort', FILENAME_ADVANCED_SEARCH_RESULT, 'get') . "\n";
         $multisort_dropdown.= xtc_draw_hidden_field('keywords', $_GET['keywords']) . "\n";
         $options = array(array('text' => MULTISORT_STANDARD));
-        $options[] = array('id' => 'specialprice', 'text' => MULTISORT_SPECIALS_DESC);
+		if (($count_specials > 0)) {
+			$options[] = array('id' => 'specialprice', 'text' => MULTISORT_SPECIALS_DESC);
+		}
         $options[] = array('id' => 'new_desc', 'text' => MULTISORT_NEW_DESC);
         $options[] = array('id' => 'new_asc', 'text' => MULTISORT_NEW_ASC);
         $options[] = array('id' => 'price_asc', 'text' => MULTISORT_PRICE_ASC);

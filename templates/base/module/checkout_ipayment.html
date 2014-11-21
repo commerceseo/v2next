@@ -1,0 +1,225 @@
+{* --------------------------------------------------------------
+   checkout_ipayment.html 2013-02-28 mabr
+   Gambio GmbH
+   http://www.gambio.de
+   Copyright (c) 2013 Gambio GmbH
+   Released under the GNU General Public License (Version 2)
+   [http://www.gnu.org/licenses/gpl-2.0.html]
+   --------------------------------------------------------------
+
+
+   based on:
+   (c) 2000-2001 The Exchange Project  (earlier name of osCommerce)
+   (c) 2002-2003 osCommerce(ot_cod_fee.php,v 1.02 2003/02/24); www.oscommerce.com
+   (C) 2001 - 2003 TheMedia, Dipl.-Ing Thomas Plänkers ; http://www.themedia.at & http://www.oscommerce.at
+   (c) 2003 XT-Commerce - community made shopping http://www.xt-commerce.com ($Id: ot_cod_fee.php 1003 2005-07-10 18:58:52Z mz $)
+
+   Released under the GNU General Public License
+   ---------------------------------------------------------------------------------------
+ *}
+{load_language_text section="ipayment"}
+
+{literal}
+<style type="text/css">
+#ipayment fieldset {
+	position: relative;
+	overflow: auto;
+	margin: 2em auto;
+	width: 80%;
+}
+
+#ipayment legend {
+	padding: .3ex 1ex;
+}
+
+#ipayment label {
+	float: left;
+	clear: left;
+	display: inline-block;
+	width: 30%;
+}
+
+#ipayment input[type="text"] {
+	display: inline-block;
+	float: left;
+	width: 65%;
+}
+
+#ipayment p.info {
+	margin: 0 0 0 30%;
+	float: left;
+	font-size: .9em;
+}
+
+#ipayment input[type="submit"] {
+	display: block;
+	margin: auto;
+	width: 30%;
+	font-size: 1.2em;
+	padding: 1ex 1em;
+}
+
+#ipayment p.error {
+	font-size: 1.2em;
+	border-width: 2px;
+	border-style: solid;
+	padding: 1em;
+	width: 70%;
+	margin: 2em auto;
+}
+</style>
+{/literal}
+
+<div id="ipayment">
+	<p style="text-align:center;">
+		<img src="https://ipayment.de/img/splash_logo.gif" alt="ipayment">
+	</p>
+
+	{if $formfields.silent == 0}
+		{$nonsilent_message}
+	{/if}
+
+	{if $silent_error}
+	<p class="error">{$silent_error}</p>
+	{/if}
+
+	<form action="{$action_url}" method="post" id="ipayment_form">
+		{foreach from=$formfields item=value key=key name="formfields"}
+			<input type="hidden" name="{$key}" value="{$value}">
+		{/foreach}
+		{if $formfields.silent != 0}
+			<fieldset>
+				<legend>{$txt.legend_name_address}</legend>
+				<label for="ipay_addr_name">{$txt.label_addr_name}</label>
+				<input id="ipay_addr_name" name="addr_name" value="{$formfields.addr_name}" type="text">
+				<label for="ipay_addr_street">{$txt.label_addr_street}</label>
+				<input id="ipay_addr_street" name="addr_street" value="{$formfields.addr_street}" type="text">
+				<label for="ipay_addr_zip">{$txt.label_addr_zip}</label>
+				<input id="ipay_addr_zip" name="addr_zip" value="{$formfields.addr_zip}" type="text">
+				<label for="ipay_addr_city">{$txt.label_addr_city}</label>
+				<input id="ipay_addr_city" name="addr_city" value="{$formfields.addr_city}" type="text">
+				<label for="ipay_addr_country">{$txt.label_addr_country}</label>
+				<select id="ipay_addr_country" name="addr_country">
+					{foreach from=$countries_list item=country name=countries}
+						<option value="{$country.countries_iso_code_2}" {if $country.countries_iso_code_3 == $formfields.addr_country}selected="selected"{/if}>
+							{$country.countries_name}
+						</option>
+					{/foreach}
+				</select>
+				<select id="ipay_addr_state" name="addr_state" class="usca_only">
+					{foreach from=$states_usa item=state name=states_usa}
+						<option value="{$state.zone_code}" class="usa_only">{$state.zone_name}</option>
+					{/foreach}
+					{foreach from=$states_canada item=state name=states_canada}
+						<option value="{$state.zone_code}" class="canada_only">{$state.zone_name}</option>
+					{/foreach}
+				</select>
+				<label for="ipay_addr_email">{$txt.label_addr_email}</label>
+				<input id="ipay_addr_email" name="addr_email" value="{$formfields.addr_email}" type="text">
+			</fieldset>
+			{if $formfields.trx_paymenttyp == 'cc'}
+				<fieldset>
+					<legend>{$txt.legend_cc_data}</legend>
+					<label>{$txt.label_cc_typ}</label>
+					<div class="selectblock">
+						<select id="ipay_cc_typ" name="cc_typ">
+							<option value="MasterCard" {if $returned_fields.cc_typ == "MasterCard"}selected="selected"{/if}>MasterCard</option>
+							<option value="VisaCard" {if $returned_fields.cc_typ == "VisaCard"}selected="selected"{/if}>VisaCard</option>
+							<option value="AmexCard" {if $returned_fields.cc_typ == "AmexCard"}selected="selected"{/if}>AmexCard</option>
+							<option value="DinersClubCard" {if $returned_fields.cc_typ == "DinersClubCard"}selected="selected"{/if}>DinersClubCard</option>
+							<option value="JCBCard" {if $returned_fields.cc_typ == "JCBCard"}selected="selected"{/if}>JCBCard</option>
+							<option value="SoloCard" {if $returned_fields.cc_typ == "SoloCard"}selected="selected"{/if}>SoloCard</option>
+							<option value="DiscoverCard" {if $returned_fields.cc_typ == "DiscoverCard"}selected="selected"{/if}>DiscoverCard</option>
+							<option value="MaestroCard" {if $returned_fields.cc_typ == "MaestroCard"}selected="selected"{/if}>MaestroCard</option>
+						</select>
+					</div>
+					<label>{$txt.label_cc_number}</label>
+					<input id="ipay_cc_number" name="cc_number" type="text">
+					<label>{$txt.label_cc_expdate}</label>
+					<div class="selectblock">
+						<select id="ipay_cc_expdate_month" name="cc_expdate_month">
+							{foreach from=$months item=month name=months}
+								<option value="{$month}">{$month}</option>
+							{/foreach}
+						</select>
+						/
+						<select id="ipay_cc_expdate_year" name="cc_expdate_year">
+							{foreach from=$years item=year name=years}
+								<option value="{$year}">{$year}</option>
+							{/foreach}
+						</select>
+					</div>
+					<label>{$txt.label_cc_checkcode}</label>
+					<input id="ipay_cc_checkcode" name="cc_checkcode" type="text" maxlength="4">
+					<p class="info">{$txt.info_cc_checkcode}</p>
+					<div class="solo_only">
+						<label>{$txt.label_cc_startdate}</label>
+						<div class="selectblock">
+							<select id="ipay_cc_startdate_month" name="cc_startdate_month">
+								{foreach from=$months item=month name=months}
+									<option value="{$month}">{$month}</option>
+								{/foreach}
+							</select>
+							/
+							<select id="ipay_cc_startdate_year" name="cc_startdate_year">
+								{foreach from=$years item=year name=years}
+									<option value="{$year}">{$year}</option>
+								{/foreach}
+							</select>
+						</div>
+						<p class="info">{$txt.info_solo}</p>
+						<label>{$txt.label_cc_issuenumber}</label>
+						<input id="ipay_cc_issuenumber" name="cc_issuenumber" type="text" maxlength="2">
+						<p class="info">{$txt.info_solo}</p>
+					</div>
+				</fieldset>
+			{/if}
+			{if $formfields.trx_paymenttyp == 'elv'}
+				<fieldset>
+					<legend>{$txt.legend_elv_data}</legend>
+					<p class="biginfo">{$txt.elv_explanation}</p>
+					<label for="ipay_bank_code">{$txt.label_bank_code}</label>
+					<input id="ipay_bank_code" name="bank_code" type="text">
+					<label for="ipay_bank_accountnumber">{$txt.label_bank_accountnumber}</label>
+					<input id="ipay_bank_accountnumber" name="bank_accountnumber" type="text">
+					<label for="ipay_bank_country">{$txt.label_bank_country}</label>
+					<select id="ipay_bank_country" name="bank_country">
+						{foreach from=$countries_list item=country name=countries}
+							<option value="{$country.countries_iso_code_2}" {if $country.countries_iso_code_3 == $formfields.addr_country}selected="selected"{/if}>
+								{$country.countries_name}
+							</option>
+						{/foreach}
+					</select>
+					<label for="ipay_bank_name">{$txt.label_bank_name}</label>
+					<input id="ipay_bank_name" name="bank_name" type="text">
+					<p class="info">&mdash;{$txt.or}&mdash;</p>
+					<label for="ipay_bank_iban">{$txt.label_bank_iban}</label>
+					<input id="ipay_bank_iban" name="bank_iban" type="text">
+					<label for="ipay_bank_bic">{$txt.label_bank_bic}</label>
+					<input id="ipay_bank_bic" name="bank_bic" type="text">
+				</fieldset>
+			{/if}
+			{if $formfields.trx_paymenttyp == 'pp'}
+				<fieldset>
+					<legend>{$txt.legend_pp_data}</legend>
+
+				</fieldset>
+			{/if}
+		{/if}
+		<p>
+			<input type="submit" value="Zahlung durchf&uuml;hren">
+		</p>
+	</form>
+
+	<p class="backbutton">
+		<a href="{$back_url}">
+			<span class="css_img_button">{$txt.back_button}</span>
+		</a>
+	</p>
+
+	{$debug}
+</div>
+
+<script>
+	var ipayment_silentmode = {$formfields.silent};
+</script>

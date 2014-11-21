@@ -293,7 +293,15 @@ class HelperFunctions {
 			if($errorCodes) $params .= '&error_codes='.implode(',', $errorCodes);
 		}
 		
-		return (!$cancelUrl) ? xtc_href_link(FILENAME_CHECKOUT_PAYMENT, $params, 'SSL', true, false) : $cancelUrl .= $params;
+		if (CHECKOUT_AJAX_STAT == 'true') {
+			$payment_error_return = 'payment_error=' . $_SESSION['sofort']['sofort_payment_method'] . '&error=' . urlencode(MODULE_PAYMENT_SOFORT_SU_TEXT_ERROR_MESSAGE);
+			$_SESSION['checkout_payment_error'] = $payment_error_return;
+			$errorUrl = xtc_href_link(FILENAME_CHECKOUT, $params, 'SSL', true, false);
+		} else {
+			$errorUrl = xtc_href_link(FILENAME_CHECKOUT_PAYMENT, $params, 'SSL', true, false);
+		}
+		
+		return (!$cancelUrl) ? $errorUrl : $cancelUrl .= $params;
 	}
 	
 	

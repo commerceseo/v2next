@@ -1,6 +1,6 @@
 <?php
 /**
- * @version SOFORT Gateway 5.2.0 - $Date: 2013-06-05 15:01:19 +0200 (Mi, 05 Jun 2013) $
+ * @version SOFORT Gateway 5.2.0 - $Date: 2013-04-22 14:00:13 +0200 (Mon, 22 Apr 2013) $
  * @author SOFORT AG (integration@sofort.com)
  * @link http://www.sofort.com/
  *
@@ -9,7 +9,7 @@
  * Released under the GNU General Public License (Version 2)
  * [http://www.gnu.org/licenses/gpl-2.0.html]
  *
- * $Id: sofort_lastschrift.php 420 2013-06-19 18:04:39Z akausch $
+ * $Id: sofort_lastschrift.php 6097 2013-04-22 12:00:13Z rotsch $
  */
 
 //include language-constants used in all Multipay Projects

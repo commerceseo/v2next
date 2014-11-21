@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: whos_online.php 872 2014-03-21 14:46:30Z akausch $
+ * 	$Id: whos_online.php 1210 2014-09-22 09:04:30Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -15,7 +15,6 @@
 // require_once('../includes/classes/class.xtcprice.php');
 
 if (!function_exists("unserialize_session_data")) {
-
     function unserialize_session_data($session_data) {
         $variables = array();
         $a = preg_split("/(\w+)\|/", $session_data, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
@@ -24,8 +23,8 @@ if (!function_exists("unserialize_session_data")) {
         }
         return( $variables );
     }
-
 }
+
 if (!function_exists("xtc_get_products")) {
     function xtc_get_products($session) {
         if (!is_array($session))
@@ -56,8 +55,8 @@ if (!function_exists("xtc_get_products")) {
         return $products_array;
     }
 }
-if (!function_exists("attributes_price")) {
 
+if (!function_exists("attributes_price")) {
     function attributes_price($products_id, $session) {
         $xtPrice = new xtcPrice($session['currency'], $session['customers_status']['customers_status_id']);
         if (isset($session['contents'][$products_id]['attributes'])) {
@@ -74,11 +73,9 @@ if (!function_exists("attributes_price")) {
         }
         return $attributes_price;
     }
-
 }
 
 function xtc_check_cart($which) {
-
     if (STORE_SESSIONS == 'mysql') {
         $session_data = xtc_db_fetch_array(xtc_db_query("SELECT sesskey, value FROM " . TABLE_SESSIONS . " WHERE sesskey = '" . $which . "'"));
     } else {
@@ -89,7 +86,6 @@ function xtc_check_cart($which) {
     }
     $which_query = $session_data;
 	$which_query['value'] = base64_decode($which_query['value']);
-
 // removed , host_address
     $who_query = xtc_db_fetch_array(xtc_db_query("SELECT session_id, time_entry, time_last_click
                                  FROM " . TABLE_WHOS_ONLINE . "
@@ -120,14 +116,11 @@ function xtc_check_cart($which) {
 }
 
 $xx_mins_ago = (time() - 900);
-
-require('includes/application_top.php');
-
-require(DIR_WS_CLASSES . 'currencies.php');
+require_once('includes/application_top.php');
+require_once(DIR_WS_CLASSES . 'currencies.php');
 $currencies = new currencies();
-
 xtc_db_query("DELETE FROM " . TABLE_WHOS_ONLINE . " WHERE time_last_click < '" . $xx_mins_ago . "'");
-require(DIR_WS_INCLUDES . 'header.php');
+require_once(DIR_WS_INCLUDES . 'header.php');
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>"/ >
 <?php if ($_SERVER["QUERY_STRING"] == 300) { ?>
@@ -315,19 +308,18 @@ require(DIR_WS_INCLUDES . 'header.php');
                                     </td>
                                     <td class="dataTableContent" align="center" valign="top"><?php echo date('H:i:s', $whos_online['time_last_click']); ?></td>
                                     <td class="dataTableContent" valign="top">
-                                        <a href="<?php echo (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $whos_online['last_page_url']; ?>" target="_blank">
                                         <?php
                                         if (preg_match('/^(.*)' . xtc_session_name() . '=[a-f,0-9]+[&]*(.*)/i', $whos_online['last_page_url'], $array)) {
                                             echo $array[1] . $array[2];
                                         } else {
-                                            echo htmlentities($whos_online['last_page_url']);
+                                            echo htmlentities_wrapper($whos_online['last_page_url']);
                                         }
-                                        ?></a>
+                                        ?>
                                     </td>
                                     <td class="dataTableContent" valign="top">
                                         <?php
                                         if ($whos_online['http_referer'] != '')
-                                            echo '<a target="_blank" href="' . $whos_online['http_referer'] . '">' . htmlentities($whos_online['http_referer']) . '</a>';
+                                            echo htmlentities_wrapper($whos_online['http_referer']);
                                         else
                                             echo '&nbsp;';
                                         ?>
@@ -354,7 +346,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                 else if (strstr($ua[2], "Safari"))
                                                     $device = "Safari";
                                                 else {
-                                                    $device = $whos_online['user_agent'];
+                                                    $device = htmlentities_wrapper($whos_online['user_agent']);
                                                     $os = "Unbekannt";
                                                 }
                                             }

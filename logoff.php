@@ -24,9 +24,23 @@ $breadcrumb->add(NAVBAR_TITLE_LOGOFF);
 //delete Guests from Database   
 
 if (($_SESSION['account_type'] == 1) && (DELETE_GUEST_ACCOUNT == 'true')) {
-    xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS . " WHERE customers_id = '" . $_SESSION['customer_id'] . "'");
-    xtc_db_query("DELETE FROM " . TABLE_ADDRESS_BOOK . " WHERE customers_id = '" . $_SESSION['customer_id'] . "'");
-    xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_INFO . " WHERE customers_info_id = '" . $_SESSION['customer_id'] . "'");
+	$c_customer_id = (int)$_SESSION['customer_id'];
+	xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS . " WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_ADDRESS_BOOK . " WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_INFO . " WHERE customers_info_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_IP . " WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_WISHLIST . " WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_WISHLIST_ATTRIBUTES . " WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_STATUS_HISTORY . " WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_COUPON_GV_CUSTOMER . " WHERE customer_id = '" . $c_customer_id . "'");
+	xtc_db_query("DELETE FROM " . TABLE_COUPON_GV_QUEUE . " WHERE customer_id = '" . $c_customer_id . "'");				
+	xtc_db_query("DELETE FROM " . TABLE_WHOS_ONLINE . " WHERE customer_id = '" . $c_customer_id . "'");			
+	xtc_db_query("UPDATE " . TABLE_ORDERS . " SET customers_id = 0 WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("UPDATE " . TABLE_NEWSLETTER_RECIPIENTS . " SET customers_id = 0 WHERE customers_id = '" . $c_customer_id . "'");
+	xtc_db_query("UPDATE " . TABLE_COUPON_REDEEM_TRACK . "  SET customer_id = 0 WHERE customer_id = '" . $c_customer_id . "'");
+	xtc_db_query("UPDATE withdrawals SET customer_id = 0 WHERE customer_id = '" . $c_customer_id . "'");
 }
 
 xtc_session_destroy();
@@ -50,7 +64,6 @@ unset($_SESSION['cc_id']);
 $_SESSION['cart']->reset();
 // write customers status guest in session again
 require (DIR_WS_INCLUDES . 'write_customers_status.php');
-
 require (DIR_WS_INCLUDES . 'header.php');
 
 xtc_redirect(xtc_href_link(FILENAME_DEFAULT, '', 'NONSSL'));

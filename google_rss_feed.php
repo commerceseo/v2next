@@ -245,7 +245,7 @@ while ($listing = xtc_db_fetch_array($listing_query, true)) {
     if ($listing['products_quantity'] > 0)
         echo "\t\t<g:availability>in stock</g:availability>\n";
     else
-        echo "\t\t<g:availability>available for order</g:availability>\n";
+        echo "\t\t<g:availability>out of stock</g:availability>\n";
 
 
     // Zustand

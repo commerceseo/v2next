@@ -721,7 +721,7 @@ class vat_validation {
                 break;
 
             // slowenien
-            case 'sl' :
+            case 'si' :
                 $number = str_replace($country, '', strtolower($vat_id));
                 if (strlen($vat_id) == 10) {
                     if (strlen($number) == 8 && is_numeric($number)) {
@@ -734,7 +734,7 @@ class vat_validation {
                 }
                 break;
 
-            // slowenien
+            // slowakei
             case 'sk' :
                 $number = str_replace($country, '', strtolower($vat_id));
                 if (strlen($vat_id) == 12) {

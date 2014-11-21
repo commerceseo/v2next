@@ -1,4 +1,6 @@
 {load_language_text section="account"}
+<div class="row">
+<div class="col-xs-12">
 {if $error_message!=''}
 <div class="headerError bg-danger">{$error_message}</div>
 {/if}
@@ -22,6 +24,9 @@
 	<li class="btn btn-primary"><a href="{$LINK_ADDRESS}">{$txt.text_address}</a></li>
 	<li class="btn btn-primary"><a href="{$LINK_PASSWORD}">{$txt.text_password}</a></li>
 	<li class="btn btn-primary"><a href="{$LINK_DELETE}">{$txt.text_delete}</a></li>
+	{if $RMA_STEP1}
+	<li class="btn btn-primary"><a href="{$RMA_STEP1}">{$txt.text_rma_account}</a></li>
+	{/if}
 </ul>
 <br>
 <h2>{$txt.title_notification}</h2>
@@ -34,14 +39,16 @@
 {if $order_content}
 	<div class="product_pad">
 		<h2>{$txt.title_orders}</h2>
+		<hr>
 		<a href="{$LINK_ALL}">{$txt.text_all}</a>
-		<br>
+		<hr>
 		{foreach name=aussen item=order_data from=$order_content}
 			<fieldset class="account_history">
 				<legend ><a href="{$order_data.ORDER_LINK}">{$order_data.ORDER_DATE}</a>&nbsp;&nbsp;{$txt.order_nr}{$order_data.ORDER_ID}</legend>
 				{$txt.order_total}{$order_data.ORDER_TOTAL}<br>
 				{$txt.order_status}{$order_data.ORDER_STATUS}<br>
 				{$order_data.ORDER_BUTTON}
+				<hr>
 			</fieldset>
 		{/foreach}
 	</div>
@@ -52,3 +59,5 @@
 {$MODULE_products_history}
 </div>
 {/if}
+</div>
+</div>

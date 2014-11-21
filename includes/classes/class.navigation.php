@@ -25,7 +25,7 @@ class cseo_navigation_ORIGINAL {
 				$file_name = $file_name;
 			} elseif ($site == 'advanced_search_result') {
 				$nav_parms = xtc_get_all_get_params(array('keywords', 'products_id', 'x', 'y', 'cat', 'per_site', 'multisort', 'filter_id', 'page', 'view_as_advsr'));
-				$file_name = $file_name;
+				$file_name = FILENAME_ADVANCED_SEARCH_RESULT;
 			} elseif ($site == 'tagcloud') {
 				$nav_parms = xtc_get_all_get_params(array('tag', 'products_id', 'x', 'y', 'cat', 'per_site', 'multisort', 'filter_id', 'view_as'));
 				$file_name = 'tag/' . $_GET['tag'] . '/';

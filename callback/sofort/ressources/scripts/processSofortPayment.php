@@ -19,9 +19,13 @@ require_once(DIR_FS_CATALOG.'callback/sofort/helperFunctions.php');
 
 $language = HelperFunctions::getSofortLanguage($_SESSION['language']);
 require_once(DIR_WS_LANGUAGES.$language.'/modules/payment/sofort_general.php');
-
-$errorUrl = xtc_href_link(FILENAME_CHECKOUT_PAYMENT, 'payment_error='.$_SESSION['sofort']['sofort_payment_method'], 'SSL', true, false);
-
+if (CHECKOUT_AJAX_STAT == 'true') {
+	$payment_error_return = 'payment_error=' . $_SESSION['sofort']['sofort_payment_method'] . '&error=' . urlencode(MODULE_PAYMENT_SOFORT_SU_TEXT_ERROR_MESSAGE);
+	$_SESSION['checkout_payment_error'] = $payment_error_return;
+	$errorUrl = xtc_href_link(FILENAME_CHECKOUT, 'payment_error='.$_SESSION['sofort']['sofort_payment_method'], 'SSL', true, false);
+} else {
+	$errorUrl = xtc_href_link(FILENAME_CHECKOUT_PAYMENT, 'payment_error='.$_SESSION['sofort']['sofort_payment_method'], 'SSL', true, false);
+}
 if (!isset($_SESSION['sofort']['sofort_payment_url']) || !$_SESSION['sofort']['sofort_payment_url'] ){
 	$sofortPaymentUrl = $errorUrl;
 } else {

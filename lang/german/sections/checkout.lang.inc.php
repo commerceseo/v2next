@@ -18,10 +18,10 @@ $t_language_text_section_content_array = array(
     'title_dsg' => 'Datenschutzerklärung',
     'title_revocation' => 'Widerrufsrecht',
     'text_accept_agb' => 'Ich akzeptiere die allgemeinen Geschäfts- und Lieferbedingungen',
-    'text_accept_agb_link' => '- <a class="shipping" href="popup_content_print.php?coID=3"><u>AGB zum einsehen und drucken</u></a>',
+    'text_accept_agb_link' => '- <a class="shipping" href="popup_content_print.php?coID=3"><u>AGB zum Einsehen und Drucken</u></a>',
     'text_accept_dsg' => 'Ich akzeptiere die Datenschutzerklärung',
     'text_accept_revocation' => 'Ich habe das Widerrufsrecht zur Kenntnis genommen',
-    'text_accept_revocation_link' => '- <a class="shipping" href="popup_content_print.php?coID=10"><u>Widerrufsrecht zum einsehen und drucken</u></a>',
+    'text_accept_revocation_link' => '- <a class="shipping" href="popup_content_print.php?coID=10"><u>Widerrufsrecht zum Einsehen und Drucken</u></a>',
     'text_accept_revocation_download' => 'Ich stimme ausdrücklich zu, dass Sie vor Ablauf der Widerrufsfrist mit der Ausführung des Vertrages beginnen. Mir ist bekannt, dass ich durch diese Zustimmung mit Beginn der Ausführung des Vertrages mein Widerrufsrecht verliere.',
     'text_accept_revocation_service' => 'Ich bin einverstanden und verlange ausdrücklich, dass Sie vor Ende der Widerrufsfrist mit der Ausführung der beauftragten Dienstleistung beginnen. Mir ist bekannt, dass ich bei vollständiger Vertragserfüllung durch Sie mein Widerrufsrecht verliere.',
 );

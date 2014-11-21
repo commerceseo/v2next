@@ -88,7 +88,7 @@ while ($listing = xtc_db_fetch_array($listing_query, true)) {
 	if ($listing['products_short_description'] != '') {
 		$description = $listing['products_short_description'];
 	} else {
-		$description = cseo_truncate(strip_tags($listing['products_description']), 160);
+		$description = cseo_truncate(htmlentities_wrapper($listing['products_description']), 160);
 	}
     echo "<a href='" . $link . "'><img src='" . $linkimage . "' alt='" . $products_name . "' border='0'></a>
 	<br>" . $description . "

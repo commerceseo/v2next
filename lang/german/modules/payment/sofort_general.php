@@ -1,6 +1,6 @@
 <?php
 /**
- * @version SOFORT Gateway 5.2.0 - $Date: 2013-06-18 18:16:57 +0200 (Di, 18 Jun 2013) $
+ * @version SOFORT Gateway 5.2.0 - $Date: 2013-02-21 14:07:21 +0100 (Thu, 21 Feb 2013) $
  * @author SOFORT AG (integration@sofort.com)
  * @link http://www.sofort.com/
  *
@@ -9,10 +9,12 @@
  * Released under the GNU General Public License (Version 2)
  * [http://www.gnu.org/licenses/gpl-2.0.html]
  *
- * $Id: sofort_general.php 420 2013-06-19 18:04:39Z akausch $
+ * $Id: sofort_general.php 5993 2013-02-21 13:07:21Z rotsch $
  */
 
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_JS_LIBS', '
+	<script type="text/javascript" src="'.DIR_WS_CATALOG.'callback/sofort/ressources/javascript/jquery.min_1.8.3.js"></script>
+	<script type="text/javascript" src="'.DIR_WS_CATALOG.'callback/sofort/ressources/javascript/jquery-ui.min_1.9.1.js"></script>
 	<script type="text/javascript" src="'.DIR_WS_CATALOG.'callback/sofort/ressources/javascript/sofortbox.js"></script>
 ');
 
@@ -20,6 +22,7 @@ define('MODULE_PAYMENT_SOFORT_MULTIPAY_APIKEY_TITLE', 'Konfigurationsschlüssel'
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_APIKEY_DESC', 'Von SOFORT AG zugewiesener Konfigurationsschlüssel');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_AUTH_TITLE', 'Konfigurationsschlüssel/API-Key testen');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_AUTH_DESC', '<noscript>Bitte Javascript aktivieren!</noscript>
+	<script type="text/javascript" src="'.DIR_WS_CATALOG.'callback/sofort/ressources/javascript/jquery.min_1.8.3.js"></script>
 	<script type="text/javascript" src="'.DIR_WS_CATALOG.'callback/sofort/ressources/javascript/testAuth.js"></script>
 ');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_ZONE_TITLE', 'Zahlungszone');

@@ -15,7 +15,17 @@
 require('includes/application_top.php');
 
 $_GET['zID'] = (int)$_GET['zID'];
-
+function geo_get_countries($default = '') {
+    $countries_array = array();
+    if ($default) {
+        $countries_array[] = array('id' => STORE_COUNTRY, 'text' => $default);
+    }
+    $countries_query = xtc_db_query("SELECT countries_id, countries_name FROM " . TABLE_COUNTRIES . " ORDER BY countries_name");
+    while ($countries = xtc_db_fetch_array($countries_query)) {
+        $countries_array[] = array('id' => $countries['countries_id'], 'text' => $countries['countries_name']);
+    }
+    return $countries_array;
+}
 switch ($_GET['saction']) {
     case 'insert_sub':
         $zID = xtc_db_prepare_input($_GET['zID']);
@@ -142,7 +152,7 @@ if ($_GET['zID'] && (($_GET['saction'] == 'edit') || ($_GET['saction'] == 'new')
                                             while ($zones = xtc_db_fetch_array($zones_query)) {
                                                 $rows++;
                                                 $rows++;
-                                                if (((!$_GET['sID']) || (@$_GET['sID'] == $zones['association_id'])) && (!$sInfo) && (substr($_GET['saction'], 0, 3) != 'new')) {
+                                                if (((!$_GET['sID']) || ($_GET['sID'] == $zones['association_id'])) && (!$sInfo) && (substr($_GET['saction'], 0, 3) != 'new')) {
                                                     $sInfo = new objectInfo($zones);
                                                 }
                                                 if ((is_object($sInfo)) && ($zones['association_id'] == $sInfo->association_id)) {
@@ -239,7 +249,7 @@ if ($_GET['zID'] && (($_GET['saction'] == 'edit') || ($_GET['saction'] == 'new')
 
                                             $contents = array('form' => xtc_draw_form('zones', FILENAME_GEO_ZONES, 'zpage=' . $_GET['zpage'] . '&zID=' . $_GET['zID'] . '&action=list&spage=' . $_GET['spage'] . '&sID=' . $_GET['sID'] . '&saction=insert_sub'));
                                             $contents[] = array('text' => TEXT_INFO_NEW_SUB_ZONE_INTRO);
-                                            $contents[] = array('text' => '<br />' . TEXT_INFO_COUNTRY . '<br />' . xtc_draw_pull_down_menu('zone_country_id', xtc_get_countries(TEXT_ALL_COUNTRIES), '', 'onChange="update_zone(this.form);"'));
+                                            $contents[] = array('text' => '<br />' . TEXT_INFO_COUNTRY . '<br />' . xtc_draw_pull_down_menu('zone_country_id', geo_get_countries(TEXT_ALL_COUNTRIES), '', 'onChange="update_zone(this.form);"'));
                                             $contents[] = array('text' => '<br />' . TEXT_INFO_COUNTRY_ZONE . '<br />' . xtc_draw_pull_down_menu('zone_id', xtc_prepare_country_zones_pull_down()));
                                             $contents[] = array('align' => 'center', 'text' => '<br /><input type="submit" class="button" onClick="this.blur();" value="' . BUTTON_INSERT . '"/> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_GEO_ZONES, 'zpage=' . $_GET['zpage'] . '&zID=' . $_GET['zID'] . '&action=list&spage=' . $_GET['spage'] . '&sID=' . $_GET['sID']) . '">' . BUTTON_CANCEL . '</a>');
                                             break;
@@ -249,7 +259,7 @@ if ($_GET['zID'] && (($_GET['saction'] == 'edit') || ($_GET['saction'] == 'new')
 
                                             $contents = array('form' => xtc_draw_form('zones', FILENAME_GEO_ZONES, 'zpage=' . $_GET['zpage'] . '&zID=' . $_GET['zID'] . '&action=list&spage=' . $_GET['spage'] . '&sID=' . $sInfo->association_id . '&saction=save_sub'));
                                             $contents[] = array('text' => TEXT_INFO_EDIT_SUB_ZONE_INTRO);
-                                            $contents[] = array('text' => '<br />' . TEXT_INFO_COUNTRY . '<br />' . xtc_draw_pull_down_menu('zone_country_id', xtc_get_countries(TEXT_ALL_COUNTRIES), $sInfo->zone_country_id, 'onChange="update_zone(this.form);"'));
+                                            $contents[] = array('text' => '<br />' . TEXT_INFO_COUNTRY . '<br />' . xtc_draw_pull_down_menu('zone_country_id', geo_get_countries(TEXT_ALL_COUNTRIES), $sInfo->zone_country_id, 'onChange="update_zone(this.form);"'));
                                             $contents[] = array('text' => '<br />' . TEXT_INFO_COUNTRY_ZONE . '<br />' . xtc_draw_pull_down_menu('zone_id', xtc_prepare_country_zones_pull_down($sInfo->zone_country_id), $sInfo->zone_id));
                                             $contents[] = array('align' => 'center', 'text' => '<br /><input type="submit" class="button" onClick="this.blur();" value="' . BUTTON_UPDATE . '"/> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_GEO_ZONES, 'zpage=' . $_GET['zpage'] . '&zID=' . $_GET['zID'] . '&action=list&spage=' . $_GET['spage'] . '&sID=' . $sInfo->association_id) . '">' . BUTTON_CANCEL . '</a>');
                                             break;

@@ -1,3 +1,4 @@
+.wk_table {width: 100%;}
 
 @media screen and (max-width: 600px) {
 	.wkhead, .wk5 {display:none;}
@@ -117,4 +118,33 @@
 	border-left: 6px solid #676767;
 	border-bottom: 6px solid transparent;
 	border-top: 6px solid transparent;
+}
+
+
+#properties_selection_container {
+	position: relative;
+}
+
+#properties_selection_container #properties_selection_shadow {
+	background: url("images/wait.gif") no-repeat scroll center center #FFFFFF;
+	display: none;
+    bottom: 0;
+    left: 0;
+    opacity: 0.8;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+#properties_selection_container.details_attributes_dropdown option:disabled{
+	color: #bbb;
+}
+
+#properties_selection_container #properties_error {
+	color: #D20202;
+}
+
+#cart_button.inactive {
+	opacity: 0.3;
+	filter: alpha(opacity=30);
 }

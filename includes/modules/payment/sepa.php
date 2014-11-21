@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: sepa.php 849 2014-02-10 14:01:15Z akausch $
+ * 	$Id: sepa.php 995 2014-04-29 17:59:27Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -21,7 +21,6 @@
   --------------------------------------------------------------
  */
 
-require_once(DIR_FS_INC . 'cseo_htmlentities_wrapper.inc.php');
 require_once(DIR_FS_CATALOG . 'includes/classes/class.sepa_account_check.php');
 
 class sepa {

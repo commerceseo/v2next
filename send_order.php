@@ -48,7 +48,15 @@ if ($_SESSION['customer_id'] == $order_check['customers_id'] || $send_by_admin |
         $attributes_single_price = '';
         $attributes_final_price = '';
         $attributes_qty = '';
+        $attributes_vpe = '';
         while ($attributes_data_values = xtc_db_fetch_array($attributes_query)) {
+			$products_options = xtc_db_fetch_array(xtc_db_query("SELECT * 
+															FROM " . TABLE_PRODUCTS_ATTRIBUTES . " 
+															WHERE attributes_vpe_status = '1' 
+															AND products_attributes_id = '".$attributes_data_values['products_attributes_id']."'
+															AND products_id = '" . $order_data_values['products_id'] . "'
+															LIMIT 1;"));
+            $attributes_vpe .= $products_options['attributes_vpe_value'];
             $attributes_data .= $attributes_data_values['products_options'] . ': ' . $attributes_data_values['products_options_values'] . '<br>';
             $attributes_model .= '<br>' . xtc_get_attributes_model($order_data_values['products_id'], $attributes_data_values['products_options_values'], $attributes_data_values['products_options']);
             $attributes_single_price .= $xtPrice->xtcFormat($attributes_data_values['options_values_price'], true, $getTaxClass['products_tax_class_id']) . '<br>';
@@ -60,15 +68,24 @@ if ($_SESSION['customer_id'] == $order_check['customers_id'] || $send_by_admin |
 		$vpe_query = xtc_db_fetch_array(xtc_db_query("SELECT products_vpe_status, products_price, products_vpe, products_vpe_value, products_tax_class_id FROM products WHERE products_id = '" . $order_data_values['products_id'] . "' AND products_vpe_status = '1';"));
 		$vpe = '';
 		if ($vpe_query['products_vpe_status'] == 1 && $vpe_query['products_vpe_value'] != 0.0) {
-			$vpe = $xtPrice->xtcGetPrice($order_data_values['products_id'], false, 0, $vpe_query['products_tax_class_id'], $vpe_query['products_price']);;
-			$vpe = $vpe * (1 / $vpe_query['products_vpe_value']);
+			// $vpe = $xtPrice->xtcGetPrice($order_data_values['products_id'], false, 0, $vpe_query['products_tax_class_id'], $vpe_query['products_price']);;
+			if ($attributes_vpe == $vpe_query['products_vpe_value']) {
+			$vpe = $order_data_values['products_price'] * (1 / $vpe_query['products_vpe_value']);
+			} else {
+			$vpe = $order_data_values['products_price'] * (1 / $attributes_vpe);
+			
+			}
 			$vpe = $xtPrice->xtcFormat($vpe, true) . TXT_PER . xtc_get_vpe_name($vpe_query['products_vpe']);
+		} else {
+			$vpe = '';
 		}
 		if ($vpe != '') {
 			$pprice = $xtPrice->xtcFormat($order_data_values['final_price'] / $order_data_values['products_quantity'], true).'<br>'.$vpe;
 		} else {
 			$pprice = $xtPrice->xtcFormat($order_data_values['final_price'] / $order_data_values['products_quantity'], true);
 		}
+		
+
 
         $order_data[] = array(
 			'PRODUCTS_MODEL' => $order_data_values['products_model'],
@@ -84,6 +101,7 @@ if ($_SESSION['customer_id'] == $order_check['customers_id'] || $send_by_admin |
             'PRODUCTS_QTY' => $order_data_values['products_quantity']);
     
 	}
+
     // get order_total data
     $oder_total_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_TOTAL . " WHERE orders_id='" . $insert_id . "' ORDER BY sort_order ASC");
     $order_total = array();

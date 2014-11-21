@@ -1,6 +1,6 @@
 <?php
 /**
- * @version SOFORT Gateway 5.2.0 - $Date: 2013-06-05 15:01:19 +0200 (Mi, 05 Jun 2013) $
+ * @version SOFORT Gateway 5.2.0 - $Date: 2012-09-06 13:49:09 +0200 (Thu, 06 Sep 2012) $
  * @author SOFORT AG (integration@sofort.com)
  * @link http://www.sofort.com/
  *
@@ -9,7 +9,7 @@
  * Released under the GNU General Public License (Version 2)
  * [http://www.gnu.org/licenses/gpl-2.0.html]
  *
- * $Id: sofortInstall.php 420 2013-06-19 18:04:39Z akausch $
+ * $Id: sofortInstall.php 5326 2012-09-06 11:49:09Z boehm $
  */
 
 //Notice: DB-field orders_status_name is varchar(32)!
@@ -44,19 +44,19 @@ define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_REFUNDED_ENGLISH', 'Refund');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_DIRECT_DEBIT_ENGLISH', 'Direct debit');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_UNCHANGED_ENGLISH', 'Unchanged (only SOFORT)');
 
-define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_TEMP_POLISH', 'P³atno¶æ w toku');
-define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_SV_UNPAID_POLISH', 'W oczekiwaniu na wp³yw ¶rodków pieniê¿nych');
-define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_SV_PAID_POLISH', 'Wp³yw kwoty'); //normally used by sv
-define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_CONFIRMED_POLISH', 'P³atno¶æ zosta³a zrealizowana.');
+define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_TEMP_POLISH', 'Płatność w toku');
+define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_SV_UNPAID_POLISH', 'W oczekiwaniu na wpływ środków pieniężnych');
+define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_SV_PAID_POLISH', 'Wpływ kwoty'); //normally used by sv
+define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_CONFIRMED_POLISH', 'Płatność została zrealizowana.');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_CONFIRMED_2_POLISH', 'Potwierdzone');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_INVOICE_CONFIRMED_POLISH', 'Potwierdzono');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_UNCONFIRMED_POLISH', 'Faktura jeszcze nie zatwierdzona');
-define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_CANCELED_POLISH', 'Anulacja/zaksiêgowanie na dobro rachunku');
-define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_ABORTED_POLISH', 'P³atno¶æ zosta³a przerwana');
+define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_CANCELED_POLISH', 'Anulacja/zaksięgowanie na dobro rachunku');
+define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_ABORTED_POLISH', 'Płatność została przerwana');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_CHECK_POLISH', 'Prüfung notwendig');
-define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_RETURNED_DEBIT_POLISH', 'Zwrotne zlecenie obci±¿enia rachunku');
+define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_RETURNED_DEBIT_POLISH', 'Zwrotne zlecenie obciążenia rachunku');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_REFUNDED_POLISH', 'Zwrot');
-define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_DIRECT_DEBIT_POLISH', 'Polecenie zap³aty');
+define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_DIRECT_DEBIT_POLISH', 'Polecenie zapłaty');
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_UNCHANGED_POLISH', 'Bez zmian (tylko SOFORT)');
 
 define('MODULE_PAYMENT_SOFORT_MULTIPAY_STATE_TEMP_DUTCH', 'In afwachting van betaling');

@@ -14,8 +14,8 @@
 }
 
 .votingbox {
-    width: 150px;
-    height: 220px;
+    width: 180px;
+    height: 320px;
     padding: 0;
     margin: 10px;
     overflow: hidden;
@@ -27,7 +27,7 @@
 } 
 
 .voting {position: relative; top: 0; font-size: 1.4em; font-weight: 900; left: 0;}
-.votinboxstarbox {background: #fff; width: 130px; position: relative; top: 0; left: 5px; height: 65px; padding: 5px;}
+.votinboxstarbox {background: #fff; width: 160px; position: relative; top: 0; left: 5px; height: 75px; padding: 5px;}
 .starbox {background: #fff; width: 170px; position: relative; top: 0; left: 5px; height: 25px; padding: 5px;}
 
 .votingtext {font-size: 1.0em; font-weight: 600;}
@@ -125,3 +125,5 @@
 .rquired {color: #ff0000; }
 
 .textdurchschnitt {font-weight: 900; font-size: 1.2em;}
+
+.label {color: #000; text-align: left; float: left;}

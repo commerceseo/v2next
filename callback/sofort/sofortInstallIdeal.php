@@ -1,6 +1,6 @@
 <?php
 /**
- * @version SOFORT iDEAL - $Date: 2013-06-05 15:01:19 +0200 (Mi, 05 Jun 2013) $
+ * @version SOFORT iDEAL - $Date: 2012-09-06 13:49:09 +0200 (Thu, 06 Sep 2012) $
  * @author SOFORT AG (integration@sofort.com)
  * @link http://www.sofort.com/
  *
@@ -9,7 +9,7 @@
  * Released under the GNU General Public License (Version 2)
  * [http://www.gnu.org/licenses/gpl-2.0.html]
  *
- * $Id: sofortInstallIdeal.php 420 2013-06-19 18:04:39Z akausch $
+ * $Id: sofortInstallIdeal.php 5326 2012-09-06 11:49:09Z boehm $
  */
 
 //Notice: DB-field orders_status_name is varchar(32)!
@@ -28,11 +28,11 @@ define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_LOSS_ENGLISH', 'Cancelled');
 define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_REF_COM_ENGLISH', 'Partial refund');
 define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_REF_REF_ENGLISH', 'Refund');
 
-define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_TEMP_POLISH', 'P³atno¶æ w toku');
+define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_TEMP_POLISH', 'Płatność w toku');
 define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_CONFIRMED_POLISH', 'Potwierdzone');
-define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_ABORTED_POLISH', 'P³atno¶æ zosta³a przerwana');
+define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_ABORTED_POLISH', 'Płatność została przerwana');
 define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_LOSS_POLISH', 'Anulowano');
-define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_REF_COM_POLISH', 'Czê¶ciowy zwrot');
+define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_REF_COM_POLISH', 'Częściowy zwrot');
 define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_REF_REF_POLISH', 'Zwrot');
 
 define('MODULE_PAYMENT_SOFORT_IDEAL_STATE_TEMP_DUTCH', 'In afwachting van betaling');

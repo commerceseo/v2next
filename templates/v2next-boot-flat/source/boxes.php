@@ -170,7 +170,11 @@ if(!((strstr($_SERVER['REQUEST_URI'], FILENAME_SHOPPING_CART) ||
 }
 
 //Dieser Copyright darf nicht ohne Genehmigung entfernt werden.
-$smarty->assign('copyright','&copy; '.date('Y').' - <a href="'.DIR_WS_CATALOG.'">'. STORE_NAME .'</a><br><a href="https://www.commerce-seo.de/" target="_blank" title="Onlineshop Software by commerce:seo">Onlineshop Software by commerce:seo</a>');
+$cseolink = '';
+if (!isset($_GET['products_id']) && (!isset($_GET['cPath'])) && (!isset($_GET['cat'])) && (!isset($_GET['manufacturers_id'])) && (!isset($_GET['coID']))) {
+    $cseolink = '<br><a href="https://www.commerce-seo.de/" target="_blank" title="Onlineshop Software by commerce:seo">Onlineshop Software by commerce:seo</a>';
+}
+$smarty->assign('copyright','&copy; '.date('Y').' - <a href="'.DIR_WS_CATALOG.'">'. STORE_NAME .'</a>'.$cseolink);
 
 if ($product->isProduct()) {
 	require_once (DIR_FS_INC.'xtc_get_products_mo_images.inc.php');

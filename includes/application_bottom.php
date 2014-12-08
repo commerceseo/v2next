@@ -20,7 +20,6 @@ echo '"//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js",';
 echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery-migrate.min.js",';
 } else {
 echo '"//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js",';
-
 }
 if (AJAXBOOTSTRAP == 'true') {
 	echo '"'.DIR_WS_CATALOG.'shopscripte/js/bootstrap.min.js",';
@@ -28,7 +27,9 @@ if (AJAXBOOTSTRAP == 'true') {
 if (AJAXCOLORBOX == 'true') {
 	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.colorbox-min.js",';
 }
-
+if (AJAXFLEXNAV == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.flexnav.min.js",';
+}
 echo '"'.DIR_WS_CATALOG.'shopscripte/js/formsizecheck.js",';
 echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.rating.pack.js",';
 $ticker_query = xtc_db_query("SELECT ticker_text FROM news_ticker WHERE language_id = '".(int)$_SESSION['languages_id']."' AND status = '1' ");
@@ -77,7 +78,9 @@ if (PRODUCT_ID > 0 && strpos($PHP_SELF, FILENAME_SHOPPING_CART) === false) {
 		echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.socialshareprivacy.min.js",';
 	}
 }
-
+if (AJAXRESPTABS == 'true') {
+	echo '"'.DIR_WS_CATALOG.'shopscripte/js/jquery.responsiveTabs.min.js",';
+}
 echo '"'.DIR_WS_CATALOG.'shopscripte/js/main.js"';
 echo ');
 </script>';

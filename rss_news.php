@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: rss_news.php 640 2013-09-27 13:44:53Z akausch $
+ * 	$Id: rss_news.php 1217 2014-10-01 16:26:38Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -88,6 +88,7 @@ while ($listing = xtc_db_fetch_array($listing_query, true)) {
 	if ($listing['products_short_description'] != '') {
 		$description = $listing['products_short_description'];
 	} else {
+		require_once (DIR_FS_INC.'cseo_htmlentities_wrapper.inc.php');
 		$description = cseo_truncate(htmlentities_wrapper($listing['products_description']), 160);
 	}
     echo "<a href='" . $link . "'><img src='" . $linkimage . "' alt='" . $products_name . "' border='0'></a>

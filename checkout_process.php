@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_process.php 1107 2014-06-18 07:27:22Z sbraeutig $
+ * 	$Id: checkout_process.php 1270 2014-11-19 07:03:29Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -94,6 +94,19 @@ $payment_modules = new payment($_SESSION['payment']);
 $shipping_modules = new shipping($_SESSION['shipping']);
 
 $order = new order();
+
+if ($order->customer['firstname'] == '' && $order->customer['lastname'] == '' && $order->customer['street_address'] == '') {
+$error_messa = CHECKOUT_PAYMENT_ERROR;
+    if ($_SESSION['payment'] == 'paypalexpress') {
+        xtc_redirect(xtc_href_link(FILENAME_PAYPAL_CHECKOUT, 'error_message=' . $error_messa, 'SSL', true, false));
+    } else {
+        if (CHECKOUT_AJAX_STAT == 'true') {
+			xtc_redirect(xtc_href_link(FILENAME_CHECKOUT, 'error_message=' . $error_messa, 'SSL', true, false));
+		} else {
+			xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, 'error_message=' . $error_messa, 'SSL', true, false));
+		}
+    }
+}
 
 $payment_modules->before_process();
 $order_total_modules = new order_total();
@@ -599,6 +612,11 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
 }
 
 if (!$tmp) {
+	// Bonuspunkte Modul
+	if(MODULE_BONUS_STATUS == 'True') {
+		include ('checkout_bonus.php');
+	}
+	// Bonuspunkte Modul eof
     $order_totals = $order_total_modules->apply_credit();
     include ('send_order.php');
 

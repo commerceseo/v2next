@@ -21,9 +21,9 @@ class login_ORIGINAL {
 
     function login_smarty($site) {
         if ($site == 'login') {
-            $login_smarty['FORM_LOGIN_ACTION'] = xtc_draw_form('login', xtc_href_link(FILENAME_LOGIN, 'action=process', 'SSL'));
+            $login_smarty['FORM_LOGIN_ACTION'] = xtc_draw_form('login', xtc_href_link(FILENAME_LOGIN, 'action=process', 'SSL'), 'post', 'autocomplete="off"');
         } else {
-            $login_smarty['FORM_LOGIN_ACTION'] = xtc_draw_form('login', xtc_href_link(FILENAME_CHECKOUT, 'action=process', 'SSL'));
+            $login_smarty['FORM_LOGIN_ACTION'] = xtc_draw_form('login', xtc_href_link(FILENAME_CHECKOUT, 'action=process', 'SSL'), 'post', 'autocomplete="off"');
         }
         $login_smarty['account_option'] = ACCOUNT_OPTIONS;
         $login_smarty['BUTTON_NEW_ACCOUNT'] = '<a href="' . xtc_href_link(FILENAME_CREATE_ACCOUNT, '', 'SSL') . '">' . xtc_image_button('button_continue.gif', IMAGE_BUTTON_CONTINUE) . '</a>';
@@ -33,27 +33,29 @@ class login_ORIGINAL {
         $login_smarty['INPUT_LOGIN_PASSWORD'] = xtc_draw_password_field('password', '', 'id="login_password"');
         $login_smarty['LINK_LOST_PASSWORD'] = xtc_href_link(FILENAME_PASSWORD_DOUBLE_OPT, '', 'SSL');
         $login_smarty['FORM_LOGIN_END'] = '</form>';
-
         return $login_smarty;
     }
 
-    function check_login($site) {
+    function check_login($site, $email = '', $password = '') {
         require_once (DIR_FS_INC . 'xtc_validate_password.inc.php');
         require_once (DIR_FS_INC . 'xtc_write_user_info.inc.php');
+        require_once (DIR_FS_INC . 'xtc_validate_email.inc.php');
 
         if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
-            $email_address = xtc_db_prepare_input($_POST['email_address']);
-            $password = xtc_db_prepare_input($_POST['password']);
-            $check_customer_query = xtc_db_query("SELECT  * FROM " . TABLE_CUSTOMERS . " WHERE customers_email_address = '" . xtc_db_input($email_address) . "' AND account_type = '0';");
-
+            $email_address = xtc_db_prepare_input($email);
+            $password = xtc_db_prepare_input($password);
+            if (xtc_validate_email($email)) {
+				$check_customer_query = xtc_db_query("SELECT  * FROM " . TABLE_CUSTOMERS . " WHERE customers_email_address = '" . $email_address . "' AND account_type = '0';");
+			}
             if (!xtc_db_num_rows($check_customer_query)) {
                 $_GET['login'] = 'fail';
                 $info_message = TEXT_NO_EMAIL_ADDRESS_FOUND;
-                xtc_db_query("INSERT INTO 
-									intrusions 
-									(name , badvalue , page , tags , ip , ip2 , impact , origin , created )
-									VALUES 
-									('" . xtc_db_prepare_input($_POST['email_address']) . "', '" . xtc_db_prepare_input($_POST['password']) . "', '" . $_SERVER['REQUEST_URI'] . "', 'login', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
+				// die;
+                // xtc_db_query("INSERT INTO 
+									// intrusions 
+									// (name , badvalue , page , tags , ip , ip2 , impact , origin , created )
+									// VALUES 
+									// ('" . $email_address . "', '" . $password . "', '" . $_SERVER['REQUEST_URI'] . "', 'login', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
             } else {
                 $check_customer = xtc_db_fetch_array($check_customer_query);
                 $login_success = true;
@@ -126,7 +128,6 @@ class login_ORIGINAL {
             }
         }
         $login_smarty['info_message'] = $info_message;
-
         return $login_smarty;
     }
 

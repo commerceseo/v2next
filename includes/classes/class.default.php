@@ -74,7 +74,11 @@ class classdefault_ORIGINAL {
             }
 
             if (DISPLAY_MORE_CAT_DESC == 'true') {
-                $cat_desc = $categories['categories_short_description'];
+				if ($categories['categories_short_description'] == '') {
+					$cat_desc = cseo_truncate(strip_tags(str_replace('"', '', $categories['categories_description'])), 70);
+				} else {
+					$cat_desc = $categories['categories_short_description'];
+				}
             } else {
                 $cat_desc = '';
             }

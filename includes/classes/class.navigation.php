@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.navigation.php 940 2014-04-05 10:24:17Z akausch $
+ * 	$Id: class.navigation.php 1210 2014-09-22 09:04:30Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -24,7 +24,7 @@ class cseo_navigation_ORIGINAL {
 				$nav_parms = xtc_get_all_get_params(array('products_id', 'x', 'y', 'cat', 'per_site', 'multisort', 'filter_id', 'page', 'view_as'));
 				$file_name = $file_name;
 			} elseif ($site == 'advanced_search_result') {
-				$nav_parms = xtc_get_all_get_params(array('keywords', 'products_id', 'x', 'y', 'cat', 'per_site', 'multisort', 'filter_id', 'page', 'view_as_advsr'));
+				$nav_parms = xtc_get_all_get_params(array('products_id'));
 				$file_name = FILENAME_ADVANCED_SEARCH_RESULT;
 			} elseif ($site == 'tagcloud') {
 				$nav_parms = xtc_get_all_get_params(array('tag', 'products_id', 'x', 'y', 'cat', 'per_site', 'multisort', 'filter_id', 'view_as'));

@@ -233,8 +233,7 @@ class account_ORIGINAL {
             $messageStack->add('account_edit', ENTRY_EMAIL_ADDRESS_CHECK_ERROR);
             $error = true;
         } else {
-            $check_email_query = xtc_db_query("SELECT count(*) as total FROM " . TABLE_CUSTOMERS . " WHERE customers_email_address = '" . xtc_db_input($email_address) . "' AND account_type = '0' AND customers_id != '" . (int) $_SESSION['customer_id'] . "'");
-            $check_email = xtc_db_fetch_array($check_email_query);
+            $check_email = xtc_db_fetch_array(xtc_db_query("SELECT count(*) as total FROM " . TABLE_CUSTOMERS . " WHERE customers_email_address = '" . xtc_db_input($email_address) . "' AND account_type = '0' AND customers_id != '" . (int) $_SESSION['customer_id'] . "'"));
             if ($check_email['total'] > 0) {
                 $messageStack->add('account_edit', ENTRY_EMAIL_ADDRESS_ERROR_EXISTS);
                 $error = true;

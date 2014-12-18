@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: column_top.php 1144 2014-07-10 09:31:57Z akausch $
+ * 	$Id: column_top.php 1157 2014-07-21 12:31:00Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -274,6 +274,42 @@ $p = $p[0];
 																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
 															WHERE 
 																subsite = 'seo_config' 
+															AND 
+																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
+															ORDER BY an.sort");
+						while ($navi = xtc_db_fetch_array($navi_products_sql)) {
+						if($navi[$navi['name']] != '0'){
+							if ($navi['gid'] == '') {
+								echo '<li ' . ($p == $navi['name'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							} elseif ($navi['gid'] != '') {
+								echo '<li ' . ($_GET['gID'] == $navi['gid'] ? 'class="active"' : '') . '><a href="' . xtc_href_link($navi['filename'], 'gID=' . $navi['gid']) . '" class="menuBoxContentLink">' . $navi['title'] . '</a></li>';
+							}
+							}
+						}
+						?>
+					</ul>
+				</li>
+				<!-- SEO Tools -->
+				<li class="dropdown menu">
+					<?php
+						$admin_sql = xtc_db_fetch_array(xtc_db_query("SELECT configuration FROM " . TABLE_ADMIN_ACCESS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND categories = '1';"));
+						if ($admin_sql['configuration'] == '1') {
+							$cslink = 'href="'.xtc_href_link('cseo_seolyze.php', '').'"';
+						} else {
+							$cslink = '';
+						}
+					?>
+					<a <?php echo $cslink; ?> class="dropdown-toggle"><span class="glyphicon glyphicon-search"></span>SEO-Tools<span class="caret"></span></a>			
+					<ul class="dropdown-menu">
+						<?php
+						$navi_products_sql = xtc_db_query("SELECT 
+																* 
+															FROM 
+																" . TABLE_ADMIN_NAVIGATION . " AS an
+															LEFT JOIN 
+																" . TABLE_ADMIN_ACCESS . " AS ac ON(customers_id = '" . (int) $_SESSION['customer_id'] . "' )
+															WHERE 
+																subsite = 'seo_tools' 
 															AND 
 																an.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
 															ORDER BY an.sort");

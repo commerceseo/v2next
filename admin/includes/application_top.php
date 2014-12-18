@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: application_top.php 1162 2014-08-08 08:52:34Z akausch $
+ * 	$Id: application_top.php 1210 2014-09-22 09:04:30Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -66,7 +66,7 @@ spl_autoload_register(array(new cseoautoloader('admin'), 'load'));
 define('SQL_CACHEDIR', DIR_FS_CATALOG . 'cache/');
 
 // Set the length of the redeem code, the longer the more secure
-if(defined(SECURITY_CODE_LENGTH)) {
+if(defined('SECURITY_CODE_LENGTH')) {
   define('SECURITY_CODE_LENGTH', '10');
 }
 
@@ -81,18 +81,18 @@ include('includes/database_admin.php');
 
 // include needed functions
 
-require_once(DIR_FS_INC . 'cseo_db.inc.php');
-
-require_once(DIR_FS_INC . 'xtc_get_ip_address.inc.php');
-require_once(DIR_FS_INC . 'xtc_setcookie.inc.php');
-require_once(DIR_FS_INC . 'xtc_validate_email.inc.php');
-require_once(DIR_FS_INC . 'xtc_not_null.inc.php');
-require_once(DIR_FS_INC . 'xtc_add_tax.inc.php');
-require_once(DIR_FS_INC . 'xtc_get_tax_rate.inc.php');
-require_once(DIR_FS_INC . 'xtc_get_qty.inc.php');
-require_once(DIR_FS_INC . 'xtc_product_link.inc.php');
-require_once(DIR_FS_INC . 'xtc_cleanName.inc.php');
-require_once(DIR_FS_INC . 'cseo_version.inc.php');
+require_once (DIR_FS_INC . 'cseo_db.inc.php');
+require_once (DIR_FS_INC.'cseo_htmlentities_wrapper.inc.php');
+require_once (DIR_FS_INC . 'xtc_get_ip_address.inc.php');
+require_once (DIR_FS_INC . 'xtc_setcookie.inc.php');
+require_once (DIR_FS_INC . 'xtc_validate_email.inc.php');
+require_once (DIR_FS_INC . 'xtc_not_null.inc.php');
+require_once (DIR_FS_INC . 'xtc_add_tax.inc.php');
+require_once (DIR_FS_INC . 'xtc_get_tax_rate.inc.php');
+require_once (DIR_FS_INC . 'xtc_get_qty.inc.php');
+require_once (DIR_FS_INC . 'xtc_product_link.inc.php');
+require_once (DIR_FS_INC . 'xtc_cleanName.inc.php');
+require_once (DIR_FS_INC . 'cseo_version.inc.php');
 
 // Define how do we update currency exchange rates
 // Possible values are 'oanda' 'xe' or ''

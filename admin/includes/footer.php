@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: footer.php 1127 2014-06-30 11:54:44Z akausch $
+ * 	$Id: footer.php 1157 2014-07-21 12:31:00Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -29,15 +29,15 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 		</div>
 		<div class="navbar-collapse collapse" id="footernav">
 			<ul class="nav navbar-nav">
-				<li><a href="../index.php" title="Front" target="_blank"><span class="glyphicon glyphicon-home"></span><span class="hidden-sm hidden-md hidden-lg">Home</span></a></li>
-				<li><a href="<?php echo xtc_href_link('blog.php'); ?>" title="Blog"><span class="glyphicon glyphicon-globe"></span><span class="hidden-sm hidden-md hidden-lg">Blog</span></a></li>
-				<li><a href="<?php echo xtc_href_link('cseo_center_security.php'); ?>" title="Security"><span class="glyphicon glyphicon-lock"></span><span class="hidden-sm hidden-md hidden-lg">Security</span></a></li>
-				<li><a href="<?php echo xtc_href_link('delete_cache.php'); ?>" title="Cache leeren"><span class="glyphicon glyphicon-trash"></span><span class="hidden-sm hidden-md hidden-lg">Cache leeren</span></a></li>
-				<li><a href="<?php echo xtc_href_link('module_system.php', 'set=&module=commerce_seo_url'); ?>" title="SEO-URL"><span class="glyphicon glyphicon-link"></span><span class="hidden-sm hidden-md hidden-lg">SEO-URL</span></a></li>
-				<li><a href="https://www.commerce-seo.de/support/" target="_blank" title="Support"><span class="glyphicon glyphicon-comment"></span><span class="hidden-sm hidden-md hidden-lg">Support</span></a></li>
-				<li><a href="https://www.facebook.com/commerce.seo.v2" target="_blank" title="Like"><span class="glyphicon glyphicon-thumbs-up"></span><span class="hidden-sm hidden-md hidden-lg">Like</span></a></li>
-				<li><a href="<?php echo xtc_href_link(FILENAME_CREDITS) ?>" title="Credits"><span class="glyphicon glyphicon-copyright-mark"></span><span class="hidden-sm hidden-md hidden-lg">Credits</span></a></li>
-				<li><a href="<?php echo xtc_href_link(FILENAME_LOGOUT) ?>" title="Logout"><span class="glyphicon glyphicon-off"></span><span class="hidden-sm hidden-md hidden-lg">Logout</span></a></li>
+				<li><a href="../index.php" title="Front" target="_blank"><i class="glyphicon glyphicon-home"></i> Shop</a></li>
+				<li><a href="<?php echo xtc_href_link('blog.php'); ?>" title="Blog"><i class="glyphicon glyphicon-globe"></i> Blog</a></li>
+				<li><a href="<?php echo xtc_href_link('cseo_center_security.php'); ?>" title="Security"><i class="glyphicon glyphicon-lock"></i> Security</a></li>
+				<li><a href="<?php echo xtc_href_link('delete_cache.php'); ?>" title="Cache leeren"><i class="glyphicon glyphicon-trash"></i> Cache leeren</a></li>
+				<li><a href="<?php echo xtc_href_link('module_system.php', 'set=&module=commerce_seo_url'); ?>" title="SEO-URL"><i class="glyphicon glyphicon-link"></i> SEO-URL</a></li>
+				<li><a href="http://plussupport.commerce-seo.de/" target="_blank" title="Support"><i class="glyphicon glyphicon-comment"></i> Support</a></li>
+				<li><a href="http://bugtracker.commerce-seo.de/" target="_blank" title="Bugtracker"><i class="glyphicon glyphicon-eye-open"></i> Bugtracker</a></li>
+				<li><a href="<?php echo xtc_href_link(FILENAME_CREDITS) ?>" title="Credits"><i class="glyphicon glyphicon-copyright-mark"></i> Credits</a></li>
+				<li><a href="<?php echo xtc_href_link(FILENAME_LOGOUT) ?>" title="Logout"><i class="glyphicon glyphicon-off"></i> Logout</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<li>

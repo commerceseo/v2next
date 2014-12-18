@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: database_admin.php 1095 2014-06-12 14:44:28Z akausch $
+ * 	$Id: database_admin.php 1191 2014-09-09 19:05:15Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -158,3 +158,4 @@ define('TABLE_WITHDRAWAL', 'withdrawals');
 define('TABLE_BOXES', 'boxes');
 define('TABLE_BOXES_NAMES', 'boxes_names');
 define('TABLE_BOXES_POSITIONS', 'boxes_positions');
+define('TABLE_BLOG_COMMENT', 'blog_comment');

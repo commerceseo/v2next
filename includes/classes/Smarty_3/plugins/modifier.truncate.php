@@ -1,81 +1,64 @@
 <?php
-/*
-	$Id: modifier.truncate.php 645 2013-09-30 21:16:12Z akausch $
-	
-	Author - Sebastian Schramm
-	(c) 2010 commerce:SEO - commerce-seo.de
-	
-	cseo_trunecat.inc.php
+/**
+ * Smarty plugin
+ *
+ * @package    Smarty
+ * @subpackage PluginsModifier
+ */
 
-*/
+/**
+ * Smarty truncate modifier plugin
+ * Type:     modifier<br>
+ * Name:     truncate<br>
+ * Purpose:  Truncate a string to a certain length if necessary,
+ *               optionally splitting in the middle of a word, and
+ *               appending the $etc string or inserting $etc into the middle.
+ *
+ * @link   http://smarty.php.net/manual/en/language.modifier.truncate.php truncate (Smarty online manual)
+ * @author Monte Ohrt <monte at ohrt dot com>
+ *
+ * @param string  $string      input string
+ * @param integer $length      length of truncated text
+ * @param string  $etc         end string
+ * @param boolean $break_words truncate at word boundary
+ * @param boolean $middle      truncate in the middle of text
+ *
+ * @return string truncated string
+ */
+function smarty_modifier_truncate($string, $length = 80, $etc = '...', $break_words = false, $middle = false)
+{
+    if ($length == 0) {
+        return '';
+    }
 
-function smarty_modifier_truncate($text, $length = 100, $ending = '...', $exact = true, $considerHtml = true) {
-		if($length < 1)
-			$length = 150;
-        if ($considerHtml) {
-            if (strlen(preg_replace('/<.*?>/', '', $text)) <= $length) {
-                return $text;
+    if (Smarty::$_MBSTRING) {
+        if (mb_strlen($string, Smarty::$_CHARSET) > $length) {
+            $length -= min($length, mb_strlen($etc, Smarty::$_CHARSET));
+            if (!$break_words && !$middle) {
+                $string = preg_replace('/\s+?(\S+)?$/' . Smarty::$_UTF8_MODIFIER, '', mb_substr($string, 0, $length + 1, Smarty::$_CHARSET));
             }
-            preg_match_all('/(<.+?>)?([^<>]*)/s', $text, $lines, PREG_SET_ORDER);
-            $total_length = strlen($ending);
-            $open_tags = array();
-            $truncate = '';
-            
-            foreach ($lines as $line_matchings) {
-                if (!empty($line_matchings[1])) {
-                    if (preg_match('/^<(\s*.+?\/\s*|\s*(img|br|input|hr|area|base|basefont|col|frame|isindex|link|meta|param)(\s.+?)?)>$/is', $line_matchings[1])) {
-                    } else if (preg_match('/^<\s*\/([^\s]+?)\s*>$/s', $line_matchings[1], $tag_matchings)) {
-                        $pos = array_search($tag_matchings[1], $open_tags);
-                        if ($pos !== false) {
-                            unset($open_tags[$pos]);
-                        }
-                    } else if (preg_match('/^<\s*([^\s>!]+).*?>$/s', $line_matchings[1], $tag_matchings)) {
-                        array_unshift($open_tags, strtolower($tag_matchings[1]));
-                    }
-                    $truncate .= $line_matchings[1];
-                }
-                $content_length = strlen(preg_replace('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', ' ', $line_matchings[2]));
-                if ($total_length+$content_length > $length) {
-                    $left = $length - $total_length;
-                    $entities_length = 0;
-                    if (preg_match_all('/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i', $line_matchings[2], $entities, PREG_OFFSET_CAPTURE)) {
-                        foreach ($entities[0] as $entity) {
-                            if ($entity[1]+1-$entities_length <= $left) {
-                                $left--;
-                                $entities_length += strlen($entity[0]);
-                            } else {
-                                break;
-                            }
-                        }
-                    }
-                    $truncate .= substr($line_matchings[2], 0, $left+$entities_length);
-                    break;
-                } else {
-                    $truncate .= $line_matchings[2];
-                    $total_length += $content_length;
-                }
-                if($total_length >= $length) {
-                    break;
-                }
+            if (!$middle) {
+                return mb_substr($string, 0, $length, Smarty::$_CHARSET) . $etc;
             }
-        } else {
-            if (strlen($text) <= $length) {
-                return $text;
-            } else {
-                $truncate = substr($text, 0, $length - strlen($ending));
-            }
+
+            return mb_substr($string, 0, $length / 2, Smarty::$_CHARSET) . $etc . mb_substr($string, - $length / 2, $length, Smarty::$_CHARSET);
         }
-		if (!$exact) {
-			$spacepos = strrpos($truncate, ' ');
-			if (isset($spacepos)) {
-				$truncate = substr($truncate, 0, $spacepos);
-			}
-		}
-		$truncate .= $ending;
-        if($considerHtml) {
-            foreach ($open_tags as $tag) {
-                $truncate .= '</' . $tag . '>';
-            }
+
+        return $string;
+    }
+
+    // no MBString fallback
+    if (isset($string[$length])) {
+        $length -= min($length, strlen($etc));
+        if (!$break_words && !$middle) {
+            $string = preg_replace('/\s+?(\S+)?$/', '', substr($string, 0, $length + 1));
         }
-		return $truncate;
-	}
+        if (!$middle) {
+            return substr($string, 0, $length) . $etc;
+        }
+
+        return substr($string, 0, $length / 2) . $etc . substr($string, - $length / 2);
+    }
+
+    return $string;
+}

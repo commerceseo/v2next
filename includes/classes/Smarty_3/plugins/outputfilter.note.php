@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: outputfilter.note.php 397 2013-06-17 19:36:21Z akausch $
+* 	$Id: outputfilter.note.php 1293 2014-12-10 16:26:10Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -12,15 +12,7 @@
 * 	Released under the GNU General Public License
 * ---------------------------------------------------------------*/
 
-
-
-
 function smarty_outputfilter_note($tpl_output, &$smarty) {
-    /*
-    The following copyright announcement is in compliance
-    to section 2c of the GNU General Public License, and
-    thus can not be removed, or can only be modified
-    appropriately.*/
 
 $tpl_output = preg_replace_callback("/(<a[^>]*href=\"|<form[^>]*action=\")(.*)(\"[^<]*>)/Usi","AmpReplace",$tpl_output);
 $tpl_output = preg_replace_callback("/(<a[^>]*href='|<form[^>]*action=')(.*)('[^<]*>)/Usi","AmpReplace",$tpl_output);
@@ -29,4 +21,3 @@ $tpl_output = preg_replace_callback("/(<javascript[^>]*http'|<form[^>]*action=')
 
 return $tpl_output;
 }
-?>

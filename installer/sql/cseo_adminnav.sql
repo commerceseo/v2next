@@ -251,3 +251,6 @@ INSERT INTO admin_navigation VALUES (NULL, 'specials_gratis', 'Specials-Free', '
 
 INSERT INTO admin_navigation VALUES (NULL, 'it_recht_kanzlei', 'IT-Rechtskanzlei', 'modules', 'it_recht_kanzlei.php', NULL, 2, NULL, 12);
 INSERT INTO admin_navigation VALUES (NULL, 'it_recht_kanzlei', 'IT-Rechtskanzlei', 'modules', 'it_recht_kanzlei.php', NULL, 1, NULL, 12);
+
+INSERT INTO admin_navigation VALUES (NULL, 'cseo_seolyze', 'SEOLYZE', 'seo_tools', 'cseo_seolyze.php', NULL, 2, NULL, 1);
+INSERT INTO admin_navigation VALUES (NULL, 'cseo_seolyze', 'SEOLYZE', 'seo_tools', 'cseo_seolyze.php', NULL, 1, NULL, 1);

@@ -74,8 +74,8 @@ INSERT INTO address_format VALUES (7, '$firstname $lastname$cr$streets, $city$cr
 INSERT INTO address_format VALUES (8, '$firstname $lastname$cr$streets$cr$city$cr$state$cr$postcode$cr$country','$postcode / $country');
 
 
-INSERT INTO admin_access VALUES (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-INSERT INTO admin_access VALUES ('groups', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 2, 4, 2, 2, 2, 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO admin_access VALUES (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO admin_access VALUES ('groups', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 2, 4, 2, 2, 2, 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 
 INSERT INTO configuration VALUES 
@@ -633,10 +633,10 @@ INSERT INTO configuration VALUES (NULL, 'AJAXCOLORBOX', 'true', 1000, 19, NULL, 
 INSERT INTO configuration VALUES (NULL, 'AJAXFLEXNAV', 'false', 1000, 20, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'AJAXJZOOM', 'false', 1000, 21, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'AJAXRESPTABS', 'false', 1000, 22, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'AJAXJYOUTUBE', 'false', 1000, 23, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'AJAXRESPSLIDE', 'true', 1000, 24, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'AJAXUNSLIDER', 'false', 1000, 25, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'AJAXBOOTSTRAP', 'true', 1000, 26, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
+INSERT INTO configuration VALUES (NULL, 'DISPLAY_START_NEW_PRODUCTS', 'top', 1000, 50, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''top'', ''newproducts''),');
 
 #configuration_group_id 1001, Twitterbox ab 2.1
 INSERT INTO configuration VALUES 
@@ -1133,6 +1133,11 @@ INSERT INTO configuration VALUES (NULL, 'CSV_DEFAULT_ACTION', 'ignore', 20, 5, N
 INSERT INTO configuration VALUES (NULL, 'CHECKOUT_LOGIN_ALLOW', 'false', 333, 0, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
 
 INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'CSEO_LOGO', 'logo.png', '0', '0');
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZEEMAIL', '', 2, 1);
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZEVORNAME', '',  2, 2);
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZENACHNAME', '',  2, 3);
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZETELE', '',  2, 4);
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZEAPIKEY', '',  2, 5);
 INSERT INTO configuration VALUES (NULL, 'CSS_FRONTEND_BACKGROUND', '', 23, 31, NULL, NOW(), NULL, NULL);
 INSERT INTO configuration VALUES (NULL, 'CSS_FRONTEND_BACKGROUND_1', '', 23, 32, NULL, NOW(), NULL, NULL);
 INSERT INTO configuration VALUES (NULL, 'CSS_FRONTEND_BACKGROUND_2', '', 23, 33, NULL, NOW(), NULL, NULL);

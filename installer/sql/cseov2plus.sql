@@ -260,6 +260,7 @@ cseo_rma INT(1) NOT NULL DEFAULT '0',
 specials_gratis INT(1) NOT NULL DEFAULT '0',
 it_recht_kanzlei INT(1) NOT NULL DEFAULT '0',
 magnalister INT(1) NOT NULL DEFAULT '0',
+cseo_seolyze INT(1) NOT NULL DEFAULT '0',
 PRIMARY KEY (customers_id)
 );
 

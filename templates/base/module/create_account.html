@@ -1,9 +1,11 @@
+{strip}
 {config_load file="lang/$language/lang_$language.conf" section="create_account"}
 {if $error!=''}
 <div class="headerError bg-danger">{$error}</div>
 {/if}
 <div class="login_pad row">
-	<div class="product_pad col-md-12">
+	<div class="col-md-12">
+	<div class="product_pad">
 	<h2>{#heading_create_account#}</h2>
 		{$FORM_ACTION}
 		<div class="inputRequirement bg-danger">{#text_must#}</div>
@@ -116,4 +118,6 @@
 		<br>
 		{$FORM_END}
 	</div>
+	</div>
 </div>
+{/strip}

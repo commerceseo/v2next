@@ -21,7 +21,21 @@
                     {if $module_data.PRODUCTS_SHIPPING_TIME}
                     {$txt.text_shippingtime} {$module_data.PRODUCTS_SHIPPING_TIME}
                     {/if}
-                    {if $module_data.ATTRIBUTES!=''}
+                    {*<pre>
+					{$module_data.PROPERTIES|print_r}
+                    </pre>*}
+                    {if $module_data.PROPERTIES}
+                    {foreach item=prop_data from=$module_data.PROPERTIES}
+                    <div class="col-xs-12">
+                        <em>{$prop_data.properties_name}: {$prop_data.values_name}</em><br>
+                        {$prop_data.PREFIX} {$prop_data.value_price}
+						{if $prop_data.value_model}
+                        <br>{$txt.text_shippingtime}: {$prop_data.value_model}
+						{/if}
+                    </div>
+                    {/foreach}
+					{/if}
+                    {if $module_data.ATTRIBUTES}
                     {foreach key=key_data item=item_data from=$module_data.ATTRIBUTES}
                     <div class="col-xs-12">
                         <em>{$item_data.NAME}: {$item_data.VALUE_NAME}

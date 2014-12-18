@@ -14,6 +14,7 @@
  * --------------------------------------------------------------- */
 function xtc_validate_email($email) {
     $valid_address = true;
+	require_once(DIR_FS_INC . 'strlen_wrapper.inc.php');
 
     // sql injection fix 16.02.2011
     if (strpos($email,"\0")!==false) {return false;}

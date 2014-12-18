@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: sitemap.php 420 2013-06-19 18:04:39Z akausch $
+* 	$Id: sitemap.php 1180 2014-09-02 21:07:18Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -12,13 +12,11 @@
 * 	Released under the GNU General Public License
 * ---------------------------------------------------------------*/
 
-
-
-
 $module_smarty = new Smarty;
 $module_smarty->assign('tpl_path','templates/'.CURRENT_TEMPLATE.'/');
 
 require_once(DIR_FS_INC . 'xtc_count_products_in_category.inc.php');
+require_once(DIR_FS_INC . 'xtc_category_link.inc.php');
 
  //to get category trees
  function get_category_tree($parent_id = '0', $spacing = '', $exclude = '', $category_tree_array = '', $include_itself = false, $cPath = '') {
@@ -72,8 +70,6 @@ if ($parent_id == 0){ $cPath = ''; } else { $cPath .= $parent_id . '_'; }
  }
 $module_content = $cat_content;
 
-#print_r ($module_content);
-
 if(file_exists(FILENAME_BLOG)) {
 	// Blog Kategorie + Items
 	$blog_categories_query = xtDBquery("SELECT id, titel, date, update_date FROM ".TABLE_BLOG_CATEGORIES." WHERE status = 2 AND language_id = '".(int)$_SESSION['languages_id']."' ORDER BY position ASC");
@@ -121,4 +117,3 @@ if (sizeof($module_content)>=1) {
 		echo $module_smarty->fetch(CURRENT_TEMPLATE.'/module/sitemap.html',$cache_id);
 	}
 }
-?>

@@ -34,7 +34,7 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 				<li><a href="<?php echo xtc_href_link('cseo_center_security.php'); ?>" title="Security"><i class="glyphicon glyphicon-lock"></i> Security</a></li>
 				<li><a href="<?php echo xtc_href_link('delete_cache.php'); ?>" title="Cache leeren"><i class="glyphicon glyphicon-trash"></i> Cache leeren</a></li>
 				<li><a href="<?php echo xtc_href_link('module_system.php', 'set=&module=commerce_seo_url'); ?>" title="SEO-URL"><i class="glyphicon glyphicon-link"></i> SEO-URL</a></li>
-				<li><a href="http://plussupport.commerce-seo.de/" target="_blank" title="Support"><i class="glyphicon glyphicon-comment"></i> Support</a></li>
+				<li><a href="http://support.commerce-seo.de/" target="_blank" title="Support"><i class="glyphicon glyphicon-comment"></i> Support</a></li>
 				<li><a href="http://bugtracker.commerce-seo.de/" target="_blank" title="Bugtracker"><i class="glyphicon glyphicon-eye-open"></i> Bugtracker</a></li>
 				<li><a href="<?php echo xtc_href_link(FILENAME_CREDITS) ?>" title="Credits"><i class="glyphicon glyphicon-copyright-mark"></i> Credits</a></li>
 				<li><a href="<?php echo xtc_href_link(FILENAME_LOGOUT) ?>" title="Logout"><i class="glyphicon glyphicon-off"></i> Logout</a></li>

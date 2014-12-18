@@ -50,12 +50,12 @@ function xtc_db_error($errno, $errstr, $errfile, $errline) {
         case E_USER_ERROR:
             if ($errstr == "(SQL)") {
                 // handling an sql error
-                // if ($_SESSION['customers_status']['customers_status_id'] == 0) {
+                if ($_SESSION['customers_status']['customers_status_id'] == 0) {
                     echo "<b>SQL Fehler</b> [$errno] " . SQLMESSAGE . "<br /><br />\n\n";
                     echo "<b>Query:</b> " . SQLQUERY . "<br /><br />\n\n";
                     echo "Beim Aufruf der Datei <em>" . SQLERRORFILE . "</em> ";
                     echo ", PHP " . PHP_VERSION . " (" . PHP_OS . ")<br /><br />\n\n";
-                // }
+                }
                 xtc_db_query("REPAIR TABLE sessions");
                 xtc_db_query("REPAIR TABLE whos_online");
                 xtc_db_query("REPAIR TABLE whos_online_month");
@@ -289,9 +289,8 @@ function xtc_db_input($string, $link = 'db_link') {
 
 function xtc_db_prepare_input($string) {
     if (is_string($string)) {
-        $string = stripslashes($string);
         $string = preg_replace('/union.*select.*from/i', '', $string);
-        return trim($string);
+        return trim(stripslashes($string));
     } elseif (is_array($string)) {
         reset($string);
         while (list($key, $value) = each($string)) {

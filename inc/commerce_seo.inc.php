@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: commerce_seo.inc.php 1166 2014-08-25 10:37:23Z akausch $
+ * 	$Id: commerce_seo.inc.php 1223 2014-10-07 13:22:43Z svvario $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -677,7 +677,7 @@ class CommerceSeo {
 
     //Produkte Create SEO-URL Ende
 
-    function updateSeoDBTable($elementType, $operation, $id) {
+    function updateSeoDBTable($elementType, $operation, $id, $old_url = '') {
 
         switch ($elementType) {
             // ******* Product Update ********//
@@ -722,8 +722,16 @@ class CommerceSeo {
                     if (MODULE_COMMERCE_SEO_INDEX_LANGUAGEURL == 'True') {
                         $productLink = $resultList['code'] . '/' . $productPath . cseo_get_url_friendly_text($product_name);
                     } else {
-                        if ((!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] && MODULE_COMMERCE_SEO_URL_LENGHT == 'True') || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] == 'True' && (!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_OLD_REWRITE'] && MODULE_COMMERCE_SEO_URL_OLD_REWRITE == 'True') || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_OLD_REWRITE'] == 'True') {
-                            $productOldLink = $productOldPath . cseo_get_url_friendly_text($product_name) . '.html';
+                        if ((!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] && 
+						MODULE_COMMERCE_SEO_URL_LENGHT == 'True') || 
+						$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LENGHT'] == 'True' && 
+						(!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_OLD_REWRITE'] && MODULE_COMMERCE_SEO_URL_OLD_REWRITE == 'True') || 
+						$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_OLD_REWRITE'] == 'True') {
+                            if ($old_url == '') {
+								$productOldLink = $productOldPath . cseo_get_url_friendly_text($product_name) . '.html';
+							} else {
+								$productOldLink = $old_url[2];
+							}
                             $productLink = $productPath . cseo_get_url_friendly_text($product_name);
                         } else {
                             $productLink = $productPath . cseo_get_url_friendly_text($product_name);
@@ -795,14 +803,25 @@ class CommerceSeo {
                         if (!$_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LOWERCASE'] && MODULE_COMMERCE_SEO_URL_LOWERCASE === 'True' || $_REQUEST['configuration']['MODULE_COMMERCE_SEO_URL_LOWERCASE'] === 'True') {
                             $categoryLink = strtolower($categoryLink);
                         }
-                        $commerce_update_seo_query = xtDBquery("UPDATE 
-																	commerce_seo_url 
-																SET 
-																	url_md5='" . md5($categoryLink) . "', url_text='" . $categoryLink . "' 
-																WHERE 
-																	categories_id='" . $id . "' 
-																AND 
-																	language_id='" . $resultList['language_id'] . "'");
+
+						if($old_categorylink['url_text'] != NULL) {
+							$commerce_update_seo_query = xtDBquery("UPDATE 
+																		commerce_seo_url 
+																	SET 
+																		url_md5='" . md5($categoryLink) . "', url_text='" . $categoryLink . "' 
+																	WHERE 
+																		categories_id='" . $id . "' 
+																	AND 
+																		language_id='" . $resultList['language_id'] . "'");
+						} else {
+							$commerce_insert_seo_query = xtDBquery("INSERT 
+																		commerce_seo_url 
+																	SET 
+																		url_md5='" . md5($categoryLink) . "', 
+																		url_text='" . $categoryLink . "',
+																		categories_id='" . $id . "',
+																		language_id='" . $resultList['language_id'] . "'");	
+						}
                     }
                 }
                 break;

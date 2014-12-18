@@ -16,11 +16,26 @@ table tbody tr td {
 body {
 font-size:12px;
 }
+iframe {
+  min-height:800px;
+  height:auto !important;
+  height:100%;
+}
 
 .fl {float: left;}
 .fr {float: right;}
 
-
+.pimg {
+float:left; width: 50px;
+}
+.pname {
+float:left; position:relative; top:2px; width: 80%;
+}
+.pimg img {
+width: 45px !important;
+max-width: 45px !important;
+height: auto !important;
+}
 .clear {
 clear: both;
 display: block;
@@ -156,7 +171,7 @@ vertical-align: middle;
 background: #484848;
 background: -webkit-linear-gradient(top,  #484848 0%,#484848 50%,#1a1a1a 50%,#1a1a1a 100%); 
 background: linear-gradient(to bottom,  #484848 0%,#484848 50%,#1a1a1a 50%,#1a1a1a 100%); 
-color: #e0e0e0;
+color: #e0e0e0 !important;
 font-size: 13px;
 border: 1px solid #8C8C8C;
 border-bottom:0;

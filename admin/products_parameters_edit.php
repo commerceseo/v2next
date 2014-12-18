@@ -88,7 +88,6 @@ if ($_GET['action'] == 'save') {
             }
         }
     }
-    //exit;
     xtc_redirect(xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'products_id=' . $_POST['products_id'] . '&category_path=' . $_POST['category_path']));
 } else {
     if (isset($_POST['sel']) && is_array($_POST['sel']) && $_POST['products_id']) {
@@ -147,7 +146,7 @@ if ($_GET['action'] == 'save') {
     $fields[] = array('id' => '25', 'text' => '25');
     $fields[] = array('id' => '30', 'text' => '30');
 }
-require(DIR_WS_INCLUDES . 'header.php');
+require_once(DIR_WS_INCLUDES . 'header.php');
 ?>
 
 <table class="outerTable" cellspacing="0" cellpadding="0">
@@ -162,25 +161,32 @@ require(DIR_WS_INCLUDES . 'header.php');
                             </tr>
                         </table>
                     </td>
-                </tr>
-                <tr>
-                    <td style="padding-top: 5px;" align="left" width="50%">
-                        <input type="submit" class="button" onClick="this.blur();" value="<?php echo BUTTON_SAVE; ?>"/> 
-                        <a class="button" href="<?php echo xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'products_id=' . $_POST['products_id'] . '&category_path=' . $_POST['category_path']); ?>"><?php echo BUTTON_CANCEL; ?></a>
-                    </td>
-                    <td align="right">
+                    <td width="100%" colspan="2">
+                        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                            <tr>
+                                <td class="pageHeading">
                         <?php echo xtc_draw_form('fields', FILENAME_PRODUCTS_PARAMETERS_EDIT, '', 'POST') . xtc_draw_hidden_field('products_id', $_POST['products_id']) . xtc_draw_hidden_field('category_path', $_POST['category_path']); ?>
                         Felder: <?php
                         echo xtc_draw_pull_down_menu('fields', $fields, ($_POST['fields'] != '' ? $_POST['fields'] : '10'), 'onchange="javascript:this.form.submit();"');
-                        foreach ($_POST['sel'] AS $post)
+                        foreach ($_POST['sel'] AS $post) {
                             echo xtc_draw_hidden_field('sel[]', $post) . "\n";
+						}
                         ?>
                         </form>
+								</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+<?php echo xtc_draw_form('parameter', FILENAME_PRODUCTS_PARAMETERS_EDIT, 'action=save', 'post', 'id="parameter" onsubmit="return checkForm();"') . xtc_draw_hidden_field('products_id', $_POST['products_id']) . xtc_draw_hidden_field('category_path', $_POST['category_path']); ?>
+                <tr>
+                    <td style="padding-top: 5px;" align="left" width="100%">
+                        <input type="submit" class="button" value="<?php echo BUTTON_SAVE; ?>"/> 
+                        <a class="button" href="<?php echo xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'products_id=' . $_POST['products_id'] . '&category_path=' . $_POST['category_path']); ?>"><?php echo BUTTON_CANCEL; ?></a>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="2">
-<?php echo xtc_draw_form('parameter', FILENAME_PRODUCTS_PARAMETERS_EDIT, 'action=save', 'post', 'id="parameter" onsubmit="return checkForm();"') . xtc_draw_hidden_field('products_id', $_POST['products_id']) . xtc_draw_hidden_field('category_path', $_POST['category_path']); ?>
                         <table border="0" width="100%" cellspacing="0" cellpadding="0">
                             <tr>
                                 <td valign="top">
@@ -211,7 +217,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                     echo '<tr' . $f . '>';
                                                     if ($j == 0)
                                                         echo '<td class="dataTableHeadingContent2" rowspan="' . $n . '">' . ($i + 1) . '</td>';
-                                                    echo '<td class="dataTableHeadingContent2">' . xtc_image(DIR_WS_LANGUAGES . $languages[$j]['directory'] . '/admin/images/' . $languages[$j]['image'], $languages[$j]['name']) . '</td>';
+                                                    echo '<td class="dataTableHeadingContent2">' . xtc_image(DIR_WS_LANGUAGES . $languages[$j]['directory'] . '/' . $languages[$j]['image'], $languages[$j]['name']) . '</td>';
                                                     $names_sel = '<select style="width:90%" name="parameters_' . $gID . '_' . $i . '_' . $languages[$j]['id'] . '_selected_name"><option></option>';
                                                     if (sizeof($names[$gID][$languages[$j]['id']]))
                                                         foreach ($names[$gID][$languages[$j]['id']] as $name_opt)
@@ -234,7 +240,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                             </tr>
                             <tr>
                                 <td style="padding-top: 5px;" colspan="2">
-                                    <input type="submit" class="button" onClick="this.blur();" value="<?php echo BUTTON_SAVE; ?>"/> 
+                                    <input type="submit" class="button" value="<?php echo BUTTON_SAVE; ?>"/> 
                                     <a class="button" href="<?php echo xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'products_id=' . $_POST['products_id'] . '&category_path=' . $_POST['category_path']); ?>"><?php echo BUTTON_CANCEL; ?></a>
                                 </td>
                             </tr>

@@ -257,9 +257,16 @@ switch ($_GET['action']) {
 }
 
 require_once (DIR_WS_INCLUDES . 'header.php');
-?>
-
-<?php
+if (!defined('MODULE_ORDER_TOTAL_COUPON_STATUS') || MODULE_ORDER_TOTAL_COUPON_STATUS == 'false') {
+echo '<div class="table messageStackWarning">';
+echo 'Bitte aktivieren Sie das <a href="modules.php?set=ordertotal&module=ot_coupon">Coupon Modul</a>!';
+echo '</div>';
+}
+if (!defined('MODULE_ORDER_TOTAL_GV_STATUS') || MODULE_ORDER_TOTAL_GV_STATUS == 'false') {
+echo '<div class="table messageStackWarning">';
+echo 'Bitte aktivieren Sie das <a href="modules.php?set=ordertotal&module=ot_gv">Gutschein Modul</a>!';
+echo '</div>';
+}
 // REPORT ANZEIGEN
 switch ($_GET['action']) {
     case 'voucherreport':
@@ -267,7 +274,6 @@ switch ($_GET['action']) {
         <table border="0" width="100%" cellspacing="0" cellpadding="0">
             <tr>
                 <td class="pageHeading"><?php echo HEADING_TITLE; ?></td>
-                <td class="pageHeading" align="right">&nbsp;</td>
             </tr>
         </table>
         <table border="0" width="100%" cellspacing="0" cellpadding="0">

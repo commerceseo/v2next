@@ -29,7 +29,6 @@ switch ($_GET['action']) {
         $gID = xtc_db_prepare_input($_GET['gID']);
         $name = xtc_db_prepare_input($_POST['name']);
         $sort_order = xtc_db_prepare_input($_POST['sort_order']);
-
         xtc_db_query("UPDATE " . TABLE_PRODUCTS_PARAMETERS_GROUPS . " SET sort_order = '" . xtc_db_input($sort_order) . "' WHERE group_id = " . $gID);
         foreach ($name as $key => $value) {
             xtc_db_query("UPDATE " . TABLE_PRODUCTS_PARAMETERS_GROUPS_DESCRIPTION . " SET group_name = '" . xtc_db_input($value) . "' WHERE group_id = " . $gID . " AND language_id=" . $key);
@@ -45,15 +44,14 @@ switch ($_GET['action']) {
         break;
 
     case 'delete':
-
         break;
 }
-require(DIR_WS_INCLUDES . 'header.php');
+require_once(DIR_WS_INCLUDES . 'header.php');
 if ($_GET['action'] == 'new') {
     ?>
     <script type="text/javascript">
         <!--
-                    function checkIt(form) {
+		function checkIt(form) {
             if (form.sort_order.value != 0)
                 return true;
             else {
@@ -152,10 +150,10 @@ if ($_GET['action'] == 'new') {
                         $contents = array('form' => xtc_draw_form('languages', FILENAME_PRODUCTS_PARAMETERS, 'action=insert&products_id=' . $_GET['products_id'], 'POST', 'onsubmit="return checkIt(this);"'));
                         $contents[] = array('text' => TEXT_INFO_INSERT_INTRO);
                         for ($i = 0, $n = sizeof($languages); $i < $n; $i++) {
-                            $contents[] = array('text' => '<br />' . xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/admin/images/' . $languages[$i]['image'], $languages[$i]['name']) . " " . TEXT_INFO_GROUP_NAME . '<br />' . xtc_draw_input_field('name[' . $languages[$i]['id'] . ']'));
+                            $contents[] = array('text' => '<br />' . xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']) . " " . TEXT_INFO_GROUP_NAME . '<br />' . xtc_draw_input_field('name[' . $languages[$i]['id'] . ']'));
                         }
                         $contents[] = array('text' => '<br />' . TEXT_INFO_GROUP_SORT_ORDER . '<br />' . xtc_draw_input_field('sort_order'));
-                        $contents[] = array('align' => 'center', 'text' => '<br /><input class="button" type="submit" value="' . BUTTON_INSERT . '" /> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $_GET['gID']) . '">' . BUTTON_CANCEL . '</a>');
+                        $contents[] = array('align' => 'center', 'text' => '<br /><input class="button" type="submit" value="' . BUTTON_INSERT . '" /> <a class="button" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $_GET['gID']) . '">' . BUTTON_CANCEL . '</a>');
                         break;
 
                     case 'edit':
@@ -163,25 +161,25 @@ if ($_GET['action'] == 'new') {
                         $contents = array('form' => xtc_draw_form('languages', FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=save'));
                         $contents[] = array('text' => TEXT_INFO_EDIT_INTRO);
                         for ($i = 0, $n = sizeof($languages); $i < $n; $i++) {
-                            $contents[] = array('text' => '<br />' . xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/admin/images/' . $languages[$i]['image'], $languages[$i]['name']) . " " . TEXT_INFO_GROUP_NAME . '<br />' . xtc_draw_input_field('name[' . $languages[$i]['id'] . ']', $name[$languages[$i]['id']]));
+                            $contents[] = array('text' => '<br />' . xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']) . " " . TEXT_INFO_GROUP_NAME . '<br />' . xtc_draw_input_field('name[' . $languages[$i]['id'] . ']', $name[$languages[$i]['id']]));
                         };
                         $contents[] = array('text' => '<br />' . TEXT_INFO_GROUP_SORT_ORDER . '<br />' . xtc_draw_input_field('sort_order', $gInfo->sort_order));
-                        $contents[] = array('align' => 'center', 'text' => '<br /><input type="submit" class="button" onClick="this.blur();" value="' . BUTTON_UPDATE . '"/> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id) . '">' . BUTTON_CANCEL . '</a>');
+                        $contents[] = array('align' => 'center', 'text' => '<br /><input type="submit" class="button" value="' . BUTTON_UPDATE . '"/> <a class="button" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id) . '">' . BUTTON_CANCEL . '</a>');
                         break;
 
                     case 'delete':
                         $heading[] = array('text' => '<b>' . TEXT_INFO_HEADING_DELETE_GROUP . '</b>');
                         $contents[] = array('text' => TEXT_INFO_DELETE_INTRO);
                         $contents[] = array('text' => '<br /><b>' . $gInfo->name . '</b>');
-                        $contents[] = array('align' => 'center', 'text' => '<br />' . '<a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=deleteconfirm') . '">' . BUTTON_DELETE . '</a><a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id) . '">' . BUTTON_CANCEL . '</a>');
+                        $contents[] = array('align' => 'center', 'text' => '<br />' . '<a class="button" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=deleteconfirm') . '">' . BUTTON_DELETE . '</a><a class="button" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id) . '">' . BUTTON_CANCEL . '</a>');
                         break;
 
                     default:
                         if (is_object($gInfo)) {
                             $heading[] = array('text' => '<b>' . $gInfo->group_name . '</b>');
-                            $contents[] = array('align' => 'center', 'text' => '<a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=edit') . '">' . BUTTON_EDIT . '</a> <a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=delete') . '">' . BUTTON_DELETE . '</a>');
+                            $contents[] = array('align' => 'center', 'text' => '<a class="button" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=edit') . '">' . BUTTON_EDIT . '</a> <a class="button" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=delete') . '">' . BUTTON_DELETE . '</a>');
                             for ($i = 0, $n = sizeof($languages); $i < $n; $i++) {
-                                $contents[] = array('text' => '<br />' . xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/admin/images/' . $languages[$i]['image'], $languages[$i]['name']) . " " . TEXT_INFO_GROUP_NAME . $name[$languages[$i]['id']]);
+                                $contents[] = array('text' => '<br />' . xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']) . " " . TEXT_INFO_GROUP_NAME . $name[$languages[$i]['id']]);
                             };
                             $contents[] = array('text' => '<br />' . TEXT_INFO_GROUP_SORT_ORDER . ' ' . $gInfo->sort_order);
                         }
@@ -202,11 +200,8 @@ if ($_GET['action'] == 'new') {
                     $parameters_page_dropdown .= xtc_draw_hidden_field('page', $_GET['page']) . "\n";
 
                 $parameters_dropdown_options = array();
-
                 $parameters_dropdown_options[] = array('id' => '100', 'text' => '100');
-
                 $parameters_page_dropdown .= xtc_draw_pull_down_menu('anzahl', $parameters_dropdown_options, ($_GET['anzahl'] != '' ? $_GET['anzahl'] : '20'), 'onchange="this.form.submit()"') . "\n";
-
                 $parameters_page_dropdown .= '</form>' . "\n";
                 ?>
     </tr>
@@ -216,10 +211,10 @@ if ($_GET['action'] == 'new') {
                 <tr>
                     <?php if (!$_GET['action']) { ?>
                         <td>
-                            <input type="submit" class="button" onClick="this.blur();" value="<?php echo BUTTON_EDIT; ?>"/>
+                            <input type="submit" class="button" value="<?php echo BUTTON_EDIT; ?>"/>
                         </td>
                         <td align="right">
-                            <?php echo '<a class="button" onClick="this.blur();" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=new') . '">' . BUTTON_NEW_GROUP . '</a>'; ?>
+                            <?php echo '<a class="button" href="' . xtc_href_link(FILENAME_PRODUCTS_PARAMETERS, 'page=' . $_GET['page'] . '&products_id=' . $_GET['products_id'] . '&gID=' . $gInfo->group_id . '&action=new') . '">' . BUTTON_NEW_GROUP . '</a>'; ?>
                         </td>
                     <?php } ?>
                     <td align="right">

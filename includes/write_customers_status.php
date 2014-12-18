@@ -14,7 +14,14 @@
 
 // write customers status in session
 if (isset($_SESSION['customer_id'])) {
-	$customers_status_value_1 = xtc_db_fetch_array(xtc_db_query("SELECT customers_status FROM " . TABLE_CUSTOMERS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "';"));
+	$customers_status_query_1 = xtc_db_query("SELECT customers_status FROM " . TABLE_CUSTOMERS . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "';");
+	// BOF - Fishnet Services - Nicolas Gemsjäger
+	// Bugfix: Wenn eine Session existiert, der Kunde aber nicht gefunden wurde, dann Kunde ausloggen.
+	if (xtc_db_num_rows($customers_status_query_1) == 0) {
+		header("location: ".FILENAME_LOGOFF);
+	} else {
+		$customers_status_value_1 = xtc_db_fetch_array($customers_status_query_1);
+	}
 	$customers_status_value = xtc_db_fetch_array(xtc_db_query("SELECT * FROM " . TABLE_CUSTOMERS_STATUS . " WHERE customers_status_id = '" . (int) $customers_status_value_1['customers_status'] . "' AND language_id = '" . (int) $_SESSION['languages_id'] . "';"));
 
 	$_SESSION['customers_status']= array(

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: product_info.php 1096 2014-06-12 14:47:41Z akausch $
+ * 	$Id: product_info.php 1239 2014-10-20 13:03:45Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -36,11 +36,11 @@ if (!is_object($product) || !$product->isProduct()) {
 
     $products_price = $xtPrice->xtcGetPrice($product->data['products_id'], $format = true, 1, $product->data['products_tax_class_id'], $product->data['products_price'], 1, '', 'info');
     $price = $products_price['formated'];
-	$price_uvp = '';
-	if ($product->data['products_uvpprice'] > 0) {
-		$price_uvp = $xtPrice->xtcAddTax($product->data['products_uvpprice'] * 1, $xtPrice->TAX[$product->data['products_tax_class_id']]);
-		$price_uvp = $xtPrice->xtcFormat($price_uvp, true);
-	}
+    $price_uvp = '';
+    if ($product->data['products_uvpprice'] > 0) {
+        $price_uvp = $xtPrice->xtcAddTax($product->data['products_uvpprice'] * 1, $xtPrice->TAX[$product->data['products_tax_class_id']]);
+        $price_uvp = $xtPrice->xtcFormat($price_uvp, true);
+    }
     if ($product->data['products_buyable'] == 1 && $product->data['products_only_request'] == 0) {
         if ($product->data['products_minorder'] > 1) {
             $order_qty = $product->data['products_minorder'];
@@ -51,22 +51,22 @@ if (!is_object($product) || !$product->isProduct()) {
             if ($_SESSION['customers_status']['customers_fsk18'] == '1') {
                 if ($product->data['products_fsk18'] == '0') {
                     if (PRODUCT_DETAILS_TAB_ACCESSORIES == 'true') {
-                        $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '"') . ' ' . xtc_draw_hidden_field('products_id[]', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
+                        $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id[]', $product->data['products_id'], 'id="gm_products_id"') . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
                     } else {
-                        $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '"') . ' ' . xtc_draw_hidden_field('products_id', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
+                        $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id', $product->data['products_id'], 'id="gm_products_id"') . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
                     }
-                    $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART));
+                    $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART, 'id="cart_button"'));
                     if (PRODUCT_DETAILS_WISHLIST == 'true') {
                         $info_smarty->assign('ADD_WISHLIST_BUTTON', xtc_image_submit('button_to_wish_list.gif', WISHLIST, ' onclick="document.cart_quantity.submit_target.value=\'wishlist\';"'));
                     }
                 }
             } else {
                 if (PRODUCT_DETAILS_TAB_ACCESSORIES == 'true') {
-                    $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '"') . ' ' . xtc_draw_hidden_field('products_id[]', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
-                    $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART));
+                    $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id[]', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id'], 'id="gm_products_id"'));
+                    $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART, 'id="cart_button"'));
                 } else {
-                    $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '"') . ' ' . xtc_draw_hidden_field('products_id', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
-                    $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART));
+                    $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id'], 'id="gm_products_id"'));
+                    $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART, 'id="cart_button"'));
                 }
                 if (PRODUCT_DETAILS_WISHLIST == 'true') {
                     $info_smarty->assign('ADD_WISHLIST_BUTTON', xtc_image_submit('button_to_wish_list.gif', WISHLIST, ' onclick="document.cart_quantity.submit_target.value=\'wishlist\';"'));
@@ -82,7 +82,7 @@ if (!is_object($product) || !$product->isProduct()) {
         $info_smarty->assign('FORM_END', '</form>');
 
         $info_smarty->assign('PRODUCTS_PRICE', $price);
-		$info_smarty->assign('PRODUCTS_PRICE_PLAIN', $products_price['plain']);
+        $info_smarty->assign('PRODUCTS_PRICE_PLAIN', $products_price['plain']);
         $info_smarty->assign('PRODUCTS_UVP_PRICE', $price_uvp);
         $info_smarty->assign('BUTTON_PLUS', '<a class="qty_plus products_qty_button no_target" href="' . xtc_href_link(FILENAME_PRODUCT_INFO, 'products_id=' . $product->data['products_id'] . '&qty=' . (isset($_GET['qty']) ? ($_GET['qty'] + 1) : '2')) . '">+</a>');
         $info_smarty->assign('BUTTON_MINUS', '<a class="qty_minus products_qty_button no_target" href="' . xtc_href_link(FILENAME_PRODUCT_INFO, 'products_id=' . $product->data['products_id'] . '&qty=' . (isset($_GET['qty']) && $_GET['qty'] != 1 ? ($_GET['qty'] - 1) : '1')) . '">-</a>');
@@ -167,7 +167,7 @@ if (!is_object($product) || !$product->isProduct()) {
 
     if (PRODUCT_DETAILS_WEIGHT == 'true') {
         $products_weight = $product->data['products_weight'];
-		$products_weight = number_format($products_weight, 3, ',', '.');
+        $products_weight = number_format($products_weight, 3, ',', '.');
         $info_smarty->assign('PRODUCTS_WEIGHT', $products_weight);
     }
 
@@ -242,7 +242,7 @@ if (!is_object($product) || !$product->isProduct()) {
         $man_pic = xtc_db_fetch_array(xtDBquery("SELECT manufacturers_image, manufacturers_name  FROM manufacturers WHERE manufacturers_id='" . $product->data['manufacturers_id'] . "'"));
         $info_smarty->assign('PRODUCTS_MANUFACTURERS_NAME', $man_pic['manufacturers_name']);
         $info_smarty->assign('PRODUCTS_MANUFACTURERS_DESC', $man['manufacturers_description']);
-        $info_smarty->assign('PRODUCTS_MANUFACTURERS_IMG', xtc_image(DIR_WS_IMAGES . $man_pic['manufacturers_image'],$man_pic['manufacturers_name']));
+        $info_smarty->assign('PRODUCTS_MANUFACTURERS_IMG', xtc_image(DIR_WS_IMAGES . $man_pic['manufacturers_image'], $man_pic['manufacturers_name']));
     }
 
     if (PRODUCT_DETAILS_TAB_PRODUCT == 'true') {
@@ -368,7 +368,7 @@ if (!is_object($product) || !$product->isProduct()) {
         $files = array();
         if ($dir = opendir(DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/module/product_info/')) {
             while ($file = readdir($dir)) {
-                if (is_file(DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/module/product_info/' . $file) and ($file != "index.html") and (substr($file, 0, 1) != "."))
+                if (is_file(DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/module/product_info/' . $file) and ( $file != "index.html") and ( substr($file, 0, 1) != "."))
                     $files[] = array('id' => $file, 'text' => $file);
             }
             closedir($dir);
@@ -420,6 +420,9 @@ if (!is_object($product) || !$product->isProduct()) {
     if (file_exists(DIR_WS_MODULES . 'konfigurator.php')) {
         include (DIR_WS_MODULES . 'konfigurator.php');
     }
+    // if (file_exists(DIR_WS_MODULES . 'product_properties.php')) {
+        // include (DIR_WS_MODULES . 'product_properties.php');
+    // }
 
     $info_smarty->assign('PRODUCTS_QUANTITY', $product->data['products_quantity']);
     $info_smarty->assign('BASE_PATH', $_SERVER['REQUEST_URI']);
@@ -432,10 +435,11 @@ if (!is_object($product) || !$product->isProduct()) {
         include_once (DIR_WS_MODULES . 'commerzfinanz.php');
     }
 
-	if ($_SESSION['attributeerror'] == 'true') {
-	  $info_smarty->assign('error', ATTRIBUTE_ERROR);
-	  unset($_SESSION['attributeerror']);
-	}
+    if ($_SESSION['attributeerror'] == 'true') {
+        $info_smarty->assign('error', ATTRIBUTE_ERROR);
+        unset($_SESSION['attributeerror']);
+    }
+
     $cseo_productinfo_extender_component = cseohookfactory::create_object('ProductInfoExtenderComponent');
     $cseo_productinfo_extender_component->set_data('GET', $_GET);
     $cseo_productinfo_extender_component->set_data('POST', $_POST);

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: securityfilter.php 1119 2014-06-25 19:54:45Z akausch $
+ * 	$Id: securityfilter.php 1126 2014-06-30 11:44:54Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -103,7 +103,9 @@ class Fwr_Media_Security_Pro {
         return;
       }
       $this->cleanseGetRecursive( $_GET );
-      $_REQUEST = $_GET + $_POST; // $_REQUEST now holds the cleansed $_GET and unchanged $_POST. $_COOKIE has been removed.
+      // $this->cleanseGetRecursive( $_POST );
+      $this->cleanseGetRecursive( $_COOKIE );
+      $_REQUEST = $_GET + $_POST + $_COOKIE; // $_REQUEST now holds the cleansed $_GET and unchanged $_POST. $_COOKIE has been removed.
       if ( !function_exists ( 'ini_get' ) || ini_get ( 'register_globals' ) != false ) {
         $this->cleanGlobals();
       }
@@ -143,7 +145,8 @@ class Fwr_Media_Security_Pro {
     * @return string - cleansed key string
     */
     function cleanseKeyString( $string ) {
-      $banned_string_pattern = '@GLOBALS|_REQUEST|base64_encode|UNION|%3C|%3E@i';
+      // $banned_string_pattern = '@GLOBALS|_REQUEST|base64_encode|UNION|%3C|%3E@i';
+	  $banned_string_pattern = '@GLOBALS|_REQUEST|onclick|ondblclick|onmousedown|onmousemove|onmouseover|onmouseout|onmouseup|onkeydown|onkeyup|onabort|onerror|onload|onresize|onscroll|onunload|onblur|onchange|onfocus|onreset|onselect|onsubmit|src|<|>|base64_encode|UNION|%3C|%3E@i';
       // Apply the whitelist
       // $cleansed = preg_replace ( "/[^\s{}a-z0-9_\.\-]/i", "", urldecode ( $string ) );
       $cleansed = preg_replace("/[^\s\/\{}a-zÀÁÂÃÅÄÆÈÉÊËÌÍÎÏÒÓÔÕÖØÙÚÛÜàáâãåäæèéêëìíîïòóôõöøùúûüß,@0-9_\.\-]/i", "", urldecode($string));
@@ -162,7 +165,8 @@ class Fwr_Media_Security_Pro {
     * @return string - cleansed value string
     */
     function cleanseValueString( $string ) {
-      $banned_string_pattern = '@GLOBALS|_REQUEST|base64_encode|UNION|%3C|%3E@i';
+      // $banned_string_pattern = '@GLOBALS|_REQUEST|base64_encode|UNION|%3C|%3E@i';
+	  $banned_string_pattern = '@GLOBALS|_REQUEST|onclick|ondblclick|onmousedown|onmousemove|onmouseover|onmouseout|onmouseup|onkeydown|onkeyup|onabort|onerror|onload|onresize|onscroll|onunload|onblur|onchange|onfocus|onreset|onselect|onsubmit|src|<|>|base64_encode|UNION|%3C|%3E@i';
       // Apply the whitelist
       // $cleansed = preg_replace ( "/[^\s{}a-z0-9_\.\-@]/i", "", urldecode ( $string ) );
 	  $cleansed = preg_replace("/[^\s\/\{}a-zÀÁÂÃÅÄÆÈÉÊËÌÍÎÏÒÓÔÕÖØÙÚÛÜàáâãåäæèéêëìíîïòóôõöøùúûüß,@0-9_\.\-]/i", "", urldecode($string));
@@ -189,6 +193,7 @@ class Fwr_Media_Security_Pro {
     function cseo_security() {
         // Cross-Site Scripting attack defense
         if (count($_GET) > 0) {
+		// echo 'TEst GET';
             //Lets now sanitize the GET vars
             foreach ($_GET as $secvalue) {
                 if (!is_array($secvalue)) {
@@ -210,7 +215,7 @@ class Fwr_Media_Security_Pro {
 											intrusions 
 											(name , badvalue , page , tags , ip , ip2 , impact , origin , created )
 											VALUES 
-											('" . $_SESSION['customer_id'] . "', '" . htmlentities($secvalue) . "', 'page', 'tags', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
+											('" . $_SESSION['customer_id'] . "', '" . htmlentities($secvalue) . "', 'get', 'tags', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
 
                         die;
                     }
@@ -220,8 +225,10 @@ class Fwr_Media_Security_Pro {
 
         //Lets now sanitize the POST vars
         if (count($_POST) > 0) {
+		// echo 'Test POST';
             foreach ($_POST as $secvalue) {
                 if (!is_array($secvalue)) {
+			// echo $secvalue.'<br>';
                     if ((preg_match("<[^>]*script.*\"?[^>]*>/i", $secvalue)) ||
                             (preg_match("/<[^>]*object.*\"?[^>]*>/i", $secvalue)) ||
                             (preg_match("/<[^>]*iframe.*\"?[^>]*>/i", $secvalue)) ||
@@ -236,7 +243,7 @@ class Fwr_Media_Security_Pro {
 											intrusions 
 											(name , badvalue , page , tags , ip , ip2 , impact , origin , created )
 											VALUES 
-											('" . $_SESSION['customer_id'] . "', '" . htmlentities($secvalue) . "', 'page', 'tags', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
+											('" . $_SESSION['customer_id'] . "', '" . htmlentities($secvalue) . "', 'post', 'tags', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
 
                         die;
                     }
@@ -266,7 +273,7 @@ class Fwr_Media_Security_Pro {
 											intrusions 
 											(name , badvalue , page , tags , ip , ip2 , impact , origin , created )
 											VALUES 
-											('" . $_SESSION['customer_id'] . "', '" . htmlentities($secvalue) . "', 'page', 'tags', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
+											('" . $_SESSION['customer_id'] . "', '" . htmlentities($secvalue) . "', 'cookie', 'tags', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
 
                         die;
                     }

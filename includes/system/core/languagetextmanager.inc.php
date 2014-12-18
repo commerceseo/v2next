@@ -27,7 +27,7 @@ class LanguageTextManager
 		static $s_instance;
 
 		if($s_instance === NULL)   {
-			$s_instance = MainFactory::create_object('LanguageTextManager', array($p_default_section, $p_default_language_id));
+			$s_instance = cseohookfactory::create_object('LanguageTextManager', array($p_default_section, $p_default_language_id));
 		}
 		else {
 			if($s_instance->v_default_section != $p_default_section || $s_instance->v_default_language_id != $p_default_language_id)

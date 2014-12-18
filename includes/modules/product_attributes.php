@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: product_attributes.php 871 2014-03-20 09:13:14Z akausch $
+ * 	$Id: product_attributes.php 1210 2014-09-22 09:04:30Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -34,7 +34,7 @@ if ($product->getAttributesCount() > 0) {
     $row = 0;
     $col = 0;
     $products_options_data = array();
-    while ($products_options_name = xtc_db_fetch_array($products_options_name_query, true)) {
+    while ($products_options_name = xtc_db_fetch_array($products_options_name_query)) {
         $selected = 0;
         $products_options_array = array();
 
@@ -67,8 +67,9 @@ if ($product->getAttributesCount() > 0) {
 		} else {
 			$col = 0;
 		}
-        while ($products_options = xtc_db_fetch_array($products_options_query, true)) {
+        while ($products_options = xtc_db_fetch_array($products_options_query)) {
             $price = '';
+            $vpe_price = '';
 
             if ($products_options['products_options_values_image'] != '') {
                 $attrubut_image = DIR_WS_IMAGES . 'product_options/' . $products_options['products_options_values_image'];
@@ -97,8 +98,22 @@ if ($product->getAttributesCount() > 0) {
 
                 $products_price = $xtPrice->xtcGetPrice($product->data['products_id'], $format = false, 1, $product->data['products_tax_class_id'], $product->data['products_price']);
                 //VPE
-                if ($products_options['attributes_vpe_status'] == '1' && $products_options['attributes_vpe_value'] != 0.00) {
-                    $vpe_price = $xtPrice->xtcAddTax($products_options['options_values_price'] * (1 / $products_options['attributes_vpe_value']), $xtPrice->TAX[$product->data['products_tax_class_id']]);
+				// echo '<pre>';
+				// print_r($products_options);
+				// echo '</pre>';
+                if ($products_options['attributes_vpe_status'] == '1' && (double)$products_options['attributes_vpe_value'] != 0.00) {
+                    if ($products_options['options_values_price'] != 0.00) {
+						if ($products_options['price_prefix'] == "=") {
+							$poprice = $products_options['options_values_price'];
+						} elseif ($products_options['price_prefix'] == "-") {
+							$poprice = $product->data['products_price'] - $products_options['options_values_price'];
+						} elseif ($products_options['price_prefix'] == "+") {
+							$poprice = $product->data['products_price'] + $products_options['options_values_price'];
+						}
+					} else {
+						$poprice = $product->data['products_price'];
+					}
+					$vpe_price = $xtPrice->xtcAddTax($poprice * (1 / (double)$products_options['attributes_vpe_value']), $xtPrice->TAX[$product->data['products_tax_class_id']]);
                     $vpe_price = $xtPrice->xtcFormat($vpe_price, true) . TXT_PER . xtc_get_vpe_name($products_options['attributes_vpe']);
                 }
                 if ($_SESSION['customers_status']['customers_status_discount_attributes'] == 1 && $products_options['price_prefix'] == '+') {

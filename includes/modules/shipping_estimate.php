@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: shipping_estimate.php 1140 2014-07-09 14:06:19Z akausch $
+ * 	$Id: shipping_estimate.php 1188 2014-09-09 18:30:47Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -28,7 +28,7 @@ if (isset($_SESSION['cc_id'])) {
 }
 
 $selected = isset($_SESSION['customer_country_id']) ? $_SESSION['customer_country_id'] : STORE_COUNTRY;
-if (!isset($_SESSION['customer_id']) && sizeof(xtc_get_countriesList()) > 1) {
+if (sizeof(xtc_get_countriesList()) > 1) {
     if (isset($_SESSION['country'])) {
         $selected = $_SESSION['country'];
     } else {
@@ -47,6 +47,7 @@ if (!isset($order->delivery['country']['iso_code_2']) || $order->delivery['count
 $_SESSION['delivery_zone'] = $order->delivery['country']['iso_code_2'];
 $shipping = new shipping;
 $quotes = $shipping->quote();
+
 
 $free_shipping = $free_shipping_freeamount = false;
 if (defined('MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING') && (MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING == 'true')) {
@@ -82,12 +83,22 @@ foreach ($quotes as $quote) {
     }
 }
 
+$isvirtual = $_SESSION['cart']->get_content_type();
+if ($isvirtual == 'virtual') {
+$virtualproduct = true;
+}
+
 include_once (DIR_WS_LANGUAGES . $_SESSION['language'] . '/modules/order_total/ot_shipping.php');
 
 $shipping_content = array();
 if ($free_shipping == true) {
     $shipping_content[] = array(
         'NAME' => FREE_SHIPPING_TITLE,
+        'VALUE' => $xtPrice->xtcFormat(0, true, 0, true)
+    );
+} elseif ($virtualproduct) {
+    $shipping_content[] = array(
+        'NAME' => CHECKOUT_TEXT_VIRTUAL,
         'VALUE' => $xtPrice->xtcFormat(0, true, 0, true)
     );
 } elseif ($free_shipping_freeamount) {

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: new_products.php 1055 2014-05-16 15:58:42Z akausch $
+ * 	$Id: new_products.php 1200 2014-09-17 06:30:45Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -88,7 +88,12 @@ if ((!isset($new_products_category_id)) || ($new_products_category_id == '0')) {
     //Startseite neue Produkte
     $site = 'new_products_default';
     $title = NEW_PRODUCTS_DEFAULT;
-    $new_products_query = "SELECT 
+	if (MAX_DISPLAY_NEW_PRODUCTS_DAYS != '0') {
+		$date_new_products = date("Y.m.d", mktime(1, 1, 1, date(m), date(d) - MAX_DISPLAY_NEW_PRODUCTS_DAYS, date(Y)));
+		$days = " AND p.products_date_added > '" . $date_new_products . "' ";
+	}
+	if (DISPLAY_START_NEW_PRODUCTS == 'top') {
+	$new_products_query = xtDBquery("SELECT 
 								p.*,
 								pd.*
 							FROM
@@ -104,10 +109,27 @@ if ((!isset($new_products_category_id)) || ($new_products_category_id == '0')) {
 								p.products_id
 							ORDER BY 
 								p.products_startpage_sort ASC 
-							LIMIT " . MAX_DISPLAY_NEW_PRODUCTS;
+							LIMIT " . MAX_DISPLAY_NEW_PRODUCTS . ";");
+    } else {
+	$new_products_query = xtDBquery("SELECT 
+								p.*,
+								pd.*
+							FROM
+								" . TABLE_PRODUCTS . " p
+								LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+							WHERE
+								p.products_status = '1' 
+								" . $group_check . "
+								" . $fsk_lock . "
+								" . $days . "
+							GROUP BY 
+								p.products_id
+							ORDER BY rand()
+							LIMIT " . MAX_DISPLAY_NEW_PRODUCTS . ";");
+	}
+	
     $row = 0;
     $module_content = array();
-    $new_products_query = xtDBquery($new_products_query);
     while ($new_products = xtc_db_fetch_array($new_products_query, true)) {
         $row++;
         $module_content[] = $product->buildDataArray($new_products, 'thumbnail', $site, $row);

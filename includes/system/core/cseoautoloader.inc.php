@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: cseoautoloader.inc.php 1056 2014-05-17 13:17:56Z akausch $
+ * 	$Id: cseoautoloader.inc.php 1096 2014-06-12 14:47:41Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -59,6 +59,7 @@ class cseoautoloader {
             'categories' => DIR_WS_CLASSES . 'class.categories.php',
 			'order' => DIR_WS_CLASSES . 'class.order.php',
 			'order_total' => DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.order_total.php',
+			'main' => DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.main.php',
             'paypal_checkout' => DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.paypal_checkout.php',
             'xtcPrice' => DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.xtcprice.php',
             'vat_validation' => DIR_FS_CATALOG . DIR_WS_CLASSES . 'class.vat_validation.php',

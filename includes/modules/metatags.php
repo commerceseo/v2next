@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: metatags.php 1012 2014-05-08 13:02:25Z akausch $
+ * 	$Id: metatags.php 1218 2014-10-01 21:39:46Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -14,9 +14,7 @@
  * 	http://www.gunnart.de
  * --------------------------------------------------------------- */
 
-// ---------------------------------------------------------------------------------------
 //	Konfiguration ... 
-// ---------------------------------------------------------------------------------------
 global $metaStopWords, $metaGoWords, $metaMinLength, $metaMaxLength, $metaDesLength;
 $metaStopWords = ('basiert, Seite, Dieser, bitte, besuchen, welches, interessiert, daran, daraus, davon, gestellt, weder, Willkommen, Dies, Wenn, Alle, Startseite, dienen, Sie, inkl, Versandkosten, aber, alle, alles, als, auch, auf, aus, bei, beim, beinahe, bin, bis, ist, dabei, dadurch, daher, dank, darum, danach, das, daß, dass, dein, deine, dem, den, der, des, dessen, dadurch, deshalb, die, dies, diese, dieser, diesen, diesem, dieses, doch, dort, durch, eher, ein, eine, einem, einen, einer, eines, einige, einigen, einiges, eigene, eigenes, eigener, endlich, euer, eure, etwas, fast, findet, für, gab, gibt, geben, hatte, hatten, hattest, hattet, heute, hier, hinter, ich, ihr, ihre, ihn, ihm, im, immer, in, ist, ja, jede, jedem, jeden, jeder, jedes, jener, jenes, jetzt, kann, kannst, kein, können, könnt, machen, man, mein, meine, mehr, mit, muß, mußt, musst, müssen, müßt, nach, nachdem, neben, nein, nicht, nichts, noch, nun, nur, oder, statt, anstatt, seid, sein, seine, seiner, sich, sicher, sie, sind, soll, sollen, sollst, sollt, sonst, soweit, sowie, und, uns, unser, unsere, unserem, unseren, unter, vom, von, vor, wann, warum, was, war, weiter, weitere, wenn, wer, werde, widmen, widmet, viel, viele, vieles, weil, werden, werdet, weshalb, wie, wieder, wieso, wir, wird, wirst, wohl, woher, wohin, wurdezum, zur, über');
 $metaGoWords = ('autoradio, car, hifi, navigation, commerce, seo, shop, online, xtc'); // Hier rein,  was nicht gefiltert werden soll
@@ -74,9 +72,7 @@ if (ADDPAGINATION == 'true') {
 }
 
 $noIndexUnimportant = true;  // "unwichtige" Seiten mit noindex versehen
-// ---------------------------------------------------------------------------------------
 //  Diese Seiten sind "wichtig"! (ist nur relevant, wenn $noIndexUnimportand == true)
-// ---------------------------------------------------------------------------------------
 $pagesToShow = array(
     FILENAME_DEFAULT,
     FILENAME_PRODUCT_INFO,
@@ -93,32 +89,20 @@ $pagesToShow = array(
     FILENAME_BLOG
 );
 
-
-// ---------------------------------------------------------------------------------------
 //      Einzelne Content Seiten mit noindex versehen, kommagetrennte Liste der coID
-// ---------------------------------------------------------------------------------------
 // $content_noIndex = array(7,9);
 $content_noIndex = array(7);
-
-// ---------------------------------------------------------------------------------------
 //	Title für "sonstige" Seiten
-// ---------------------------------------------------------------------------------------
-//$breadcrumbTitle = 	array_pop($breadcrumb->_trail);
 $breadcrumbTitle = end($breadcrumb->_trail); // <-- BugFix
 $breadcrumbTitle = $breadcrumbTitle['title'];
 
-
-// ---------------------------------------------------------------------------------------
 //  noindex, nofollow bei "unwichtigen" Seiten
-// ---------------------------------------------------------------------------------------
 $meta_robots = META_ROBOTS;
 if ($noIndexUnimportant && !in_array(basename($PHP_SELF), $pagesToShow)) {
     $meta_robots = 'noindex, follow, noodp';
 }
 
-// ---------------------------------------------------------------------------------------
 //  MultiLanguage-Metas
-// ---------------------------------------------------------------------------------------
 // Wenn wir auf der Startseite sind, Metas aus der index-Seite holen
 if (basename($_SERVER['SCRIPT_NAME']) == FILENAME_DEFAULT &&
         empty($_GET['cat']) &&
@@ -134,27 +118,22 @@ if (basename($_SERVER['SCRIPT_NAME']) == FILENAME_DEFAULT &&
 
 // Dadadadatenbank
 $ml_meta_query = xtDBquery("
-		select 	content_meta_title,
+		SELECT 	content_meta_title,
 				content_meta_description, 
 				content_meta_keywords 
-		from 	" . TABLE_CONTENT_MANAGER . " 
-		where 	" . $ml_meta_where . " 
-		and 	languages_id = '" . intval($_SESSION['languages_id']) . "'
+		FROM 	" . TABLE_CONTENT_MANAGER . " 
+		WHERE 	" . $ml_meta_where . " 
+		AND 	languages_id = '" . intval($_SESSION['languages_id']) . "'
 	");
-$ml_meta = xtc_db_fetch_array($ml_meta_query, true);
+$ml_meta = xtc_db_fetch_array($ml_meta_query);
 
-// ---------------------------------------------------------------------------------------
 //	Mehrsprachige Standard-Metas definieren. Wenn leer, werden die üblichen genommen
-// ---------------------------------------------------------------------------------------
 define('ML_META_KEYWORDS', ($ml_meta['content_meta_keywords']) ? $ml_meta['content_meta_keywords'] : META_KEYWORDS);
 define('ML_META_DESCRIPTION', ($ml_meta['content_meta_description']) ? $ml_meta['content_meta_description'] : META_DESCRIPTION);
 define('ML_TITLE', ($ml_meta['content_meta_title']) ? $ml_meta['content_meta_title'] : TITLE);
-// ---------------------------------------------------------------------------------------
+
 $metaGoWords = getGoWords(); // <-- nur noch einmal ausführen
-// ---------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------
 //	Aufräumen: Umlaute und Sonderzeichen wandeln. 
-// ---------------------------------------------------------------------------------------
 function metaNoEntities($Text) {
     $translation_table = get_html_translation_table(HTML_ENTITIES, ENT_QUOTES);
     $translation_table = array_flip($translation_table);
@@ -168,10 +147,7 @@ function metaHtmlEntities($Text) {
     return preg_replace("/&(?![A-Za-z]{0,4}\w{2,3};|#[0-9]{2,3};)/", "&amp;", strtr($Text, $translation_table));
 }
 
-// ---------------------------------------------------------------------------------------
 //	Array basteln: Text aufbereiten -> Array erzeugen -> Array unique ...  
-// ---------------------------------------------------------------------------------------
-
 function prepareWordArray($Text) {
     $Text = str_replace(array('&nbsp;', '\t', '\r', '\n', '\b', '{$greeting}'), ' ', strip_tags($Text));
     $Text = preg_replace("/(&([aou])[^;]*;)/", '$2e', $Text);
@@ -198,43 +174,33 @@ function WordArray($Text) {
     return makeWordArray(prepareWordArray($Text));
 }
 
-// ---------------------------------------------------------------------------------------
 //     Seitennummerierung im Title (Kategorien, Sonderangebote, Neue Artikel etc.)
-// ---------------------------------------------------------------------------------------
 $Page = '';
 if (isset($_GET['page']) && $_GET['page'] > 1 && $addPagination) {
     $Page = trim(str_replace('%d', '', PREVNEXT_TITLE_PAGE_NO)) . ' ' . intval($_GET['page']);
 }
 
-// ---------------------------------------------------------------------------------------
 //	KeyWords aufräumen:
 // 	Stop- und KeyWords-Liste in Array umwandeln, StopWords löschen, 
 //	GoWords- und Längen-Filter anwenden
-// ---------------------------------------------------------------------------------------
 function cleanKeyWords($KeyWords) {
     global $metaStopWords;
     $KeyWords = WordArray($KeyWords);
     $StopWords = WordArray($metaStopWords);
     $KeyWords = array_diff($KeyWords, $StopWords);
     $KeyWords = array_filter($KeyWords, filterKeyWordArray);
-	// echo '<pre>';
-	// echo count($KeyWords);
-	// print_r($KeyWords);
-	// echo '</pre>';
-	$meta_number = META_KEYWORDS_NUMBER;
-	// echo $meta_number;
-    return $KeyWords;
+    // $KeyWords = array_unique($KeyWords);
+    $mtwc = META_KEYWORDS_NUMBER;
+	$KeyWords = array_chunk($KeyWords, $mtwc);
+	return $KeyWords;
 }
 
-// ---------------------------------------------------------------------------------------
 //	GoWords- und Längen-Filter: 
 //	Alles, was zu kurz ist, fliegt raus, sofern nicht in der GoWords-Liste
-// ---------------------------------------------------------------------------------------
 function filterKeyWordArray($KeyWord) {
     global $metaMinLength, $metaMaxLength, $metaGoWords;
     $GoWords = WordArray($metaGoWords);
     if (!in_array($KeyWord, $GoWords)) {
-        //$Length = strlen($KeyWord);
         $Length = strlen(preg_replace("/(&[^;]*;)/", '#', $KeyWord)); // <-- Mindest-Länge auch bei Umlauten berücksichtigen
         if ($Length < $metaMinLength) { // Mindest-Länge
             return false;
@@ -245,11 +211,9 @@ function filterKeyWordArray($KeyWord) {
     return true;
 }
 
-// ---------------------------------------------------------------------------------------
 //	GoWords: Werden grundsätzlich nicht gefiltert
 //	Sofern angelegt, werden (zusätzlich zu den Einstellungen oben) die "normalen"
 //	Meta-Angaben genommen (gefixed anno Danno-Wanno)
-// ---------------------------------------------------------------------------------------
 function getGoWords() {
     global $metaGoWords, $categories_meta, $product;
     //$GoWords = $metaGoWords.' '.META_KEYWORDS;
@@ -259,9 +223,7 @@ function getGoWords() {
     return $GoWords;
 }
 
-// ---------------------------------------------------------------------------------------
 //	Aufräumen: Leerzeichen und HTML-Code raus, kürzen, Umlaute und Sonderzeichen wandeln
-// ---------------------------------------------------------------------------------------
 function metaClean($Text, $Length = false, $Abk = ' ...') {
     $Text = strip_tags($Text);
     $Text = str_replace(array('&nbsp;', '\t', '\r', '\n', '\b', '"', '{$greeting}'), ' ', $Text);
@@ -276,26 +238,33 @@ function metaClean($Text, $Length = false, $Abk = ' ...') {
     return $Text;
 }
 
-// ---------------------------------------------------------------------------------------
 //	metaTitle und metaKeyWords, Rückgabe bzw. Formatierung
-// ---------------------------------------------------------------------------------------
 function metaTitle($Title = array()) {
     $Title = func_get_args();
     $Title = array_filter($Title, metaClean);
     return implode(' - ', $Title);
 }
 
-// ---------------------------------------------------------------------------------------
 function metaKeyWords($Text) {
     $KeyWords = cleanKeyWords($Text);
-    return implode(', ', $KeyWords);
+	// echo '<pre>';
+	// echo count($KeyWords);
+	// print_r($KeyWords);
+	// echo '</pre>';
+
+	if (is_array($KeyWords) && count($KeyWords) > 0) {
+		// $mkc = count($KeyWords);
+		// $i = rand(0, $mkc);
+		$metakeyword = implode(', ', $KeyWords[0]);
+		// echo '<pre>';
+		// var_dump($metakeyword);
+		// echo '</pre>';
+	}
+	// echo $metakeyword;
+	return $metakeyword;
 }
 
-// ---------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------
 //	Daten holen: Produktdetails
-// ---------------------------------------------------------------------------------------
-//if(basename($_SERVER['SCRIPT_NAME']) == FILENAME_PRODUCT_INFO) { 
 if (isset($_GET['products_id']) && is_numeric($_GET['products_id'])) {
     if ($product->isProduct()) {
         // KeyWords ...
@@ -341,14 +310,11 @@ if (isset($_GET['products_id']) && is_numeric($_GET['products_id'])) {
 	}
 	
 	echo '<meta name="date" content="'.date('Y-m-d\TH:i:sP', strtotime($metadate)).'">';
+	$smarty->assign('seotext', $product->data['products_name']);
 	
 }
-
-// ---------------------------------------------------------------------------------------
 //	Daten holen: Kategorie
-// ---------------------------------------------------------------------------------------
 elseif ($_GET['cPath']) {
-    // Sind wir in einer Kategorie?
     if (!empty($current_category_id)) {
         $categories_meta_query = xtDBquery("
 				SELECT 	
@@ -438,11 +404,10 @@ elseif ($_GET['cPath']) {
 	}
 	
 	echo '<meta name="date" content="'.date('Y-m-d\TH:i:sP', strtotime($metadate)).'">';
+	$smarty->assign('seotext', $categories_meta['categories_name'] . ' ' . $categories_meta['categories_heading_title']);
     
 }
-// ---------------------------------------------------------------------------------------
 //	Daten holen: Inhalts-Seite (ContentManager)
-// ---------------------------------------------------------------------------------------
 elseif (isset($_GET['coID']) && is_numeric($_GET['coID'])) {
 
     //  Noindex bei bestimmten Contet Seiten
@@ -457,18 +422,16 @@ elseif (isset($_GET['coID']) && is_numeric($_GET['coID'])) {
 					content_heading, 
 					content_text,
 					content_file, 
-					content_group					
+					content_group,					
+					last_modified					
 			FROM 	" . TABLE_CONTENT_MANAGER . " 
 			WHERE 	content_group = '" . intval($_GET['coID']) . "' 
 			AND 	languages_id = '" . intval($_SESSION['languages_id']) . "'
 		");
-    $contents_meta = xtc_db_fetch_array($contents_meta_query, true);
+    $contents_meta = xtc_db_fetch_array($contents_meta_query);
 
     if (count($contents_meta) > 0) {
-
-        // NEU! Eingebundene Dateien auslesen
         if ($contents_meta['content_file']) {
-            // Nur Text- oder HTML-Dateien!
             if (preg_match("/\.(txt|htm|html)$/i", $contents_meta['content_file'])) {
                 $contents_meta['content_text'] .= ' ' . implode(' ', @file(DIR_FS_CATALOG . 'media/content/' . $contents_meta['content_file']));
             }
@@ -502,11 +465,16 @@ elseif (isset($_GET['coID']) && is_numeric($_GET['coID'])) {
     } else {
         $canonical_url = xtc_href_link(FILENAME_CONTENT, 'coID=' . $_GET['coID'] . '&language=' . $_SESSION['language_code']);
     }
+	//Datum ausgeben
+	if ($contents_meta['last_modified'] > 0) {
+		$metadate = $contents_meta['last_modified'];
+	} else {
+		$metadate = $contents_meta['last_modified'];
+	}
+	echo '<meta name="date" content="'.date('Y-m-d\TH:i:sP', strtotime($metadate)).'">';
+	$smarty->assign('seotext', $contents_meta['content_title'] . ' ' . $contents_meta['content_heading']);
 }
-
-// ---------------------------------------------------------------------------------------
 //	Daten holen: Hersteller
-// ---------------------------------------------------------------------------------------
 elseif ($_GET['manufacturers_id']) {
     $manufacturers_meta_query = xtDBquery("SELECT
 													m.manufacturers_name,
@@ -524,28 +492,24 @@ elseif ($_GET['manufacturers_id']) {
 													mi.manufacturers_id ='" . intval($_GET['manufacturers_id']) . "'
 												AND
 													mi.languages_id ='" . intval($_SESSION['languages_id']) . "'");
-    $manufacturers_data = xtc_db_fetch_array($manufacturers_meta_query, true);
+    $manufacturers_data = xtc_db_fetch_array($manufacturers_meta_query);
 
     if (!empty($manufacturers_data['manufacturers_meta_description']))
         $meta_descr = $manufacturers_data['manufacturers_meta_description'];
     else
-        $meta_descr = metaTitle($manufacturers_data['manufacturers_name'], TITLE);
+        $meta_descr = metaTitle($manufacturers_data['manufacturers_name'], ($addOthersShopTitle) ? ML_TITLE : '');
 
     if (!empty($manufacturers_data['manufacturers_meta_keywords']))
         $meta_keyw = $manufacturers_data['manufacturers_meta_keywords'];
     else
-        $meta_keyw = metaTitle($manufacturers_data['manufacturers_name'], TITLE);
+        $meta_keyw = metaTitle($manufacturers_data['manufacturers_name'], ($addOthersShopTitle) ? ML_TITLE : '');
 
     if (!empty($manufacturers_data['manufacturers_meta_title']))
         $meta_title = $manufacturers_data['manufacturers_meta_title'];
     else
-        $meta_title = metaTitle($manufacturers_data['manufacturers_name'], TITLE);
+        $meta_title = metaTitle($manufacturers_data['manufacturers_name'], ($addOthersShopTitle) ? ML_TITLE : '');
 }
-
-// ---------------------------------------------------------------------------------------
 //	Daten hole: Blog Kategorie
-// ---------------------------------------------------------------------------------------
-
 elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (!isset($_GET['blog_item']))) {
     $blog_meta_query = xtDBquery("SELECT meta_key,
 	                                        meta_desc,
@@ -559,18 +523,18 @@ elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (!isset($
     if (!empty($blog_meta['meta_desc']))
         $meta_descr = $blog_meta['meta_desc'];
     else
-        $meta_descr = metaTitle($blog_meta['titel'], TITLE);
+        $meta_descr = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
 
     if (!empty($blog_meta['meta_key']))
         $meta_keyw = $blog_meta['meta_key'];
     else
-        $meta_keyw = metaTitle($blog_meta['titel'], TITLE);
+        $meta_keyw = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
 
     if (!empty($blog_meta['meta_title']))
         $meta_title = $blog_meta['meta_title'];
     else
-        $meta_title = metaTitle($blog_meta['titel'], TITLE);
-				$image = xtc_db_fetch_array(xtc_db_query("select image from blog_cat_images where cat_id = ".$_GET['blog_cat']." AND image_nr = 1 LIMIT 1 "));
+        $meta_title = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
+				$image = xtc_db_fetch_array(xtc_db_query("SELECT image FROM blog_cat_images WHERE cat_id = ".$_GET['blog_cat']." AND image_nr = 1 LIMIT 1 "));
 				if($image == ''){
 					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
 				}else{
@@ -584,10 +548,9 @@ elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (!isset($
     echo '<meta property="og:type" content="website">'."\n";
     echo '<meta property="og:url" content="'.$canonical_url.'">'."\n";	
 	echo '<meta property="og:image" content="' . htmlentities($image_link) . '" />' . "\n";
+	$smarty->assign('seotext', $blog_meta['titel']);
 }
-// ---------------------------------------------------------------------------------------
 //	Daten hole: Blog Startseite
-//
 elseif ($_SERVER['SCRIPT_NAME'] == '/blog.php' && !isset($_GET['blog_cat']) && !isset($_GET['blog_item'])) {
 $blog_meta_query = xtDBquery("SELECT meta_keywords,
 	                                        meta_description,
@@ -599,17 +562,17 @@ $blog_meta_query = xtDBquery("SELECT meta_keywords,
     if (!empty($blog_meta['meta_desc']))
         $meta_descr = $blog_meta['meta_desc'];
     else
-        $meta_descr = metaTitle($blog_meta['titel'], TITLE);
+        $meta_descr = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
 
     if (!empty($blog_meta['meta_key']))
         $meta_keyw = $blog_meta['meta_key'];
     else
-        $meta_keyw = metaTitle($blog_meta['titel'], TITLE);
+        $meta_keyw = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
 
     if (!empty($blog_meta['meta_title']))
         $meta_title = $blog_meta['meta_title'];
     else
-        $meta_title = metaTitle($blog_meta['titel'], TITLE);
+        $meta_title = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
 				$image = xtc_db_fetch_array(xtc_db_query("select image from ".TABLE_BLOG_STARTIMG." where image_nr = 1 LIMIT 1 "));
 				if($image == ''){
 					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
@@ -624,11 +587,9 @@ $blog_meta_query = xtDBquery("SELECT meta_keywords,
     echo '<meta property="og:type" content="website">'."\n";
     echo '<meta property="og:url" content="'.$canonical_url.'">'."\n";	
 	echo '<meta property="og:image" content="' . htmlentities($image_link) . '" />' . "\n";	
+	$smarty->assign('seotext', $blog_meta['meta_title']);
 }
-// ---------------------------------------------------------------------------------------
 //	Daten hole: Blog Eintrag
-// ---------------------------------------------------------------------------------------
-
 elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (isset($_GET['blog_item']) && is_numeric($_GET['blog_item']))) {
     $blog_meta_query = xtDBquery("SELECT meta_keywords,
 	                                        meta_description,
@@ -642,17 +603,17 @@ elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (isset($_
     if (!empty($blog_meta['meta_description']))
         $meta_descr = $blog_meta['meta_description'];
     else
-        $meta_descr = metaTitle($blog_meta['titel'], TITLE);
+        $meta_descr = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
 
     if (!empty($blog_meta['meta_keywords']))
         $meta_keyw = $blog_meta['meta_keywords'];
     else
-        $meta_keyw = metaTitle($blog_meta['titel'], TITLE);
+        $meta_keyw = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
 
     if (!empty($blog_meta['meta_title']))
         $meta_title = $blog_meta['meta_title'];
     else
-        $meta_title = metaTitle($blog_meta['titel'], TITLE);
+        $meta_title = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
 				$image = xtc_db_fetch_array(xtc_db_query("select image from blog_item_images where item_id = ".$_GET['blog_item']." AND image_nr = 1 LIMIT 1 "));
 				if($image == ''){
 					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
@@ -667,12 +628,10 @@ elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (isset($_
     echo '<meta property="og:type" content="website">';
     echo '<meta property="og:url" content="'.$canonical_url.'">'."\n";
 	echo '<meta property="og:image" content="' . htmlentities($image_link) . '" />' . "\n";
+	$smarty->assign('seotext', $blog_meta['title']);
 }
 
-
-// ---------------------------------------------------------------------------------------
 //	Title fuer: Specials / Products New
-// ---------------------------------------------------------------------------------------
 elseif (basename($_SERVER['SCRIPT_NAME']) == FILENAME_SPECIALS) {
     $meta_title = metaTitle(NAVBAR_TITLE_SPECIALS, TITLE);
 } elseif (basename($_SERVER['SCRIPT_NAME']) == FILENAME_PRODUCTS_NEW) {
@@ -680,12 +639,9 @@ elseif (basename($_SERVER['SCRIPT_NAME']) == FILENAME_SPECIALS) {
 }
 
 
-switch (basename($_SERVER['SCRIPT_NAME'])) { // Start Switch
-// ---------------------------------------------------------------------------------------
+switch (basename($_SERVER['SCRIPT_NAME'])) {
 //	Title für Suchergebnisse - Mit Suchbegriff, Kategorien-Namen, Seiten-Nummer etc.
-// ---------------------------------------------------------------------------------------
     case FILENAME_ADVANCED_SEARCH_RESULT :
-
         // ggf. Herstellernamen herausfinden ...
         if (!empty($_GET['manufacturers_id'])) {
             $manu_name_query = xtDBquery("
@@ -709,9 +665,7 @@ switch (basename($_SERVER['SCRIPT_NAME'])) { // Start Switch
         $meta_title = metaTitle($breadcrumbTitle, '&quot;' . trim($_GET['keywords']) . '&quot;', $Page, $cat_name, $manu_name, ($addSearchShopTitle) ? ML_TITLE : '');
         break;
 
-// ---------------------------------------------------------------------------------------
 //	Title für Taglisting - Mit Suchbegriff, Kategorien-Namen, Seiten-Nummer etc.
-// ---------------------------------------------------------------------------------------
     case FILENAME_TAGLISTING :
         $meta_keyw = stripslashes(trim(urldecode($_GET['tag']))) . ',' . ML_META_KEYWORDS;
         $meta_descr .= metaTitle($breadcrumbTitle, stripslashes(trim(urldecode($_GET['tag']))), ($addSearchShopTitle) ? ML_TITLE : '');
@@ -719,9 +673,7 @@ switch (basename($_SERVER['SCRIPT_NAME'])) { // Start Switch
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
         break;
-// ---------------------------------------------------------------------------------------
 //	Title für Produkt-Filter
-// ---------------------------------------------------------------------------------------
     case FILENAME_PRODUCT_FILTER :
         $meta_keyw = $_GET['filter'] . ',' . ML_META_KEYWORDS;
         $meta_descr .= metaTitle($breadcrumbTitle, '&quot;' . trim($_GET['filter']) . '&quot;', ($addSearchShopTitle) ? ML_TITLE : '');
@@ -729,46 +681,33 @@ switch (basename($_SERVER['SCRIPT_NAME'])) { // Start Switch
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
         break;
-
-// ---------------------------------------------------------------------------------------
 //	Title für Angebote
-// ---------------------------------------------------------------------------------------
     case FILENAME_SPECIALS :
         $meta_title = metaTitle($breadcrumbTitle, $Page, ($addSpecialsShopTitle) ? ML_TITLE : '');
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
         break;
-
-// ---------------------------------------------------------------------------------------
 //	Title für Neue Artikel
-// ---------------------------------------------------------------------------------------
     case FILENAME_PRODUCTS_NEW :
         $meta_title = metaTitle($breadcrumbTitle, $Page, ($addNewsShopTitle) ? ML_TITLE : '');
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
         break;
-// ---------------------------------------------------------------------------------------
 //	Title für Hashtags
-// ---------------------------------------------------------------------------------------
     case 'hashtags.php' :
-        $meta_title = metaTitle($breadcrumbTitle, stripslashes(trim(urldecode($_GET['hashtags']))), ($addNewsShopTitle) ? ML_TITLE : '');
-		$meta_descr .= metaTitle($breadcrumbTitle, stripslashes(trim(urldecode($_GET['hashtags']))), ($addNewsShopTitle) ? ML_TITLE : '');
+        $meta_title = metaTitle($breadcrumbTitle, stripslashes(trim(urldecode($_GET['hashtags']))), ($addSearchShopTitle) ? ML_TITLE : '');
+		$meta_descr .= metaTitle($breadcrumbTitle, stripslashes(trim(urldecode($_GET['hashtags']))), ($addSearchShopTitle) ? ML_TITLE : '');
         $url = explode('?', $_SERVER['REQUEST_URI']);
         $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
         break;
-// ---------------------------------------------------------------------------------------
-// ---------------------------------------------------------------------------------------
-} // Ende Switch		
-// ---------------------------------------------------------------------------------------
+}
 //	... und wenn nix drin, dann Standard-Werte nehmen
-// ---------------------------------------------------------------------------------------
 if (empty($meta_keyw)) {
-    //$meta_keyw    = metaKeyWords(META_KEYWORDS); 
-    $meta_keyw = META_KEYWORDS; // <-- 1:1 übernehmen!
+    $meta_keyw = META_KEYWORDS;
 }
 if (empty($meta_descr)) {
     $meta_descr = META_DESCRIPTION;
-    $metaDesLength = false; // <-- dann auch nicht kürzen!
+    $metaDesLength = false;
 }
 if (empty($meta_title)) {
     $meta_title = TITLE;
@@ -778,13 +717,7 @@ if (empty($meta_title)) {
 $meta_descr = str_replace('{$greeting}', ' ', $meta_descr);
 $meta_title = str_replace('{$greeting}', ' ', $meta_title);
 $meta_keyw = str_replace('{$greeting}', ' ', $meta_keyw);
-//Mobile Template
-$xmtitle = explode(" - ", metaClean($meta_title));
-$xmumlaute = Array("/&auml;/", "/&ouml;/", "/&uuml;/", "/&Auml;/", "/&Ouml;/", "/&Uuml;/", "/ß/", "/ /");
-$xmreplace = Array("ae", "oe", "ue", "Ae", "Oe", "Ue", "ss", "_");
-$xmtitle_neu = preg_replace($xmumlaute, $xmreplace, $xmtitle[0]);
-$_SESSION["metatitleid"] = $xmtitle_neu;
-$_SESSION["metatitle"] = $xmtitle[0];
+
 ?>
 <?php if ($_GET['error'] == '404') { ?>
     <title>404 - Seite wurde nicht gefunden!</title>

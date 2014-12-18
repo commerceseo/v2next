@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: configuration.php 1132 2014-07-08 16:29:50Z akausch $
+* 	$Id: configuration.php 1171 2014-08-27 12:12:24Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -105,9 +105,9 @@ define('ALLOW_ADD_TO_CART_DESC' , 'Erlaubt das Einfügen von Artikeln in den War
 define('ALLOW_DISCOUNT_ON_PRODUCTS_ATTRIBUTES_TITLE' , 'Rabatte auch auf die Artikelattribute verwenden?');
 define('ALLOW_DISCOUNT_ON_PRODUCTS_ATTRIBUTES_DESC' , 'Erlaubt, den eingestellten Rabatt der Kundengruppe auch auf die Artikelattribute anzuwenden (Nur wenn der Artikel nicht als "Sonderangebot" ausgewiesen ist)');
 define('CURRENT_TEMPLATE_TITLE' , 'Template');
-define('CURRENT_TEMPLATE_DESC' , 'Wählen Sie ein Template aus. Das Template muss sich im Ordner /templates/ befinden.<br /><b style="color:red">ACHTUNG: Beim Wechsel des Templates unbedingt den Shop-Cache leeren!</b><br />Weitere Templates finden sie unter <a href="http://www.seo-template.de">http://www.seo-template.de</a>');
+define('CURRENT_TEMPLATE_DESC' , 'Wählen Sie ein Template aus. Das Template muss sich im Ordner /templates/ befinden.<br /><b style="color:red">ACHTUNG: Beim Wechsel des Templates unbedingt den Shop-Cache leeren!</b><br />Weitere Templates finden sie unter <a href="https://www.commerce-seo.de">https://www.commerce-seo.de</a>');
 define('TEMPLATE_TITLE' , 'Templateset (Theme)');
-define('TEMPLATE_DESC' , 'Wählen Sie ein Templateset (Theme) aus. Das Template muss sich im Ordner /templates/ befinden.<br /><br />Weitere Templates finden sie unter <a href="http://www.seo-template.de">http://www.seo-template.de</a>');
+define('TEMPLATE_DESC' , 'Wählen Sie ein Templateset (Theme) aus. Das Template muss sich im Ordner /templates/ befinden.<br /><br />Weitere Templates finden sie unter <a href="https://www.commerce-seo.de">https://www.commerce-seo.de</a>');
 define('CC_KEYCHAIN_TITLE','CC String');
 define('CC_KEYCHAIN_DESC','String zur verschlüsselung der CC Informationen (Bitte umbedingt ändern!)');
 define('ENTRY_FIRST_NAME_MIN_LENGTH_TITLE' , 'Vorname');
@@ -780,7 +780,7 @@ define('MAX_DISPLAY_TAGS_FONT_DESC','Wie gross soll die Schrift maximal sein?');
 define('DISPLAY_NEW_PRODUCTS_SLIDE_TITLE','Startseiten Produkt-Boxen als Slide:');
 define('DISPLAY_NEW_PRODUCTS_SLIDE_DESC','Gibt an, ob neue Produkte auf der Startseite oder in Kategorien als Slideshow angezeigt werden sollen. Diese Funktion ist für die Grid-Templates optimiert. Für die Responsive- / Fluid-Templates sind Anpassungen notwendig.');
 define('CURRENT_MOBILE_TEMPLATE_TITLE' , 'mobiles-Template');
-define('CURRENT_MOBILE_TEMPLATE_DESC' , 'Dieses Template ist für Mobilgeräte. Das Template muss sich im Ordner /templates/ befinden.<br /><br />Weitere Templates finden sie unter <a href="http://www.seo-template.de">http://www.seo-template.de</a>');
+define('CURRENT_MOBILE_TEMPLATE_DESC' , 'Dieses Template ist für Mobilgeräte. Das Template muss sich im Ordner /templates/ befinden.<br /><br />Weitere Templates finden sie unter <a href="https://www.commerce-seo.de">https://www.commerce-seo.de</a>');
 define('TWITTERBOX_STATUS_TITLE' , 'Twitterbox-Status');
 define('TWITTERBOX_STATUS_DESC' , 'true = aktiv, false = inaktiv');
 define('TWITTER_ACCOUNT_TITLE' , 'Twitterbox-Account');
@@ -1232,3 +1232,5 @@ define('ADMIN_DEFAULT_LISTING_NUM_DESC' , 'Wie viele Datensätze sollen im Admin
 
 define('PAYPAL_PAYMENT_MODE_TITLE','PayPal-Zahlung:');
 define('PAYPAL_PAYMENT_MODE_DESC','Sale (Normal) oder Authorization (muss autorisiert werden).<b>Bei PayPal Einstellungen beachten!</b>');
+define('DISPLAY_START_NEW_PRODUCTS_TITLE','Anzeige neue Produkte Startseite:');
+define('DISPLAY_START_NEW_PRODUCTS_DESC','top (alle Produkte von der Position Top) oder newproducts (Anzeige der neuen Produkte)');

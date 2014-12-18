@@ -1,18 +1,5 @@
 <?php
-/*-----------------------------------------------------------------
-* 	$Id: blog.php 420 2013-06-19 18:04:39Z akausch $
-* 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
-* 	http://www.commerce-seo.de
-* ------------------------------------------------------------------
-* 	based on:
-* 	(c) 2000-2001 The Exchange Project  (earlier name of osCommerce)
-* 	(c) 2002-2003 osCommerce - www.oscommerce.com
-* 	(c) 2003     nextcommerce - www.nextcommerce.org
-* 	(c) 2005     xt:Commerce - www.xt-commerce.com
-* 	Released under the GNU General Public License
-* ---------------------------------------------------------------*/
- 
-define('HEADING_TITLE','BLOG für commerce:SEO / xt:commerce');
+define('HEADING_TITLE','BLOG für commerce:seo');
 define('TABLE_HEADING_NAVIGATION','Navigation:');
 define('TABLE_HEADING_BLOG_TOPIC','Seiten: ');
 define('TABLE_HEADING_BLOG_TOPIC_OFF','davon Offline: ');
@@ -53,16 +40,12 @@ define('TABLE_FOOTER_STATUS_1','Offline');
 define('TABLE_FOOTER_STATUS_2','Online');	
 define('TABLE_FOOTER_STATUS_3','L&ouml;schen');	
 define('UPDATE_ENTRY','Aktualisieren?');	
-define('UPDATE_SAVE','Speichern');	
-// Neue Kategorie
+define('UPDATE_SAVE','Speichern');
 define('TABLE_HEADING_NEWCATEGORIE_NAME','Bezeichung');	
-define('TABLE_HEADING_NEWCATEGORIE_POSITION','Position');	
-// Neuer Blogbeitrag
+define('TABLE_HEADING_NEWCATEGORIE_POSITION','Position');
 define('TABLE_HEADING_NEWITEM_NAME','&Uuml;berschrift');	
 define('TABLE_HEADING_NEWITEM_TITLE','Titel für die Box');
 define('TABLE_HEADING_NEWITEM_LENGHT','Nach wie vielen Zeichen soll in der &Uuml;berischt &quot;abgeschnitten&quot; werden?');
 define('TABLE_HEADING_META_TITLE', 'Meta - Titel');	
 define('TABLE_HEADING_META_DESCRIPTION', 'Meta - Description');
 define('TABLE_HEADING_META_KEYWORDS', 'Meta - Keywords');
- 
-?>

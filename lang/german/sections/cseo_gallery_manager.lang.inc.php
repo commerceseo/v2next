@@ -18,4 +18,8 @@ $t_language_text_section_content_array = array
 	'TABLE_HEADING_ACTION' => 'Aktion',
 	'BUTTON_NEW_ELEMENT' => 'Neues Sliderset',
 	'TABLE_HEADING_LANG' => 'Sprache',
+	'TABLE_HEADING_MOBILE_STATUS' => 'Mobile',
+	'TEXT_GALERIES_MOBILE' => 'Mobile:',
+	'TABLE_HEADING_SLIDER_NAV_STATUS' => 'Navigation',
+	'TEXT_GALERIES_SLIDER_NAV_STATUS' => 'Navigation:',
 );

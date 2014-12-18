@@ -1295,3 +1295,5 @@ define('TEXT_DOWNLOAD', 'Download');
 define('TEXT_SERVICE', 'Dienstleistung');
 define('TEXT_PRODUCT_TYPE', 'Produkt Typ:');
 define('DETAILS', 'Details');
+define('HEADING_PRODUCTS_ATTRIBUTES_ATTRIBUTES_NAME', 'Optionen');
+define('HEADING_PRODUCTS_ATTRIBUTES_ATTRIBUTES_BETSAND', 'Bestand Summe: ');

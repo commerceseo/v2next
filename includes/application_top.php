@@ -665,6 +665,14 @@ $browser = new Browser();
 $template_configuration_query = xtc_db_fetch_array(xtc_db_query('SELECT configuration_key, configuration_value FROM '.TABLE_CONFIGURATION." WHERE configuration_key = 'CURRENT_TEMPLATE' LIMIT 1"));
 define($template_configuration_query['configuration_key'], $template_configuration_query['configuration_value']);
 
+function strtolower_wrapper($p_string, $p_encoding = 'utf-8') {
+	if(function_exists('mb_strtolower')) {
+		$t_strtolower = mb_strtolower($p_string, $p_encoding);
+	} else {
+		$t_strtolower = strtolower($p_string);
+	}
+	return $t_strtolower; 
+}
 //Lagerwarung
 if (MODULE_CUSTOMERS_ADMINMAIL_STATUS == 'true') {
 	include_once(DIR_WS_FUNCTIONS . 'stock_mails.php');

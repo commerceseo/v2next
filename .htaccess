@@ -121,14 +121,6 @@ Options -Indexes
 
 <IfModule mod_rewrite.c>
 	RewriteEngine On
-
-	# Javascripte gezip ausliefern
-	
-RewriteCond %{HTTP:Accept-Encoding} gzip
-RewriteCond %{REQUEST_FILENAME}.jgz -f
-RewriteRule (.*)\.js$ $1\.js.jgz [L]
-AddType "text/javascript" .js.jgz
-AddEncoding gzip .jgz
 	
 	#Sicherheit
 	## Begin - Rewrite rules to block out some common exploits.

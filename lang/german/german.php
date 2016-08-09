@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: german.php 1100 2014-06-13 00:43:53Z akausch $
+* 	$Id: german.php 1469 2015-07-22 20:30:54Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -431,7 +431,7 @@ define('ENTRY_VAT_ERROR', 'Die Eingegebene Ust-ID ist ungültig oder kann derzei
 define('MSRP','UVP');
 define('YOUR_PRICE','Ihr Preis ');
 define('ONLY',' Nur ');
-define('FROM','Ab ');
+define('FROM','ab ');
 define('SINGLE_PRICE','Einzelpreis ');
 define('YOU_SAVE','Sie sparen rund ');
 define('INSTEAD','unser bisheriger Preis ');
@@ -757,3 +757,13 @@ define('NAVBAR_TITLE_WITHDRAWAL', 'Widerrufsformular');
 define('BUTTON_WITHDRAWAL', 'Online-Formular');
 define('BUTTON_WITHDRAWAL_PDF', 'PDF-Download');
 define('BUTTON_WITHDRAWAL_PDF_DOWNLOAD', ' Widerruf zum Download');
+
+define('CHECKOUT_PAYMENT_ERROR','Bei der Bestellung ist ein Fehler aufgetreten. Bitte melden Sie sich einmal ab und leiten den Bestellvorgang erneut ein. Sollte dieser Fehler weiterhin bestehen, wenden Sie sich bitte an unseren Kundenservice.');
+define('MAIN_TOP_PRODUCTS_DEFAULT','Unsere Top Produkte');
+
+define('FREE_SHIPPING_TITLE','Versandkostenfrei');
+define('FREE_SHIPPING_DESCRIPTION','Diese Artikel erhalten Sie von uns versandkostenfrei!');
+define('SHIPPING_NO_COSTS_CART', 'für diese Artikel berechnen wir keine Versandkosten');
+define('SHIPPING_NO_COSTS_PRODUCT', 'für diesen Artikel berechnen wir keine Versandkosten');
+define('SHIPPING_MAXIMUM_CART','von diesem Produkt können Sie maximal {xx} Exemplare bestellen.');
+define('PRODUCT_MAXIMUM_AMOUNT_EXCEEDED','Sie haben mehr als die erlaubte Menge eines Produktes in den Warenkorb gelegt. Die Menge wurde automatisch auf die mamximal erhältliche Anzahl reduziert!');

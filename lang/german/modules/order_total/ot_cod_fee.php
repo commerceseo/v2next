@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: ot_cod_fee.php 586 2013-08-30 12:47:56Z akausch $
+* 	$Id: ot_cod_fee.php 1447 2015-02-17 18:16:53Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -162,6 +162,26 @@ define('MODULE_ORDER_TOTAL_FREEAMOUNT_FREE_DESC','&lt;ISO2-Code&gt;:&lt;Preis&gt
 kein 00:9.99 eingetragen ist, wird der Nachnahmeversand ins Ausland nicht berechnet
 (nicht m&ouml;glich).');  
 
+define('MODULE_ORDER_TOTAL_COD_FEE_HERMES_TITLE','Hermes Nachnahme');
+define('MODULE_ORDER_TOTAL_COD_FEE_HERMES_DESC','&lt;ISO2-Code&gt;:&lt;Preis&gt;, ....<br>
+00 als ISO2-Code erm&ouml;glicht den Nachnahmeversand in alle L&auml;nder. Wenn
+00 verwendet wird, muss dieses als letztes Argument eingetragen werden. Wenn
+kein 00:9.99 eingetragen ist, wird der Nachnahmeversand ins Ausland nicht berechnet
+(nicht m&ouml;glich).');  
+
+define('MODULE_ORDER_TOTAL_COD_FEE_HERMESPROPS_TITLE','HermesPro Nachnahme');
+define('MODULE_ORDER_TOTAL_COD_FEE_HERMESPROPS_DESC','&lt;ISO2-Code&gt;:&lt;Preis&gt;, ....<br>
+00 als ISO2-Code erm&ouml;glicht den Nachnahmeversand in alle L&auml;nder. Wenn
+00 verwendet wird, muss dieses als letztes Argument eingetragen werden. Wenn
+kein 00:9.99 eingetragen ist, wird der Nachnahmeversand ins Ausland nicht berechnet
+(nicht m&ouml;glich).');  
+
+define('MODULE_ORDER_TOTAL_COD_FEE_DPD_TITLE','DPD Nachnahme');
+define('MODULE_ORDER_TOTAL_COD_FEE_DPD_DESC','&lt;ISO2-Code&gt;:&lt;Preis&gt;, ....<br>
+00 als ISO2-Code erm&ouml;glicht den Nachnahmeversand in alle L&auml;nder. Wenn
+00 verwendet wird, muss dieses als letztes Argument eingetragen werden. Wenn
+kein 00:9.99 eingetragen ist, wird der Nachnahmeversand ins Ausland nicht berechnet
+(nicht m&ouml;glich).');  
+
 define('MODULE_ORDER_TOTAL_COD_FEE_TAX_CLASS_TITLE','Steuerklasse');
 define('MODULE_ORDER_TOTAL_COD_FEE_TAX_CLASS_DESC','W&auml;hlen Sie eine Steuerklasse.');
-?>

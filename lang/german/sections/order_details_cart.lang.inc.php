@@ -6,6 +6,7 @@ $t_language_text_section_content_array = array(
 	'text_pos' => 'Pos',
 	'text_pic' => 'Bild',
 	'text_article' => 'Artikel',
+	'text_article_nr' => 'Artikel-Nr.: ',
 	'text_qty' => 'Menge',
 	'text_single' => 'Einzelpreis',
 	'text_total' => 'Summe',

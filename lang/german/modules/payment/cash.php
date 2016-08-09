@@ -16,7 +16,7 @@
 
 define('MODULE_PAYMENT_CASH_TEXT_DESCRIPTION', 'Barzahlung');
 define('MODULE_PAYMENT_CASH_TEXT_TITLE', 'Barzahlung');
-define('MODULE_PAYMENT_CASH_TEXT_INFO', 'Sie k&ouml;nnen das Produkt gegen Barkasse zu unsren Gesch&auml;ftszeiten abholen.');
+define('MODULE_PAYMENT_CASH_TEXT_INFO', 'Sie k&ouml;nnen das Produkt gegen Barkasse zu unseren Gesch&auml;ftszeiten abholen.');
 define('MODULE_PAYMENT_CASH_STATUS_TITLE', 'Barzahlungsmodul aktivieren');
 define('MODULE_PAYMENT_CASH_STATUS_DESC', 'M&ouml;chten Sie Zahlungen per Barzahlung akzeptieren?');
 define('MODULE_PAYMENT_CASH_ORDER_STATUS_ID_TITLE', 'Bestellstatus festlegen');

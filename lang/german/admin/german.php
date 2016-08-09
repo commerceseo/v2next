@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: german.php 1139 2014-07-09 10:35:27Z akausch $
+* 	$Id: german.php 1329 2014-12-18 10:03:54Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -1297,3 +1297,8 @@ define('TEXT_PRODUCT_TYPE', 'Produkt Typ:');
 define('DETAILS', 'Details');
 define('HEADING_PRODUCTS_ATTRIBUTES_ATTRIBUTES_NAME', 'Optionen');
 define('HEADING_PRODUCTS_ATTRIBUTES_ATTRIBUTES_BETSAND', 'Bestand Summe: ');
+
+define('TEXT_PRODUCTS_FREE_SHIPPING','Produkt Versandkostenfrei? ');
+define('TEXT_PRODUCTS_MAX_FREE_SHIPPING_AMOUNT','Maximale versandkostenfreie Menge: ');
+define('TEXT_PRODUCTS_MAX_FREE_SHIPPING_CART','Maximale Menge im Warenkorb: ');
+define('TEXT_FREE_SHIPPING_TIP',' (0 = unbegrenzt) ');

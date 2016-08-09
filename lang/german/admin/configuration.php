@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: configuration.php 1171 2014-08-27 12:12:24Z akausch $
+* 	$Id: configuration.php 1487 2015-07-27 12:48:22Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -1070,8 +1070,8 @@ define('STOCK_LEVEL_SHIPPINGTIME_TITLE' , 'Lieferzeit abhängig vom Lagerbestand
 define('STOCK_LEVEL_SHIPPINGTIME_DESC' , 'Lieferstatus eines Artikels wird z.B. auf "3" gesetzt, wenn die Artikelanzahl den Wert "0" erreicht hat. (Lieferstatus "3" ist die längste Bestellzeit. zB.: 2 Wochen.) Diese Option wird nur Aktiv, wenn das Feld "Warenmenge abziehen" - auf "True" gesetzt ist und durch eine Online - Bestellung auf "0" gesetzt wird.');
 define('STOCK_LEVEL_SHIPPINGTIME_ID_TITLE' , 'Lieferstatus für dynamische Lieferzeitanpassung');
 define('STOCK_LEVEL_SHIPPINGTIME_ID_DESC' , 'Tragen Sie hier die Lieferstatus ID ein, auf welchen Lieferstatus das Produkt bei erreichen der Menge "0" gesetzt werden soll.');
-define('GENERAL_SCRIPT_ADDON_TITLE','Zusatz-Javascript');
-define('GENERAL_SCRIPT_ADDON_DESC','Hier können Sie individuelle Javascripte einbinden.');
+define('GENERAL_SCRIPT_ADDON_TITLE','Zusatz-Javascript Footer');
+define('GENERAL_SCRIPT_ADDON_DESC','Hier können Sie individuelle Javascripte einbinden die im Footer ausgegeben werden.');
 define('GOOGLE_ANAL_CODE_BASE_TITLE','Google-Analytics Code');
 define('GOOGLE_ANAL_CODE_BASE_DESC','Geben Sie hier den vollständigen Google-Analytics Code ein.');
 define('MODULE_CUSTOMERS_PDF_INVOICE_STATUS_TITLE','automatische Rechnung');
@@ -1234,3 +1234,39 @@ define('PAYPAL_PAYMENT_MODE_TITLE','PayPal-Zahlung:');
 define('PAYPAL_PAYMENT_MODE_DESC','Sale (Normal) oder Authorization (muss autorisiert werden).<b>Bei PayPal Einstellungen beachten!</b>');
 define('DISPLAY_START_NEW_PRODUCTS_TITLE','Anzeige neue Produkte Startseite:');
 define('DISPLAY_START_NEW_PRODUCTS_DESC','top (alle Produkte von der Position Top) oder newproducts (Anzeige der neuen Produkte)');
+
+define('STOCK_DISABLE_PRODUCT_TITLE' , 'Produkt auf "nicht kaufbar" setzen');
+define('STOCK_DISABLE_PRODUCT_DESC' , 'Wenn auf true gesetzt, wird das Produkt automatisch auf nicht kaufen gesetzt, bleibt aber aktiv! Das kann für SEO günstiger sein, das Produkt wird angezeigt, kann aber nicht gekauft werden.<br><b>ACHTUNG: Wenn der Wert "Produkt deaktivieren" auf true ist, wird das Produkt dann trotzdem auf inaktiv gesetzt!</b>');
+
+define('MODULE_CUSTOMERS_PDF_INVOICE_PRINT_TEL_TITLE','Telefonnummer auf Lieferschein');
+define('MODULE_CUSTOMERS_PDF_INVOICE_PRINT_TEL_DESC','<b>true</b> = Die Telefonnummer des Kunden wird auf dem Lieferschein mit gedruckt.');
+
+define('PRODUCT_DETAILS_RELATED_RAND_TITLE','Anzahl Zufallsartikel');
+define('PRODUCT_DETAILS_RELATED_RAND_DESC','Wie viele Zufallsartikel sollen auf der Produktdetailsseite angezeigt werden. Dieser Wert ist jeweils für die Artikel innerhalb der Kategorie und gesamter Shop. Also Wert 4 wäre dann 4 x innerhalb der Kategorie und 4 x aus dem gesamten Shop.');
+
+define('MOBILE_CONF_START_FOOTER_TITLE','Footertext Startseite mobile');
+define('MOBILE_CONF_START_FOOTER_DESC','Soll der Startseitentext im Footer (Content Group ID 15) auf Mobilgeräten angezigt werden?');
+
+define('MOBILE_CONF_CATEGORY_FOOTER_TITLE','Kategorie Footertext mobile');
+define('MOBILE_CONF_CATEGORY_FOOTER_DESC','Soll der Footertext für Kategorien auf Mobilgeräten angezigt werden?');
+
+define('META_DISPLAY_DATE_TITLE','Dublin Core');
+define('META_DISPLAY_DATE_DESC','Soll in den Metaangaben Dublin Core verwendet werden? <a href="http://dublincore.org/documents/dc-html/" target="_blank">Doumentation</a>');
+
+define('SCRIPT_CODE_BEVOR_BODY_TITLE','Zusatz-Javascript Head Bereich');
+define('SCRIPT_CODE_BEVOR_BODY_DESC','Hier können Sie individuelle Javascripte einbinden die im im <b>head</b> Bereich ausgegeben werden.');
+
+define('SCRIPT_CODE_AFTER_BODY_TITLE','Zusatz-Javascript Nach Body');
+define('SCRIPT_CODE_AFTER_BODY_DESC','Hier können Sie individuelle Javascripte einbinden die nach dem <b>body</b> Tag ausgegeben werden.');
+
+define('SECURTY_LOGGIN_LOGIN_TITLE','Loggin Faild Login:');
+define('SECURTY_LOGGIN_LOGIN_DESC','Sollen Loginversuche mit falschen Logindaten beim Login protokolliert werden? Diese Daten finden Sie dann im Security Center unter <b>SQL Logs</b>');
+
+define('FREE_SHIPPING_LOCAL_ONLY_TITLE','Free-Shipping lokal:');
+define('FREE_SHIPPING_LOCAL_ONLY_DESC','Sollen versandkostenfreie Produkte nur im Inland verschickt werden? Die Einstellung richtet sich nach dem Land, welches als Shop-Standard eingerichtet ist.');
+
+define('MODULE_CUSTOMERS_PDF_INVOICE_PRINT_COMMENT_TITLE','Kunden-Kommentare auf PDF-Rechnung:');
+define('MODULE_CUSTOMERS_PDF_INVOICE_PRINT_COMMENT_DESC','Kommentare des Kunden mit auf die PDF Rechnung drucken?');
+
+define('AJAXCOOKIE_TITLE','Cookie Hinweis:');
+define('AJAXCOOKIE_DESC','Soll im Shop ein Hinweis auf die Verwendung von Cookies erscheinen?');

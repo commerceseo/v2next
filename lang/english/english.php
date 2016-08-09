@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: english.php 855 2014-02-27 12:33:40Z akausch $
+* 	$Id: english.php 1155 2014-07-21 12:28:37Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -11,9 +11,6 @@
 * 	(c) 2005     xt:Commerce - www.xt-commerce.com
 * 	Released under the GNU General Public License
 * ---------------------------------------------------------------*/
-
-
-
 
 /*
  *
@@ -764,11 +761,96 @@ define('TEXT_PDF_INVOICE', 'Note on the invoice: ');
 define('SUBCAT_PRODUCTS', 'more categorys: ');
 
 
-define('SHIPPING_AUSLAND', '(Ausland abweichend)');
-define('SHIPPING_AUSLAND_CART1', 'Für Lieferungen ausserhalb');
-define('SHIPPING_AUSLAND_CART2', 'finden Sie hier Informationen zu Liefer- und Versandkosten.');
+// FELDER DIE FEHLTEN Ernst Steininger 15.03.2015
+define('SHIPPING_AUSLAND', '(international delivery is divergent)');
+define('SHIPPING_AUSLAND_CART1', 'For deliveries outside');
+define('SHIPPING_AUSLAND_CART2', 'Click here for information about delivery and shipment costs.');
 
-define('NAVBAR_TITLE_WITHDRAWAL', 'Widerrufsformular');
-define('BUTTON_WITHDRAWAL', 'Online-Formular');
+define('NAVBAR_TITLE_WITHDRAWAL', 'Withdrawal form');
+define('BUTTON_WITHDRAWAL', 'Online-Form');
 define('BUTTON_WITHDRAWAL_PDF', 'PDF-Download');
-define('BUTTON_WITHDRAWAL_PDF_DOWNLOAD', ' Widerruf zum Download');
+define('BUTTON_WITHDRAWAL_PDF_DOWNLOAD', ' Withdrawal form to download');
+
+define('CHECKOUT_PAYMENT_ERROR','While ordering an error has occurred. Please log out once and redo the order process again. If this error persists, please contact our customer service.');
+
+define('GAST', 'Guest');
+define('TITLE_BEWERTUNGEN', 'Manage store reviews');
+define('SUB_TITLE_BEWERTUNGEN', 'Manage the received store reviews');
+
+define('NAVBAR_TITLE_SHOPBEWERTUNGEN', 'Store review');
+define('NAVBAR_TITLE_SHOPBEWERTUNGEN_WRITE', 'Write a store review');
+
+define('SHOPBEWERTUNG_FORMULAR', 'Store review Formu');
+define('SHOPBEWERTUNG_ERHALTEN', 'New store review received');
+define('MAIL_BEWERTUNG_VON', '<strong>Rated from:</strong>');
+define('MAIL_BEWERTUNG_ABSENDER', '<strong>Sender:</strong>');
+define('MAIL_BEWERTUNG_KOMMENTAR', '<strong>Comment:</strong>');
+
+define('MAIL_BEWERTUNG_SHOP', '<strong>Review Store:</strong>');
+define('MAIL_BEWERTUNG_WARE', '<strong>Review Goods:</strong>');
+define('MAIL_BEWERTUNG_VERSAND', '<strong>Review delivery:</strong>');
+define('MAIL_BEWERTUNG_SERVICE', '<strong>Review service:</strong>');
+define('MAIL_BEWERTUNG_SEITE', '<strong>Review page:</strong>');
+
+define('STERN_BEWERTUNGEN', 'Star');
+define('STERN_STUCK', 'Star');
+define('STERN_KEIN', 'No rating');
+
+define('WERTUNG1', 'Very bad');
+define('WERTUNG2', 'Bad');
+define('WERTUNG3', 'Neutral');
+define('WERTUNG4', 'Good');
+define('WERTUNG5', 'Very good');
+
+define('MAILERROR', 'Please enter a valid email address.');
+define('RATINGERROR', 'Please enter a shop review.');
+define('CAPTCHAERROR', 'Please enter the correct security code.');
+define('NAMEERROR', 'Please enter your first and last name.');
+define('ORDERIDERROR', 'There is no order with this order number.');
+define('COMMENTERROR', 'Please enter a comment.');
+define('ORDERIDERROREMAIL', 'Order number and e-mail do not agree with the order data.');
+
+define('SECURITY_CODE_ERROR','Incorrect security code');
+
+define('MIN_REVIEW_TEXT_ERROR', '* The comment must consist of at least ' . REVIEW_TEXT_MIN_LENGTH . ' Letters. Please complete your entry.');
+define('MIN_REVIEW_RATING_ERROR', 'Please give a rating in the form of stars.');
+
+define('WK_NETTO', 'Sum without VAT. ');
+
+define('RANDOM_SPECIALS','Offers');
+define('PRODUCT_NO_BUY','The displayed item is currently not available for purchase.');
+define('TEXT_DATE_UPDATED', 'Updated on: %s');
+define('WEIGHT', 'Shipping Weight');
+
+define('text_pw_secure_0', 'very weak');
+define('text_pw_secure_1', 'weak');
+define('text_pw_secure_2', 'better');
+define('text_pw_secure_3', 'OK');
+define('text_pw_secure_4', 'good');
+define('text_pw_secure_5', 'very good');
+define('TEXT_ADVANCED_SEARCH', 'Advanced Search');
+
+define('ENTRY_DATE_OF_BIRTH_OLD', 'You do not have the minimum age to buy.');
+define('ATTRIBUTE_ERROR', 'Please select a model');
+define('MAIN_BESTSELLER', 'Bestseller');
+define('BLOG_PRODUCTS', 'matching products');
+define('IN_STOCK', 'on stock');
+define('IN_W_STOCK', 'few on stock');
+define('IN_N_STOCK', 'not on stock');
+define('TEXT_MAXORDER','Please note the maximum order quantity for the following products');
+define('TEXT_MAXORDER_TITLE','maximum order quantity');
+define('RMA_NUMBER', 'Nr.: ');
+define('RMA_DATE', 'Date: ');
+define('NAVBAR_TITLE_RMA','RMA-Contract');
+define('RMA_OVERVIEW_TEXT', 'To the RMA Overview');
+define('RMA_TEXT_SHOW', 'Show');
+define('RMA_TEXT_FROM', ' from ');
+define('RMA_PRODUCTS_PLEASE_SELECT','please select');
+define('ENTRY_RMA_PRODUCTS','Please select the product you like to complain!');
+define('ENTRY_RMA_ERROR_MESSAGE','Please enter the error description!');
+define('ENTRY_RMA_ERROR_MESSAGE_LENGTH','The error description is too short!');
+define('ENTRY_RMA_PRODUCTS_EAN','Please enter the serial number of the product!');
+define('ENTRY_RMA_REASON','Please select the reason of your complain!');
+
+
+define('BUTTON_PAYPAL_TEXT','Note on Express-Payment with PayPal');

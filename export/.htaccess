@@ -1,5 +1,5 @@
 #  -----------------------------------------------------------------------------------------
-#  $Id: .htaccess 420 2013-06-19 18:04:39Z akausch $
+#  $Id: .htaccess 1553 2016-04-06 13:30:50Z akausch $
 #
 #   XT-Commerce - ebusiness solutions
 #   http://www.xt-commerce.com
@@ -47,6 +47,10 @@ Order Deny,Allow
 Allow from all
 </Files>
 <Files af11_xtscript.php>
+Order Deny,Allow
+Allow from all
+</Files>
+<Files af12_xtscript.php>
 Order Deny,Allow
 Allow from all
 </Files>

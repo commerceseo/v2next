@@ -1,8 +1,7 @@
 <?php
-
 /****************************************************************************
 *                                                                           *
-*  Amicron-Faktura Schnittstelle fuer xtCommerce                              *
+*  Amicron-Faktura Professional Schnittstelle fuer XTCommerce               *
 *                                                                           *
 *  This program is free software; you can redistribute it and/or            *
 *  modify it under the terms of the GNU General Public License              *
@@ -19,9 +18,8 @@
 *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA                *
 *  02111-1307, USA.                                                         *
 *                                                                           *
-*  Beschreibung : Script zum Datenaustausch Amicron-Faktura <-->            *
-*                 xtCommerce-Shop                                           *
-*                                                                           *
+*  Beschreibung : Script zum Datenaustausch Amicron-Faktura 12 Professional *
+                  <--> eCommerce Modified 1.06                              *
 *****************************************************************************/
 
   /* Beispiel fuer Useragent
@@ -45,16 +43,25 @@ require_once(DIR_FS_INC . 'xtc_not_null.inc.php');
 require_once(DIR_FS_INC . 'xtc_redirect.inc.php');
 require_once(DIR_FS_INC . 'xtc_rand.inc.php');
 
-require_once(DIR_FS_INC . 'xtc_not_null.inc.php');
+// require_once(DIR_FS_INC . 'xtc_not_null.inc.php');
 
+if (file_exists(DIR_FS_CATALOG.'gm/classes/FileLog.php') &&
+	file_exists(DIR_FS_CATALOG.'system/gngp_layer_init.inc.php') &&
+	file_exists(DIR_FS_CATALOG.'gm/inc/gm_get_env_info.inc.php') &&
+	file_exists(DIR_FS_CATALOG.'gm/inc/check_data_type.inc.php')) {
 
+	require_once(DIR_FS_CATALOG.'gm/classes/FileLog.php');
+	require_once(DIR_FS_CATALOG.'system/gngp_layer_init.inc.php');
+	require_once(DIR_FS_CATALOG.'gm/inc/gm_get_env_info.inc.php'); 
+	require_once(DIR_FS_CATALOG.'gm/inc/check_data_type.inc.php');
 
-// ACHTUNG: diese Zeilen werden unter Delphi aus dem Resourcestring gesucht. Daher hier
-// nichts aendern
-$version_major = 3;
-$version_minor = 4;
+}
+// ACHTUNG: diese Zeilen werden benötigt, nichts ändern!
+$version_major = 4;
+$version_minor = 0;
+$datum = "Jan 2016";
 
-//error_reporting(E_ALL);
+// error_reporting(E_WARNING);
 
 // rewrite values to use resample classes
 define('DIR_FS_CATALOG_IMAGES',DIR_FS_CATALOG.DIR_WS_IMAGES);
@@ -149,9 +156,7 @@ class upload {
 				if (strstr($this->filename,'.gif')) {
 					return false;
 				}
-
 			}
-
 		}
 
 		if (move_uploaded_file($this->file['tmp_name'], $this->destination . $this->filename)) {
@@ -159,7 +164,6 @@ class upload {
 
 			return true;
 		} else {
-
 			return false;
 		}
     }
@@ -209,7 +213,6 @@ class upload {
 			return true;
 		}
     }
-
 }
 
 function clear_string($value) {
@@ -397,14 +400,16 @@ function ShowDebug() {
 }
 
 function ReadVersion() {
-	global $action, $version_major, $version_minor;
+	global $action, $version_major, $version_minor, $datum;
+	$ver=explode('.',PHP_VERSION);
 
 	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" .
 		"<STATUS>\n" .
-		"  <STATUS_DATA>\n" .
-		"    <SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
-		"    <SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
-		"    <SCRIPT_DEFAULTCHARSET>" . htmlspecialchars(ini_get('default_charset')) . "</SCRIPT_DEFAULTCHARSET>\n" .
+		"	<STATUS_DATA>\n" .
+		"		<SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
+		"		<SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
+		"		<SCRIPT_DEFAULTCHARSET>" . htmlspecialchars(ini_get('default_charset')) . "</SCRIPT_DEFAULTCHARSET>\n" .
+		"		<INFO>PHP:$ver[0].$ver[1] - $datum</INFO>\n".
 		"  </STATUS_DATA>\n" .
 		"</STATUS>\n\n";
 }
@@ -412,17 +417,17 @@ function ReadVersion() {
 function ReadLanguages() {
 	global $action;
 
-	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" .
-		"<LANGUAGES>\n";
+	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" 
+		."<LANGUAGES>\n";
 
 	$cmd = "select languages_id,name,code from " . TABLE_LANGUAGES;
 	$languages_query = xtc_db_query($cmd);
 	while ($languages = xtc_db_fetch_array($languages_query)) {
-		echo "  <LANGUAGES_DATA>\n" .
-			"    <ID>$languages[languages_id]</ID>\n" .
-			"    <NAME>" . htmlspecialchars($languages["name"]) . "</NAME>\n" .
-			"    <CODE>" . htmlspecialchars($languages["code"]) . "</CODE>\n" .
-			"  </LANGUAGES_DATA>\n";
+		echo "	<LANGUAGES_DATA>\n" .
+			"		<ID>$languages[languages_id]</ID>\n" .
+			"		<NAME>" . htmlspecialchars($languages["name"]) . "</NAME>\n" .
+			"		<CODE>" . htmlspecialchars($languages["code"]) . "</CODE>\n" .
+			"	</LANGUAGES_DATA>\n";
 	}
 
 	echo "</LANGUAGES>\n";
@@ -440,18 +445,18 @@ function ReadCategories() {
 	$cat_query = xtc_db_query($cmd);
 	while ($cat = xtc_db_fetch_array($cat_query)) {
 		echo "<CATEGORIES_DATA>\n" .
-			"<ID>$cat[categories_id]</ID>\n" .
-			"<PARENT_ID>$cat[parent_id]</PARENT_ID>\n" .
+			"	<ID>$cat[categories_id]</ID>\n" .
+			"	<PARENT_ID>$cat[parent_id]</PARENT_ID>\n" .
 			"<NAMES>\n";
 
 		$cmd = "select language_id, categories_name from " . TABLE_CATEGORIES_DESCRIPTION .
 			" where categories_id=" . $cat['categories_id'];
 		$names_query = xtc_db_query($cmd);
 		while ($names = xtc_db_fetch_array($names_query)) {
-			echo "<NAMEENTRY>\n" .
-				"<LANGUAGEID>$names[language_id]</LANGUAGEID>\n" .
-			   "<NAME>" . htmlspecialchars($names['categories_name']) . "</NAME>\n" .
-			   "</NAMEENTRY>\n";
+			echo "	<NAMEENTRY>\n" .
+				"		<LANGUAGEID>$names[language_id]</LANGUAGEID>\n" .
+			   "		<NAME>" . htmlspecialchars($names['categories_name']) . "</NAME>\n" .
+			   "	</NAMEENTRY>\n";
 		}
 
 		echo "</NAMES>\n" .
@@ -464,10 +469,10 @@ function ReadCategories() {
 function WriteArtikel() {
 	global $action, $version_major, $version_minor, $LangID;
 
+	$btime = aftime();
 	$ExportModus = xtc_db_prepare_input($_POST['ExportModus']);
 	$Artikel_ID = (integer)(xtc_db_prepare_input($_POST['Artikel_ID']));
 	$Hersteller_ID = (integer)($_POST['Hersteller_ID']);
-
 	$Artikel_Artikelnr = xtc_db_prepare_input($_POST['Artikel_Artikelnr']);
 	$Artikel_Menge = xtc_db_prepare_input($_POST['Artikel_Menge']);
 	$Artikel_Preis = xtc_db_prepare_input($_POST['Artikel_Preis']);
@@ -476,7 +481,7 @@ function WriteArtikel() {
 	$Artikel_Steuersatz = xtc_db_prepare_input($_POST['Artikel_Steuersatz']);
 	$Artikel_Bilddatei = xtc_db_prepare_input($_POST['Artikel_Bilddatei']);
 	$Artikel_EAN = xtc_db_prepare_input($_POST['Artikel_EAN']);
-	$Artikel_Lieferstatus = (integer)xtc_db_prepare_input($_POST['Artikel_Lieferstatus']);
+	$Artikel_Lieferstatus = (integer)(xtc_db_prepare_input($_POST['Artikel_Lieferstatus']));
 	$Artikel_Startseite = (integer)(xtc_db_prepare_input($_POST['Artikel_Startseite']));
 	$SkipImages = (bool)(xtc_db_prepare_input($_POST['SkipImages']));
 	$sql_data_array = array();
@@ -539,23 +544,26 @@ function WriteArtikel() {
   
 	$exists = FALSE; $mode='NONE';
 
-	if ($Artikel_ID == 0) {
-  		$cmd = "SELECT products_id, products_model FROM ".TABLE_PRODUCTS." WHERE products_model = '".$Artikel_Artikelnr."'";
-  		$products_model_query = xtc_db_query($cmd);
-  		$products_model = xtc_db_fetch_array($products_model_query);
-  		if ($products_model) {
-  			$exists = TRUE;
-  			$mode = 'UPDATED';
-  			$Artikel_ID = $products_model['products_id'];
-  		} else {
-			$exists = FALSE;
-  			$mode = 'INSERTED';
+	// if ($Artikel_ID == 0) {
+$cmd = "SELECT products_id, products_model FROM ". TABLE_PRODUCTS ." WHERE products_model = '".$Artikel_Artikelnr."' OR products_id = '".$Artikel_ID."'";  		
+$products_model_query = xtc_db_query($cmd);
+		if ($products_model_query) { 
+			$products_model = xtc_db_fetch_array($products_model_query);
+			if ($products_model) {
+				$exists = TRUE;
+				$mode = 'UPDATED';
+				$Artikel_ID = $products_model['products_id'];
+			} else {
+				$exists = FALSE;
+				$mode = 'INSERTED';
   		
-		}
-  	}
+			}
 
-  // Artikel laden
-	if ($Artikel_ID !=0) {
+		}
+
+	// Artikel laden
+	// if ($Artikel_ID !=0) {
+	if ($exists) {
 		$cmd = "select products_image from " . TABLE_PRODUCTS .	" where products_id='$Artikel_ID'";
 		$artikel_query = xtc_db_query($cmd);
 		if ($artikel = xtc_db_fetch_array($artikel_query)) {
@@ -693,8 +701,7 @@ function WriteArtikel() {
 
 			if (isset($_POST['Artikel_Grundeinheit']) && isset($_POST['Artikel_Masseinheit']))
 			{
-				$vpe_name = xtc_db_prepare_input($_POST['Artikel_Grundeinheit']) . ' ' .
-				xtc_db_prepare_input($_POST['Artikel_Masseinheit']);
+				$vpe_name = xtc_db_prepare_input($_POST['Artikel_Grundeinheit']) . ' ' . xtc_db_prepare_input($_POST['Artikel_Masseinheit']);
 				$vpe_id = 0;
 				foreach ($Artikel_Texte as $i => $AText) {
 					if ($AText['L'] <> 0) {
@@ -743,19 +750,19 @@ function WriteArtikel() {
 							'products_quantity' => $Artikel_Menge,
 							'products_price' => $Artikel_Preis);
 				}
-			}
+		}
 		if (!$exists) // Neuanlage (ID wird an Amicron-Faktura zurueckgegeben !!!)
 		{
 			$mode='INSERTED';
-			$insert_sql_data = array('products_date_added' => 'now()');
+			$insert_sql_data = array('products_date_added' => $btime);
 			$sql_data_array = array_merge($sql_data_array, $insert_sql_data);
 			xtc_db_perform(TABLE_PRODUCTS, $sql_data_array);
 			$Artikel_ID = xtc_db_insert_id();
 		}
-		elseif ($exists) //Update
+		elseif ($exists || ($ExportModus == 'Overwrite')) //Update
 		{
 			$mode='UPDATED';
-			$update_sql_data = array('products_shippingtime' => $Artikel_Lieferstatus, 'products_last_modified' => 'now()');
+			$update_sql_data = array('products_last_modified' => $btime);
 			$sql_data_array = array_merge($sql_data_array, $update_sql_data);
 			xtc_db_perform(TABLE_PRODUCTS, $sql_data_array, 'update', "products_id = '$Artikel_ID'");
 		}
@@ -821,14 +828,11 @@ function WriteArtikel() {
 					}
 					$products_image_name = $products_image->filename;
 
-					
-				  
 					if (file_exists(DIR_FS_CATALOG_GALLERY_IMAGES))
 					{
 
 						require(DIR_FS_DOCUMENT_ROOT.'admin/includes/product_gallery_images.php');
 					}
-
 					// generate resampled images
 					require(DIR_FS_DOCUMENT_ROOT.'admin/includes/product_thumbnail_images.php');
 					require(DIR_FS_DOCUMENT_ROOT.'admin/includes/product_info_images.php');
@@ -847,14 +851,6 @@ function WriteArtikel() {
 						}
 						$products_image_name = $products_image->filename;
 
-						/* rewrite values to use resample classes
-						define('DIR_FS_CATALOG_ORIGINAL_IMAGES',DIR_FS_CATALOG.DIR_WS_ORIGINAL_IMAGES);
-						define('DIR_FS_CATALOG_INFO_IMAGES',DIR_FS_CATALOG.DIR_WS_INFO_IMAGES);
-						define('DIR_FS_CATALOG_POPUP_IMAGES',DIR_FS_CATALOG.DIR_WS_POPUP_IMAGES);
-						define('DIR_FS_CATALOG_THUMBNAIL_IMAGES',DIR_FS_CATALOG.DIR_WS_THUMBNAIL_IMAGES);
-						define('DIR_FS_CATALOG_IMAGES',DIR_FS_CATALOG.DIR_WS_IMAGES);
-						define('DIR_FS_CATALOG_GALLERY_IMAGES', DIR_FS_CATALOG_IMAGES .'product_images/gallery_images/');
-*/
 						if (file_exists(DIR_FS_CATALOG_GALLERY_IMAGES)) {
 
 							require(DIR_FS_DOCUMENT_ROOT.'admin/includes/product_gallery_images.php');
@@ -882,7 +878,7 @@ function WriteArtikel() {
 		$ss_query = xtc_db_query($cmd);
 		while ($ss = xtc_db_fetch_array($ss_query))
 		{
-			xtc_db_query("delete from " . TABLE_PERSONAL_OFFERS_BY . $ss[customers_status_id] .	" where products_id = '$Artikel_ID'");
+			xtc_db_query("delete from " . TABLE_PERSONAL_OFFERS_BY . $ss['customers_status_id'] .	" where products_id = '$Artikel_ID'");
 		}
 		foreach ($Artikel_Preise as $i => $APreis) {
 			$sql_data_array = array(
@@ -893,17 +889,18 @@ function WriteArtikel() {
 			xtc_db_perform(TABLE_PERSONAL_OFFERS_BY . $APreis['G'], $sql_data_array);
 		}
 	}
-
+		
 	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" .
 		"<STATUS>\n" .
-		"  <STATUS_DATA>\n" .
-		"    <MESSAGE>OK</MESSAGE>\n" .
-		"    <MODE>$mode</MODE>\n" .
-		"    <ID>$Artikel_ID</ID>\n" .
-		"    <SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
-		"    <SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
-		"  </STATUS_DATA>\n" .
+		"	<STATUS_DATA>\n" .
+		"		<MESSAGE>OK</MESSAGE>\n" .
+		"		<MODE>$mode</MODE>\n" .
+		"		<ID>$Artikel_ID</ID>\n" .
+		"		<SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
+		"		<SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
+		"	</STATUS_DATA>\n" .
 		"</STATUS>\n\n";
+
 } // Ende Function writeArtikel
 
 function xtc_remove_product($product_id) {
@@ -936,7 +933,6 @@ function xtc_remove_product($product_id) {
     xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET . " where products_id = '" . xtc_db_input($product_id) . "'");
     xtc_db_query("delete from " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " where products_id = '" . xtc_db_input($product_id) . "'");
 
-
     // get statuses
     $customers_statuses_array = array(array());
     $customers_statuses_query = xtc_db_query("select * from " . TABLE_CUSTOMERS_STATUS . " where language_id = '".$LangID."' order by customers_status_id");
@@ -968,11 +964,11 @@ function DeleteArtikel()
 
 	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" .
 	   "<STATUS>\n" .
-	   "  <STATUS_DATA>\n" .
-	   "    <MESSAGE>OK</MESSAGE>\n" .
-	   "    <SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
-	   "    <SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
-	   "  </STATUS_DATA>\n" .
+	   "	<STATUS_DATA>\n" .
+	   "		<MESSAGE>OK</MESSAGE>\n" .
+	   "		<SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
+	   "		<SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
+	   "	</STATUS_DATA>\n" .
 	   "</STATUS>\n\n";
 } // Ende deleteArtikel
 
@@ -981,6 +977,7 @@ function DeleteArtikel()
 // ****************************************************************************
 function WriteCategorie() {
 	global $action, $version_major, $version_minor;
+	$btime = aftime();
 
 	$Kategorie_ID = (integer)($_POST['Artikel_Kategorie_ID']);
 	$Kategorie_Vater_ID = (integer)(xtc_db_prepare_input($_POST['Kategorie_Vater_ID']));
@@ -1013,7 +1010,15 @@ function WriteCategorie() {
 
 	if (!$exists) {
 		// Kategorie erzeugen und ID ermitteln
-		$insert_sql_data = array('parent_id' => $Kategorie_Vater_ID);
+		$insert_sql_data = array('parent_id' => $Kategorie_Vater_ID,
+								'categories_status' => 1,
+								'date_added' => $btime,
+								'categories_template' => 'default',
+								'listing_template' => 'default',
+
+								'products_sorting' => 'p.products_price',
+								'products_sorting2' =>'ASC');
+
 		xtc_db_perform(TABLE_CATEGORIES, $insert_sql_data);
 		$Kategorie_ID = xtc_db_insert_id();
 	}
@@ -1043,33 +1048,34 @@ function WriteCategorie() {
 					" where categories_id='$Kategorie_ID' and language_id='" . $KName['L'] . "'";
 
 			$desc_query = xtc_db_query($cmd);
+			$text = htmlspecialchars($KName['N']);
 			if ($desc = xtc_db_fetch_array($desc_query))
 			{
 				$sql_data_array = array('categories_name' => $KName['N']);
 
 				xtc_db_perform(TABLE_CATEGORIES_DESCRIPTION, $sql_data_array, 'update', "categories_id='$Kategorie_ID' and language_id = '" . $KName['L'] . "'");
 			}
-				else
-					{
-						$sql_data_array = array(
-									  'categories_id' => $Kategorie_ID,
-									  'language_id' => $KName['L'],
-									  'categories_name' => $KName['N']);
+				else {
+					$sql_data_array = array('categories_id' => $Kategorie_ID,
+										'language_id' => $KName['L'],
+										'categories_name' => $KName['N'],
+										'categories_heading_title' => $KName['N']);
 
-						xtc_db_perform(TABLE_CATEGORIES_DESCRIPTION, $sql_data_array);
-					}
+					xtc_db_perform(TABLE_CATEGORIES_DESCRIPTION, $sql_data_array);
+				}
 		}
 	}
-
+	
 	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" .
 		"<STATUS>\n" .
 		"  <STATUS_DATA>\n" .
 		"    <MESSAGE>OK</MESSAGE>\n" .
 		"    <ID>$Kategorie_ID</ID>\n" .
 		"    <SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
-		"    <SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
-		"  </STATUS_DATA>\n" .
+		"    <SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n";
+	echo	"  </STATUS_DATA>\n" .
 		"</STATUS>\n\n";
+
 } // Ende function writeCategory
 
 // ****************************************************************************
@@ -1117,62 +1123,62 @@ function ReadArtikel()
 		}
 
 		echo "<ARTIKEL_DATA>\n" .
-			"<ID>$artikel[products_id]</ID>\n" .
-			"<ARTIKELNR>" . htmlspecialchars($artikel['products_model']) . "</ARTIKELNR>\n" .
-			"<TEXTE>\n";
+			"	<ID>$artikel[products_id]</ID>\n" .
+			"	<ARTIKELNR>" . (htmlspecialchars($artikel['products_model'])) . "</ARTIKELNR>\n" .
+			"	<TEXTE>\n";
 
 		$cmd = "select language_id, products_name, products_description, products_short_description, products_meta_title," .
 			  " products_meta_description, products_meta_keywords, products_url from " . TABLE_PRODUCTS_DESCRIPTION .
 			  " where products_id=" . $artikel['products_id'];
 		$texte_query = xtc_db_query($cmd);
 		while ($texte = xtc_db_fetch_array($texte_query)) {
-			echo "<TEXT>\n" .
-				"<LANGUAGEID>$texte[language_id]</LANGUAGEID>\n" .
-				"<NAME>" . htmlspecialchars($texte['products_name']) ."</NAME>\n" .
-				"<DESCRIPTION>" . htmlspecialchars($texte['products_description']) . "</DESCRIPTION>\n" .
-				"<SHORTDESCRIPTION>" . htmlspecialchars($texte['products_short_description']) . "</SHORTDESCRIPTION>\n" .
-				"<METATITLE>" . htmlspecialchars($texte['products_meta_title']) . "</METATITLE>\n" .
-				"<METADESCRIPTION>" . htmlspecialchars($texte['products_meta_description']) . "</METADESCRIPTION>\n" .
-				"<METAKEYWORDS>" . htmlspecialchars($texte['products_meta_keywords']) . "</METAKEYWORDS>\n" .
-				"<URL>" . htmlspecialchars($texte['products_url']) . "</URL>\n" .
-				"</TEXT>\n";
+			echo "	<TEXT>\n" .
+				"		<LANGUAGEID>$texte[language_id]</LANGUAGEID>\n" .
+				"		<NAME>" . htmlspecialchars($texte['products_name']) ."</NAME>\n" .
+				"		<DESCRIPTION>" . htmlspecialchars($texte['products_description']) . "</DESCRIPTION>\n" .
+				"		<SHORTDESCRIPTION>" . htmlspecialchars($texte['products_short_description']) . "</SHORTDESCRIPTION>\n" .
+				"		<METATITLE>" . htmlspecialchars($texte['products_meta_title']) . "</METATITLE>\n" .
+				"		<METADESCRIPTION>" . htmlspecialchars($texte['products_meta_description']) . "</METADESCRIPTION>\n" .
+				"		<METAKEYWORDS>" . htmlspecialchars($texte['products_meta_keywords']) . "</METAKEYWORDS>\n" .
+				"		<URL>" . htmlspecialchars($texte['products_url']) . "</URL>\n" .
+				"	</TEXT>\n";
 		}
 
-		echo "</TEXTE>\n" .
-			"<PREISE>\n";
+		echo "	</TEXTE>\n" .
+			"	<PREISE>\n";
 		$cmd = "select distinct(customers_status_id) from " . TABLE_CUSTOMERS_STATUS;
 		$ss_query = xtc_db_query($cmd);
 		while ($ss = xtc_db_fetch_array($ss_query)) {
-			$cmd = "select quantity, personal_offer from " . TABLE_PERSONAL_OFFERS_BY . $ss[customers_status_id] .
+			$cmd = "select quantity, personal_offer from " . TABLE_PERSONAL_OFFERS_BY . $ss['customers_status_id'] .
 					" where products_id=" . $artikel['products_id'];
 			$preise_query = xtc_db_query($cmd);
 			while ($preise = xtc_db_fetch_array($preise_query)) {
-				echo "<PREIS>\n" .
-					 "<GRUPPE>$ss[customers_status_id]</GRUPPE>\n" .
-					 "<MENGE>$preise[quantity]</MENGE>\n" .
-					 "<PREIS>$preise[personal_offer]</PREIS>\n" .
-					 "</PREIS>\n";
+				echo "	<PREIS>\n" .
+					 "		<GRUPPE>$ss[customers_status_id]</GRUPPE>\n" .
+					 "		<MENGE>".$preise['quantity']."</MENGE>\n" .
+					 "		<PREIS>$preise[personal_offer]</PREIS>\n" .
+					 "	</PREIS>\n";
 			}
 		}
-		echo "</PREISE>\n" .
-			 "<GEWICHT>$artikel[products_weight]</GEWICHT>\n" .
-			 "<EAN>" . htmlspecialchars($artikel['products_ean']) . "</EAN>\n" .
-			 "<PREIS>$artikel[products_price]</PREIS>\n" .
-			 "<MENGE>$artikel[products_quantity]</MENGE>\n" .
-			 "<STATUS>$artikel[products_status]</STATUS>\n" .
-			 "<STEUERSATZ>$artikel[products_tax_class_id]</STEUERSATZ>\n"  .
-			 "<HERSTELLER_ID>$artikel[manufacturers_id]</HERSTELLER_ID>\n" .
-			 "<KATEGORIEN>\n";
+		echo "	</PREISE>\n" .
+			 "	<GEWICHT>$artikel[products_weight]</GEWICHT>\n" .
+			 "	<EAN>" . $artikel['products_ean'] . "</EAN>\n" .
+			 "	<PREIS>$artikel[products_price]</PREIS>\n" .
+			 "	<MENGE>$artikel[products_quantity]</MENGE>\n" .
+			 "	<STATUS>$artikel[products_status]</STATUS>\n" .
+			 "	<STEUERSATZ>$artikel[products_tax_class_id]</STEUERSATZ>\n"  .
+			 "	<HERSTELLER_ID>$artikel[manufacturers_id]</HERSTELLER_ID>\n" .
+			 "	<KATEGORIEN>\n";
 
 		$cmd = "select categories_id from " . TABLE_PRODUCTS_TO_CATEGORIES . " where products_id = $artikel[products_id]";
 		$cat_query = xtc_db_query($cmd);
 		while ($cat = xtc_db_fetch_array($cat_query)) {
-			echo "<KATEGORIE>$cat[categories_id]</KATEGORIE>\n";
+			echo "		<KATEGORIE>$cat[categories_id]</KATEGORIE>\n";
 		}
-		echo "</KATEGORIEN>\n" .
-			 "<BILDDATEI>" . htmlspecialchars($artikel['products_image']) . "</BILDDATEI>\n" .
-			 "<BILD>" . base64_encode($bild) . "</BILD>\n" .
-			 "<IMAGES>\n";
+		echo "	</KATEGORIEN>\n" .
+			 "	<BILDDATEI>" . htmlspecialchars($artikel['products_image']) . "</BILDDATEI>\n" .
+			 "	<BILD>" . base64_encode($bild) . "</BILD>\n" .
+			 "	<IMAGES>\n";
 		$lastbild = $bild;
 		if (!$SkipImages) {
 			$cmd = "select image_name from " . TABLE_PRODUCTS_IMAGES .
@@ -1187,32 +1193,32 @@ function ReadArtikel()
 				}
 
 				if ($bild != $lastbild) {
-					echo "<IMAGE>\n" .
-					   "<NAME>" . htmlspecialchars($bildname) . "</NAME>" .
-					   "<BILD>" . base64_encode($bild) . "</BILD>\n" .
-					   "</IMAGE>\n";
+					echo "		<IMAGE>\n" .
+					   "		<NAME>" . htmlspecialchars($bildname) . "</NAME>\n" .
+					   "		<BILD>" . base64_encode($bild) . "</BILD>\n" .
+					   "		</IMAGE>\n";
 					$lastbild = $bild;
 				}
 			}
 		}
 
-		echo "</IMAGES>\n";
+		echo "	</IMAGES>\n";
 		$cmd = "select shipping_status_name from ".TABLE_SHIPPING_STATUS.", ".TABLE_PRODUCTS." where shipping_status_id = products_shippingtime 
 				AND products_id = $artikel[products_id] AND language_id = $LangID";
 		$shipping_time_query = xtc_db_query($cmd);
 		$shipping_time = xtc_db_fetch_array($shipping_time_query);
-		echo  "<LIEFERSTATUSTEXT>$shipping_time[shipping_status_name]</LIEFERSTATUSTEXT>\n" .
-			"<STARTSEITE>$artikel[products_startpage]</STARTSEITE>\n";
+		echo  "	<LIEFERSTATUSTEXT>". htmlspecialchars($shipping_time['shipping_status_name']) ."</LIEFERSTATUSTEXT>\n" .
+			"	<STARTSEITE>$artikel[products_startpage]</STARTSEITE>\n";
 		if ($artikel['products_vpe_status'] == 1)
 		{
-			echo "<VPEValue>$artikel[products_vpe_value]</VPEValue>";
+			echo "	<VPEValue>$artikel[products_vpe_value]</VPEValue>";
 		}
 		if ($artikel['products_vpe'] != 0) {
 			$cmd = "select products_vpe_name from " . TABLE_PRODUCTS_VPE . " where products_vpe_id='" . $artikel['products_vpe'] ."'";
 			$vpe_query = xtc_db_query($cmd);
 			if ($vpe = xtc_db_fetch_array($vpe_query))
 			{
-				echo "<VPEName>" . htmlspecialchars($vpe['products_vpe_name']) . "</VPEName>";
+				echo "	<VPEName>" . htmlspecialchars($vpe['products_vpe_name']) . "</VPEName>";
 			}
 		}
 		echo "</ARTIKEL_DATA>\n";
@@ -1222,45 +1228,44 @@ function ReadArtikel()
 
 function ReadShopData()
 {
-	global $action;
-
+	global $action, $LangID;
 	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" .
 		"<SHOPDATA>\n";
 	echo "<TAXRATES>\n";
 
-	$cmd = "select tax_class_id,tax_rate from " . TABLE_TAX_RATES;
+	$cmd = "select tax_class_id,tax_rate from " . TABLE_TAX_RATES ." WHERE tax_zone_id =5";
 	$tax_query = xtc_db_query($cmd);
 	while ($tax = xtc_db_fetch_array($tax_query))
 	{
-		echo "  <TAX>\n" .
-			 "    <ID>$tax[tax_class_id]</ID>\n" .
-			 "    <RATE>$tax[tax_rate]</RATE>\n" .
-			 "  </TAX>\n";
+		echo "	<TAX>\n" .
+			 "		<ID>$tax[tax_class_id]</ID>\n" .
+			 "		<RATE>$tax[tax_rate]</RATE>\n" .
+			 "	</TAX>\n";
 	}
 
 	echo "</TAXRATES>\n";
 	echo "<SHIPPINGSTATUS>\n";
-	$cmd = "select shipping_status_id, language_id, shipping_status_name from " . TABLE_SHIPPING_STATUS;
+	$cmd = "select shipping_status_id, language_id, shipping_status_name from " . TABLE_SHIPPING_STATUS ." WHERE language_id = '2'";
 	$ss_query = xtc_db_query($cmd);
 	while ($ss = xtc_db_fetch_array($ss_query)) {
 		echo "<SHIPPINGSTATUS_DATA>\n" .
-			"<ID>$ss[shipping_status_id]</ID>\n" .
-			"<LANGUAGEID>$ss[language_id]</LANGUAGEID>\n" .
-			"<NAME>" . htmlspecialchars($ss['shipping_status_name']) . "</NAME>\n" .
+			"	<ID>$ss[shipping_status_id]</ID>\n" .
+			"	<LANGUAGEID>$ss[language_id]</LANGUAGEID>\n" .
+			"	<NAME>" . htmlspecialchars($ss['shipping_status_name']) . "</NAME>\n" .
 			"</SHIPPINGSTATUS_DATA>\n";
 	}
 
 	echo "</SHIPPINGSTATUS>\n";
 	echo "<CUSTOMERSSTATUS>\n";
 
-	$cmd = "select customers_status_id, language_id, customers_status_name from " . TABLE_CUSTOMERS_STATUS;
+	$cmd = "select customers_status_id, language_id, customers_status_name from " . TABLE_CUSTOMERS_STATUS . " WHERE language_id = '2'";
 	$ss_query = xtc_db_query($cmd);
 	while ($ss = xtc_db_fetch_array($ss_query)) {
 		echo "<CUSTOMERSSTATUS_DATA>\n" .
-         "<ID>$ss[customers_status_id]</ID>\n" .
-         "<LANGUAGEID>$ss[language_id]</LANGUAGEID>\n" .
-         "<NAME>" . htmlspecialchars($ss['customers_status_name']) . "</NAME>\n" .
-         "</CUSTOMERSSTATUS_DATA>\n";
+			"	<ID>$ss[customers_status_id]</ID>\n" .
+			"	<LANGUAGEID>$ss[language_id]</LANGUAGEID>\n" .
+			"	<NAME>" . htmlspecialchars($ss['customers_status_name']) . "</NAME>\n" .
+			"</CUSTOMERSSTATUS_DATA>\n";
 	}
 
 	echo "</CUSTOMERSSTATUS>\n";
@@ -1276,10 +1281,10 @@ function ReadHersteller() {
 	$cmd = "select manufacturers_id,manufacturers_name from " . TABLE_MANUFACTURERS;
 	$manufacturers_query = xtc_db_query($cmd);
 	while ($manufacturers = xtc_db_fetch_array($manufacturers_query)) {
-		echo "  <MANUFACTURERS_DATA>\n" .
-			"    <ID>$manufacturers[manufacturers_id]</ID>\n" .
-			"    <NAME>" . htmlspecialchars($manufacturers["manufacturers_name"]) . "</NAME>\n" .
-			"  </MANUFACTURERS_DATA>\n";
+		echo "	<MANUFACTURERS_DATA>\n" .
+			"		<ID>$manufacturers[manufacturers_id]</ID>\n" .
+			"		<NAME>" . htmlspecialchars($manufacturers["manufacturers_name"]) . "</NAME>\n" .
+			"	</MANUFACTURERS_DATA>\n";
 	}
 
 	echo "</MANUFACTURERS>\n";
@@ -1287,6 +1292,7 @@ function ReadHersteller() {
 
 function WriteHersteller() {
 	global $action, $version_major, $version_minor;
+	$btime = aftime();
 	$Hersteller_Name = xtc_db_prepare_input($_POST['Hersteller_Name']);
 	$cmd = "select manufacturers_id,manufacturers_name from " . TABLE_MANUFACTURERS .
 			 " where manufacturers_name='$Hersteller_Name'";
@@ -1296,19 +1302,20 @@ function WriteHersteller() {
 		$Hersteller_ID=$manufacturers['manufacturers_id'];
 	}
 		else {
-		$insert_sql_data = array('manufacturers_name' => $Hersteller_Name);
+		$insert_sql_data = array('manufacturers_name' => $Hersteller_Name,
+								'date_added' => $btime);
 		xtc_db_perform(TABLE_MANUFACTURERS, $insert_sql_data);
 		$Hersteller_ID = xtc_db_insert_id();
 	}
 
 	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" .
 	   "<STATUS>\n" .
-	   "  <STATUS_DATA>\n" .
-	   "    <MESSAGE>OK</MESSAGE>\n" .
-	   "    <ID>$Hersteller_ID</ID>\n" .
-	   "    <SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
-	   "    <SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
-	   "  </STATUS_DATA>\n" .
+	   "	<STATUS_DATA>\n" .
+	   "	<MESSAGE>OK</MESSAGE>\n" .
+	   "	<ID>$Hersteller_ID</ID>\n" .
+	   "	<SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
+	   "	<SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
+	   "	</STATUS_DATA>\n" .
 	   "</STATUS>\n\n";
 } // Ende function writeHersteller
 
@@ -1317,7 +1324,7 @@ function WriteHersteller() {
 // ****************************************************************************
 function OrderUpdate() {
 	global $action, $LangID, $version_major, $version_minor;
-
+	$btime = aftime();
 	$Order_ID = (integer)($_POST['Order_id']);
 	$Status = (integer)($_POST['Status']);
 	$orders_status_array = array();
@@ -1340,7 +1347,7 @@ function OrderUpdate() {
 			{
 				$update_sql_data = array(
 						'orders_status' => $Status,
-						'last_modified' => 'now()');
+						'last_modified' => $btime);
 				xtc_db_perform(TABLE_ORDERS, $update_sql_data, 'update', "orders_id='" . $Order_ID . "'");
 
 				// require functionblock for mails
@@ -1348,6 +1355,7 @@ function OrderUpdate() {
 				require_once(DIR_FS_INC . 'xtc_php_mail.inc.php');
 				require_once(DIR_FS_INC . 'xtc_add_tax.inc.php');
 				require_once(DIR_FS_INC . 'xtc_not_null.inc.php');
+				require_once(DIR_FS_INC . 'changedataout.inc.php');
 				require_once(DIR_FS_INC . 'xtc_href_link.inc.php');
 				require_once(DIR_FS_INC . 'xtc_date_long.inc.php');
 				require_once(DIR_FS_INC . 'xtc_check_agent.inc.php');
@@ -1382,6 +1390,7 @@ function OrderUpdate() {
 				$smarty->assign('ORDER_DATE',xtc_date_long($Order['date_purchased']));
 				$smarty->assign('NOTIFY_COMMENTS', '');
 				$smarty->assign('ORDER_STATUS', $orders_status_array[$Status]);
+
 				require_once (DIR_FS_INC . 'cseo_get_mail_body.inc.php');
 				$html_mail = $smarty->fetch('html:change_order');
 				$html_mail .= $signatur_html;
@@ -1413,7 +1422,7 @@ function OrderUpdate() {
 				$insert_sql_data = array(
 					  'orders_id' => $Order_ID,
 					  'orders_status_id' => $Status,
-					  'date_added' => 'now()',
+					  'date_added' => $btime,
 					  'customer_notified' => '1',
 					  'comments' => '');
 				xtc_db_perform(TABLE_ORDERS_STATUS_HISTORY, $insert_sql_data);
@@ -1423,11 +1432,11 @@ function OrderUpdate() {
 
 	echo '<?xml version="1.0" encoding="' . CHARSET . '"?>' . "\n" .
 		"<STATUS>\n" .
-		"  <STATUS_DATA>\n" .
-		"    <MESSAGE>OK</MESSAGE>\n" .
-		"    <SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
-		"    <SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
-		"  </STATUS_DATA>\n" .
+		"	<STATUS_DATA>\n" .
+		"	<MESSAGE>OK</MESSAGE>\n" .
+		"	<SCRIPT_VERSION_MAJOR>$version_major</SCRIPT_VERSION_MAJOR>\n" .
+		"	<SCRIPT_VERSION_MINOR>$version_minor</SCRIPT_VERSION_MINOR>\n" .
+		"	</STATUS_DATA>\n" .
 		"</STATUS>\n\n";
 }
 
@@ -1453,7 +1462,7 @@ function ReadAuftraege() {
 	$order_total_class['ot_discount']['tax'] = '0';
 
 	$order_total_class['ot_loworderfee']['prefix'] = '+';
-	$order_total_class['ot_loworderfee']['tax'] = '19';
+	$order_total_class['ot_loworderfee']['tax'] = '0';
 
 	if (SET_TIME_LITMIT==1) xtc_set_time_limit(0);
 
@@ -1497,7 +1506,7 @@ function ReadAuftraege() {
 		   $order_total_class['ot_shipping']['tax'] = $shipping['tax_rate'];    
 		}
 		else {
-			$order_total_class['ot_shipping']['tax'] = '19';
+			$order_total_class['ot_shipping']['tax'] = '0';
 		}
 		
 		$cmd = "select tax_rate from " .TABLE_TAX_RATES.', '.TABLE_CONFIGURATION . " where tax_class_id = configuration_value
@@ -1507,7 +1516,7 @@ function ReadAuftraege() {
 		if($payment = xtc_db_fetch_array($payment_query)) {
 			$order_total_class['ot_payment']['tax'] = $payment['tax_rate'];
 		} else {
-			$order_total_class['ot_payment']['tax'] = '19';
+			$order_total_class['ot_payment']['tax'] = '0';
 		}    
 		
 		$cmd = "select tax_rate from " .TABLE_TAX_RATES.', '.TABLE_CONFIGURATION . " where tax_class_id = configuration_value
@@ -1517,7 +1526,7 @@ function ReadAuftraege() {
 		if($codfee = xtc_db_fetch_array($codfee_query)) {
 			$order_total_class['ot_cod_fee']['tax'] = $codfee['tax_rate'];
 		} else {
-			$order_total_class['ot_cod_fee']['tax'] = '19';
+			$order_total_class['ot_cod_fee']['tax'] = '0';
 		}
 		
 		$cmd = "select tax_rate from " .TABLE_TAX_RATES.', '.TABLE_CONFIGURATION . " where tax_class_id = configuration_value
@@ -1527,70 +1536,66 @@ function ReadAuftraege() {
 		if($gv = xtc_db_fetch_array($gv_query)) {
 			$order_total_class['ot_gv']['tax'] = $gv['tax_rate'];
 		} else {
-			$order_total_class['ot_gv']['tax'] = '19';
+			$order_total_class['ot_gv']['tax'] = '0';
 		}
-
-		if ($orders['billing_company']=='') $orders['billing_company']=$orders['delivery_company'];
-		if ($orders['billing_name']=='')  $orders['billing_name']=$orders['delivery_name'];
-		if ($orders['billing_street_address']=='') $orders['billing_street_address']=$orders['delivery_street_address'];
-		if ($orders['billing_postcode']=='')  $orders['billing_postcode']=$orders['delivery_postcode'];
-		if ($orders['billing_city']=='')  $orders['billing_city']=$orders['delivery_city'];
-		if ($orders['billing_suburb']=='') $orders['billing_suburb']=$orders['delivery_suburb'];
-		if ($orders['billing_state']=='')  $orders['billing_state']=$orders['delivery_state'];
-		if ($orders['billing_country_iso_code_2']=='')  $orders['billing_country_iso_code_2']=$orders['delivery_country_iso_code_2'];
 
 		if ($WithCountryCode) {
 		  // county code auslesen CJ
-			$billing_city = htmlspecialchars($orders['billing_city']) . ', ' .
-				htmlspecialchars(xtc_get_county_code($orders['delivery_state']));
-			$delivery_city = htmlspecialchars($orders['delivery_city']) . ', ' .
-				htmlspecialchars(xtc_get_county_code($orders['billing_state']));
+			$billing_city = (htmlspecialchars($orders['billing_city'])) . ', ' .
+				(htmlspecialchars(xtc_get_county_code($orders['delivery_state'])));
+			$delivery_city = (htmlspecialchars($orders['delivery_city'])) . ', ' .
+				(htmlspecialchars(xtc_get_county_code($orders['billing_state'])));
 		}
 		else {
-			$billing_city = htmlspecialchars($orders['billing_city']);
-			$delivery_city = htmlspecialchars($orders['delivery_city']);
+			$billing_city = (htmlspecialchars($orders['billing_city']));
+			$delivery_city = (htmlspecialchars($orders['delivery_city']));
 		}
 
 		echo '<ORDER_INFO>' . "\n" .
 			'<ORDER_HEADER>' . "\n" .
-			'<ORDER_ID>' . $orders['orders_id'] . '</ORDER_ID>' . "\n" .
-			'<CUSTOMER_ID>' . $orders['customers_id'] . '</CUSTOMER_ID>' . "\n" .
-			'<CUSTOMER_CID>' . $orders['customers_cid'] . '</CUSTOMER_CID>' . "\n" .
-			'<CUSTOMER_GROUP>' . $orders['customers_status'] . '</CUSTOMER_GROUP>' . "\n" .
-			'<ORDER_DATE>' . $orders['date_purchased'] . '</ORDER_DATE>' . "\n" .
-			'<ORDER_STATUS>' . $orders['orders_status'] . '</ORDER_STATUS>' . "\n" .
-			'<ORDER_IP>' . $orders['customers_ip'] . '</ORDER_IP>' . "\n" .
-			'<ORDER_CURRENCY>' . htmlspecialchars($orders['currency']) . '</ORDER_CURRENCY>' . "\n" .
-			'<ORDER_CURRENCY_VALUE>' . $orders['currency_value'] . '</ORDER_CURRENCY_VALUE>' . "\n" .
+			'	<ORDER_ID>' . $orders['orders_id'] . '</ORDER_ID>' . "\n" .
+			'	<FREIFELD1>' . $orders['orders_id'] . '</FREIFELD1>' . "\n" .
+			'	<CUSTOMER_ID>' . $orders['customers_id'] . '</CUSTOMER_ID>' . "\n" .
+			'	<CUSTOMER_CID>' . $orders['customers_cid'] . '</CUSTOMER_CID>' . "\n" .
+			'	<CUSTOMER_GROUP>' . $orders['customers_status'] . '</CUSTOMER_GROUP>' . "\n" .
+			'	<ORDER_DATE>' . $orders['date_purchased'] . '</ORDER_DATE>' . "\n" .
+			'	<ORDER_STATUS>' . $orders['orders_status'] . '</ORDER_STATUS>' . "\n" .
+			'	<ORDER_IP>' . $orders['customers_ip'] . '</ORDER_IP>' . "\n" .
+			'	<ORDER_CURRENCY>' . htmlspecialchars($orders['currency']) . '</ORDER_CURRENCY>' . "\n" .
+			'	<ORDER_CURRENCY_VALUE>' . $orders['currency_value'] . '</ORDER_CURRENCY_VALUE>' . "\n" .
 			'</ORDER_HEADER>' . "\n" .
 			'<BILLING_ADDRESS>' . "\n" .
-			'<COMPANY>' . htmlspecialchars($orders['billing_company']) . '</COMPANY>' . "\n" .
-			'<NAME>' . htmlspecialchars($orders['billing_name']) . '</NAME>' . "\n" .
-			'<STREET>' . htmlspecialchars($orders['billing_street_address']) . '</STREET>' . "\n" .
-			'<ZIP>' . htmlspecialchars($orders['billing_postcode']) . '</ZIP>' . "\n" .
-			'<CITY>' . $billing_city . '</CITY>' . "\n" .
-			'<SUBURB>' . htmlspecialchars($orders['billing_suburb']) . '</SUBURB>' . "\n" .
-			'<STATE>' . htmlspecialchars($orders['billing_state']) . '</STATE>' . "\n" .
-			'<COUNTRY>' . htmlspecialchars($orders['billing_country_iso_code_2']) . '</COUNTRY>' . "\n" .
-			'<TELEPHONE>' . htmlspecialchars($orders['customers_telephone']) . '</TELEPHONE>' . "\n" . // JAN
-			'<TELEFAX>' . htmlspecialchars($cust_data['customers_fax']) . '</TELEFAX>' . "\n" .
-			'<EMAIL>' . htmlspecialchars($orders['customers_email_address']) . '</EMAIL>' . "\n" . // JAN
-			'<BIRTHDAY>' . htmlspecialchars($cust_dob) . '</BIRTHDAY>' . "\n" .
-			'<VATID>' . htmlspecialchars($cust_data['customers_vat_id']) . '</VATID>' . "\n" .
+			'	<COMPANY>' . htmlspecialchars($orders['billing_company']) . '</COMPANY>' . "\n" .
+			'	<BILLING_FIRSTNAME>' . htmlspecialchars($orders['billing_firstname']) ."</BILLING_FIRSTNAME>\n" .
+			'	<BILLING_LASTNAME>' . htmlspecialchars($orders['billing_lastname']) ."</BILLING_LASTNAME>\n" .
+			'	<NAME>' . htmlspecialchars($orders['billing_name']) . '</NAME>' . "\n" .
+			'	<STREET>' . htmlspecialchars($orders['billing_street_address']) . '</STREET>' . "\n" .
+			'	<ZIP>' . htmlspecialchars($orders['billing_postcode']) . '</ZIP>' . "\n" .
+			'	<CITY>' . $billing_city . '</CITY>' . "\n" .
+			'	<SUBURB>' . htmlspecialchars($orders['billing_suburb']) . '</SUBURB>' . "\n" .
+			'	<STATE>' . htmlspecialchars($orders['billing_state']) . '</STATE>' . "\n" .
+			'	<COUNTRY>' . htmlspecialchars($orders['billing_country_iso_code_2']) . '</COUNTRY>' . "\n" .
+			'	<TELEPHONE>' . htmlspecialchars($orders['customers_telephone']) . '</TELEPHONE>' . "\n" . // JAN
+			'	<TELEFAX>' . htmlspecialchars($cust_data['customers_fax']) . '</TELEFAX>' . "\n" .
+			'	<EMAIL>' . htmlspecialchars($orders['customers_email_address']) . '</EMAIL>' . "\n" . // JAN
+			'	<BIRTHDAY>' . htmlspecialchars($cust_dob) . '</BIRTHDAY>' . "\n" .
+			'	<VATID>' . htmlspecialchars($cust_data['customers_vat_id']) . '</VATID>' . "\n" .
 			'</BILLING_ADDRESS>' . "\n" .
 			'<DELIVERY_ADDRESS>' . "\n" .
-			'<COMPANY>' . htmlspecialchars($orders['delivery_company']) . '</COMPANY>' . "\n" .
-			'<NAME>' . htmlspecialchars($orders['delivery_name']) . '</NAME>' . "\n" .
-			'<STREET>' . htmlspecialchars($orders['delivery_street_address']) . '</STREET>' . "\n" .
-			'<ZIP>' . htmlspecialchars($orders['delivery_postcode']) . '</ZIP>' . "\n" .
-			'<CITY>' . $delivery_city . '</CITY>' . "\n" .
-			'<SUBURB>' . htmlspecialchars($orders['delivery_suburb']) . '</SUBURB>' . "\n" .
-			'<STATE>' . htmlspecialchars($orders['delivery_state']) . '</STATE>' . "\n" .
-			'<COUNTRY>' . htmlspecialchars($orders['delivery_country_iso_code_2']) . '</COUNTRY>' . "\n" .
+			'	<COMPANY>' . htmlspecialchars($orders['delivery_company']) . '</COMPANY>' . "\n" .
+			'	<DELIVERY_FIRSTNAME>' . htmlspecialchars($orders['delivery_firstname']) ."</DELIVERY_FIRSTNAME>\n" .
+			'	<DELIVERY_LASTNAME>' . htmlspecialchars($orders['delivery_lastname']) ."</DELIVERY_LASTNAME>\n" .
+			'	<NAME>' . htmlspecialchars($orders['delivery_name']) . '</NAME>' . "\n" .
+			'	<STREET>' . htmlspecialchars($orders['delivery_street_address']) . '</STREET>' . "\n" .
+			'	<ZIP>' . htmlspecialchars($orders['delivery_postcode']) . '</ZIP>' . "\n" .
+			'	<CITY>' . $delivery_city . '</CITY>' . "\n" .
+			'	<SUBURB>' . htmlspecialchars($orders['delivery_suburb']) . '</SUBURB>' . "\n" .
+			'	<STATE>' . htmlspecialchars($orders['delivery_state']) . '</STATE>' . "\n" .
+			'	<COUNTRY>' . htmlspecialchars($orders['delivery_country_iso_code_2']) . '</COUNTRY>' . "\n" .
 			'</DELIVERY_ADDRESS>' . "\n" .
 			'<PAYMENT>' . "\n" .
-			'<PAYMENT_METHOD>' . htmlspecialchars($orders['payment_method']) . '</PAYMENT_METHOD>'  . "\n" .
-			'<PAYMENT_CLASS>' . htmlspecialchars($orders['payment_class']) . '</PAYMENT_CLASS>'  . "\n";
+			'	<PAYMENT_METHOD>' . htmlspecialchars($orders['payment_method']) . '</PAYMENT_METHOD>'  . "\n" .
+			'	<PAYMENT_CLASS>' . htmlspecialchars($orders['payment_class']) . '</PAYMENT_CLASS>'  . "\n";
 
 		switch ($orders['payment_class']) {
 			case 'banktransfer':
@@ -1610,37 +1615,77 @@ function ReadAuftraege() {
 					$bank_inh  = $bankdata['banktransfer_owner'];
 					$bank_stat = $bankdata['banktransfer_status'];
 				}
-			echo '<PAYMENT_BANKTRANS_BNAME>' . htmlspecialchars($bank_name) . '</PAYMENT_BANKTRANS_BNAME>' . "\n" .
-				 '<PAYMENT_BANKTRANS_BLZ>' . htmlspecialchars($bank_blz) . '</PAYMENT_BANKTRANS_BLZ>' . "\n" .
-				 '<PAYMENT_BANKTRANS_NUMBER>' . htmlspecialchars($bank_kto) . '</PAYMENT_BANKTRANS_NUMBER>' . "\n" .
-				 '<PAYMENT_BANKTRANS_OWNER>' . htmlspecialchars($bank_inh) . '</PAYMENT_BANKTRANS_OWNER>' . "\n" .
-				 '<PAYMENT_BANKTRANS_STATUS>' . htmlspecialchars($bank_stat) . '</PAYMENT_BANKTRANS_STATUS>' . "\n";
+			echo '	<PAYMENT_BANKTRANS_BNAME>' . htmlspecialchars($bank_name) . '</PAYMENT_BANKTRANS_BNAME>' . "\n" .
+				 '	<PAYMENT_BANKTRANS_BLZ>' . htmlspecialchars($bank_blz) . '</PAYMENT_BANKTRANS_BLZ>' . "\n" .
+				 '	<PAYMENT_BANKTRANS_NUMBER>' . htmlspecialchars($bank_kto) . '</PAYMENT_BANKTRANS_NUMBER>' . "\n" .
+				 '	<PAYMENT_BANKTRANS_OWNER>' . htmlspecialchars($bank_inh) . '</PAYMENT_BANKTRANS_OWNER>' . "\n" .
+				 '	<PAYMENT_BANKTRANS_STATUS>' . htmlspecialchars($bank_stat) . '</PAYMENT_BANKTRANS_STATUS>' . "\n";
 			break;
+			case 'sepa':
+				// IBAN/BIC laden, wenn aktiv
+				$sepa_name = '';
+				$sepa_blz  = '';
+				$sepa_kto  = '';
+				$sepa_inh  = '';
+				$sepa_stat = -1;
+				$sepa_sql = "select * from sepa where orders_id = " . $orders['orders_id'];
+				$sepa_query = xtc_db_query($sepa_sql);
+				if (($sepa_query) && ($sepadata = xtc_db_fetch_array($sepa_query))) {
+					$sepa_name = $sepadata['sepa_bankname'];
+					$sepa_bic  = $sepadata['sepa_bic'];
+					$sepa_iban = $sepadata['sepa_iban'];
+					$sepa_owner = $sepadata['sepa_owner'];
+					$sepa_stat = $sepadata['sepa_status'];
+				}
+				echo '	<PAYMENT_SEPA_BNAME>' . htmlspecialchars($sepa_name) . '</PAYMENT_SEPA_BNAME>' . "\n" .
+				'	<PAYMENT_SEPA_BIC>' . htmlspecialchars($sepa_bic) . '</PAYMENT_SEPA_BIC>' . "\n" .
+				'	<PAYMENT_SEPA_IBAN>' . htmlspecialchars($sepa_iban) . '</PAYMENT_SEPA_IBAN>' . "\n" .
+				'	<PAYMENT_SEPA_OWNER>' . htmlspecialchars($sepa_owner) . '</PAYMENT_SEPA_OWNER>' . "\n" .
+				'	<PAYMENT_SEPA_STATUS>' . htmlspecialchars($sepa_stat) . '</PAYMENT_SEPA_STATUS>' . "\n";
+			break;
+			case 'paypal':
+			case 'paypalexpress':
+			case 'paypalng':
+				$paypal_sql = "select * from paypal_transactions where orders_id = " . $orders['orders_id'];
+				$paypal_query = xtc_db_query($paypal_sql);
+				if (($paypal_query) && ($paypal_data = xtc_db_fetch_array($paypal_query))) {
+					$paypal_txn_id = $paypal_data['transaction_id'];
+					echo '	<PAYPAL_TXNID>' . htmlspecialchars($paypal_txn_id) . '</PAYPAL_TXNID>' . "\n";
+				}
+			break;
+			
 		}
 		echo '</PAYMENT>' . "\n" .
 			'<SHIPPING>' . "\n" .
-			'<SHIPPING_METHOD>' . htmlspecialchars($orders['shipping_method']) . '</SHIPPING_METHOD>'  . "\n" .
-			'<SHIPPING_CLASS>' . htmlspecialchars($orders['shipping_class']) . '</SHIPPING_CLASS>'  . "\n" .
+			'	<SHIPPING_METHOD>' . htmlspecialchars($orders['shipping_method']) . '</SHIPPING_METHOD>'  . "\n" .
+			'	<SHIPPING_CLASS>' . htmlspecialchars($orders['shipping_class']) . '</SHIPPING_CLASS>'  . "\n" .
 			'</SHIPPING>' . "\n" .
 			'<ORDER_PRODUCTS>' . "\n";
-		$products_query = xtc_db_query("select orders_products_id,allow_tax, products_id, products_model, products_name, final_price, products_tax, products_quantity from " . TABLE_ORDERS_PRODUCTS . " where orders_id = '" . $orders['orders_id'] . "'");
+		$cmd = "SELECT customers_status_show_price_tax FROM " . TABLE_CUSTOMERS_STATUS . " WHERE language_id = 2 AND customers_status_id = '" . $orders['customers_status'] ."'";
+		$query = xtc_db_query($cmd);
+		$result = xtc_db_fetch_array($query);
+
+		$p_query = xtc_db_query("select * from " . TABLE_ORDERS_PRODUCTS . " where orders_id = '" . $orders['orders_id'] . "'");
+		
+		if ($result && $produkte = xtc_db_fetch_array($p_query)) {
+			if (($result['customers_status_show_price_tax'] == 0 && $produkte['allow_tax'] == 0 && $produkte['products_tax'] <=0)) $tax_flag = '0';
+			if (($result['customers_status_show_price_tax'] == 0 && $produkte['allow_tax'] == 0 && $produkte['products_tax'] > 0)) $tax_flag = 'N';
+			if (($result['customers_status_show_price_tax'] == 1 && $produkte['allow_tax'] == 1)) $tax_flag = 'J';
+			if (($result['customers_status_show_price_tax'] == 1 && $produkte['allow_tax'] == 0)) $tax_flag = 'N';
+			
+		}
+		 echo "	<TAX_FLAG>$tax_flag</TAX_FLAG>\n";
+		$products_query = xtc_db_query("select * from " . TABLE_ORDERS_PRODUCTS . " where orders_id = '" . $orders['orders_id'] . "'");
 		while ($products = xtc_db_fetch_array($products_query)) {
-			if ($products['allow_tax']==1) {
-				$EPreisNetto=$products['final_price']/(1+$products['products_tax']*0.01);
-			}
-			else {
-				$EPreisNetto=$products['final_price'];
-			}
-			echo '<PRODUCT>' . "\n" .
-				'<PRODUCTS_ID>' . $products['products_id'] . '</PRODUCTS_ID>' . "\n" .
-				'<PRODUCTS_QUANTITY>' . $products['products_quantity'] . '</PRODUCTS_QUANTITY>' . "\n" .
-				'<PRODUCTS_MODEL>' . htmlspecialchars($products['products_model']) . '</PRODUCTS_MODEL>' . "\n" .
-				'<PRODUCTS_NAME>' . htmlspecialchars($products['products_name']) . '</PRODUCTS_NAME>' . "\n" .
-				'<PRODUCTS_PRICE>' . $EPreisNetto/$products['products_quantity'] . '</PRODUCTS_PRICE>' . "\n" .
-				'<PRODUCTS_EPRICE>' . $products['final_price']/$products['products_quantity'] . '</PRODUCTS_EPRICE>' . "\n" .
-				'<PRODUCTS_TAX>' . $products['products_tax'] . '</PRODUCTS_TAX>' . "\n".
-				'<PRODUCTS_TAX_FLAG>' . $products['allow_tax'] . '</PRODUCTS_TAX_FLAG>' . "\n";
-			$attributes_query = xtc_db_query("select products_options, products_options_values, options_values_price, price_prefix from " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " where orders_id = '" .$orders['orders_id'] . "' and orders_products_id = '" . $products['orders_products_id'] . "'");
+			echo '	<PRODUCT>' . "\n" .
+				'		<PRODUCTS_ID>' . $products['products_id'] . '</PRODUCTS_ID>' . "\n" .
+				'		<PRODUCTS_MODEL>' . htmlspecialchars($products['products_model']) . '</PRODUCTS_MODEL>' . "\n" .
+				'		<PRODUCTS_QUANTITY>' . $products['products_quantity'] . '</PRODUCTS_QUANTITY>' . "\n" .
+				'		<PRODUCTS_NAME>' . htmlspecialchars($products['products_name']) . '</PRODUCTS_NAME>' . "\n" .
+				'		<PRODUCTS_EPRICE>' . $products['final_price']/$products['products_quantity'] .'</PRODUCTS_EPRICE>' . "\n" .
+				'		<PRODUCTS_TAX>' . $products['products_tax'] . '</PRODUCTS_TAX>' . "\n";
+
+				$attributes_query = xtc_db_query("select products_options, products_options_values, options_values_price, price_prefix from " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " where orders_id = '" .$orders['orders_id'] . "' and orders_products_id = '" . $products['orders_products_id'] . "'");
 			if (xtc_db_num_rows($attributes_query))
 			{
 				while ($attributes = xtc_db_fetch_array($attributes_query))
@@ -1655,15 +1700,15 @@ function ReadAuftraege() {
 					{
 						$attributes_model = xtc_get_attributes_model($products['products_id'], $attributes['products_options_values'], $attributes['products_options'], $LangID);
 					}
-					echo '<OPTION>' . "\n" .
-						'<PRODUCTS_OPTIONS>' . htmlspecialchars($attributes['products_options']) . '</PRODUCTS_OPTIONS>' . "\n" .
-						'<PRODUCTS_OPTIONS_VALUES>' . htmlspecialchars($attributes['products_options_values']) . '</PRODUCTS_OPTIONS_VALUES>' . "\n" .
-						'<PRODUCTS_OPTIONS_MODEL>' . $attributes_model . '</PRODUCTS_OPTIONS_MODEL>'. "\n".
-						'<PRODUCTS_OPTIONS_PRICE>' . $attributes['price_prefix'] . ' ' . $attributes['options_values_price'] . '</PRODUCTS_OPTIONS_PRICE>' . "\n" .
-						'</OPTION>' . "\n";
+					echo '	<OPTION>' . "\n" .
+						'		<PRODUCTS_OPTIONS>' . htmlspecialchars($attributes['products_options']) . '</PRODUCTS_OPTIONS>' . "\n" .
+						'		<PRODUCTS_OPTIONS_VALUES>' . htmlspecialchars($attributes['products_options_values']) . '</PRODUCTS_OPTIONS_VALUES>' . "\n" .
+						'		<PRODUCTS_OPTIONS_MODEL>' . htmlspecialchars($attributes_model) . '</PRODUCTS_OPTIONS_MODEL>'. "\n".
+						'		<PRODUCTS_OPTIONS_PRICE>' . $attributes['price_prefix'] . ' ' . $attributes['options_values_price'] . '</PRODUCTS_OPTIONS_PRICE>' . "\n" .
+						'	</OPTION>' . "\n";
 				}
 			}
-			echo '</PRODUCT>' . "\n";
+			echo '	</PRODUCT>' . "\n";
 		}
 		echo '</ORDER_PRODUCTS>' . "\n" .
 			'<ORDER_TOTAL>' . "\n";
@@ -1676,23 +1721,27 @@ function ReadAuftraege() {
 			$total_prefix = $order_total_class[$totals['class']]['prefix'];
 			$total_tax = $order_total_class[$totals['class']]['tax'];
 			echo '<TOTAL>' . "\n" .
-				'<TOTAL_TITLE>' . htmlspecialchars($totals['title']) . '</TOTAL_TITLE>' . "\n" .
-				'<TOTAL_VALUE>' . htmlspecialchars($totals['value']) . '</TOTAL_VALUE>' . "\n" .
-				'<TOTAL_CLASS>' . htmlspecialchars($totals['class']) . '</TOTAL_CLASS>' . "\n" .
-				'<TOTAL_SORT_ORDER>' . htmlspecialchars($totals['sort_order']) . '</TOTAL_SORT_ORDER>' . "\n" .
-				'<TOTAL_PREFIX>' . htmlspecialchars($total_prefix) . '</TOTAL_PREFIX>' . "\n" .
-				'<TOTAL_TAX>' . htmlspecialchars($total_tax) . '</TOTAL_TAX>' . "\n" .
+				'	<TOTAL_TITLE>' . htmlspecialchars($totals['title']) . '</TOTAL_TITLE>' . "\n" .
+				'	<TOTAL_VALUE>' . htmlspecialchars($totals['value']) . '</TOTAL_VALUE>' . "\n" .
+				'	<TOTAL_CLASS>' . htmlspecialchars($totals['class']) . '</TOTAL_CLASS>' . "\n" .
+				'	<TOTAL_SORT_ORDER>' . htmlspecialchars($totals['sort_order']) . '</TOTAL_SORT_ORDER>' . "\n" .
+				'	<TOTAL_PREFIX>' . htmlspecialchars($total_prefix) . '</TOTAL_PREFIX>' . "\n" .
+				'	<TOTAL_TAX>' . htmlspecialchars($total_tax) . '</TOTAL_TAX>' . "\n" .
 				'</TOTAL>' . "\n";
 		}
 		echo '</ORDER_TOTAL>' . "\n";
 		$comments_query = xtc_db_query("select comments from " . TABLE_ORDERS_STATUS_HISTORY . " where orders_id = '" . $orders['orders_id'] . "' and orders_status_id = '" . $orders['orders_status'] . "' ");
 		if ($comments =  xtc_db_fetch_array($comments_query))
 		{
-			echo '<ORDER_COMMENTS>' . htmlspecialchars($comments['comments']) . '</ORDER_COMMENTS>' . "\n";
+			echo '	<ORDER_COMMENTS>' . htmlspecialchars($comments['comments']) . '</ORDER_COMMENTS>' . "\n";
 		}
 		echo '</ORDER_INFO>' . "\n\n";
 	}
 	echo '</ORDER>' . "\n\n";
 } // Ende function ReadOrders
 
-?>
+
+function aftime() {
+	return date('Y-m-d H:i:s', time());
+}
+

@@ -1,0 +1,465 @@
+<script type="text/javascript">
+var jqmlnews = (typeof jqml !== 'undefined')
+	? jqml
+	: ((typeof jQuery !== 'undefined')
+		? jQuery
+		: null
+	);
+</script>
+<link href="//fonts.googleapis.com/css?family=Source+Sans+Pro:400,200,300,600,700,900" rel="stylesheet" type="text/css">
+<style>/*
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: normal;
+	font-weight: 200;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-ExtraLight.otf') format("opentype");
+}
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: normal;
+	font-weight: 300;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-Light.otf') format("opentype");
+}
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: normal;
+	font-weight: 400;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-Regular.otf') format("opentype");
+}
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: normal;
+	font-weight: 600;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-Semibold.otf') format("opentype");
+}
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: normal;
+	font-weight: 700;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-Bold.otf') format("opentype");
+}
+
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: italic;
+	font-weight: 300;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-LightIt.otf') format("opentype");
+}
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: italic;
+	font-weight: 400;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-It.otf') format("opentype");
+}
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: italic;
+	font-weight: 600;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-SemiboldIt.otf') format("opentype");
+}
+@font-face {
+	font-family: "SourceSansPro";
+	font-style: italic;
+	font-weight: 700;
+	src: url('protocol://marketing-url/fonts/SourceSansPro-BoldIt.otf') format("opentype");
+}
+*/
+body.magna div.magna div#content li {
+	display: inline;
+	padding-left: 0;
+}
+body.magna .magnaTabs2Marketing {
+	overflow: hidden;
+	margin-bottom: 2em;
+}
+body.magna #marketingContent {
+	width: 968px;
+	margin-left: 12px;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+}
+body.magna #marketingContent * {
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: antialiased;
+}
+body.magna .marketing .successBox,
+body.magna .marketing .successBoxBlue,
+body.magna .marketing .noticeBox,
+body.magna .marketing .errorBox {
+	padding: 30px 55px 15px 25px;
+}
+body.magna .marketing .successBox p,
+body.magna .marketing .successBoxBlue p,
+body.magna .marketing .noticeBox p,
+body.magna .marketing .errorBox p {
+	line-height: 18px;
+}
+body.magna #homeSliderWrap {
+	position: relative;
+	top: 0px;
+	left: 0px;
+	width: 968px;
+	height: 378px;
+	overflow: hidden;
+}
+body.magna .home_slider {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 968px;
+	height: 378px;
+	overflow: hidden;
+}
+body.magna .captionSlide {
+	color: #fff;
+	font-family: "SourceSansPro", "Source Sans Pro";
+	font-weight: bold;
+	font-size: 20px;
+	line-height: 30px;
+	position:absolute;
+}
+body.magna .captionSlide h2 {
+	border-bottom: medium none;
+	color: #fff;
+	font-size: 34.5px;
+	font-family: "SourceSansPro", "Source Sans Pro";
+	font-weight: bold;
+	letter-spacing: -1.5px;
+	line-height: 36px;
+	-webkit-transform: scale(1, 1.19) !important;
+	-moz-transform: scale(1, 1.19);
+	-ms-transform: scale(1, 1.19);
+	transform: scale(1, 1.19);
+}
+body.magna .captionSlide.captionFeatures h2,
+body.magna .captionSlide.captionAmazon h2,
+body.magna .captionSlide.captionAllyouneed h2 {
+	color: #333334;
+}
+body.magna .captionSlide.captionAllyouneed h2 {
+	margin-bottom: 40px;
+	}
+body.magna .captionCheck24.captionSlide h2 {
+	font-size: 39px;
+	line-height: 38px;
+	margin-bottom: 45px;
+}
+body.magna .captionSlide p {
+	font-size: 20.5px;
+	font-family: "SourceSansPro", "Source Sans Pro";
+	margin-top: 17px;
+	line-height: 27.5px;
+	letter-spacing: -0.5px;
+}
+body.magna .captionSlide p.subheader {
+	font-family: "SourceSansPro", "Source Sans Pro";
+	font-weight: 400;
+	margin-bottom: 31px;
+	color: #fff;
+}
+body.magna .captionShopware2 p.subheader {
+	margin-bottom: 31px;
+	margin-top: 20px;
+}
+body.magna .captionSlide.captionFeatures p.subheader,
+body.magna .captionSlide.captionAmazon p.subheader {
+	color: #727271;
+}
+body.magna .captionSlide p a,
+body.magna td.boxCenter .captionSlide p a {
+	color: #fff;
+	font-family: "SourceSansPro", "Source Sans Pro";
+	font-weight: 600;
+	font-size: 14.5px;
+	letter-spacing: -0.4px;
+	padding: 10px 30px 8px 29px;
+	text-decoration: none;
+	text-transform: uppercase;
+	background-color: #333334;
+}
+body.magna .captionSlide p a:hover,
+body.magna td.boxCenter .captionSlide p a:hover {
+	background-color: #e31a1c;
+	color: #fff;
+}
+body.magna .captionSlide p a img,
+body.magna td.boxCenter .captionSlide p a img  {
+	left: 4px;
+	position: relative;
+	top: 7px;
+	vertical-align: unset;
+}
+body.magna .captionSlide p a .arrow_content {
+	left: 1px;
+	position: relative;
+	top: 8px;
+}
+body.magna .captionPrestashop {
+	left: 75px;
+	top: 51px;
+}
+body.magna .captionShopware {
+	left: 429px;
+	top: 61px;
+}
+body.magna .captionShopware2 {
+	left: 67px;
+	top: 44px;
+}
+body.magna .captionDawanda {
+	left: 75px;
+	top: 51px;
+}
+body.magna .captionDawanda2 {
+	left: 494px;
+	top: 57px;
+}
+body.magna .captionCheck24 {
+	left: 607px;
+	top: 50px;
+}
+body.magna .captionBepado {
+	left: 544px;
+	top: 62px;
+}
+body.magna .captionSage {
+	left: 585px;
+	top: 52px;
+}
+body.magna .captionAmazon {
+	left: 597px;
+	top: 40px;
+}
+body.magna .captionFeatures {
+	left: 604px;
+	top: 39px;
+}
+body.magna .captionRicardo {
+	left: 585px;
+	top: 52px;
+}
+body.magna .captionRicardo2 {
+	left: 585px;
+	top: 79px;
+}
+body.magna .captionAllyouneed {
+	left: 650px;
+	top: 75px;
+}
+body.magna .captionFyndiq {
+    left: 565px;
+    top: 52px;
+}
+body.magna .jssora02l,
+body.magna .jssora02r,
+body.magna .jssora02ldn,
+body.magna .jssora02rdn{
+	position: absolute;
+	cursor: pointer;
+	display: block;
+	background: url('//devshops.magnalister.com/APIRelated/Marketing/img/arrows_home_slider.png') no-repeat;
+	overflow:hidden;
+}
+body.magna .jssora02l,
+body.magna .jssora02l:hover,
+body.magna .jssora02ldn { 
+	background-position: -3px -33px;
+	height: 55px;
+	left: 2px;
+	top: 159px;
+	width: 55px;
+}
+body.magna .jssora02r,
+body.magna .jssora02r:hover,
+body.magna .jssora02rdn {
+	background-position: -63px -33px;
+	height: 55px;
+	right: 2px;
+	top: 159px;
+	width: 55px;
+}
+body.magna #homeNewsArchive {
+	padding: 31px 0 35px 35px;
+	width: 560px;
+}
+body.magna #homeNewsArchive .homeNewsArchive_item {
+	margin-bottom: 7px;
+}
+body.magna #homeNewsArchive h2 {
+	border-bottom: medium none;
+	color: #333334;
+	font-size: 15.5px;
+	font-weight: bold;
+	letter-spacing: -0.2px;
+}
+body.magna #homeNewsArchive h3,
+body.magna #homeNewsArchive h3 a {
+	color: #333334;
+	font-family: Arial,sans-serif;
+	font-size: 13.5px;
+	font-weight: bold;
+	letter-spacing: -0.2px;
+	text-decoration: none;
+	padding-top: 9px;
+}
+body.magna #homeNewsArchive p.news_archive_date {
+	color: #a0a0a2;
+	font-size: 13.5px;
+	font-weight: bold;
+	letter-spacing: -0.5px;
+	margin-bottom: 5px;
+	margin-top: -1px;
+}
+body.magna #homeNewsArchive p.news_archive_intro {
+	color: #595959;
+	font-size: 12px;
+	letter-spacing: 0;
+	line-height: 18px;
+	margin: 0;
+}
+body.magna #homeNewsArchive a:hover {
+	color: #E31A1C;
+	text-decoration: none;
+}
+</style>
+<style>div#pageContent #welcomeHome {
+	width: 968px;
+	float: left;
+	margin: 27px 0 20px;
+}
+
+div#pageContent #welcomeHomeText {
+	padding: 27px 0 0 32px;
+	width: 420px;
+	float: left;
+}
+
+div#pageContent #welcomeHomeText h2 {
+	border-bottom: medium none;
+	color: #333334;
+	font-size: 37.5px;
+	font-family: "SourceSansPro", "Source Sans Pro";
+	font-weight: bold;
+	letter-spacing: -0.5px;
+	line-height: 36px;
+	-webkit-transform: scale(1, 1.19) !important;
+	-moz-transform: scale(1, 1.19);
+	-ms-transform: scale(1, 1.19);
+	transform: scale(1, 1.19);
+}
+
+div#pageContent #welcomeHomeText p {
+	color: #a0a0a2;
+	font-family: "SourceSansPro","Source Sans Pro";
+	font-size: 19.5px;
+	letter-spacing: -0.3px;
+	line-height: 25.5px;
+	margin-bottom: 10px;
+	margin-top: 19px;
+	max-width: 340px;
+}
+
+div#pageContent #welcomeHomeText.welcomeHomeTextEN p {
+	max-width: 360px;
+}
+
+div#pageContent #welcomeHomeText.welcomeHomeTextFR p {
+	max-width: 350px;
+}
+
+div#pageContent #welcomeHomeText a {
+	text-decoration: none;
+}
+
+div#pageContent #welcomeHomeImg {
+	width: 471px;
+	float: left;
+}
+
+body.magna .magnaTabs2Welcome {
+	float: left;
+	margin-bottom: 29px;
+	overflow: hidden;
+	width: 968px;
+	clear: both;
+}
+
+body.magna .captionSlide p a, body.magna td.boxCenter .captionSlide p a {
+	background-color: #e31a1c;
+}
+
+body.magna .captionSlide p a:hover, body.magna td.boxCenter .captionSlide p a:hover {
+	background-color: #333334;
+}
+
+body.magna #homeNewsArchive {
+	float: left;
+	padding: 0 0 35px 30px;
+	clear: both;
+}
+
+.clear {
+	clear: both;
+}</style>
+
+<div id="welcomeHome"><div id="welcomeHomeText">
+	<h2>Kostenlos testen</h2>
+	<p>Artikelverwaltung zu eBay, Amazon & Co. -<br>spielend einfach</p>
+	<div class="captionSlide"><p><a href="http://www.magnalister.com/freetest/?partner=commerceseo" target="_blank" class="ml-js-noBlockUi">Mehr Infos <img src="//dev.magnalister.com/APIRelated/Marketing/img/arrows_home_slider_small.png" alt="magnalister Arrow" title="magnalister Arrow" /></a></p></div>
+</div>
+<div id="welcomeHomeImg">
+	<img alt="xtCommerce&magnalister" title="xtCommerce&magnalister" src="//api.magnalister.com/APIRelated/promotion/content/images/welcome-xtcommerce.png" />
+</div></div>
+<div class="magnaTabs2 magnaTabs2Welcome"><ul><li><span>News</span></li></ul></div>
+<div id="homeNewsArchive"><h2>News Archive</h2>
+<div class="home_news_archive_item">
+	<h3>Allyouneed Angebot</h3>
+	<p class="news_archive_date">14. Juni 2015</p>
+	<p class="news_archive_intro">Keine Verkaufsprovision bis 30. Juni 2015.</p>
+</div>
+<div class="home_news_archive_item">
+	<h3>Angebot magnalister &amp; ricardo.ch</h3>
+	<p class="news_archive_date">11. Juni 2015</p>
+	<p class="news_archive_intro">600 Artikel kostenlos einstellen und ricardo.ch testen.</p>
+</div>
+<div class="home_news_archive_item">
+	<h3><a href="//www.magnalister.com/de/amazon-anbindung-magnalister/" target="_blank" class="ml-js-noBlockUi">Amazon - mehr als nur ein Marktplatz</a></h3>
+	<p class="news_archive_date">9. Juni 2015</p>
+	<p class="news_archive_intro">Mit monatlich mehr als 22 Millionen Besuchern alleine in Deutschland bietet Amazon eine der gr&ouml;&szlig;ten Absatzchancen f&uuml;r Online-H&auml;ndler!...</p>
+</div>
+<div class="home_news_archive_item">
+	<h3><a href="//www.magnalister.com/de/bepado-magnalister-schnittstelle-anbindung/" target="_blank" class="ml-js-noBlockUi">bepado Anbindung: Neuartige M&ouml;glichkeiten</a></h3>
+	<p class="news_archive_date">14. M&auml;rz 2015</p>
+	<p class="news_archive_intro">bepado vernetzt H&auml;ndler und Lieferanten f&uuml;r gemeinsamen Erfolg...</p>
+</div>
+<div class="home_news_archive_item">
+	<h3><a href="//www.magnalister.com/de/neue-features-magnalister/" target="_blank" class="ml-js-noBlockUi">4901 Revisionen = Der beste magnalister aller Zeiten!</a></h3>
+	<p class="news_archive_date">27. November 2014</p>
+	<p class="news_archive_intro">Neue Features, bessere Performance und mehr Services sind das Ergebnis aus 4901 Revisionen...</p>
+</div>
+<div class="home_news_archive_item">
+	<h3><a href="//www.magnalister.com/de/aktionen/dawanda-anbindung-magento-shopware-xtcommerce/" target="_blank" class="ml-js-noBlockUi">DaWanda Anbindung in Beta-Phase</a></h3>
+	<p class="news_archive_date">24. Juni 2014</p>
+	<p class="news_archive_intro">In direkter Zusammenarbeit mit DaWanda ver&ouml;ffentlicht magnalister die erste integrierte Schnittstelle f&uuml;r die bekanntesten Web-Shops...</p>
+</div>
+<div class="home_news_archive_item">
+	<h3><a href="//www.magnalister.com/de/aktionen/magnalister-atmeet-magento-de/" target="_blank" class="ml-js-noBlockUi">magnalister [at] Rakuten Expo 2014</a></h3>
+	<p class="news_archive_date">26. Mai 2014</p>
+	<p class="news_archive_intro">magnalister liefert neben der Marktplatzanbindung an eBay, Amazon &amp; Co auch die Anbindung an Rakuten...</p>
+</div>
+<div class="home_news_archive_item">
+	<h3><a href="//www.magnalister.com/de/allgemein/magnalister-erweitert-meinpaket-anbindung/" target="_blank" class="ml-js-noBlockUi">magnalister erweitert MeinPaket-Anbindung</a></h3>
+	<p class="news_archive_date">9. Mai 2014</p>
+	<p class="news_archive_intro">Ab sofort k&ouml;nnen H&auml;ndler alle neuen Erweiterungen der MeinPaket-Marktplatzanbindung nutzen. Neu sind Varianten-Unterst&uuml;tzung mitsamt einem Varianten-Matching...</p>
+</div>
+<div class="home_news_archive_item">
+	<h3><a href="//www.magnalister.com/de/allgemein/shopware-mit-magnalister-ein-erster-test-von-pixup-media/" target="_blank" class="ml-js-noBlockUi">Shopware mit magnalister &ndash; ein erster Test Pixup Media</a></h3>
+	<p class="news_archive_date">13. Januar 2014</p>
+	<p class="news_archive_intro">magnalister f&uuml;r Ihren Shopware-Shop: Ein besonderes Highlight: mit dem Feature Promotion-E-Mail machen Sie Marktplatz-Kunden auf Ihren Shop aufmerksam...</p>
+</div>
+<!--
+<div id="page-content"></div>
+<ul id="pagination-demo" class="pagination-sm"></ul>
+--></div>
+
+<div class="clear"></div>

@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: MagnaConnector.php 4337 2014-08-06 12:09:45Z tim.neumann $
+ * $Id: MagnaConnector.php 6767 2016-06-17 14:42:39Z masoud.khodaparast $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -29,14 +29,14 @@ class MagnaConnector {
 	const DEFAULT_TIMEOUT_RECEIVE = 30;
 	const DEFAULT_TIMEOUT_SEND    = 10;
 
-	protected static $instance = NULL;
+	protected static $instance = null;
 
-	protected $passPhrase;
+	protected $passPhrase = '';
 	protected $language = 'english';
 	protected $subsystem = 'Core';
 	protected $timeoutrc = self::DEFAULT_TIMEOUT_RECEIVE; /* Receive Timeout in Seconds */
 	protected $timeoutsn = self::DEFAULT_TIMEOUT_SEND;    /* Send Timeout in Seconds    */
-	protected $magnaApiScript = MAGNA_API_SCRIPT;
+	protected $apiUrl = '';
 	protected $lastRequest = array();
 	protected $requestTime = 0;
 	protected $addRequestProps = array();
@@ -48,15 +48,34 @@ class MagnaConnector {
 	protected function __construct() {
 		$this->updatePassPhrase();
 		$this->cURLStatusInit();
+		
+		$this->setApiUrl(MAGNA_SERVICE_URL.MAGNA_API_SCRIPT);
+		if (function_exists('getDBConfigValue')) {
+			$this->setApiUrl(getDBConfigValue('general.apiurl', 0, ''));
+		}
 	}
 
 	protected function __clone() {}
 
+	/**
+	 * @return MagnaConnector
+	 */
 	public static function gi() {
-		if (self::$instance == NULL) {
+		if (self::$instance === null) {
 			self::$instance = new self();
 		}
 		return self::$instance;
+	}
+	
+	public function setApiUrl($apiUrl) {
+		if (!empty($apiUrl)) {
+			$this->apiUrl = $apiUrl;
+		}
+		return $this;
+	}
+	
+	public function getApiUrl() {
+		return $this->apiUrl;
 	}
 	
 	public function setLanguage($lang) {
@@ -272,7 +291,6 @@ class MagnaConnector {
 		#echo var_dump_pre(curl_error($connection), 'curl_error');
 		
 		if (curl_errno($connection) == CURLE_OPERATION_TIMEOUTED) {
-			curl_close($connection);
 			
 			/* This detects a very seldom cURL bug, where cURL doesn't close the connection,
 			 * even though it received everything in time. The connection is closed just because of
@@ -281,22 +299,15 @@ class MagnaConnector {
 			 */
 			if (   is_string($response)
 			    && (strpos($response, '{#') !== false)
-			    && (strpos($redponse, '#}') !== false)
+			    && (strpos($response, '#}') !== false)
 			) {
+				curl_close($connection);
 				$this->cURLStatus['use'] = false;
 				$this->cURLStatusSave();
 				
 				return $response;
 			}
-			
-			$me = new MagnaException(ML_INTERNAL_API_TIMEOUT, MagnaException::TIMEOUT, $this->lastRequest, $response, $curRequestTime);
-			MagnaError::gi()->addMagnaException($me);
-			$this->timePerRequest[] = array (
-				'request' => $this->lastRequest,
-				'time' => $curRequestTime,
-				'status' => 'TIMEOUT',
-			);
-			throw $me;
+			// dont throw exception here, sometimes there are timeout-problems with https, so retry curl without https and/or file_contents
 		}
 		
 		if (curl_error($connection) != '') {
@@ -336,9 +347,9 @@ class MagnaConnector {
 		$requestFields['SHOPSYSTEM'] = SHOPSYSTEM;
 	}
 
-	protected function decodeResponse($response) {
+	protected function decodeResponse($response, $timePerRequest) {
 		if (MAGNA_DEBUG && isset($_SESSION['MagnaRAW']) && ($_SESSION['MagnaRAW'] == 'true')) {
-			echo print_m($response, MAGNA_SERVICE_URL.$this->magnaApiScript);
+			echo print_m($response, $this->apiUrl);
 		}
 
 		$startPos = strpos($response, '{#') + 2;
@@ -482,21 +493,22 @@ class MagnaConnector {
 		$response = $this->getFromShortTimeCache($requestHash);
 		if ($response === false) {
 			if (function_exists("curl_version")) {
-				$response = $this->curlRequest(MAGNA_SERVICE_URL.MAGNA_API_SCRIPT, $requestString);
+				$response = $this->curlRequest($this->apiUrl, $requestString);
 			} else {
-				$response = $this->file_post_contents(MAGNA_SERVICE_URL.MAGNA_API_SCRIPT, $requestString);
+				$response = $this->file_post_contents($this->apiUrl, $requestString);
 			}
 		} else {
 			#echo print_m('Cache');
 		}
 		$timePerRequest = array (
+			'apiurl' => $this->apiUrl,
 			'request' => $requestFields,
 			'time' => microtime(true) - $_timer,
 			'status' => 'ERROR'
 		);
-				$this->setShortTimeCache($requestHash, $response);
+		$this->setShortTimeCache($requestHash, $response);
 		
-		$result = $this->decodeResponse($response);
+		$result = $this->decodeResponse($response, $timePerRequest);
 		
 		$this->preprocessResult($result, $response, $timePerRequest);
 		

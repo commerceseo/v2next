@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: saveMatching.php 3347 2013-12-02 15:42:17Z tim.neumann $
+ * $Id: saveMatching.php 5727 2015-06-09 13:06:53Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -144,8 +144,9 @@ function amazonAutoMatching($mpID, $selectionName) {
 			if (!isset($searchResult[0]['LowestPrice'])) {
 				$searchResult[0]['LowestPrice'] = '0.0';
 			}
-			
+			$_MagnaSession['amazonLastPreparedTS'] = array_key_exists('amazonLastPreparedTS', $_MagnaSession) ? $_MagnaSession['amazonLastPreparedTS'] : date('Y-m-d H:i:s');
 			$data = array(
+				'PreparedTS' => $_MagnaSession['amazonLastPreparedTS'],
 				'mpID' => $mpID,
 				'products_id' => $pID,
 				'products_model' => $pRow['products_model'],
@@ -211,6 +212,8 @@ if (array_key_exists('amazonProperties', $_POST)) {
 		$data['asin'] = $data['item_note'] = $data['category_id'] = $data['category_name'] = $data['item_condition'] = '';
 		$data['asin_type'] = $data['will_ship_internationally'] = $data['lowestprice'] = 0;
 	}
+	$_MagnaSession['amazonLastPreparedTS'] = array_key_exists('amazonLastPreparedTS', $_MagnaSession) ? $_MagnaSession['amazonLastPreparedTS'] : date('Y-m-d H:i:s');
+	$data['PreparedTS'] = $_MagnaSession['amazonLastPreparedTS'];
 	$data['products_model'] = $_POST['model'][$data['products_id']];
 	$where = (getDBConfigValue('general.keytype', '0') == 'artNr')
 		? array (
@@ -244,10 +247,10 @@ if (array_key_exists('action', $_GET) && ($_GET['action'] == 'multimatching') &&
 			$data['asin'] = $asin;
 			$data['item_condition'] = getDBConfigValue('amazon.itemCondition', $_MagnaSession['mpID']);
 			$data['will_ship_internationally'] = getDBConfigValue('amazon.internationalShipping', $_MagnaSession['mpID']);
-			
-			$data['category_id'] = $_POST['catID'][$asin];
-			$data['category_name'] = $_POST['catName'][$asin];
-			$data['lowestprice'] = $_POST['lowprice'][$asin];
+
+			$data['category_id'] = isset($_POST['catID'][$asin]) ? $_POST['catID'][$asin] : '';
+			$data['category_name'] = isset($_POST['catName'][$asin]) ? $_POST['catName'][$asin] : '';
+			$data['lowestprice'] = isset($_POST['lowprice'][$asin]) ? $_POST['lowprice'][$asin] : '0.0';
 			
 			if (defined('DEVELOPMENT_TEST')) {
 				$data['item_note'] = DEVELOPMENT_TEST;
@@ -263,6 +266,8 @@ if (array_key_exists('action', $_GET) && ($_GET['action'] == 'multimatching') &&
 			$data['asin_type'] = $data['will_ship_internationally'] = $data['lowestprice'] = 0;
 		}
 
+		$_MagnaSession['amazonLastPreparedTS'] = array_key_exists('amazonLastPreparedTS', $_MagnaSession) ? $_MagnaSession['amazonLastPreparedTS'] : date('Y-m-d H:i:s');
+		$data['PreparedTS'] = $_MagnaSession['amazonLastPreparedTS'];
 		$where = (getDBConfigValue('general.keytype', '0') == 'artNr')
 			? array (
 				'products_model' => $data['products_model']

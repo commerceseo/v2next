@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: AmazonSummaryView.php 3534 2014-02-18 01:20:43Z derpapst $
+ * $Id: AmazonSummaryView.php 6173 2015-10-29 11:59:53Z markus.bauer $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -174,6 +174,11 @@ class AmazonSummaryView extends SimpleSummaryView {
 			if (isset($_POST['changePrice'])) {
 				$_POST['price'][$pID] = $_POST['changePrice'];
 			}
+			/*
+			if (isset($_POST['changeLeadtimeToShip'])) {
+				$_POST['leadtimeToShip'][$pID] = $_POST['changeLeadtimeToShip'];
+			}
+			*/
 		}
 		#if (!isset($_GET['kind']) || ($_GET['kind'] != 'ajax')) echo print_m($_POST, '$_POST');
 		if (array_key_exists('quantity', $_POST)) {
@@ -205,12 +210,14 @@ class AmazonSummaryView extends SimpleSummaryView {
 			INNER JOIN '.TABLE_PRODUCTS.' AS p ON (a.products_model = p.products_model)
 			       SET a.leadtimeToShip = \'_#_VALUE_#_\'
 			     WHERE p.products_id = \'_#_ID_#_\'
+			           AND a.mpID="'.$this->mpID.'"
 			';
 		} else {
 			$leadtimeTemplates = '
 				UPDATE _#_TABLE_#_
 				   SET leadtimeToShip = \'_#_VALUE_#_\'
-				 WHERE products_id = \'_#_ID_#_\' 
+				 WHERE products_id = \'_#_ID_#_\'
+				       AND mpID="'.$this->mpID.'"
 			';
 		}
 		
@@ -278,6 +285,7 @@ class AmazonSummaryView extends SimpleSummaryView {
 				INNER JOIN '.TABLE_PRODUCTS.' AS p ON (a.products_model = p.products_model)
 				       SET a.leadtimeToShip = \'_#_VALUE_#_\'
 				     WHERE p.products_shippingtime = \'_#_TIME_#_\'
+				           AND a.mpID="'.$this->mpID.'"
 				';
 			} else {
 				$leadtimeTemplate = '
@@ -285,6 +293,7 @@ class AmazonSummaryView extends SimpleSummaryView {
 				INNER JOIN '.TABLE_PRODUCTS.' AS p ON (a.products_id = p.products_id)
 				       SET a.leadtimeToShip = \'_#_VALUE_#_\'
 				     WHERE p.products_shippingtime = \'_#_TIME_#_\'
+				           AND a.mpID="'.$this->mpID.'"
 				';
 			}
 
@@ -309,6 +318,8 @@ class AmazonSummaryView extends SimpleSummaryView {
 			foreach ($tables as $tbl) {
 				MagnaDB::gi()->update($tbl, array (
 					'leadtimeToShip' => $defaultLeadtime
+				), array(
+					'mpID' => $this->mpID
 				));
 			}
 		}
@@ -364,6 +375,12 @@ class AmazonSummaryView extends SimpleSummaryView {
 					$data['quantity'] = getDBConfigValue($mp.'.quantity.value', $this->mpID, 1);
 				}
 			}
+			if (
+				(getDBConfigValue($mp.'.quantity.maxquantity', $this->mpID) > 0) 
+				&& (getDBConfigValue($mp.'.quantity.type', $this->mpID) != 'lump')
+			) {
+				$data['quantity'] = min($data['quantity'], getDBConfigValue($mp.'.quantity.maxquantity', $this->mpID));
+			}
 			if ($data['quantity'] < 0) {
 				$data['quantity'] = 0;
 			}
@@ -408,10 +425,8 @@ class AmazonSummaryView extends SimpleSummaryView {
 		$html = '
 				<td>'.$lowPrice.'<br />&nbsp;</td>
 				<td><table class="nostyle"><tbody>
-						<tr><td>'.ML_LABEL_NEW.':&nbsp;</td><td>
-							<input type="text" id="price_'.$dbRow['products_id'].'"
-							       name="price['.$dbRow['products_id'].']"
-							       value="'.$this->simplePrice->setPrice($this->selection[$dbRow['products_id']]['price'])->getPrice().'"/>
+						<tr><td>'.ML_LABEL_NEW.':&nbsp;</td><td>'.
+			$this->simplePrice->setPrice($this->selection[$dbRow['products_id']]['price'])->getPrice().'
 							<input type="hidden" id="backup_price_'.$dbRow['products_id'].'"
 							       value="'.$this->simplePrice->getPrice().'"/>
 						</td></tr>
@@ -428,10 +443,8 @@ class AmazonSummaryView extends SimpleSummaryView {
 				<td><table class="nostyle"><tbody>
 						<tr><td>'.ML_LABEL_NEW.':&nbsp;</td><td>
 							<input type="hidden" id="old_quantity_'.$dbRow['products_id'].'"
-							       value="'.$this->selection[$dbRow['products_id']]['quantity'].'"/>
-							<input type="text" id="quantity_'.$dbRow['products_id'].'"
-							       name="quantity['.$dbRow['products_id'].']" size="4" maxlength="4" 
-							       value="'.$this->selection[$dbRow['products_id']]['quantity'].'"/>
+							       value="'.$this->selection[$dbRow['products_id']]['quantity'].'"/>'
+			.$this->selection[$dbRow['products_id']]['quantity'].'
 						</td></tr>
 						<tr><td>'.ML_LABEL_OLD.':&nbsp;</td><td>&nbsp;'.(
 							array_key_exists($dbRow['products_id'], $this->inventoryData) ?
@@ -442,7 +455,7 @@ class AmazonSummaryView extends SimpleSummaryView {
 				</td>
 				
 				<td>
-					<select id="leadtimeToShip_'.$dbRow['products_id'].'" name="leadtimeToShip['.$dbRow['products_id'].']">';
+					<select id="leadtimeToShip_'.$dbRow['products_id'].'" name="leadtimeToShip['.$dbRow['products_id'].']" class="ml-js-noBlockUi">';
 					$leadtimeToShipOpts = array_merge(array (
 						'0' => '&mdash;',
 					), range(1, 30));
@@ -555,6 +568,24 @@ $(document).ready(function() {
 			}
 		});
 	});
+	/*
+	@todo: submit prepare type
+	$('#summaryForm select[name^="leadtimeToShip"]').each(function(i, e) {
+		//myConsole.log($(e).attr('id'));
+		$(e).change(function() {
+			jQuery.ajax({
+				type: 'POST',
+				url: '<?php echo toURL($this->url, array('kind' => 'ajax'), true); ?>',
+				dataType: 'json',
+				data: {
+					'changeLeadtimeToShip': $(this).val(),
+					'productID': $(this).attr('id')
+				},
+				dataType: 'json'
+			});
+		});
+	});
+	*/
 });
 /*]]>*/</script>
 <?php

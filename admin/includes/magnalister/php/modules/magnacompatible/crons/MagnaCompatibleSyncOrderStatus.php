@@ -105,6 +105,10 @@ class MagnaCompatibleSyncOrderStatus extends MagnaCompatibleCronBase {
 				'key' => 'orderstatus.shipped',
 				'default' => false,
 			),
+			'CarrierDefault' => array(
+				'key' => 'orderstatus.carrier.default',
+				'default' => false,
+			),
 			'CarrierMatchingTable' => array (
 				'key' => 'orderstatus.carrier.dbmatching.table',
 				'default' => false,
@@ -156,6 +160,7 @@ class MagnaCompatibleSyncOrderStatus extends MagnaCompatibleCronBase {
 			SELECT `'.$tableSettings['Table']['column'].'` 
 			  FROM `'.$tableSettings['Table']['table'].'` 
 			 WHERE `'.$tableSettings['Alias'].'` = "'.MagnaDB::gi()->escape($where).'"
+			       AND `'.$tableSettings['Table']['column'].'` <> \'\'
 		');
 	}
 	
@@ -165,22 +170,52 @@ class MagnaCompatibleSyncOrderStatus extends MagnaCompatibleCronBase {
 	 *   The tracking code
 	 */
 	protected function getTrackingCode($orderId) {
-		return $this->runDbMatching(array (
+		$mTrackingCode = $this->runDbMatching(array (
 			'Table' => $this->config['TrackingCodeMatchingTable'],
 			'Alias' => $this->config['TrackingCodeMatchingAlias']
 		), 'orders_id', $orderId);
+
+		// for Gambio 2.3 > if table "orders_parcel_tracking_codes" exists
+		if (false == $mTrackingCode && MagnaDB::gi()->tableExists('orders_parcel_tracking_codes')) {
+			$mTrackingCode = MagnaDB::gi()->fetchOne("
+				SELECT tracking_code
+				  FROM orders_parcel_tracking_codes
+				 WHERE order_id = '".MagnaDB::gi()->escape($orderId)."'
+				 LIMIT 1
+			");
+		}
+
+		return $mTrackingCode;
 	}
 	
 	/**
 	 * Fetches a carrier if supported by the marketplace.
+	 *   more priority on matching
 	 * @return string
 	 *   The carrier
 	 */
 	protected function getCarrier($orderId) {
-		return $this->runDbMatching(array (
+		$mCarrier = $this->runDbMatching(array (
 			'Table' => $this->config['CarrierMatchingTable'],
 			'Alias' => $this->config['CarrierMatchingAlias']
 		), 'orders_id', $orderId);
+
+		// for Gambio 2.3 > if table "orders_parcel_tracking_codes" exists
+		if (false == $mCarrier && MagnaDB::gi()->tableExists('orders_parcel_tracking_codes')) {
+			$mCarrier = MagnaDB::gi()->fetchOne("
+				SELECT parcel_service_name
+				  FROM orders_parcel_tracking_codes
+				 WHERE order_id = '".MagnaDB::gi()->escape($orderId)."'
+				 LIMIT 1
+			");
+		}
+
+		// carrier should not be empty
+		if (false == $mCarrier && !empty($this->config['CarrierDefault'])) {
+			$mCarrier = $this->config['CarrierDefault'];
+		}
+
+		return $mCarrier;
 	}
 	
 	/**
@@ -426,6 +461,9 @@ class MagnaCompatibleSyncOrderStatus extends MagnaCompatibleCronBase {
 		}
 		$this->processResponseConfirmations($result);
 		$this->processResponseErrors($result);
+
+		$this->storeLogging('Request', $request);
+		$this->storeLogging('Result', $result);
 	}
 	
 	/**
@@ -528,6 +566,7 @@ class MagnaCompatibleSyncOrderStatus extends MagnaCompatibleCronBase {
 	 */
 	public function process() {
 		#echo print_m($this->config, '$this->config');
+		$this->storeLogging('Config', $this->config);
 		
 		if ($this->config['OrderStatusSync'] != 'auto') {
 			return false;
@@ -576,7 +615,8 @@ class MagnaCompatibleSyncOrderStatus extends MagnaCompatibleCronBase {
 		$this->submitStatusUpdate('CancelShipment',  $this->cancellations);
 		
 		$this->saveDirtyOrders();
-		
+
+		$this->storeLogging('Unprocessed', $this->unprocessed);
 		$this->updateUnprocessed();
 		//*/
 		return true;

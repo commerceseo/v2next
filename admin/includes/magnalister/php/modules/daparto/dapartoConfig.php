@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: dapartoConfig.php 3925 2014-06-03 12:54:45Z tim.neumann $
+ * $Id: dapartoConfig.php 5452 2015-04-09 10:04:14Z MaW $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -37,6 +37,14 @@ $form = loadConfigForm($_lang,
 mlGetCountries($form['shipping']['fields']['country']);
 mlGetLanguages($form['lang']['fields']['lang']);
 mlGetShippingMethods($form['shipping']['fields']['method']);
+mlGetCustomersStatus($form['price']['fields']['whichprice'], false);
+if (!empty($form['price']['fields']['whichprice'])) {
+	$form['price']['fields']['whichprice']['values']['0'] = ML_LABEL_SHOP_PRICE;
+	ksort($form['price']['fields']['whichprice']['values']);
+	unset($form['price']['fields']['specialprices']);
+} else {
+	unset($form['price']['fields']['whichprice']);
+}
 
 $cG = new MLConfigurator($form, $_MagnaSession['mpID'], 'conf_daparto');
 $cG->setRenderTabIdent(true);
@@ -71,5 +79,6 @@ if (isset($_GET['kind']) && ($_GET['kind'] == 'ajax')) {
 } else {
 	include_once(DIR_MAGNALISTER_INCLUDES.'admin_view_top.php');
 	echo $cG->renderConfigForm();
+	echo $cG->exchangeRateAlert();
 	include_once(DIR_MAGNALISTER_INCLUDES.'admin_view_bottom.php');
 }

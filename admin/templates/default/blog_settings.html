@@ -1,0 +1,28 @@
+{$FORM}
+<div class="row">
+	<div class ="pull-left">
+		<h1>{$txt.HEADING_DEFAULT}</h1>
+	</div>
+	<div class="pull-right">
+		<input class="btn btn-success" type="submit" value="{$txt.BUTTON_SAVE}" />
+		<a class="btn btn-default" href="blog.php">{$txt.BUTTON_CANCEL}</a>
+	</div>
+</div>
+<div class="row">
+	<table class="table table-striped">
+	{foreach name=blogkey item=module_key from=$blogkey}
+		<tr>
+			<td>{$module_key.titel}</td>
+			<td>{$module_key.radio}</td>
+			<td>{$module_key.desc}</td>
+		</tr>
+	{/foreach}
+	</table>
+</div>
+<div class="row">
+	<div class="text-right">
+		<input class="btn btn-success" type="submit" value="{$txt.BUTTON_SAVE}" />
+		<a class="btn btn-default" href="blog.php">{$txt.BUTTON_CANCEL}</a>
+	</div>
+</div>
+{$FORM_END}

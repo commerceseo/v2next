@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: SimplePrice.php 3735 2014-04-03 23:17:24Z derpapst $
+ * $Id: SimplePrice.php 6525 2016-03-01 11:56:23Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -19,6 +19,8 @@
  */
 
 class SimplePrice {
+	private $settings = array();
+	
 	private $price = 0.0;
 	private $actualCurr = '';
 	private $currencies = array();
@@ -31,6 +33,8 @@ class SimplePrice {
 	protected static $cache = array();
 	
 	public function __construct($price = null, $actualCurr = null) {
+		$this->settings['UseGambioProperties'] = getDBConfigValue('general.options', '0', 'old') == 'gambioProperties';
+		
 		$currencies_query = MagnaDB::gi()->query('SELECT * FROM '.TABLE_CURRENCIES);
 		while ($currency = MagnaDB::gi()->fetchNext($currencies_query)) {
 			$this->currencies[$currency['code']] = array (
@@ -119,6 +123,33 @@ class SimplePrice {
 		           AND status=1
 		');
 	}
+
+	public function getCustomizedPrice($pID, $mpID = null) {
+		global $_MagnaSession;
+		if (!isset($mpID)) {
+			if (   is_array($_MagnaSession)
+			    && array_key_exists('mpID', $_MagnaSession)) {
+				$mpID = $_MagnaSession['mpID'];
+			} else {
+				$mpID = 0;
+			}
+		}
+		
+		$iPrice = false;
+		/* {Hook} "CustomizePrice": is called while the Prices are determined, within a method
+				getCustomizedPrice. The code should set $iPrice to the new value.
+				If it's not set, or set to false, the price won't be changed.
+			Variables that can be used:
+			<ul><li>$pID - product's ID</li>
+			    <li>$mpID - current marketplace ID</li>
+			    <li>&$iPrice - new price you will set by the contrib</li>
+			</ul>
+		*/
+		if (($hp = magnaContribVerify('CustomizePrice', 1)) !== false) {
+			require($hp);
+		}
+		return $iPrice;
+	}
 	
 	public static function loadPriceSettings($mpId, $extra = '') {
 		$mp = magnaGetMarketplaceByID($mpId);
@@ -136,6 +167,7 @@ class SimplePrice {
 			'Signal'  => getDBConfigValue($mp.$extra.'.price.signal', $mpId, ''),
 			'Group'   => getDBConfigValue($mp.$extra.'.price.group', $mpId, ''),
 			'UseSpecialOffer' => getDBConfigValue(array($mp.$extra.'.price.usespecialoffer', 'val'), $mpId, false),
+			'IncludeTax' => true,
 		);
 	}
 	
@@ -160,6 +192,11 @@ class SimplePrice {
 			$pConfig = self::loadPriceSettings($mpID, $extra);
 		}
 		
+		if (($fCustomizedPrice = $this->getCustomizedPrice($pID, $mpID)) != false) {
+			$this->price = $fCustomizedPrice;
+			return $this;
+		}
+
 		if ($pConfig['UseSpecialOffer'] && (($price = $this->getSpecialOffer($pID)) > 0)) {
 			$this->price = $price;
 			$this->isSpecialPrice = true;
@@ -188,8 +225,10 @@ class SimplePrice {
 		} else {
 			$pConfig = self::loadPriceSettings($mpID, $extra);
 		}
-		
-		$this->addTaxByPID($pID)->calculateCurr();
+		if (!isset($pConfig['IncludeTax']) || ($pConfig['IncludeTax'] !== false)) {
+			$this->addTaxByPID($pID);
+		}
+		$this->calculateCurr();
 		
 		switch ($pConfig['AddKind']) {
 			case 'percent': {
@@ -344,25 +383,56 @@ class SimplePrice {
 		if ((int)$aID <= 0) {
 			return $this;
 		}
-		$attr = MagnaDB::gi()->fetchRow('
-			SELECT options_values_price AS price,
-			       price_prefix AS prefix
-			  FROM '.TABLE_PRODUCTS_ATTRIBUTES.'
-			 WHERE products_attributes_id="'.$aID.'"
-		');
-		if (!is_array($attr)) return $this;
+		
+		if ($this->settings['UseGambioProperties']) {
+			$attr = MagnaDB::gi()->fetchRow('
+				SELECT combi_price_type AS Type, combi_price AS Price
+				  FROM products_properties_combis
+				 WHERE products_properties_combis_id="'.$aID.'"
+			');
+			if (!is_array($attr)) {
+				return $this;
+			}
+		} else {
+			$attr = MagnaDB::gi()->fetchRow('
+				SELECT options_values_price AS price,
+				       price_prefix AS prefix
+				  FROM '.TABLE_PRODUCTS_ATTRIBUTES.'
+				 WHERE products_attributes_id="'.$aID.'"
+			');
+			if (!is_array($attr)) {
+				return $this;
+			}
+			if ($attr['prefix'] == '=') {
+				$attr = array (
+					'Type' => 'fix',
+					'Price' => $attr['price'],
+				);
+			} else {
+				$attr = array (
+					'Type' => 'calc',
+					'Price' => $attr['price'] * (($attr['prefix'] == '+') ? 1 : -1)
+				);
+			}
 
+		}
+		
+		if ($attr['Price'] == 0) {
+			return $this;
+		}
+		
 		$tmpTax = $this->addedTax;
 		$this->removeTax();
 
-		if ($attr['prefix'] == '+') {
-			$this->addLump($attr['price']);
+		// for gambio properties we need to always use addLump
+		if ($attr['Type'] == 'fix' && (!$this->settings['UseGambioProperties'])) {
+			$this->price = $attr['Price'];
 		} else {
-			$this->subLump($attr['price']);
+			$this->addLump($attr['Price']);
 		}
-
+		
 		$this->addTax($tmpTax);
-
+		
 		return $this;
 	}
 

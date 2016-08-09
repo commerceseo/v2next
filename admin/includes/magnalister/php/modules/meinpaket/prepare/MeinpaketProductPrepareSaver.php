@@ -53,9 +53,9 @@ class MeinpaketProductPrepareSaver {
 			'StoreCategory' => '',
 			'VariationConfiguration' => '',
 			'ShippingDetails' => array (
-				'ShippingCost' => getDBConfigValue('meinpaket.prepare.shippingdetails.shippingcost', $this->mpId, ''),
-				'ShippingCostFixed' => getDBConfigValue(array('meinpaket.prepare.shippingdetails.shippingcostfixed', 'val'), $this->mpId, false),
-				'ShippingType' => getDBConfigValue('meinpaket.prepare.shippingdetails.shippingtype', $this->mpId, ''),
+				'ShippingCost' => getDBConfigValue($this->marketplace.'.prepare.shippingdetails.shippingcost', $this->mpId, ''),
+				'ShippingCostFixed' => getDBConfigValue(array($this->marketplace.'.prepare.shippingdetails.shippingcostfixed', 'val'), $this->mpId, false),
+				'ShippingType' => getDBConfigValue($this->marketplace.'.prepare.shippingdetails.shippingtype', $this->mpId, ''),
 			),
 		);
 	}
@@ -121,6 +121,8 @@ class MeinpaketProductPrepareSaver {
 		$defaults = $this->loadDefaults();
 		
 		$pIds = $this->loadProductsModel($pIds);
+		
+		$data['PreparedTs'] = date('Y-m-d H:i:s');
 		foreach ($pIds as $row) {
 			$set = array_replace_recursive(
 				array (
@@ -132,7 +134,25 @@ class MeinpaketProductPrepareSaver {
 			);
 			$set['ShippingDetails'] = json_encode($set['ShippingDetails']);
 			
-			#echo print_m($set, '$set');
+			/*
+			 * omit double data sets (the table primary unique key contains both products_id and _model,
+			 * so it doesn't prevent it)
+			 */
+			switch (getDBConfigValue('general.keytype', '0')) {
+				case ('pID'):
+					MagnaDB::gi()->delete(TABLE_MAGNA_MEINPAKET_PROPERTIES, array (
+						'mpID' => $this->mpId,
+						'products_id' => $set['products_id']
+					));
+					break;
+				case ('artNr'):
+					MagnaDB::gi()->delete(TABLE_MAGNA_MEINPAKET_PROPERTIES, array (
+						'mpID' => $this->mpId,
+						'products_model' => $set['products_model']
+					));
+					break;
+				default: break;
+			}
 			MagnaDB::gi()->insert(TABLE_MAGNA_MEINPAKET_PROPERTIES, $set, true);
 		}
 		

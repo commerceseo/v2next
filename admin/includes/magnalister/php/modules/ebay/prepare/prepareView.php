@@ -59,10 +59,13 @@ function eBayRenderCategoryOptions($type = 'PrimaryCategory', $selectedCat, $sel
 function renderSinglePrepareView($data) {
 	global $_MagnaSession;
 
-	#echo print_m($data);
-
 	require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/SimplePrice.php');
 	$prepareViewPrice = new SimplePrice(null, getDBConfigValue('ebay.currency', $_MagnaSession['mpID']));
+	if (!array_key_exists('VariationDimensionForPictures', $data[0])) {
+		$iVariationDimensionForPictures = false;
+	} else {
+		$iVariationDimensionForPictures = $data[0]['VariationDimensionForPictures'];
+	}
 	$html = '
 		<tbody>
 			<tr class="headline">
@@ -84,21 +87,6 @@ function renderSinglePrepareView($data) {
 				<td class="info">'.ML_EBAY_SUBTITLE_MAX_55_CHARS.'<span style="color:red;"> '.ML_EBAY_CAUSES_COSTS.'</span></td>
 			</tr>
 			<tr class="odd">
-				<th>'.ML_EBAY_PICTURE.'</th>
-				<td class="input">
-					<input type="text" class="fullwidth" value="'.$data[0]['PictureURL'].'" name="PictureURL" id="PictureURL"/><br />&nbsp;<br />
-					<input type="text" class="fullwidth" value="'.$data[0]['GalleryURL'].'" name="GalleryURL" id="GalleryURL"/>
-					<input type="checkbox" name="enableGallery" id="enableGallery" ';
-	if (getDBConfigValue(array('ebay.gallery.active', 'val'), $_MagnaSession['mpID'])) {
-		$html .= ' checked="checked" ';
-	}
-	$html .= '/>'.ML_EBAY_LABEL_USE_GALLERY_YES_NO.'
-				</td>
-				<td class="info">'.ML_EBAY_MAIN_PICTURE_COMPLETE_URL.'<br />
-						'.ML_EBAY_MAIN_GALLERY_PICTURE_CAUSES_COSTS.'
-				</td>
-			</tr>
-			<tr class="even">
 				<th>'.ML_EBAY_DESCRIPTION.'</th>
 				<td class="input">
 					'.magna_wysiwyg(array (
@@ -135,6 +123,8 @@ function renderSinglePrepareView($data) {
 							<dd>'.ML_EBAY_SHORTDESCRIPTION_FROM_SHOP.'</dd>
 						<dt style="font-weight:bold; color:black">#DESCRIPTION#</dt>
 							<dd>'.ML_EBAY_DESCRIPTION_FROM_SHOP.'</dd>
+						<dt style="font-weight:bold; color:black">#WEIGHT#</dt>
+							<dd>'.ML_EBAY_WEIGHT_FROM_SHOP.'</dd>
 						<dt style="font-weight:bold; color:black">#PICTURE1#</dt>
 							<dd>'.ML_EBAY_FIRST_PIC.'</dd>
 						<dt style="font-weight:bold; color:black">#PICTURE2# etc.</dt>
@@ -149,7 +139,7 @@ function renderSinglePrepareView($data) {
 	$buyItNowPrice = $prepareViewPrice->formatWOCurrency();
 
 	$html .= '
-			<tr class="odd">
+			<tr class="even">
 				<th>eBay Preis</th>
 				<td>
 					<table class="lightstlye line15"><tbody>
@@ -161,21 +151,20 @@ function renderSinglePrepareView($data) {
 							</td>
 							<td></td>
 						</tr>
-						<tr id="changePrice">
+						<tr id="chinesePrice" style="display:none">
 							<td>
-								<span id="bidPriceLabel" style="display:none;">'.ML_EBAY_YOUR_CHINESE_PRICE.':</span>
-								<span id="buyNowPriceLabel" style="display:none;">'.ML_EBAY_YOUR_FIXED_PRICE.':</span>
+								<span id="bidPriceLabel">'.ML_EBAY_YOUR_CHINESE_PRICE.':</span>
 							</td>
 							<td>
 								<input type="text" id="frozenPrice" name="frozenPrice" value="';
 	if (isset($data[0]['priceFrozen']) && $data[0]['priceFrozen']) {
-	    $prepareViewPrice->setPrice(makePrice($data[0]['products_id'], 'FixedPriceItem', $data[0]['priceFrozen']));
+	    $prepareViewPrice->setPrice(makePrice($data[0]['products_id'], 'Chinese', $data[0]['priceFrozen']));
 	    $html .= $prepareViewPrice->formatWOCurrency();
 	} else {
-		$html .= $fixedPrice;
+		$prepareViewPrice->setPrice(makePrice($data[0]['products_id'], 'Chinese'));
+		$html .= $prepareViewPrice->formatWOCurrency();
 	}
 	$html .= '">
-								<span class="iceCrystal" id="freezePrice" title="'.ML_EBAY_FREEZE_PRICE_TOOLTIP.'"></span>
 								<input type="hidden" id="isPriceFrozen" name="isPriceFrozen" value="'.(
 									(isset($data[0]['priceFrozen']) && $data[0]['priceFrozen'])
 										? 'true'
@@ -189,7 +178,7 @@ function renderSinglePrepareView($data) {
 							<td>
 								<input type="text" length="55" maxlength="55" value="'.$buyItNowPrice.'" name="BuyItNowPrice" id="BuyItNowPrice"/>
 								<input type="checkbox" name="enableBuyItNowPrice" '.(
-									(getDBConfigValue(array('ebay.chinese.buyitnow.price.active', 'val'), $_MagnaSession['mpID']))
+									(getDBConfigValue(array('ebay.chinese.buyitnow.price.active', 'val'), $_MagnaSession['mpID']) || (magnalisterEbayGetPriceByType($data[0]['products_id'], 'BuyItNowPrice') !== false))
 										? ' checked="checked" '
 										: ''
 								).'/> aktiv
@@ -200,9 +189,9 @@ function renderSinglePrepareView($data) {
 	ob_start();
 	?>
 					<script type="text/javascript">/*<![CDATA[*/
-		                if (jQuery('#isPriceFrozen').val() == 'true') {
-		                    jQuery('#freezePrice').addClass('active');
-		                }
+						if (jQuery('#isPriceFrozen').val() == 'true') {
+							jQuery('#freezePrice').addClass('active');
+						}
 						jQuery('#freezePrice').click(function () {
 							var ih = jQuery('#isPriceFrozen');
 							jQuery(this).toggleClass('active');
@@ -227,6 +216,49 @@ function renderSinglePrepareView($data) {
 				<td class="info">'.ML_EBAY_PRICE_FOR_EBAY.'</td>
 			</tr>
 		</tbody>
+		<tbody>
+			<tr class="headline">
+				<td colspan="3"><h4>'.ML_EBAY_PICTURE_SETTINGS.'</h4></td>
+			</tr>			
+			'.ebayPictureUrlHtml($data[0]['products_id'],
+				// wenn noch nicht vorbereitet UND PictureURL is array:
+				// klicke alle Bilder an
+				((     !array_key_exists('PrimaryCategory', $data[0])
+				    && is_array($data[0]['PictureURL']))
+				? array('__use_all__')
+				: $data[0]['PictureURL']),
+				'odd')
+			 .ebayGalleryTypeHtml($data[0]['GalleryType'], true)
+			 .ebayPicturePackPropertiesListHtml($data[0]['products_id'], $iVariationDimensionForPictures);
+/*
+	// Purge: immer an (zu viel Verwirrung sonst. Kann man noch nachpflegen.)
+	//        Müßte man auch anders für Single und Multiple machen, zu viel Aufwand.
+	if (getDBConfigValue(array('ebay.picturepack', 'val'), $_MagnaSession['mpID'])){			
+		$html .='<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
+				<th>'.ML_EBAY_LABEL_PICTUREPACK_PURGE.'</th>
+				<td class="input">
+					<input type="checkbox" name="PicturePackPurge" id="PicturePackPurge" ';	
+		$picturePackPurge = MagnaDB::gi()->fetchArray(eecho('
+			SELECT SQL_CALC_FOUND_ROWS DISTINCT eBayPicturePackPurge
+			FROM '.TABLE_MAGNA_EBAY_PROPERTIES.'
+			WHERE products_id IN ('.$products_id_list.')
+			AND mpID = '.$_MagnaSession['mpID'].'
+		'), true);
+
+		if (1 == (int)MagnaDB::gi()->foundRows()) {
+			if ('1' == $picturePackPurge[0]['eBayPicturePackPurge']) {
+			    $html .= ' checked="checked" ';
+			}
+		} else {
+			    $html .= ' checked="checked" '; 
+		}
+		$html .= '/><label for="PicturePackPurge" >'.ML_EBAY_LABEL_PICTUREPACK_PURGE_TEXT.'</label>
+					</td>
+					<td class="info">'.ML_EBAY_LABEL_PICTUREPACK_PURGE_RIGHTTEXT.'</td>
+				</tr>';
+	}
+*/
+	$html .= '
 		'.renderMultiPrepareView($data).'
 	';
 	return $html;
@@ -247,6 +279,7 @@ function renderMultiPrepareView($data) {
 	$ConditionIDArray = array();
 	$PaymentMethodsArray = array();
 	$ShippingDetailsArray = array();
+	$DispatchTimeMaxArray = array();
 	
 	foreach ($data as $row) {
 		if (   isset($row['PrimaryCategory']) 
@@ -264,7 +297,6 @@ function renderMultiPrepareView($data) {
 			    'StoreCategory'    => $row['StoreCategory'],
 			    'StoreCategory2'   => $row['StoreCategory2']
 		    );
-            $lastI = $i;
         }
 		if (isset($row['ListingType'])) {
 			$ListingTypeArray[]     = $row['ListingType'];
@@ -273,30 +305,36 @@ function renderMultiPrepareView($data) {
 			$PaymentMethodsArray[] = $row['PaymentMethods'];
 			$ShippingDetailsArray[] = $row['ShippingDetails'];
 		}
+		if ($row['DispatchTimeMax'] <= 30) { // gueltige Werte bis 30, table default == 99
+			$DispatchTimeMaxArray[] = $row['DispatchTimeMax'];
+		}
+        $lastI = $i;
 		++$i;
 	}
 	/* nur vorausfuellen wenn fuer alle gleich */
 	$PrimaryCategory = null;
 	if (1 == count($prefilledCatsArray)) {
-		$PrimaryCategory     = trim($prefilledCatsArray[$lastI]['PrimaryCategory']);
+		$currCatsKey = key($prefilledCatsArray);
+		$PrimaryCategory     = trim($prefilledCatsArray[$currCatsKey]['PrimaryCategory']);
 		$PrimaryCategoryName = (!empty($PrimaryCategory))
 			? geteBayCategoryPath($PrimaryCategory) 
 			: '';
-		$SecondaryCategory   = trim($prefilledCatsArray[$lastI]['SecondaryCategory']);
+		$SecondaryCategory   = trim($prefilledCatsArray[$currCatsKey]['SecondaryCategory']);
 		$SecondaryCategoryName = (!empty($SecondaryCategory))
 			? geteBayCategoryPath($SecondaryCategory)
 			: '';
-		$StoreCategory       = trim($prefilledCatsArray[$lastI]['StoreCategory']);
+		$StoreCategory       = trim($prefilledCatsArray[$currCatsKey]['StoreCategory']);
 		$StoreCategoryName   = (!empty($StoreCategory))
 			? geteBayCategoryPath($StoreCategory, true)
 			: '';
-		$StoreCategory2      = trim($prefilledCatsArray[$lastI]['StoreCategory2']);
+		$StoreCategory2      = trim($prefilledCatsArray[$currCatsKey]['StoreCategory2']);
 		$StoreCategory2Name  = (!empty($StoreCategory2))
 			? geteBayCategoryPath($StoreCategory2, true)
 			: '';
 
 		if (!empty($data[$lastI]['ItemSpecifics'])) {
-			$PrimaryPreselectedValues = $data[$lastI]['ItemSpecifics'];
+			$PrimaryPreselectedValues   = $data[$lastI]['ItemSpecifics'];
+			$SecondaryPreselectedValues = $data[$lastI]['ItemSpecifics'];
 		} else if (!empty($data[$lastI]['Attributes'])) {
 			$PrimaryPreselectedValues = $data[$lastI]['Attributes'];
 		} else {
@@ -350,6 +388,15 @@ function renderMultiPrepareView($data) {
 		$ShippingDetailsArray = array_unique($ShippingDetailsArray);
 		if (1 == count($ShippingDetailsArray)) {
 			$prefilledShippingDetails = $ShippingDetailsArray[0];
+		}
+	}
+	$prefilledDispatchTimeMax = null;
+	if (is_array($DispatchTimeMaxArray)) {
+		$DispatchTimeMaxArray = array_unique($DispatchTimeMaxArray);
+		if (1 == count($DispatchTimeMaxArray)) {
+			$prefilledDispatchTimeMax = $DispatchTimeMaxArray[0];
+		} else {
+			$prefilledDispatchTimeMax = getDBConfigValue('ebay.DispatchTimeMax', $_MagnaSession['mpID'], 30);
 		}
 	}
 
@@ -455,7 +502,7 @@ function renderMultiPrepareView($data) {
 		echo print_m($e->getErrorArray(), 'Error');
 	}
 	if (isset($prefilledPaymentMethods)) {
-		$defaultPaymentMethods = json_decode($prefilledPaymentMethods);
+		$defaultPaymentMethods = json_decode(fixBrokenJsonUmlauts($prefilledPaymentMethods));
 	} else {
 		$defaultPaymentMethods = getDBConfigValue('ebay.default.paymentmethod', $_MagnaSession['mpID']);
 	}
@@ -520,6 +567,7 @@ function renderMultiPrepareView($data) {
     	SELECT SQL_CALC_FOUND_ROWS DISTINCT PrivateListing
           FROM '.TABLE_MAGNA_EBAY_PROPERTIES.'
          WHERE products_id IN ('.$products_id_list.')
+		   AND mpID = '.$_MagnaSession['mpID'].'
     ');
     if (1 == (int)MagnaDB::gi()->foundRows()) {
         if ('1' == $privateListingSet[0]['PrivateListing']) {
@@ -542,6 +590,7 @@ function renderMultiPrepareView($data) {
     	SELECT SQL_CALC_FOUND_ROWS DISTINCT BestOfferEnabled
           FROM '.TABLE_MAGNA_EBAY_PROPERTIES.'
          WHERE products_id IN ('.$products_id_list.')
+		   AND mpID = '.$_MagnaSession['mpID'].'
     ');
     if (1 == (int)MagnaDB::gi()->foundRows()) {
         if ('1' == $bestOfferEnabledSet[0]['BestOfferEnabled']) {
@@ -556,18 +605,52 @@ function renderMultiPrepareView($data) {
     	SELECT SQL_CALC_FOUND_ROWS DISTINCT StartTime
           FROM '.TABLE_MAGNA_EBAY_PROPERTIES.'
          WHERE products_id IN ('.$products_id_list.')
+		   AND mpID = '.$_MagnaSession['mpID'].'
     ');
     if (1 == (int)MagnaDB::gi()->foundRows()) {
     	$StartTime = $StartTimeSet[0]['StartTime'];
     } else {
     	$StartTime = '';
     }
-
+	$eBayPlusSettings = geteBayPlusSettings();
 	$html .= '/>'.ML_EBAY_BESTPRICE_YES_NO.'
 				</td>
 				<td class="info">'.ML_EBAY_BESTPRICE.'</td>
 			</tr>
 			<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
+				<th>'.ML_EBAY_PLUS_SHORT.'</th>
+				<td class="input">
+                    <input type="checkbox" name="plus" id="plus" ';
+    $products_id_list = '';
+    foreach ($data as $item) {
+    	$products_id_list .= ', '.$item['products_id'];
+    }
+    $products_id_list = trim($products_id_list, ', ');
+    $plusSet = MagnaDB::gi()->fetchArray('
+    	SELECT SQL_CALC_FOUND_ROWS DISTINCT eBayPlus
+          FROM '.TABLE_MAGNA_EBAY_PROPERTIES.'
+         WHERE products_id IN ('.$products_id_list.')
+		   AND mpID = '.$_MagnaSession['mpID'].'
+    ');
+	if (    ('false' == $eBayPlusSettings['eBayPlus'])
+	     || ( false  == $eBayPlusSettings['eBayPlus'])) {
+		$html .= ' disabled="disabled" ';
+	} else {
+    	if (1 == (int)MagnaDB::gi()->foundRows()) {
+	        if ('1' == $plusSet[0]['eBayPlus']) {
+	            $html .= ' checked="checked" ';
+	        }
+	    } else {
+	        if (getDBConfigValue(array('ebay.plus', 'val'), $_MagnaSession['mpID'])) {
+	            $html .= ' checked="checked" ';
+	        }
+	    }
+    }
+	$html .= '/>'.ML_EBAY_PLUS_YES_NO.'
+				</td>
+				<td class="info">'.ML_EBAY_PLUS.'</td>
+			</tr>';
+	$html .= '<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
 				<th>'.ML_HITCOUNTER_SHORT.'</th>
 				<td class="input">
 					<select name="hitcounter" id="hitcounter">';
@@ -581,6 +664,7 @@ function renderMultiPrepareView($data) {
     	SELECT SQL_CALC_FOUND_ROWS DISTINCT HitCounter
           FROM '.TABLE_MAGNA_EBAY_PROPERTIES.'
          WHERE products_id IN ('.$products_id_list.')
+		   AND mpID = '.$_MagnaSession['mpID'].'
     ');
     if (1 == (int)MagnaDB::gi()->foundRows()) {
         $defaultHitCounter = $hitcounterSet[0]['HitCounter'];
@@ -603,13 +687,13 @@ function renderMultiPrepareView($data) {
 						<td class="input">
 							'.renderDateTimePicker('startTime', $StartTime, true).'
 						</td>
-						<td class="info">'.ML_EBAY_START_TIME.'</td>
-					</tr>
-					<tr class="spacer">
+						<td class="info">'.ML_EBAY_START_TIME.'<input type="hidden" value="'.$data[0]['products_id'].'" name="pID" id="pID"/></td>
+					</tr>';
+/*					<tr class="spacer">
 						<td colspan="3">
 							&nbsp;<input type="hidden" value="'.$data[0]['products_id'].'" name="pID" id="pID"/>
 						</td>
-					</tr>';
+					</tr>';*/
 			if (count($data) > 1) {
 				if (MagnaDB::gi()->columnExistsInTable('products_short_description', TABLE_PRODUCTS_DESCRIPTION)) {
 					# Subtitel aus products_short_description (in OsCommerce nicht vorhanden)
@@ -625,6 +709,7 @@ function renderMultiPrepareView($data) {
 						  FROM '.TABLE_MAGNA_EBAY_PROPERTIES.'
 						 WHERE products_id IN ('.$products_id_list.')
 							   AND Subtitle <> \'\'
+							   AND mpID = '.$_MagnaSession['mpID'].'
 					') == count($data)
 				) {
 					$html .= ' checked="checked" ';
@@ -633,17 +718,28 @@ function renderMultiPrepareView($data) {
 						</td>
 						<td class="info">'.ML_EBAY_SUBTITLE_MAX_55_CHARS.'<span style="color:red;"> '.ML_EBAY_CAUSES_COSTS.'</span></td>
 					</tr>
-					<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
-						<th>'.ML_EBAY_GALLERY_PICTURES.'</th>
-						<td class="input">
-							<input type="checkbox" name="enableGallery" id="enableGallery" ';
-				if (getDBConfigValue(array('ebay.gallery.active', 'val'), $_MagnaSession['mpID'])) {
-					$html .= ' checked="checked" ';
-				}
-				$html .= '/>'.ML_EBAY_LABEL_USE_GALLERY_YES_NO.'
-						</td>
-						<td class="info">'.ML_EBAY_ENABLE_GALLERY_PICTURES.'</td>
-					</tr>';
+				</tbody>
+				<tbody>
+					<tr class="headline">
+						<td colspan="3"><h4>'.ML_EBAY_PICTURE_SETTINGS.'</h4></td>
+					</tr>'
+					.ebayGalleryTypeHtml( getDBConfigValue('ebay.gallery.type', $_MagnaSession['mpID'], 'Gallery'), $oddEven)
+					;
+					$aProduct_ids = array();
+					$aVarDims = array();
+					foreach ($data as $d) {
+						$aProduct_ids[] = $d['products_id'];
+						if (    array_key_exists('VariationDimensionForPictures', $d)
+						     && !in_array($d['VariationDimensionForPictures'], $aVarDims)) {
+							$aVarDims[] = $d['VariationDimensionForPictures'];
+						}
+					}
+					if (count($aVarDims) == 1) {
+						$selected_property = array_pop($aVarDims);
+					} else {
+						$selected_property = false;
+					}
+					$html .= ebayPicturePackPropertiesListHtml($aProduct_ids, $selected_property );
 			}
 			$html .= '
 					<tr class="spacer">
@@ -672,10 +768,10 @@ function renderMultiPrepareView($data) {
 									<td class="buttons">
 										<input type="hidden" id="PrimaryPreselectedValues" name="PrimaryPreselectedValues" '.(
 											(!empty($PrimaryPreselectedValues)) 
-												? 'value=\''.$PrimaryPreselectedValues.'\''
+												? 'value=\''.str_replace("'","%27", $PrimaryPreselectedValues).'\''
 												: ''
 										).' />
-										<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectPrimaryCategory"/>
+										<input class="fullWidth ml-button smallmargin mlbtn-action" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectPrimaryCategory"/>
 									</td>
 								</tr>
 								<tr>
@@ -689,6 +785,11 @@ function renderMultiPrepareView($data) {
 										</div>
 									</td>
 									<td class="buttons">
+										<input type="hidden" id="SecondaryPreselectedValues" name="SecondaryPreselectedValues" '.(
+											(!empty($SecondaryPreselectedValues)) 
+												? 'value=\''.str_replace("'","%27", $SecondaryPreselectedValues).'\''
+												: ''
+										).' />
 										<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_EBAY_CHOOSE.'" id="selectSecondaryCategory"/>
 										<input class="fullWidth ml-button smallmargin" type="button" value="'.ML_EBAY_DELETE.'" id="deleteSecondaryCategory"/>
 									</td>
@@ -762,7 +863,7 @@ function renderMultiPrepareView($data) {
 				$tmpURL = $_url;
 				$tmpURL['where'] = 'prepareView';
 				if (isset($prefilledShippingDetails)) {
-					$prefilledShippingDetailsArray = json_decode($prefilledShippingDetails, true);
+					$prefilledShippingDetailsArray = json_decode(fixBrokenJsonUmlauts($prefilledShippingDetails), true);
 					$shipProc = new eBayShippingDetailsProcessor(array(
 						'key' => 'ebay.default.shipping.local',
 						'content' => $prefilledShippingDetailsArray['ShippingServiceOptions'],
@@ -784,6 +885,28 @@ function renderMultiPrepareView($data) {
 						</td>
 					</tr>
 					<tr class="even">
+						<th>'.ML_EBAY_DISPATCH_TIME.'</th>
+						<td class="input">
+							<select name="dispatchTime" id="dispatchTime">';
+				for ($days = 0; $days <= 30; $days++) {
+					$isSelected = ($days == $prefilledDispatchTimeMax? 'selected' : '');
+					switch ($days) {
+						case (0): $daysText = ML_EBAY_DISPATCH_ON_SAME_DAY; break;
+						case (1): $daysText = ML_EBAY_DISPATCH_ONE_DAY; break;
+						default : $daysText = $days.' '.ML_DAYS; break;
+					}
+					$html .= '
+								<option '.$isSelected.' value="'.$days.'">'.$daysText."</option>\n";
+					
+				}
+				$html .= '
+							</select>
+						</td>
+						<td class="info">
+							&nbsp;
+						</td>
+					</tr>
+					<tr class="odd">
 						<th>'.ML_EBAY_SHIPPING_PROFILE.'</th>
 						<td class="input">
 							<select name="localProfile" id="localProfile">';
@@ -816,7 +939,7 @@ function renderMultiPrepareView($data) {
 					&nbsp;
 				</td>
 			</tr>
-			<tr class="odd">
+			<tr class="even">
 				<th>'.ML_EBAY_SHIPPING_INTL_OPTIONAL.'</th>
 				<td class="input">';
 
@@ -841,7 +964,7 @@ function renderMultiPrepareView($data) {
 				</td>
 				<td class="info">'.ML_EBAY_SHIPPING_INTL_DESC.'</td>
 			</tr>
-		<tr class="even">
+		<tr class="odd">
 			<th>'.ML_EBAY_SHIPPING_PROFILE.'</th>
 			<td class="input">
 				<select name="internationalProfile" id="internationalProfile">';
@@ -1020,12 +1143,14 @@ function getEBayCategoryAttributes(cID, aMode, preselectedValues) {
 function toggleChineseAuction() {
 	$('#bidPriceLabel').css({'display': 'inline'});
 	$('#buyNowPriceLabel').css({'display': 'none'});
+	$('#chinesePrice').css({'display': 'table-row'});
 	$('#chinesePrice2').css({'display': 'table-row'});
 }
 
 function toggleFixedPriceAuction() {
 	$('#bidPriceLabel').css({'display': 'none'});
 	$('#buyNowPriceLabel').css({'display': 'inline'});
+	$('#chinesePrice').css({'display': 'none'});
 	$('#chinesePrice2').css({'display': 'none'});
 }
 
@@ -1047,13 +1172,13 @@ $(document).ready(function() {
 		if (cID != '') {
 			generateEbayCategoryPath(cID, $('#PrimaryCategoryVisual'));
 			getEBayCategoryAttributes(cID, 1, $('#PrimaryPreselectedValues').val());
-			VariationsEnabled(cID,$('#noteVariationsEnabled'));
+			VariationsEnabled(cID, $('#noteVariationsEnabled'));
+			GetConditionValues(cID, $('#ebay_Condition'), <?php if(isset($defaultConditionID)) echo $defaultConditionID; else echo '1000'; ?>);
 			return true;
 		} else {
 			$('#attr_1').css({'display':'none'});
 		}
 	});
-	$('#PrimaryCategoryVisual > select').trigger('change');
 	
 	$('#SecondaryCategoryVisual > select').change(function() {
 		var cID = this.value;
@@ -1066,6 +1191,8 @@ $(document).ready(function() {
 			$('#attr_2').css({'display':'none'});
 		}
 	});
+
+	$('#PrimaryCategoryVisual > select').trigger('change');
 	$('#SecondaryCategoryVisual > select').trigger('change');
 	
 	$('#selectPrimaryCategory').click(function() {
@@ -1073,7 +1200,9 @@ $(document).ready(function() {
 			$('#PrimaryCategory').val(cID);
 			generateEbayCategoryPath(cID, $('#PrimaryCategoryVisual'));
 			getEBayCategoryAttributes(cID, 1, $('#PrimaryPreselectedValues').val());
-			VariationsEnabled(cID,$('#noteVariationsEnabled'));
+			VariationsEnabled(cID, $('#noteVariationsEnabled'));
+			GetConditionValues(cID, $('#ebay_Condition'), <?php if(isset($defaultConditionID)) echo $defaultConditionID; else echo '1000'; ?>);
+			return true;
 		}, 'eBay');
 	});
 	$('#selectSecondaryCategory').click(function() {
@@ -1111,6 +1240,28 @@ $(document).ready(function() {
 	$('#prepareForm').on('submit', function () {
 		jQuery.blockUI(blockUILoading);
 	});
+     $('select[id="GalleryType"]').data('ml-oldvalue', $('select[id="GalleryType"]').val());
+});
+$('select[id="GalleryType"]').change(function() {
+      var sel=$(this);
+      if (sel.val() != 'Plus') {
+        sel.data('ml-oldvalue', sel.val());
+        return true;
+      }
+      sel.val(sel.data('ml-oldvalue'));
+		$('<div></div>').html('<?php echo ML_TEXT_WARNING_EBAY_GALLERY_PLUS_COSTS ?>').jDialog({
+			title: '<?php echo ML_TITLE_EBAY_WARNING_GALLERY_PLUS_COST ?>',
+			buttons: {
+				'<?php echo ML_BUTTON_LABEL_NO; ?>': function() {
+					jQuery(this).dialog('close');
+				},
+				'<?php echo ML_BUTTON_LABEL_YES; ?>': function() {
+					sel.data('ml-oldvalue', 'Plus');
+					sel.val('Plus');
+					jQuery(this).dialog('close');
+				}
+			}
+		})
 });
 /*]]>*/</script><?php
 	$html .= ob_get_contents();
@@ -1138,6 +1289,13 @@ function renderPrepareView($data) {
 	 * Check ob einer oder mehrere Artikel
 	 */
 	$prepareView = (1 == count($data)) ? 'single' : 'multiple';
+
+	if (empty($data)) {
+		return '<p class="errorBox">
+		<span class="error bold larger">'.ML_ERROR_LABEL.':</span>
+		'.ML_EBAY_ERROR_NO_SUITABLE_ITEMS_CHECK_LANGUAGE.'
+		</p>';
+	}
 	
 	
 	ob_start();
@@ -1175,11 +1333,124 @@ jQuery.blockUI(blockUILoading);
 								? '<input class="ml-button" type="submit" name="unprepare" id="unprepare" value="'.ML_BUTTON_LABEL_REVERT.'"/>'
 								: ''
 							).'</td>
-							<td class="lastChild">'.'<input class="ml-button" type="submit" name="savePrepareData" id="savePrepareData" value="'.ML_BUTTON_LABEL_SAVE_DATA.'"/>'.'</td>
+							<td class="lastChild">'.'<input class="ml-button mlbtn-action" type="submit" name="savePrepareData" id="savePrepareData" value="'.ML_BUTTON_LABEL_SAVE_DATA.'"/>'.'</td>
 						</tr></tbody></table>
 					</td></tr>
 				</tbody>
 			</table>
 		</form>';
 	return $renderedView;
+}
+
+function ebayPicturePackPropertiesListHtml($products_id, $selected_property ){
+	global $_MagnaSession;
+	$html ='';
+	if (getDBConfigValue(array('ebay.picturepack', 'val'), $_MagnaSession['mpID'])){
+	// properties are the normal case (but only for Gambio). The other, Attribute images, need a custom extension.
+	$blUseProperties = true;
+	if (!MAGNA_GAMBIO_VARIATIONS && MagnaDb::gi()->columnExistsInTable('attributes_image', TABLE_PRODUCTS_ATTRIBUTES)) {
+		$blUseProperties = false;
+	}
+	
+		$aProductProperties = array();
+		if (is_array($products_id)) {
+			foreach ($products_id as $id) {
+				if ($blUseProperties) {
+					$aTmpProductProperties = MLProduct::gi()->getProductPropertiesByProductid($id);
+				} else {
+					$aTmpProductProperties = MLProduct::gi()->getProductAttributesByProductId($id);
+				}
+				// must use a loop, cos array_merge would change the keys
+				if (!empty($aTmpProductProperties)) {
+					foreach ($aTmpProductProperties as $no => $prop) {
+						$aProductProperties[$no] = $prop;
+					}
+				}
+			}
+		} else {
+			if ($blUseProperties) {
+				$aProductProperties = MLProduct::gi()->getProductPropertiesByProductid($products_id);
+			} else {
+				$aProductProperties = MLProduct::gi()->getProductAttributesByProductId($products_id);
+			}
+		}
+		if (false == $selected_property) {
+			$selected_property = getDBConfigValue('ebay.variationdimensionforpictures', $_MagnaSession['mpID'], 99999);
+		}
+		if(!empty($aProductProperties)){
+				$aProductProperties[-1] = ML_EBAY_DO_NOT_USE_VARIATION_PICS;
+				$html .='<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
+					<th>'.ML_EBAY_PICTUREPACK_PROPERTY.'</th>
+					<td class="input">
+						<select name="VariationDimensionForPictures" id="VariationDimensionForPictures">';
+			foreach ($aProductProperties as $id => $property){
+				$html .= '<option value="'.$id.'" '.($selected_property == $id ? 'selected=selected ': '').'>'.$property.'</option>';
+			}
+					$html .= '</select>
+					</td>
+					<td class="info">&nbsp;</td>
+				</tr>';
+		}
+	}
+	return $html;
+}
+
+function ebayPictureUrlHtml($products_id, $selected_images,$oddEven ){
+	global $_MagnaSession;
+	$html ='<tr class="'.$oddEven.'">
+		<th>'.ML_EBAY_PICTURE.'</th>
+		<td class="input">
+		';
+	$imagelist = '';
+	$checkboxlist = '';
+	
+	if (is_array($selected_images)){
+		$imagePath = getDBConfigValue('ebay.imagepath',$_MagnaSession['mpID']);
+		$aShopProductImage = MLProduct::gi()->getAllImagesByProductsId($products_id);
+		if (current($selected_images) == '__use_all__') $selected_images = $aShopProductImage;
+		foreach($aShopProductImage as $image){
+			$imagelist .= 
+			'<td class="image">
+			    <label for="PictureURL_'.$image.'">
+				    <img height="40" width="40" alt="'.$image.'" src="'.$imagePath.$image.'" />
+			    </label>
+			</td>';
+			$checkboxlist .= '<td class="checkboxofimage"><input type="checkbox" id="PictureURL_'.$image.'" value="'.$image.'" '.(in_array($image,$selected_images)?' checked="checked"':'').' name="PictureURL[]"></td>';
+		}
+		$html .= 
+		'<table>
+			<tr>'.$imagelist.'</tr>
+			<tr>'.$checkboxlist.'</tr>
+		</table>';
+	} else {
+		$html .= '<input type="text" class="fullwidth" value="'.$selected_images.'" name="PictureURL" id="PictureURL"/><br />&nbsp;<br />';
+		
+	}
+	$html .= '</td>';
+	if (getDBConfigValue(array('ebay.picturepack', 'val'), $_MagnaSession['mpID'])) {
+		$html .= '
+			<td class="info">'.ML_EBAY_MAIN_PICTURES;
+	} else {
+		$html .= '
+			<td class="info">'.ML_EBAY_MAIN_PICTURE_COMPLETE_URL_PP_FOR_MORE;
+	}
+	$html .= '
+			</td>
+		</tr>';
+	return $html;
+}
+
+function ebayGalleryTypeHtml($selected_type, $oddEven ){
+	$html = '<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
+		<th>'.ML_EBAY_GALLERY_PICTURES.'</th>'
+		. '<td><select name="GalleryType" id="GalleryType">';
+	foreach (array (
+		'None'=>'Kein Bild', 
+		'Gallery'=>'Standard', 
+		'Plus' =>'Plus' 
+	) as $value => $name){
+		$html .= '<option value="'.$value.'" '.(($selected_type == $value)?'selected=selected':'').'>'.$name.'</option>'."\n";
+	}
+	$html .= '</select></td><td class="info">'.ML_EBAY_ENABLE_GALLERY_PICTURES.'</td>';
+	return $html;
 }

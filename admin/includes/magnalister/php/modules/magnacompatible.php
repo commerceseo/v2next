@@ -27,8 +27,7 @@ class MagnaCompatMarketplace {
 	protected $mpID = 0;
 	protected $moduleConf = array();
 	
-	protected $magnaSession = array();
-	protected $magnaQuery = array();
+	protected $resources = array();
 	
 	protected $authConfigKeys = array();
 	protected $isAuthed = false;
@@ -46,6 +45,8 @@ class MagnaCompatMarketplace {
 		global $_magnaQuery, $_MagnaSession, $_modules, $_url;
 		
 		$this->marketplace = $marketplace;
+		
+		// $this->specificResource can be set by the inheriting class!
 		if ($this->specificResource === false) {
 			$this->specificResource = strtolower($this->marketplace);
 		}
@@ -115,6 +116,17 @@ class MagnaCompatMarketplace {
 			}
 			*/
 		}
+		
+		if (!MagnaDB::gi()->recordExists(TABLE_CURRENCIES, array (
+			'code' => getCurrencyFromMarketplace($this->mpID)
+		))) {
+			$this->resources['query']['mode'] = 'conf';
+			$this->resources['query']['messages'][] = '<p class="errorBox">'.sprintf(
+				ML_GENERIC_ERROR_CURRENCY_NOT_IN_SHOP,
+				getCurrencyFromMarketplace($this->mpID)
+			).'</p>';
+		}
+		
 		$this->prepareAvailablePages();
 		$this->determineView();
 		$this->loadPage();
@@ -125,7 +137,13 @@ class MagnaCompatMarketplace {
 		$file = DIR_MAGNALISTER_MODULES.$this->specificResource.'/classes/'.$class.'.php';
 		if (file_exists($file)) {
 			require_once($file);
-			call_user_func_array($class.'::gi', array())->init($this->resources['session']);
+			# http://3v4l.org/am7HB
+			if (version_compare(PHP_VERSION, '5.2.2', '>=')) {
+				$instance = call_user_func_array($class.'::gi', array());
+			} else {
+				$instance = call_user_func_array(array($class, 'gi'), array());
+			}
+			$r = $instance->init($this->resources['session']);
 		}
 	}
 	

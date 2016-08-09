@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: general.php 1148 2014-07-15 09:29:03Z akausch $
+ * 	$Id: general.php 1488 2015-07-28 15:26:54Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -232,8 +232,7 @@ if (!function_exists('xtc_in_array_admin')) {
 }
 
 function xtc_get_categories_name($category_id, $language_id) {
-    $category_query = xtc_db_query("SELECT categories_name FROM " . TABLE_CATEGORIES_DESCRIPTION . " WHERE categories_id = '" . $category_id . "' and language_id = '" . $language_id . "'");
-    $category = xtc_db_fetch_array($category_query);
+    $category = xtc_db_fetch_array(xtc_db_query("SELECT categories_name FROM " . TABLE_CATEGORIES_DESCRIPTION . " WHERE categories_id = '" . $category_id . "' AND language_id = '" . $language_id . "'"));
     return $category['categories_name'];
 }
 
@@ -245,16 +244,15 @@ function xtc_get_category_tree($parent_id = '0', $spacing = '', $exclude = '', $
         $category_tree_array[] = array('id' => '0', 'text' => TEXT_TOP);
     }
     if ($include_itself) {
-        $category = xtc_db_fetch_array(xtc_db_query("SELECT cd.categories_name FROM " . TABLE_CATEGORIES_DESCRIPTION . " cd WHERE cd.language_id = '" . $_SESSION['languages_id'] . "' and cd.categories_id = '" . $parent_id . "';"));
+        $category = xtc_db_fetch_array(xtc_db_query("SELECT cd.categories_name FROM " . TABLE_CATEGORIES_DESCRIPTION . " cd WHERE cd.language_id = '" . (int) $_SESSION['languages_id'] . "' AND cd.categories_id = '" . $parent_id . "';"));
         $category_tree_array[] = array('id' => $parent_id, 'text' => $category['categories_name']);
     }
     $categories_query = xtc_db_query("SELECT c.categories_id,
 											cd.categories_name,
 											c.parent_id
-											FROM " . TABLE_CATEGORIES . " c, " . TABLE_CATEGORIES_DESCRIPTION . " cd
-											WHERE c.categories_id = cd.categories_id
-											AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-											AND c.parent_id = '" . (int) $parent_id . "'
+											FROM " . TABLE_CATEGORIES . " AS c 
+											JOIN " . TABLE_CATEGORIES_DESCRIPTION . " AS cd ON(c.categories_id = cd.categories_id AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+											WHERE c.parent_id = '" . (int) $parent_id . "'
 											ORDER BY c.sort_order, cd.categories_name");
     while ($categories = xtc_db_fetch_array($categories_query)) {
         if ($exclude != $categories['categories_id']) {
@@ -276,7 +274,7 @@ function xtc_draw_products_pull_down($name, $parameters = '', $exclude = '') {
         $select_string .= ' ' . $parameters;
     }
     $select_string .= '>';
-    $products_query = xtc_db_query("SELECT p.products_id, pd.products_name,p.products_tax_class_id, p.products_price FROM " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_DESCRIPTION . " pd WHERE p.products_id = pd.products_id and pd.language_id = '" . $_SESSION['languages_id'] . "' order by products_name");
+    $products_query = xtc_db_query("SELECT p.products_id, pd.products_name,p.products_tax_class_id, p.products_price FROM " . TABLE_PRODUCTS . " AS p JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id) WHERE  pd.language_id = '" . (int) $_SESSION['languages_id'] . "' ORDER BY products_name");
     while ($products = xtc_db_fetch_array($products_query)) {
         if (!xtc_in_array_admin($products['products_id'], $exclude)) {
             if (PRICE_IS_BRUTTO == 'true') {
@@ -465,7 +463,7 @@ function xtc_address_format($address_format_id, $address, $html, $boln, $eoln) {
     if ((ACCOUNT_COMPANY == 'true') && (xtc_not_null($company))) {
         $address = $company . $cr . $address;
     }
-	if ((xtc_not_null($phone))) {
+	if ((xtc_not_null($phone)) && MODULE_CUSTOMERS_PDF_INVOICE_PRINT_TEL == 'true') {
         $address = 'Tel.:' . $phone . $cr . $address;
     }
     return $address;
@@ -1488,11 +1486,11 @@ function xtc_try_upload($file = '', $destination = '', $permissions = '777', $ex
 }
 
 function xtc_button($value, $type = 'submit', $parameter = '') {
-    return '<input type="' . $type . '" class="button" value="' . $value . '" ' . $parameter . ' >';
+    return '<input type="' . $type . '" class="btn btn-success" value="' . $value . '" ' . $parameter . ' >';
 }
 
 function xtc_button_link($value, $href = '', $parameter = '') {
-    return '<a href="' . $href . '" class="button" ' . $parameter . ' >' . $value . '</a>';
+    return '<a href="' . $href . '" class="btn btn-success" ' . $parameter . ' >' . $value . '</a>';
 }
 
 function nc_get_products_attributes_id($products_id, $products_options, $products_options_values) {
@@ -1628,9 +1626,11 @@ function draw_product_desc_fields($pInfo) {
                             echo '<img src="' . HTTP_SERVER . DIR_WS_CATALOG . 'lang/' . $l["directory"] . '/icon.gif" />';
                             echo '<textarea wrap="soft" cols="70" rows="25" class="ckeditor" id="cfg[' . $cv['key'] . '][' . $l['id'] . ']" name="cfg[' . $cv['key'] . '][' . $l['id'] . ']">' . get_pd_field_value($cv['key'], $pInfo->products_id, $l['id']) . '</textarea>';
                             if (USE_WYSIWYG == 'true') {
+								echo "<script src=\"includes/ckeditor/ckeditor.js\"></script>";
+								echo "<script src=\"includes/ckfinder/ckfinder.js\"></script>";
                                 echo "<script type=\"text/javascript\">
 											var newCKEdit = CKEDITOR.replace('cfg[" . $cv['key'] . "][" . $l['id'] . "]');
-											CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
+											CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
 										</script>";
                             }
                         }
@@ -1719,10 +1719,12 @@ function draw_cat_desc_fields($cInfo) {
                             echo '<img src="' . HTTP_SERVER . DIR_WS_CATALOG . 'lang/' . $l["directory"] . '/icon.gif" />';
                             echo '<textarea wrap="soft" cols="70" rows="25" class="ckeditor" id="cfg[' . $cv['key'] . '][' . $l['id'] . ']" name="cfg[' . $cv['key'] . '][' . $l['id'] . ']">' . get_cd_field_value($cv['key'], $cInfo->categories_id, $l['id']) . '</textarea>';
                             if (USE_WYSIWYG == 'true') {
-                                echo "<script type=\"text/javascript\">
-										var newCKEdit = CKEDITOR.replace('cfg[" . $cv['key'] . "][" . $l['id'] . "]');
-										CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-									</script>";
+								echo "<script src=\"includes/ckeditor/ckeditor.js\"></script>";
+								echo "<script src=\"includes/ckfinder/ckfinder.js\"></script>";
+                                echo "<script>
+											var newCKEdit = CKEDITOR.replace('cfg[" . $cv['key'] . "][" . $l['id'] . "]');
+											CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+										</script>";
                             }
                         }
                         break;

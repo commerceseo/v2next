@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: product_prices_advanced.php 873 2014-03-25 16:42:10Z akausch $
+ * 	$Id: product_prices_advanced.php 1471 2015-07-22 20:34:59Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -18,12 +18,11 @@ require_once (DIR_FS_INC . 'xtc_get_tax_rate.inc.php');
 $xtPrice = new xtcPrice(DEFAULT_CURRENCY, $_SESSION['customers_status']['customers_status_id']);
 
 if (PRICE_IS_BRUTTO == 'true') {
-    $products_ekpprice = xtc_round($pInfo->products_ekpprice * ((100 + xtc_get_tax_rate($pInfo->products_tax_class_id)) / 100), PRICE_PRECISION);
     $products_uvpprice = xtc_round($pInfo->products_uvpprice * ((100 + xtc_get_tax_rate($pInfo->products_tax_class_id)) / 100), PRICE_PRECISION);
 } else {
-    $products_ekpprice = xtc_round($pInfo->products_ekpprice, PRICE_PRECISION);
     $products_uvpprice = xtc_round($pInfo->products_uvpprice, PRICE_PRECISION);
 }
+$products_ekpprice = xtc_round($pInfo->products_ekpprice, PRICE_PRECISION);
 
 echo '<table width="100%" class="tablePrice">';
 echo '<tr>';
@@ -38,9 +37,6 @@ echo '<tr>';
 echo '<td class="main">'.TEXT_PRODUCTS_EKPPRICE.'</td>';
 echo '<td class="main">';
 echo xtc_draw_input_field('products_ekpprice', $products_ekpprice);
-if (PRICE_IS_BRUTTO == 'true') {
-	echo '&nbsp;' . TEXT_NETTO . '<b>' . $xtPrice->xtcFormat($pInfo->products_ekpprice, false) . '</b>  ';
-}
 echo '</tr>';
 echo '<tr>';
 echo '<td class="main">'.TEXT_PRODUCTS_EXTRA_SHIPPING.'</td>';

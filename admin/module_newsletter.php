@@ -393,7 +393,7 @@ for ($i = 0, $n = sizeof($customer_group); $i < $n; $i++) {
 ?>
 </table></td>
 <td width="30%" align="right" valign="top"><?php
-echo '<a class="button" href="' . xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'action=new') . '">' . BUTTON_NEW_NEWSLETTER . '</a>';
+echo '<a class="btn btn-success" href="' . xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'action=new') . '">' . BUTTON_NEW_NEWSLETTER . '</a>';
 ?></td>
 </tr>
 </table>
@@ -418,8 +418,8 @@ for ($i = 0, $n = sizeof($news_data); $i < $n; $i++) {
 if ($news_data[$i]['id'] != '') {
 ?>
 <tr>
-<td class="dataTableContent_products" align="left"><?php echo $news_data[$i]['date']; ?></td>
-<td class="dataTableContent_products last" valign="middle" align="left"><a href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'ID=' . $news_data[$i]['id']); ?>"><b><?php echo $news_data[$i]['title']; ?></b></a></td>
+<td class="" align="left"><?php echo $news_data[$i]['date']; ?></td>
+<td class="last" valign="middle" align="left"><a href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'ID=' . $news_data[$i]['id']); ?>"><b><?php echo $news_data[$i]['title']; ?></b></a></td>
 
 </tr>
 <?php
@@ -429,14 +429,14 @@ $total_query = xtc_db_query("SELECT count(*) as count FROM module_newsletter_tem
 $total_data = xtc_db_fetch_array($total_query);
 ?>
 <tr>
-<td class="dataTableContent_products" style="border-bottom: 1px solid; border-color: #f1f1f1;" align="left"></td>
-<td colspan="2" class="dataTableContent_products" style="border-bottom: 1px solid; border-color: #f1f1f1;" align="left"><?php echo TEXT_SEND_TO . $total_data['count']; ?></td>
+<td class="" style="border-bottom: 1px solid; border-color: #f1f1f1;" align="left"></td>
+<td colspan="2" class="" style="border-bottom: 1px solid; border-color: #f1f1f1;" align="left"><?php echo TEXT_SEND_TO . $total_data['count']; ?></td>
 </tr>
 <td class="dataTableContent" valign="top" style="border-bottom: 1px solid; border-color: #999999;" align="left">
-<a class="button" href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'action=delete&ID=' . $news_data[$i]['id']); ?>" onClick="return confirm('<?php echo CONFIRM_DELETE; ?>')"><?php echo BUTTON_DELETE . '</a><br>'; ?>
-<a class="button" href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'action=edit&ID=' . $news_data[$i]['id']); ?>"><?php echo BUTTON_EDIT . '</a>'; ?>
-<br><br><br><br><br><br><br><br><div style="height: 1px; background: Black; margin: 3px 0;"></div>
-<a class="button" href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'action=send&ID=' . $news_data[$i]['id']); ?>"><?php echo BUTTON_SEND . '</a>'; ?>
+<a class="btn btn-danger" href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'action=delete&ID=' . $news_data[$i]['id']); ?>" onClick="return confirm('<?php echo CONFIRM_DELETE; ?>')"><?php echo BUTTON_DELETE . '</a><br>'; ?>
+<a class="btn btn-default" href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'action=edit&ID=' . $news_data[$i]['id']); ?>"><?php echo BUTTON_EDIT . '</a>'; ?>
+<br><br><br><br><br><br><br><br><hr>
+<a class="btn btn-success" href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER, 'action=send&ID=' . $news_data[$i]['id']); ?>"><?php echo BUTTON_SEND . '</a>'; ?>
 
 </td>
 <td colspan="2" class="dataTableContent" style="border-bottom: 1px solid; border-color: #999999; text-align: left;">
@@ -664,28 +664,35 @@ $actual_list = xtc_db_fetch_array($actual_list_query);
 <tr>
 <td width="10%" valign="top"><?php echo TEXT_BODY; ?></td>
 <td width="90%">
-<script src="includes/editor/ckeditor/ckeditor.js" type="text/javascript"></script>
+
+<?php echo xtc_draw_textarea_field('newsletter_body', 'soft', '100', '35', stripslashes($newsletters_data['body']), ''); ?>
 <?php
-if (file_exists('includes/editor/ckfinder/ckfinder.js')) {
-echo '<script src="includes/editor/ckfinder/ckfinder.js" type="text/javascript"></script>';
+if (USE_WYSIWYG == 'true') {
+echo '<script src="includes/ckeditor/ckeditor.js"></script>';
+	if (file_exists('includes/ckfinder/ckfinder.js')) {
+		echo '<script src="includes/ckfinder/ckfinder.js"></script>
+				<script>
+				var newCKEdit = CKEDITOR.replace(\'newsletter_body\');
+				CKFinder.setupCKEditor(newCKEdit, \'includes/ckfinder/\');
+			</script>';
+	} else {
+		echo '<script>
+			CKEDITOR.replace(\'newsletter_body\', {
+				toolbar: "ImageMapper",
+				language: "' . $_SESSION['language_code'] . '",
+				baseHref: "' . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . '",
+				filebrowserBrowseUrl: "includes/ckeditor/filemanager/index.html"
+			});
+		</script>';
+	}
 }
 ?>
-<?php echo xtc_draw_textarea_field('newsletter_body', 'soft', '100', '35', stripslashes($newsletters_data['body']), 'class="ckeditor" name="editor1"'); ?>
-<?php
-if (file_exists('includes/editor/ckfinder/ckfinder.js')) {
-?>	
-<script type="text/javascript">
-var newCKEdit = CKEDITOR.replace('<?php echo 'newsletter_body' ?>');
-CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-</script>
-<?php
-}
-?>
+
 </td>
 </tr>
 </table>
-<a class="button" href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER); ?>"><?php echo BUTTON_BACK; ?></a>
-<?php echo '<input type="submit" class="button" value="' . BUTTON_SAVE . '"/>'; ?>
+<a class="btn btn-default" href="<?php echo xtc_href_link(FILENAME_MODULE_NEWSLETTER); ?>"><?php echo BUTTON_BACK; ?></a>
+<?php echo '<input type="submit" class="btn btn-success" value="' . BUTTON_SAVE . '"/>'; ?>
 </form>
 <?php
 break;

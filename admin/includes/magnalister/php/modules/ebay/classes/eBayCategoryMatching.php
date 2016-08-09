@@ -303,8 +303,13 @@ function selectEBayCategory(yID, html) {
 	selectedEBayCategory = yID;
 	myConsole.log('selectedeBayCategory', selectedEBayCategory);
 
-	$('#ebayCats div.catname span.catname.selected').removeClass('selected').css({'font-weight':'normal'});
+	//$('#ebayCats div.catname span.catname.selected').removeClass('selected').css({'font-weight':'normal'});
+	$('#ebayCats div.catView').find('span.catname.selected').removeClass('selected').css({'font-weight':'normal'});
+	$('#ebayCats div.catView').find('span.toggle.tick').removeClass('tick');
+	
 	$('#'+yID+' span.catname').addClass('selected').css({'font-weight':'bold'});
+	$('#'+yID+' span.catname').parents().prevAll('span.catname').addClass('selected').css({'font-weight':'bold'});
+	$('#'+yID+' span.catname').parents().prev('span.toggle').addClass('tick');
 }
 
 function clickEBayCategory(elem) {
@@ -431,6 +436,24 @@ function VariationsEnabled(cID, viewElem) {
 			if(data == 'true') msg='<?php echo ML_EBAY_NOTE_VARIATIONS_ENABLED ?>';
 			else msg='<?php echo ML_EBAY_NOTE_VARIATIONS_DISABLED ?>';
 			viewElem.html(msg);
+		},
+		error: function() {
+		},
+		dataType: 'html'
+	});
+}
+
+function GetConditionValues(cID, viewElem, defaultConditionID) {
+	jQuery.ajax({
+		type: 'POST',
+		url: '<?php echo toURL($this->url, array('where' => 'prepareView', 'kind' => 'ajax'), true);?>',
+		data: {
+			'action': 'GetConditionValues',
+			'id': cID,
+			'defaultConditionID': defaultConditionID
+		},
+		success: function(data) {
+			viewElem.html(data);
 		},
 		error: function() {
 		},
@@ -575,6 +598,27 @@ $(document).ready(function() {
 			}
 			case 'VariationsEnabled': {
 				return VariationsEnabled($id)?'true':'false';
+			}
+			case 'GetConditionValues': {
+				$conditionValues = GetConditionValues($id);
+				if (false == $conditionValues) return '<input type="hidden" name="ConditionID" id="ConditionID" value="0">'."\n"
+				. ML_EBAY_NO_CONDITIONS_APPLICABLE_FOR_CAT;
+				$isSelected = false;
+				$maxID = max(array_keys($conditionValues));
+				if (!array_key_exists('defaultConditionID', $_POST)) $_POST['defaultConditionID'] = 1000;
+				$html = '<select name="ConditionID" id="ConditionID">'."\n";
+					foreach ($conditionValues as $cid => $name) {
+						if ((($cid >= $_POST['defaultConditionID']) || ($cid == $maxID))
+						     && (!$isSelected)) {
+							# if the default is not in the list, take the next higher value
+							$html .=  "<option selected value=$cid>$name</option>\n";
+							$isSelected = true;
+						} else {
+							$html .=  "<option value=$cid>$name</option>\n";
+						}
+					}
+				$html .= "</select>\n";
+				return $html;
 			}
 			case 'saveCategoryMatching': {
 				if (!isset($_POST['selectedShopCategory']) || empty($_POST['selectedShopCategory']) || 

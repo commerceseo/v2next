@@ -103,6 +103,11 @@ abstract class MLProductList {
 		$this->aUrl = &$_url;
 		$this->oPrice = new SimplePrice();
 		$this->oPrice->setCurrency($this->isAjax() ? DEFAULT_CURRENCY : getCurrencyFromMarketplace($this->aMagnaSession['mpID']));
+                if(getDBConfigValue(array($this->aMagnaSession['currentPlatform'].'.exchangerate', 'update'), $this->aMagnaSession['mpID'], false)){
+		    $success = false;
+		    $oSimplePrice = new SimplePrice(null,getCurrencyFromMarketplace($this->aMagnaSession['mpID']));
+		    $oSimplePrice->updateCurrencyByService($success);
+		}
 		$this->buildQuery();
 		$this->sModulePath = 'modules/'.(strpos(strtolower(get_class($this)), 'magnacompatible') !== false ? 'magnacompatible' : strtolower($this->aMagnaSession['currentPlatform']));
 		$this
@@ -113,13 +118,34 @@ abstract class MLProductList {
 			->addDependency('MLProductListDependencyManufacturersFilter')
 //			->addDependency('MLProductListDependencyHtmlAction', array('html' => '<input type="hidden" name="fuuuu" value="narf"><input type="submit" name="doStuff" value="Zeug">'))
 		;
+		$this->hookAddProductListDependencies();
+	}
+
+	protected function hookAddProductListDependencies () {
+		/* {Hook} "AddProductListDependencies": Enables you to extend the product list with additional features.<br>
+			Used dependencies must be included and must be child-class of MLProductListDependency.<br>
+			Dependencies must be injected.<br>
+			Eg.:<br>
+			&nbsp;&nbsp;  require_once ('/path/to/your_dependency.php');<br>
+			&nbsp;&nbsp; $this->injectDependency('your_dependency');<br>
+			Variables that can be used:
+			<ul>
+				<li>$this: current class</li>
+				<li>$this->aMagnaSession['mpID']: The ID of the marketplace.</li>
+				<li>$this->aMagnaSession['currentPlatform']: The name of the marketplace.</li>
+			</ul>
+		 */
+
+		if (($hp = magnaContribVerify('AddProductListDependencies', 1)) !== false) {
+			require($hp);
+		}
 	}
 	
 	protected function buildQuery(){
 		$this->oQuery = MLDatabase::factorySelectClass()
 			->select(
 				array(
-					'p.products_tax_class_id', 
+					'distinct p.products_tax_class_id', //distinct is for whole query
 					'p.products_id', 
 					'pd.products_name', 
 					'p.products_model',
@@ -254,8 +280,33 @@ abstract class MLProductList {
 	}
 	
 	protected function init(){
+		$aFilterKeyType = array('in' => null, 'notIn' => null);
 		foreach ($this->getDependencies() as $oDependency) {
 			$oDependency->manipulateQuery();
+			$aDependencyFilterKeyTypes = $oDependency->getKeyTypeFilter();
+			if (isset($aDependencyFilterKeyTypes['in']) && is_array($aDependencyFilterKeyTypes['in'])) {
+				if ($aFilterKeyType['in'] === null) {
+					$aFilterKeyType['in'] = $aDependencyFilterKeyTypes['in'];
+				} else {
+					$aFilterKeyType['in'] = array_intersect($aFilterKeyType['in'], $aDependencyFilterKeyTypes['in']);
+				}
+			}
+			if (isset($aDependencyFilterKeyTypes['notIn']) && is_array($aDependencyFilterKeyTypes['notIn']) && !empty($aDependencyFilterKeyTypes['notIn'])) {
+				if ($aFilterKeyType['notIn'] === null) {
+					$aFilterKeyType['notIn'] = $aDependencyFilterKeyTypes['notIn'];
+				} else {
+					$aFilterKeyType['notIn'] = array_unique (array_merge ($aDependencyFilterKeyTypes['notIn'], $aFilterKeyType['notIn']));
+				}
+			}
+		}
+		foreach ($aFilterKeyType as $sType  => $aFilterIdents) {
+			if ($aFilterIdents !== null) {
+				$this->oQuery->where("
+					p.".((getDBConfigValue('general.keytype', '0') == 'artNr') ? 'products_model' : 'products_id')." ".
+					(($sType == 'in') ? "IN" : "NOT IN")."
+					('".implode("', '", MagnaDB::gi()->escape($aFilterIdents))."')"
+				);
+			}
 		}
 		foreach ($this->getDependencies() as $oDependency) {
 			$oDependency->executeAction();
@@ -332,7 +383,7 @@ abstract class MLProductList {
 			foreach ($this->getDependencies() as $oFilter) {
 				$sRequest = isset($aFilter[$oFilter->getIdent()]) ? $aFilter[$oFilter->getIdent()] : null;
 				if (!empty($sRequest)) {
-					$aUrl['filter['.$oFilter->getIdent().']'] = $sRequest;
+					$aUrl['filter['.$oFilter->getIdent().']'] = urlencode($sRequest);
 				}
 			}
 		}
@@ -387,12 +438,27 @@ abstract class MLProductList {
 	 */
 	protected function getRequest($sName){
 		if(isset($_POST[$sName])){
-			return $_POST[$sName];
+			$mRequest = $_POST[$sName];
 		}elseif(isset($_GET[$sName])){
-			return $_GET[$sName];
+			$mRequest = $_GET[$sName];
 		}else{
-			return null;
+			$mRequest = null;
 		}
+		if ($sName == 'filter') {
+			if (
+				empty($mRequest) 
+				&& isset($_SESSION['productlistfilter']) 
+				&& isset ($_SESSION['productlistfilter']['name']) && $_SESSION['productlistfilter']['name'] == get_class($this)
+				&& isset ($_SESSION['productlistfilter']['values'])
+			) {
+				$mRequest = $_SESSION['productlistfilter']['values'];
+			}
+			$_SESSION['productlistfilter'] = array(
+				'name' => get_class($this),
+				'values' => $mRequest,
+			);
+		}
+		return $mRequest;
 	}
 	
 	/**

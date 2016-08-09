@@ -18,7 +18,7 @@
                     <?php echo $row->customers_firstname . " " . $row->customers_lastname; ?>
                 </td>
                 <td width="22%" bgcolor="#FFF9E9">
-                    <?php echo utf8_encode(xtc_date_long($row->customers_dob)); ?>
+                    <?php echo xtc_date_long($row->customers_dob); ?>
                 </td>
             </tr>
         <?php
@@ -64,7 +64,7 @@
                     <?php echo $geb_bald_sort[$i][0] . ' ' . $geb_bald_sort[$i][1]; ?>
                 </td>
                 <td width="22%" bgcolor="#F9F0F1" style="border-bottom: 1px dotted #000000">
-            <?php echo utf8_encode(xtc_date_long($geb_bald_sort[$i][2])); ?>
+            <?php echo xtc_date_long($geb_bald_sort[$i][2]); ?>
                 </td>
             </tr>
     <?php } ?>

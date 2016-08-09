@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: orders_import.php 4337 2014-08-06 12:09:45Z tim.neumann $
+ * $Id: orders_import.php 5924 2015-08-18 09:20:58Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -56,44 +56,103 @@ function magnaInitOrderImport() {
 	error_reporting($errorlevel & ~E_NOTICE);
 
 	/* Labels fuer OrdersTotal */
-	require_once(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_shipping.php');
-	require_once(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_subtotal.php');
-	require_once(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_total.php');
-	if (file_exists(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_total_netto.php')) {
+	
+	if (MagnaDB::gi()->tableExists('language_section_phrases')) {
+		// Fix for Gambio 2.1.1.0. The language files have all been deleted there. The translations are defined in the database.
+		$_gm_lang_defines = MagnaDB::gi()->fetchArray("
+			    SELECT lsp.phrase_name AS `define`, lsp.phrase_value AS `value`
+			      FROM `language_sections` ls
+			INNER JOIN language_section_phrases lsp ON ls.language_section_id = lsp.language_section_id
+			     WHERE section_name LIKE '%".$_magnaLanguage . "/modules/order_total/%'
+			           AND lsp.phrase_name <> ''
+			  GROUP BY lsp.phrase_name
+		");
+		if (!empty($_gm_lang_defines)) {
+			foreach ($_gm_lang_defines as $_gm_set) {
+				if (!defined($_gm_set['define'])) {
+					define($_gm_set['define'], $_gm_set['value']);
+				}
+			}
+		}
+	} elseif (MagnaDB::gi()->tableExists('language_phrases_cache')) {
+		// Fix for Gambio 2.3.1.0.
+		$_gm_lang_defines = MagnaDB::gi()->fetchArray("
+			    SELECT lsc.phrase_name AS `define`, lsc.phrase_text AS `value`
+			      FROM `language_phrases_cache` lsc
+			     WHERE lsc.section_name LIKE 'ot\_%'
+			           AND lsc.language_id = " . (int)$_SESSION['languages_id'] . "
+			  GROUP BY lsc.phrase_name
+		");
+		if (!empty($_gm_lang_defines)) {
+			foreach ($_gm_lang_defines as $_gm_set) {
+				if (!defined($_gm_set['define'])) {
+					define($_gm_set['define'], $_gm_set['value']);
+				}
+			}
+		}
+	}
+	
+	if (!defined('MODULE_ORDER_TOTAL_SHIPPING_TITLE')) {
+		mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_shipping.php');
+	}
+	if (!defined('MODULE_ORDER_TOTAL_SUBTOTAL_TITLE')) {
+		mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_subtotal.php');
+	}
+	if (!defined('MODULE_ORDER_TOTAL_TOTAL_TITLE')) {
+		mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_total.php');
+	}
+	if (!defined('MODULE_ORDER_TOTAL_TOTAL_NETTO_TITLE')) {
 		# nur bei Gambio
-		require_once(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_total_netto.php');
+		mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_total_netto.php');
 	}
-	require_once(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_tax.php');
-
-	if (file_exists(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_cod_fee.php')) {
-		require_once(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_cod_fee.php');
-		define('MAGNA_LABEL_ORDERS_COD_CHARGE', MODULE_ORDER_TOTAL_COD_FEE_TITLE.':');
-	} else {
-		define('MAGNA_LABEL_ORDERS_COD_CHARGE', ML_LABEL_ORDER_TOTAL_COD_FEE.':');
+	if (!defined('MODULE_ORDER_TOTAL_TAX_TITLE')) {
+		mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_tax.php');
 	}
-	if (file_exists(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_coupon.php')) {
-		require_once(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_coupon.php');
-		define('MAGNA_LABEL_ORDERS_VOUCHER', MODULE_ORDER_TOTAL_COUPON_TITLE.':');
-	} else {
-		define('MAGNA_LABEL_ORDERS_VOUCHER', ML_LABEL_ORDER_TOTAL_COUPON.':');
-	}
-	if (file_exists(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_discount.php')) {
-		require_once(DIR_MAGNA_LANGUAGES . $_magnaLanguage . '/modules/order_total/ot_discount.php');
-		define('MAGNA_LABEL_ORDERS_DISCOUNT', MODULE_ORDER_TOTAL_DISCOUNT_TITLE.':');
-	} else {
-		define('MAGNA_LABEL_ORDERS_DISCOUNT', ML_LABEL_ORDER_TOTAL_DISCOUNT.':');
-	}
-
 	// Gambio specific "Kleinunternehmer Regelung"
-	if (
-		   defined('MODULE_ORDER_TOTAL_GM_TAX_FREE_STATUS')
-		&& strtolower(MODULE_ORDER_TOTAL_GM_TAX_FREE_STATUS) == 'true'
-		&& file_exists(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_gm_tax_free.php')
+	if (defined('MODULE_ORDER_TOTAL_GM_TAX_FREE_STATUS')
+		&& (strtolower(MODULE_ORDER_TOTAL_GM_TAX_FREE_STATUS) == 'true') 
 	) {
-		require_once(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_gm_tax_free.php');
-		define('MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS', true);
+		if (!defined('MODULE_ORDER_TOTAL_GM_TAX_FREE_TEXT')) {
+			mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_gm_tax_free.php');
+		}
+		if (defined('MODULE_ORDER_TOTAL_GM_TAX_FREE_TEXT')) {
+			define('MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS', true);
+		} else {
+			define('MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS', false);
+		}
 	} else {
 		define('MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS', false);
+	}
+	
+	if (defined('MODULE_ORDER_TOTAL_COD_FEE_TITLE')) {
+		define('MAGNA_LABEL_ORDERS_COD_CHARGE', MODULE_ORDER_TOTAL_COD_FEE_TITLE.':');
+	} else {
+		mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_cod_fee.php');
+		if (defined('MODULE_ORDER_TOTAL_COD_FEE_TITLE')) {
+			define('MAGNA_LABEL_ORDERS_COD_CHARGE', MODULE_ORDER_TOTAL_COD_FEE_TITLE.':');
+		} else {
+			define('MAGNA_LABEL_ORDERS_COD_CHARGE', ML_LABEL_ORDER_TOTAL_COD_FEE.':');
+		}
+	}
+	if (defined('MODULE_ORDER_TOTAL_COUPON_TITLE')) {
+		define('MAGNA_LABEL_ORDERS_VOUCHER', MODULE_ORDER_TOTAL_COUPON_TITLE.':');
+	} else {
+		mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_coupon.php');
+		if (defined('MODULE_ORDER_TOTAL_COUPON_TITLE')) {
+			define('MAGNA_LABEL_ORDERS_VOUCHER', MODULE_ORDER_TOTAL_COUPON_TITLE.':');
+		} else {
+			define('MAGNA_LABEL_ORDERS_VOUCHER', ML_LABEL_ORDER_TOTAL_COUPON.':');
+		}
+	}
+	if (defined('MODULE_ORDER_TOTAL_DISCOUNT_TITLE')) {
+		define('MAGNA_LABEL_ORDERS_DISCOUNT', MODULE_ORDER_TOTAL_DISCOUNT_TITLE.':');
+	} else {
+		mlLoadModuleLanguageDefines(DIR_MAGNA_LANGUAGES.$_magnaLanguage.'/modules/order_total/ot_discount.php');
+		if (defined('MODULE_ORDER_TOTAL_DISCOUNT_TITLE')) {
+			define('MAGNA_LABEL_ORDERS_DISCOUNT', MODULE_ORDER_TOTAL_DISCOUNT_TITLE.':');
+		} else {
+			define('MAGNA_LABEL_ORDERS_DISCOUNT', ML_LABEL_ORDER_TOTAL_DISCOUNT.':');
+		}
 	}
 
 	define('MAGNA_LABEL_ORDERS_SUBTOTAL', MODULE_ORDER_TOTAL_SUBTOTAL_TITLE.':');
@@ -139,11 +198,7 @@ function magnaImportAllOrders() {
 		$modules = magnaGetInvolvedMarketplaces();
 
 		#ini_set('memory_limit', '512M');
-		MagnaConnector::gi()->setTimeOutInSeconds(
-			MAGNA_DEBUG && defined('MAGNALISTER_PLUGIN') && MAGNALISTER_PLUGIN 
-				? 1 
-				: 600
-		);
+		MagnaConnector::gi()->setTimeOutInSeconds(600);
 
 		$break = false;
 		foreach ($modules as $marketplace) {
@@ -194,7 +249,7 @@ function magnaImportAllOrders() {
 					# Sollte ein anderer Prozess gestartet sein, hoere hier auf
 					# und vermerke dass nach doppelten Bestellungen geschaut werden soll
 					setDBConfigValue('deletedoubleorders', 0, 'true', true);
-					if ($verbose) 'Parallel ImportOrders detected.'."\n";
+					if ($verbose) echo 'Parallel ImportOrders detected.'."\n";
 					$break = true;
 					break;
 				}

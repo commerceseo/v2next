@@ -27,8 +27,7 @@ if(!isset($_SESSION[$messages_ns])) {
 	$_SESSION[$messages_ns] = array();
 }
 
-function replaceLanguagePlaceholders($content)
-{
+function replaceLanguagePlaceholders($content) {
 	$coo_txt = new LanguageTextManager('itrecht', $_SESSION['languages_id']);
 	while(preg_match('/##(\w+)\b/', $content, $matches) == 1) {
 		$replacement = $coo_txt->get_text($matches[1]);
@@ -142,32 +141,9 @@ $data = array(
 
 require (DIR_WS_INCLUDES.'header.php');
 ?>
-<style>
-p.message {margin: .5ex auto; background: rgb(240, 230, 140); border: 1px solid rgb(255, 0, 0); padding: 1em; }
-p.warning {text-align: center; font: bold 1.2em sans-serif; padding: 1em; background-color: #faa; }
-div.green { background-color: #ADD3B5; padding: .3ex .5ex;}
-div.red { background-color: #E2A8A7; padding: .3ex .5ex; }
-dl.adminform {position: relative; overflow: auto; background: #eef; }
-dl.adminform dd, dl.adminform dt {float: left; margin: 1px 0; }
-dl.adminform dt {clear: left; width: 15em; }
-input[type="submit"].btn_wide {width: auto; }
-table.files {border-collapse: collapse; }
-table.files th, table.files td {padding: .3ex .5ex; }
-table.files thead {background: #ddd; } table.files tbody {background: #eee; }
-
-form.bluegray {font-size: 0.9em; }
-form.bluegray fieldset {border: none; padding: 0; margin: 1ex 0 0 0; }
-form.bluegray legend {font-weight: bolder; font-size: 1.4em; background: #585858; color: #FFFFFF; padding: .2ex 0.5%; width: 99%; }
-form.bluegray dl.adminform {margin: 0; }
-form.bluegray dl.adminform dt, form.bluegray dl.adminform dd {line-height: 1.3; padding: 3px 0; margin: 0; }
-form.bluegray dl.adminform dt {width: 20%; float: left; font-weight: bold; padding: 2px;}
-form.bluegray dl.adminform dd {border-bottom: 1px dotted rgb(90, 90, 90); width: 78%; float: none; padding-left: 22%; background-color: #F7F7F7; min-height: 2.5em; }
-form.bluegray dl.adminform dd:nth-child(4n) {background: #D6E6F3; }
-</style>
-
-<table border="0" width="100%" cellspacing="0" cellpadding="0">
+<table class="table table-striped table-bordered">
 	<tr>
-		<td class="main">
+		<td>
 			<?php foreach($messages as $msg): ?>
 			<p class="message"><?php echo $msg ?></p>
 			<?php endforeach; ?>
@@ -175,14 +151,12 @@ form.bluegray dl.adminform dd:nth-child(4n) {background: #D6E6F3; }
 			<?php if(!(ini_get('allow_url_fopen') == 1)): ?>
 			<p class="warning">##ITRECHTTXT_CONFIG_WARNING_URL_FOPEN</p>
 			<?php endif ?>
-
 			<h2>##configuration</h2>
-
 			<form class="bluegray" action="<?php echo PAGE_URL ?>" method="POST">
 				<dl class="adminform">
 					<dt><label for="token">##ITRECHTTXT_CONFIG_TOKEN</label></dt>
 					<dd>
-						<input id="token" name="token" type="text" value="<?php echo $data['token'] ?>" size="40">
+						<input id="token" name="token" type="text" value="<?php echo $data['token'] ?>" size="60">
 						<input type="submit" value="##ITRECHTTXT_CONFIG_GENERATE_TOKEN" name="gen_token">
 						<br>
 						##your_api_url: <tt><?php echo HTTP_SERVER.DIR_WS_CATALOG.'api-it-recht-kanzlei.php'; ?></tt>
@@ -190,46 +164,47 @@ form.bluegray dl.adminform dd:nth-child(4n) {background: #D6E6F3; }
 				</dl>
 				<input class="button btn_wide" type="submit" value="##ITRECHTTXT_CONFIG_SAVE">
 			</form>
-			<h2>##texts_received</h2>
-			<table class="files">
-				<thead>
-					<tr><th>##legal_text</th><th>##type_text</th><th>##type_html</th><th>##type_pdf</th><th>&nbsp;</th></tr>
-				</thead>
-				<tbody>
-					<?php foreach($files as $rtype => $lang): ?>
-						<?php foreach($lang as $code => $langfiles): ?>
-							<tr>
-								<td><?php echo $rtype.' ('.$code.')' ?></td>
-								<?php foreach($langfiles as $type => $file): ?>
-									<td><?php echo filelink($file); ?></td>
-								<?php endforeach ?>
-								<td>
-									<?php 
-									$cmfile = $rtype.'_'.$code.'.html'; 
-									if(file_exists(DIR_FS_CATALOG.'media/content/'.$cmfile)):
-										?>
-										<?php if(!cmConfigured($languages[$code], $rtype, $cmfile)): ?>
-											<form action="" method="post">
-												<input type="hidden" name="lang" value="<?php echo $code ?>">
-												<input type="hidden" name="type" value="<?php echo $rtype ?>">
-												<input type="hidden" name="file" value="<?php echo $cmfile ?>">
-												<input type="submit" name="use_in_cm" value="##use_in_content_manager">
-											</form>
-										<?php else: ?>
-											<div class="green">##used_in_content_manager</div>
-										<?php endif ?>
-									<?php else: ?>
-										<div class="red">##html_file_not_available</div>
-									<?php endif ?>
-								</td>
-							</tr>
-						<?php endforeach ?>
-					<?php endforeach ?>
-				</tbody>
-			</table>
-
 		</td>
 	</tr>
+</table>
+<h2>##texts_received</h2>
+<table class="table table-striped table-bordered">
+	<tr>
+		<th>##legal_text</th>
+		<th>##type_text</th>
+		<th>##type_html</th>
+		<th>##type_pdf</th>
+		<th>&nbsp;</th>
+	</tr>
+	<?php foreach($files as $rtype => $lang): ?>
+		<?php foreach($lang as $code => $langfiles): ?>
+			<tr>
+				<td><?php echo $rtype.' ('.$code.')' ?></td>
+				<?php foreach($langfiles as $type => $file): ?>
+					<td><?php echo filelink($file); ?></td>
+				<?php endforeach ?>
+				<td>
+					<?php 
+					$cmfile = $rtype.'_'.$code.'.html'; 
+					if(file_exists(DIR_FS_CATALOG.'media/content/'.$cmfile)):
+						?>
+						<?php if(!cmConfigured($languages[$code], $rtype, $cmfile)): ?>
+							<form action="" method="post">
+								<input type="hidden" name="lang" value="<?php echo $code ?>">
+								<input type="hidden" name="type" value="<?php echo $rtype ?>">
+								<input type="hidden" name="file" value="<?php echo $cmfile ?>">
+								<input type="submit" name="use_in_cm" value="##use_in_content_manager">
+							</form>
+						<?php else: ?>
+							<div class="green">##used_in_content_manager</div>
+						<?php endif ?>
+					<?php else: ?>
+						<div class="red">##html_file_not_available</div>
+					<?php endif ?>
+				</td>
+			</tr>
+		<?php endforeach ?>
+	<?php endforeach ?>
 </table>
 <?php 
 require(DIR_WS_INCLUDES . 'footer.php');

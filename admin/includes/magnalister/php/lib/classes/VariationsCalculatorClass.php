@@ -11,9 +11,9 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: VariationsCalculator.php 1214 2011-08-29 12:42:46Z MaW $
+ * $Id$
  *
- * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
+ * (c) 2010 - 2014 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
  * -----------------------------------------------------------------------------
  */
@@ -71,18 +71,26 @@ class VariationsCalculator {
 		if (empty($attrByOptionsID)) {
 			return false;
 		}
-
+		#echo print_m($attrByOptionsID, '$attrByOptionsID');
+		
+		$dimensions = count($attrByOptionsID);
+		#echo print_m($dimensions, '$dimensions')."\n";
+		
 		$permutationsCount = 1;
 		foreach ($attrByOptionsID as $vID => $vector) {
 			$permutationsCount *= count($vector);
 		}
 		
+		#echo print_m($permutationsCount, '$permutationsCount')."\n";
 		if ($permutationsCount > self::MAX_PERMUTATIONS) {
 			return false;
 		}
-		
-		#echo print_m($permutationsCount, '$permutationsCount');
-		
+
+		$fBaseProductPrice = $base['products_price'];
+		$fBaseProductWeight = $base['products_weight'];
+		unset($base['products_price']);
+		unset($base['products_weight']);
+
 		$std = array_merge(array (
 			'products_id' => '',
 			'products_sku' => '',
@@ -100,7 +108,7 @@ class VariationsCalculator {
 			'variation_unit_of_measure' => '',
 		), $base);
 		$permutations = array_fill(0, $permutationsCount, $std);
-		//echo mp_print_r($attrByOptionsID, '$attrByOptionsID['.$permutationsCount.']');
+		//echo print_m($attrByOptionsID, '$attrByOptionsID['.$permutationsCount.']');
 
 		// To avoid database errors since the variations table does not support NULL
 		array_walk($base, array($this, 'nullToEmptyString')); 
@@ -122,7 +130,20 @@ class VariationsCalculator {
 						++$i;
 					}
 					$permutations[$offset]['variation_attributes'] .= $oID.','.$vID.'|';
-					$permutations[$offset]['variation_price'] += (float)$attr['options_values_price'] * ($attr['price_prefix'] == '+' ? 1 : -1);
+					if ($dimensions === 1 && $attr['price_prefix'] == '=') {
+						$permutations[$offset]['variation_price'] += (float)$attr['options_values_price'] - (float)$fBaseProductPrice;
+					} else {
+						$permutations[$offset]['variation_price'] += (float)$attr['options_values_price'] * ($attr['price_prefix'] == '+' ? 1 : -1);
+					}
+
+					if (isset($attr['options_values_weight'])) {
+						if ($dimensions === 1 && $attr['weight_prefix'] == '=') {
+							$permutations[$offset]['variation_weight'] += (float)$attr['options_values_weight'] - (float)$fBaseProductWeight;
+						} else {
+							$permutations[$offset]['variation_weight'] += (float)$attr['options_values_weight'] * ($attr['weight_prefix'] == '+' ? 1 : -1);
+						}
+					}
+					
 					switch ($this->settings['stockmerge']) {
 						case 'add': {
 							$permutations[$offset]['variation_quantity'] += (int)$attr['attributes_stock'];
@@ -145,6 +166,16 @@ class VariationsCalculator {
 					$permutations[$offset]['variation_products_model'] .= $tModel;
 					$permutations[$offset]['marketplace_sku'] .= $tModel;
 					$permutations[$offset]['marketplace_id'] .= '_'.$oID.'.'.$vID;
+					
+					if ($dimensions === 1) {
+						$permutations[$offset]['variation_ean'] = isset($attr['attributes_ean'])
+							? $attr['attributes_ean']
+							: (isset($attr['gm_ean'])
+								? $attr['gm_ean']
+								: ''
+							);
+					}
+					
 					++$offset;
 				}
 				++$attrC;
@@ -158,7 +189,7 @@ class VariationsCalculator {
 	
 	function getBaseVariationsArray($pID) {
 		$productQuery = '
-		    SELECT products_model, products_weight';
+		    SELECT products_model, products_weight, products_price';
 		
 		if ($GLOBALS['SDB']->columnExistsInTable('products_vpe_value', TABLE_PRODUCTS)) {
 			$productQuery .= ', products_vpe, products_vpe_value';
@@ -177,6 +208,8 @@ class VariationsCalculator {
 			'products_sku' => $product[0]['products_model'],
 			'marketplace_id' => 'ML'.$pID,
 			'marketplace_sku' => $product[0]['products_model'],
+			'products_price' => $product[0]['products_price'],
+			'products_weight' => $product[0]['products_weight'],
 			'variation_products_model' => $product[0]['products_model'],
 			'variation_volume' => 0,
 			'variation_unit_of_measure' => '',
@@ -249,6 +282,7 @@ class VariationsCalculator {
 		$q = '
 			SELECT * FROM '.TABLE_PRODUCTS_VARIATIONS.'
 			 WHERE products_id='.(int)$pID.'
+			ORDER BY variation_id
 		';
 		if (!$purge) {
 			$p = $GLOBALS['SDB']->fetchArray($q);

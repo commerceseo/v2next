@@ -1,0 +1,525 @@
+{load_language_text section="cseo_gallery_manager"}
+<div class="row">
+    <div class="col-xs-12">
+        <h3>{$txt.HEADING_DEFAULT}</h3>
+    </div>
+    <hr>
+</div>
+{if $NEW == 1}
+{$FORM}
+{$HIDDEN}
+<div class="row">
+    <div class="col-xs-12 text-right">
+        {$BUTTONS}
+    </div>
+    <hr>
+</div>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">Sliderkonfig</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_TITLE}</td>
+        <td width="40%">{$SLIDER_NAME}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_TITLE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LANG}</td>
+        <td>{$SLIDER_LANG}</td>
+        <td>{$txt.TEXT_GALERIES_LANG_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_MOBILE}</td>
+        <td>{$SLIDER_MOBILE}</td>
+        <td>{$txt.TEXT_GALERIES_MOBILE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_SLIDER_NAV_STATUS}</td>
+        <td>{$SLIDER_NAV_STATUS}</td>
+        <td>{$txt.TEXT_GALERIES_SLIDER_NAV_STATUS_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_SIZE}</td>
+        <td>{$SLIDER_SIZE}</td>
+        <td>{$txt.TEXT_GALERIES_SIZE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_SLIDER_PICTURE} 1</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_URL}</td>
+        <td width="40%">{$SLIDER_URL}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_URL_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT}</td>
+        <td>{$SLIDER_LINK_TEXT}</td>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT}</td>
+        <td>{$SLIDER_ALT_TEXT}</td>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT}</td>
+        <td>{$SLIDER_TITLE_TEXT}</td>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DESC}</td>
+        <td>{$SLIDER_DESC}</td>
+        <td>{$txt.TEXT_GALERIES_DESC_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD}</td>
+        <td>{$SLIDER_IMAGE}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE}</td>
+        <td>{$SLIDER_IMAGE_USE}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_PREVIEW}</td>
+        <td>{$SLIDER_PREVIEW}</td>
+        <td>{$txt.TEXT_GALERIES_PREVIEW_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DELETE}</td>
+        <td>{$SLIDER_IMAGE_DELETE_1}</td>
+        <td>{$txt.TEXT_GALERIES_DELETE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_SLIDER_PICTURE} 2</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_URL}</td>
+        <td width="40%">{$SLIDER_URL_2}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_URL_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT}</td>
+        <td>{$SLIDER_LINK_TEXT_2}</td>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT}</td>
+        <td>{$SLIDER_ALT_TEXT_2}</td>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT}</td>
+        <td>{$SLIDER_TITLE_TEXT_2}</td>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DESC}</td>
+        <td>{$SLIDER_DESC_2}</td>
+        <td>{$txt.TEXT_GALERIES_DESC_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD}</td>
+        <td>{$SLIDER_IMAGE_2}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE}</td>
+        <td>{$SLIDER_IMAGE_USE_2}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_PREVIEW}</td>
+        <td>{$SLIDER_PREVIEW_2}</td>
+        <td>{$txt.TEXT_GALERIES_PREVIEW_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DELETE}</td>
+        <td>{$SLIDER_IMAGE_DELETE_2}</td>
+        <td>{$txt.TEXT_GALERIES_DELETE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_SLIDER_PICTURE} 3</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_URL}</td>
+        <td width="40%">{$SLIDER_URL_3}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_URL_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT}</td>
+        <td>{$SLIDER_LINK_TEXT_3}</td>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT}</td>
+        <td>{$SLIDER_ALT_TEXT_3}</td>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT}</td>
+        <td>{$SLIDER_TITLE_TEXT_3}</td>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DESC}</td>
+        <td>{$SLIDER_DESC_3}</td>
+        <td>{$txt.TEXT_GALERIES_DESC_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD}</td>
+        <td>{$SLIDER_IMAGE_3}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE}</td>
+        <td>{$SLIDER_IMAGE_USE_3}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_PREVIEW}</td>
+        <td>{$SLIDER_PREVIEW_3}</td>
+        <td>{$txt.TEXT_GALERIES_PREVIEW_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DELETE}</td>
+        <td>{$SLIDER_IMAGE_DELETE_3}</td>
+        <td>{$txt.TEXT_GALERIES_DELETE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_SLIDER_PICTURE} 4</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_URL}</td>
+        <td width="40%">{$SLIDER_URL_4}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_URL_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT}</td>
+        <td>{$SLIDER_LINK_TEXT_4}</td>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT}</td>
+        <td>{$SLIDER_ALT_TEXT_4}</td>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT}</td>
+        <td>{$SLIDER_TITLE_TEXT_4}</td>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DESC}</td>
+        <td>{$SLIDER_DESC_4}</td>
+        <td>{$txt.TEXT_GALERIES_DESC_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD}</td>
+        <td>{$SLIDER_IMAGE_4}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE}</td>
+        <td>{$SLIDER_IMAGE_USE_4}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_PREVIEW}</td>
+        <td>{$SLIDER_PREVIEW_4}</td>
+        <td>{$txt.TEXT_GALERIES_PREVIEW_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DELETE}</td>
+        <td>{$SLIDER_IMAGE_DELETE_4}</td>
+        <td>{$txt.TEXT_GALERIES_DELETE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_SLIDER_PICTURE} 5</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_URL}</td>
+        <td width="40%">{$SLIDER_URL_5}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_URL_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT}</td>
+        <td>{$SLIDER_LINK_TEXT_5}</td>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT}</td>
+        <td>{$SLIDER_ALT_TEXT_5}</td>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT}</td>
+        <td>{$SLIDER_TITLE_TEXT_5}</td>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DESC}</td>
+        <td>{$SLIDER_DESC_5}</td>
+        <td>{$txt.TEXT_GALERIES_DESC_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD}</td>
+        <td>{$SLIDER_IMAGE_5}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE}</td>
+        <td>{$SLIDER_IMAGE_USE_5}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_PREVIEW}</td>
+        <td>{$SLIDER_PREVIEW_5}</td>
+        <td>{$txt.TEXT_GALERIES_PREVIEW_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DELETE}</td>
+        <td>{$SLIDER_IMAGE_DELETE_5}</td>
+        <td>{$txt.TEXT_GALERIES_DELETE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_SLIDER_PICTURE} 6</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_URL}</td>
+        <td width="40%">{$SLIDER_URL_6}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_URL_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT}</td>
+        <td>{$SLIDER_LINK_TEXT_6}</td>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT}</td>
+        <td>{$SLIDER_ALT_TEXT_6}</td>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT}</td>
+        <td>{$SLIDER_TITLE_TEXT_6}</td>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DESC}</td>
+        <td>{$SLIDER_DESC_6}</td>
+        <td>{$txt.TEXT_GALERIES_DESC_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD}</td>
+        <td>{$SLIDER_IMAGE_6}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE}</td>
+        <td>{$SLIDER_IMAGE_USE_6}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_PREVIEW}</td>
+        <td>{$SLIDER_PREVIEW_6}</td>
+        <td>{$txt.TEXT_GALERIES_PREVIEW_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DELETE}</td>
+        <td>{$SLIDER_IMAGE_DELETE_6}</td>
+        <td>{$txt.TEXT_GALERIES_DELETE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_SLIDER_PICTURE} 7</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_URL}</td>
+        <td width="40%">{$SLIDER_URL_7}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_URL_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT}</td>
+        <td>{$SLIDER_LINK_TEXT_7}</td>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT}</td>
+        <td>{$SLIDER_ALT_TEXT_7}</td>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT}</td>
+        <td>{$SLIDER_TITLE_TEXT_7}</td>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DESC}</td>
+        <td>{$SLIDER_DESC_7}</td>
+        <td>{$txt.TEXT_GALERIES_DESC_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD}</td>
+        <td>{$SLIDER_IMAGE_7}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE}</td>
+        <td>{$SLIDER_IMAGE_USE_7}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_PREVIEW}</td>
+        <td>{$SLIDER_PREVIEW_7}</td>
+        <td>{$txt.TEXT_GALERIES_PREVIEW_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DELETE}</td>
+        <td>{$SLIDER_IMAGE_DELETE_7}</td>
+        <td>{$txt.TEXT_GALERIES_DELETE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_SLIDER_PICTURE} 8</th>
+    </tr>
+    <tr>
+        <td width="20%">{$txt.TEXT_GALERIES_URL}</td>
+        <td width="40%">{$SLIDER_URL_8}</td>
+        <td width="40%">{$txt.TEXT_GALERIES_URL_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT}</td>
+        <td>{$SLIDER_LINK_TEXT_8}</td>
+        <td>{$txt.TEXT_GALERIES_LINK_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT}</td>
+        <td>{$SLIDER_ALT_TEXT_8}</td>
+        <td>{$txt.TEXT_GALERIES_ALT_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT}</td>
+        <td>{$SLIDER_TITLE_TEXT_8}</td>
+        <td>{$txt.TEXT_GALERIES_TITLE_TEXT_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DESC}</td>
+        <td>{$SLIDER_DESC_8}</td>
+        <td>{$txt.TEXT_GALERIES_DESC_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD}</td>
+        <td>{$SLIDER_IMAGE_8}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_UPLOAD_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE}</td>
+        <td>{$SLIDER_IMAGE_USE_8}</td>
+        <td>{$txt.TEXT_GALERIES_IMAGE_USE_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_PREVIEW}</td>
+        <td>{$SLIDER_PREVIEW_8}</td>
+        <td>{$txt.TEXT_GALERIES_PREVIEW_HELP}</td>
+    </tr>
+    <tr>
+        <td>{$txt.TEXT_GALERIES_DELETE}</td>
+        <td>{$SLIDER_IMAGE_DELETE_8}</td>
+        <td>{$txt.TEXT_GALERIES_DELETE_HELP}</td>
+    </tr>
+</table>
+
+<table class="table table-striped table-bordered">
+    <tr>
+        <th colspan="3">{$txt.TEXT_TEXT_ONLY}</th>
+    </tr>
+    <tr>
+		<td width="20%">{$txt.TEXT_GALERIES_TEXTFIELD}</td>
+        <td width="40%">{$SLIDER_TEXFILED}</td>
+		<td width="40%">{$txt.TEXT_GALERIES_TEXTFIELD_HELP}</td>
+    </tr>
+</table>
+
+
+<div class="row">
+    <div class="col-xs-12 text-right">
+        {$BUTTONS}
+    </div>
+    <hr>
+</div>
+{$FORM_END}
+{else}
+<div class="row">
+<div class="{if $SITE_BOX}col-xs-9{else}col-xs-12{/if}">
+        <table class="table table-striped table-bordered">
+            <tr>
+                <th>{$txt.TABLE_HEADING_LANG}</th>
+                <th>{$txt.TABLE_HEADING_GALERIES}</th>
+                <th>{$txt.TABLE_HEADING_STATUS}</th>
+                <th>{$txt.TABLE_HEADING_MOBILE_STATUS}</th>
+                <th>{$txt.TABLE_HEADING_SLIDER_NAV_STATUS}</th>
+                <th class="text-right">{$txt.TABLE_HEADING_ACTION}</th>
+            </tr>
+            {foreach name=aussen item=module_data from=$sliderlistarray}
+            {$module_data.TR}
+            <td>{$module_data.LANG}</td>
+            <td>{$module_data.TITLE}</td>
+            <td>{$module_data.STATUS}</td>
+            <td>{$module_data.MOBILE_STATUS}</td>
+            <td>{$module_data.SLIDER_NAV_STATUS}</td>
+            <td class="text-right">
+				{if $module_data.action == 'active'} 
+					<button class="btn btn-success-outline btn-sm"><i class="glyphicon glyphicon-ok"></i></button>
+				{else}
+					<a href="{$module_data.action}"><button class="btn btn-secondary-outline btn-sm"><i class="glyphicon glyphicon-info-sign"></i></button></a>
+				{/if}
+				<a href="{$module_data.edit}"><button class="btn btn-info-outline btn-sm"><i class="glyphicon glyphicon-pencil"></i></button></a>
+				
+			</td>
+            </tr>
+            {/foreach}
+        </table>
+		<table class="table">
+			<tr>
+				<td><i>{$DISPLAY_NUMBER}</i></td>
+				<td align="right"><i>{$DISPLAY_SITE}</i></td>
+			</tr>
+		</table>
+		<table class="table">
+			<tr>
+				<td class="text-right"><a href="{$BUTTON_NEW}"><button class="btn btn-success">{$txt.BUTTON_NEW_ELEMENT}</button></a></td>
+			</tr>
+		</table>
+	</div>
+	{if $SITE_BOX}
+    <div class="col-xs-3">
+        {$SITE_BOX}
+    </div>
+	{/if}
+</div>
+{/if}

@@ -196,25 +196,31 @@ if (($_GET['action'] == 'preview') && ($_POST['customers_email_address'])) {
                                 </tr>
                                 <tr>
                                     <td valign="top"><?php echo TEXT_MESSAGE; ?></td>
-									<script src="includes/editor/ckeditor/ckeditor.js" type="text/javascript"></script>
-									<?php
-									if (file_exists('includes/editor/ckfinder/ckfinder.js')) {
-										echo '<script src="includes/editor/ckfinder/ckfinder.js" type="text/javascript"></script>';
-									}
-									?>
                                     <td>
-										<?php echo xtc_draw_textarea_field('message', 'soft', '100', '35', '', 'class="ckeditor" name="editor1"'); ?>
+										<?php echo xtc_draw_textarea_field('message', 'soft', '100', '35', '', ''); ?>
 									</td>
-									<?php
-									if (file_exists('includes/editor/ckfinder/ckfinder.js')) {
-									?>	
-										<script type="text/javascript">
-											var newCKEdit = CKEDITOR.replace('<?php echo 'cont' ?>');
-											CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-										</script>
-									<?php
-									}
-									?>
+<?php
+if (USE_WYSIWYG == 'true') {
+echo '<script src="includes/ckeditor/ckeditor.js"></script>';
+	if (file_exists('includes/ckfinder/ckfinder.js')) {
+		echo '<script src="includes/ckeditor/ckeditor.js"></script>
+					<script src="includes/ckfinder/ckfinder.js"></script>
+					<script>
+					var newCKEdit = CKEDITOR.replace(\'message\');
+					CKFinder.setupCKEditor(newCKEdit, \'includes/ckfinder/\');
+				</script>';
+	} else {
+		echo '<script>
+			CKEDITOR.replace(\'message\', {
+				toolbar: "ImageMapper",
+				language: "' . $_SESSION['language_code'] . '",
+				baseHref: "' . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . '",
+				filebrowserBrowseUrl: "includes/ckeditor/filemanager/index.html"
+			});
+		</script>';
+	}
+}
+?>
                                 </tr>
                                 <tr>
                                     <td colspan="2" align="right"><input type="submit" class="button" value="<?php echo BUTTON_SEND_EMAIL; ?>"></td>

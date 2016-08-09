@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: configuration.php 4330 2014-08-05 11:45:12Z tim.neumann $
+ * $Id: configuration.php 6548 2016-03-10 16:13:01Z MaW $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -38,6 +38,15 @@ MagnaConnector::gi()->resetTimeOut();
 */
 
 $form = json_decode(file_get_contents(DIR_MAGNALISTER_FS.'config/'.$_lang.'/global.form'), true);
+
+/* check for Gambio Properties: If not there, remove the resp. fields */
+if (    (    (!MagnaDB::gi()->tableExists('products_properties_combis'))
+          || (!MagnaDB::gi()->columnExistsInTable('combi_ean', 'products_properties_combis'))
+        )
+     && (array_key_exists('options', $form))
+   ) {
+    unset($form['options']);
+}
 
 $keysToSubmit = array();
 
@@ -83,10 +92,26 @@ if (empty($passPhrase) || isset($_GET['welcome'])) {
 		'general' => $form['general']
 	);
 	$partner = trim((string)@file_get_contents('magnabundle.dat'));
+
+	$_langISO = strtolower(magnaGetLanguageCode($_lang)); 
 	if (!empty($partner) && ($partner != 'key')) {
-		$partner = 'partner='.$partner;
+		$sPromotionTextUrl = MAGNA_SERVICE_URL.MAGNA_APIRELATED.'promotion/?shopsystem='.SHOPSYSTEM.'&partner='.$partner.'&lang='.$_langISO;
+		$partner = '?partner='.$partner;
 	} else {
+		$sPromotionTextUrl = MAGNA_SERVICE_URL.MAGNA_APIRELATED.'promotion/?shopsystem='.SHOPSYSTEM.'&lang='.$_langISO;
 		$partner = '';
+	}
+	
+	$sPromotionTextFile = DIR_MAGNALISTER_FS_CACHE.'promotion.html';
+	if (file_exists($sPromotionTextFile)) {
+		$sPromotionContent = fileGetContents($sPromotionTextFile, $warnings);
+	} else {
+		$sPromotionContent = fileGetContents($sPromotionTextUrl, $warnings);
+		if (!empty($sPromotionContent)) {
+			file_put_contents($sPromotionTextFile, $sPromotionContent);
+		} else {
+			$sPromotionContent = '';
+		}
 	}
 
 	unset($form['general']['headline']);
@@ -95,12 +120,23 @@ if (empty($passPhrase) || isset($_GET['welcome'])) {
 		<p class="noticeBox bottomSpace">'.sprintf(ML_NOTICE_PLACE_PASSPHRASE, $partner).'</p>
 		<div style="padding-bottom: 1em"></div>';
 	$comercialText = '
-		<div id="pageContent">'.fileGetContents(MAGNA_SERVICE_URL.MAGNA_APIRELATED.'promotion/?shopsystem='.SHOPSYSTEM, $warnings, 10).'</div>';	
-	$comercialText = str_replace(
-		array('##_PARTNER_##', ),
-		array($partner,        ),
-		$comercialText
-	);
+		<div id="pageContent">'.$sPromotionContent.'
+			<script type="text/javascript">/*<![CDATA[*/
+				(function(jQuery) {
+					jQuery(document).ready(function() {
+						jQuery.get(
+							"magnalister.php", {
+								"module":"ajax",
+								"request":"refreshPromotionHtml",
+							},
+							function(data) {
+								myConsole.log(data);
+							}
+						);
+					});
+				})(jQuery);
+			/*]]>*/</script>
+		</div>';
 	MagnaDB::gi()->delete(TABLE_CONFIGURATION, array (
 		'configuration_key' => 'MAGNALISTER_PASSPHRASE'
 	));
@@ -112,39 +148,39 @@ global $forceConfigView;
 if (($forceConfigView !== false) && !isset($comercialText)) {
 	echo $forceConfigView;
 	$q = MagnaDB::gi()->query('
-		SELECT products_model, COUNT(products_model) as cnt
-		  FROM '.TABLE_PRODUCTS.' 
-		 WHERE products_model <> \'\'
-      GROUP BY products_model
-        HAVING cnt > 1'
+	    SELECT products_model, COUNT(products_model) as cnt
+	      FROM '.TABLE_PRODUCTS.' 
+	     WHERE products_model <> \'\'
+	  GROUP BY products_model
+	    HAVING cnt > 1'
 	);
 	$dblProdModel = array();
 	while ($row = MagnaDB::gi()->fetchNext($q)) {
 		$dblProdModel[] = MagnaDB::gi()->escape($row['products_model']);
 	}
 	$evilProducts = MagnaDB::gi()->fetchArray('
-		SELECT p.products_id, p.products_model, pd.products_name
-		  FROM '.TABLE_PRODUCTS.' p
+	    SELECT p.products_id, p.products_model, pd.products_name
+	      FROM '.TABLE_PRODUCTS.' p
 	 LEFT JOIN '.TABLE_PRODUCTS_DESCRIPTION.' pd ON p.products_id=pd.products_id AND pd.language_id = \''.$_SESSION['languages_id'].'\'
-		 WHERE products_model=\'\' OR products_model IS NULL '.((!empty($dblProdModel))
-		 	? 'OR products_model IN (\''.implode('\', \'', $dblProdModel).'\')'
-		 	: ''
-		 ).'
-      ORDER BY p.products_model ASC, pd.products_name ASC
+	     WHERE products_model=\'\' OR products_model IS NULL '.((!empty($dblProdModel))
+	         ? 'OR products_model IN (\''.implode('\', \'', $dblProdModel).'\')'
+	         : ''
+	     ).'
+	  ORDER BY p.products_model ASC, pd.products_name ASC
 	');
 	if (!empty($evilProducts)) {
 		$traitorTable = '
-		    <table class="datagrid">
-		    	<thead><tr>
-		    		<th>'.str_replace(' ', '&nbsp;', ML_LABEL_PRODUCT_ID).'</th>
-		    		<th>'.ML_LABEL_ARTICLE_NUMBER.'</th>
-		    		<th>'.ML_LABEL_PRODUCTS_WITH_INVALID_MODELNR.'</th>
-		    		<th>'.ML_LABEL_EDIT.'</th>
-		    	</tr></thead>
-		    	<tbody>';
-		    $oddEven = true;
-			foreach ($evilProducts as $item) {
-				$traitorTable .= '
+			<table class="datagrid">
+				<thead><tr>
+					<th>'.str_replace(' ', '&nbsp;', ML_LABEL_PRODUCT_ID).'</th>
+					<th>'.ML_LABEL_ARTICLE_NUMBER.'</th>
+					<th>'.ML_LABEL_PRODUCTS_WITH_INVALID_MODELNR.'</th>
+					<th>'.ML_LABEL_EDIT.'</th>
+				</tr></thead>
+				<tbody>';
+		$oddEven = true;
+		foreach ($evilProducts as $item) {
+			$traitorTable .= '
 					<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
 						<td style="width: 1px;">'.$item['products_id'].'</td>
 						<td style="width: 1px;">'.(empty($item['products_model']) ? '<i class="grey">'.ML_LABEL_NOT_SET.'</i>' : $item['products_model']).'</td>
@@ -153,7 +189,7 @@ if (($forceConfigView !== false) && !isset($comercialText)) {
 							<a class="gfxbutton edit" title="'.ML_LABEL_EDIT.'" target="_blank" href="categories.php?pID='.$item['products_id'].'&action=new_product">&nbsp;</a>
 						</td>
 					</tr>';
-			}
+		}
 		$traitorTable .= '
 				</tbody>
 			</table>';
@@ -236,27 +272,56 @@ echo '<div id="switchSKU" class="dialog2" title="'.ML_TEXT_CONFIRM_SKU_CHANGE_TI
 ?>
 <script type="text/javascript">/*<![CDATA[*/
 $(document).ready(function() {
-    $('input[name="conf[general.keytype]"]').change(function (e) {
-        $('#switchSKU').dialog({
-            modal: true,
-            width: '600px',
-            buttons: {
-                "<?php echo ML_BUTTON_LABEL_ABORT; ?>": function() {
-                    if ($('input[name="conf[general.keytype]"]')[1].checked) {
-                        $('input[name="conf[general.keytype]"]')[0].checked = true;
-                    } else {
-                        $('input[name="conf[general.keytype]"]')[1].checked = true;                
-                    }
-                    $(this).dialog("close");
-                },
-                "<?php echo ML_BUTTON_LABEL_OK; ?>": function() { 
-                    $(this).dialog("close");    
-                }
-            }
-        });
-    });
+	$('input[name="conf[general.keytype]"]').change(function (e) {
+		$('#switchSKU').dialog({
+			modal: true,
+			width: '600px',
+			buttons: {
+				"<?php echo ML_BUTTON_LABEL_ABORT; ?>": function() {
+					if ($('input[name="conf[general.keytype]"]')[1].checked) {
+						$('input[name="conf[general.keytype]"]')[0].checked = true;
+					} else {
+						$('input[name="conf[general.keytype]"]')[1].checked = true;
+					}
+					$(this).dialog("close");
+				},
+				"<?php echo ML_BUTTON_LABEL_OK; ?>": function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});
 });
 /*]]>*/</script>
+
+<?php if (isset($form['options'])): ?>
+<?php
+echo '<div id="switchOptions" class="dialog2" title="'.ML_TEXT_CONFIRM_OPTIONS_CHANGE_TITLE.'">'.ML_TEXT_CONFIRM_OPTIONS_CHANGE_TEXT.'</div>';
+?>
+<script type="text/javascript">/*<![CDATA[*/
+$(document).ready(function() {
+	$('input[name="conf[general.options]"]').change(function (e) {
+		$('#switchOptions').dialog({
+			modal: true,
+			width: '600px',
+			buttons: {
+				"<?php echo ML_BUTTON_LABEL_ABORT; ?>": function() {
+					if ($('input[name="conf[general.options]"]')[1].checked) {
+						$('input[name="conf[general.options]"]')[0].checked = true;
+					} else {
+						$('input[name="conf[general.options]"]')[1].checked = true;
+					}
+					$(this).dialog("close");
+				},
+				"<?php echo ML_BUTTON_LABEL_OK; ?>": function() {
+					$(this).dialog("close");
+				}
+			}
+		});
+	});
+});
+/*]]>*/</script>
+<?php endif; ?>
 <?php
 
 include_once(DIR_MAGNALISTER_INCLUDES.'admin_view_bottom.php');

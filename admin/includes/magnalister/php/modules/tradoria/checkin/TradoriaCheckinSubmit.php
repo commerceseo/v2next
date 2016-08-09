@@ -40,7 +40,7 @@ class TradoriaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 			#echo __LINE__."<br>\n";
 			return false;
 		}
-		
+
 		/* This is limited to one VariationTheme. 
 		   Start with guessing the "right" one, aka using the one that has the most variations. */
 		$pVID = MagnaDB::gi()->fetchRow('
@@ -77,8 +77,8 @@ class TradoriaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		           AND pov.language_id = \''.$this->settings['language'].'\'
 		           AND pov.products_options_values_id = pa.options_values_id
 		           AND pov.products_options_values_name<>\'\'
-		           '.($this->hasDbColumn['pa.attributes_stock'] ? 'AND pa.attributes_stock IS NOT NULL' : '').'
 		', false));
+
 		if ($variationTheme == false) {
 			#echo __LINE__."<br>\n";
 			return false;
@@ -90,24 +90,34 @@ class TradoriaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		
 		$variations = array();
 		foreach ($variationTheme as $v) {
+			if ($v['vPricePrefix'] == '=') {
+				$fCalcPrice = $this->calcVariationPrice(0.00, $v['vPrice'], $tax);
+			} else {
+				$fCalcPrice = $this->calcVariationPrice(
+					$data['price'],
+					$v['vPrice'] * (($v['vPricePrefix'] == '+') ? 1 : -1),
+					$tax
+				);
+			}
+
 			$vi = array (
 				'SKU' => magnaAID2SKU($v['aID']),
-				'Price' => $this->calcVariationPrice(
-					$data['price'],
-					$v['vPrice'] * (($v['vPricePrefix'] == '+') ? 1 : -1), 
-					$tax
-				),
+				'Price' => $fCalcPrice,
 				'Currency' => $this->settings['currency'],
 				'ItemTax' => $data['submit']['ItemTax'],
 				'Quantity' => ($this->quantityLumb === false)
-					? max(0, $v['Quantity'] - (int)$this->quantitySub)
+					? max(0, (int)$v['Quantity'] - (int)$this->quantitySub)
 					: $this->quantityLumb,
 				'EAN' => $v['EAN'],
 				'Variation' => array (
 					'Group' => $v['VariationTitle'],
 					'Value' => $v['VariationValue']
 				),
-			);/*
+			);
+			if (array_key_exists('VPE', $data['submit']) && !empty($data['submit']['VPE'])) {
+				$vi['VPE'] = $data['submit']['VPE'];
+			}
+			/*
 			if (!empty($v['variation_unit_of_measure']) && !empty($v['variation_volume'])) {
 				$vi['VPE'] = array (
 					'Unit' => $v['variation_unit_of_measure'],

@@ -22,8 +22,8 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?php echo TITLE; ?></title>
 		<?php 
-		echo '<link rel="stylesheet" type="text/css" href="templates/' . CURRENT_ADMIN_TEMPLATE . '/css/bootstrap.css">';
-		echo '<link rel="stylesheet" type="text/css" href="templates/' . CURRENT_ADMIN_TEMPLATE . '/css/bootstrap-theme.css">';
+		echo '<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">';
+		echo '<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">';
 		echo '<link rel="stylesheet" type="text/css" href="templates/' . CURRENT_ADMIN_TEMPLATE . '/css/pick-a-color-1.2.2.min.css">';
 		echo '<link rel="stylesheet" type="text/css" href="templates/' . CURRENT_ADMIN_TEMPLATE . '/css/icon-picker.css">';
 		echo '<link rel="stylesheet" type="text/css" href="templates/' . CURRENT_ADMIN_TEMPLATE . '/css/bootstrap-cseo.css">';
@@ -33,11 +33,8 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
         <link rel="stylesheet" type="text/css" href="includes/javascript/jquerytabs/jquery-ui-1.10.2.custom.min.css" />
         <link rel="stylesheet" type="text/css" href="includes/javascript/growl/jquery.gritter.css" media="screen" charset="utf-8" />
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
-        <script>
-            !window.jQuery && document.write(unescape('%3Cscript src="includes/javascript/jquery.min.js"%3E%3C/script%3E') + unescape('%3Cscript src="includes/javascript/jquery-ui.min.js"%3E%3C/script%3E'));
-        </script>
         <script src="includes/javascript/growl/jquery.gritter.min.js"></script>
         <script>
             $('#btnUpdate').click(function() {
@@ -159,24 +156,6 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
                     var oldIndex = 0;
                 }
                 $('#csstabs').tabs({
-                    active: oldIndex,
-                    activate: function(event, ui) {
-                        var newIndex = ui.newTab.parent().children().index(ui.newTab);
-                        dataStore.setItem(index, newIndex)
-                    }
-                });
-            });
-        </script>
-        <script type="text/javascript">
-            $(function() {
-                var index = 'securitytabs';
-                var dataStore = window.sessionStorage;
-                try {
-                    var oldIndex = dataStore.getItem(index);
-                } catch (e) {
-                    var oldIndex = 0;
-                }
-                $('#securitytabs').tabs({
                     active: oldIndex,
                     activate: function(event, ui) {
                         var newIndex = ui.newTab.parent().children().index(ui.newTab);

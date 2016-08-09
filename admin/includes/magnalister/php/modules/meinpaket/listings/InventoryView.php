@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: InventoryView.php 4283 2014-07-24 22:00:04Z derpapst $
+ * $Id: InventoryView.php 5357 2015-03-13 14:16:33Z Soprex $
  *
  * (c) 2011 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -79,7 +79,7 @@ class InventoryView {
 				'SORTORDER' => $this->sort['type']
 			);
 			if (!empty($this->search)) {
-				#$request['SEARCH'] = (!isUTF8($this->search)) ? utf8_encode($this->search) : $this->search;
+				#$request['SEARCH'] = (!magnalisterIsUTF8($this->search)) ? utf8_encode($this->search) : $this->search;
 				$request['SEARCH'] = $this->search;
 			}
 			$result = MagnaConnector::gi()->submitRequest($request);
@@ -355,7 +355,7 @@ $(document).ready(function() {
 			''
 		);
 		$right = '<table class="right"><tbody>
-			'.(in_array(getDBConfigValue('meinpaket.stocksync.tomarketplace', $this->magnasession['mpID']), array('abs', 'auto'))
+			'.(in_array(getDBConfigValue($this->magnasession['currentPlatform'].'.stocksync.tomarketplace', $this->magnasession['mpID']), array('abs', 'auto'))
 				? '<tr><td><input type="submit" class="ml-button fullWidth smallmargin" name="refreshStock" value="'.ML_BUTTON_REFRESH_STOCK.'"/></td></tr>'
 				: ''
 			).'

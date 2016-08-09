@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: MagnaUpdater.php 3852 2014-05-09 21:10:54Z derpapst $
+ * $Id: MagnaUpdater.php 6198 2015-11-04 10:39:36Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -476,14 +476,16 @@ class MagnaUpdater {
 		$localBuild = array_key_exists('CLIENT_BUILD_VERSION', $this->localClientVersion)
 			? $this->localClientVersion['CLIENT_BUILD_VERSION']
 			: 0;
-		foreach ($queries as $query) {
-			$query = trim(str_replace("\t", '', str_replace("\t\t", "    ", $query)));
-			//echo print_m($query);
-			if (MagnaDB::gi()->query($query) === false) {
-				$errors[] = $query;
+		if (isset($queries) && !empty($queries)) {
+			foreach ($queries as $query) {
+				$query = trim(str_replace("\t", '', str_replace("\t\t", "    ", $query)));
+				//echo print_m($query);
+				if (MagnaDB::gi()->query($query) === false) {
+					$errors[] = $query;
+				}
 			}
 		}
-		if (!empty($functions)) {
+		if (isset($functions) && !empty($functions)) {
 			foreach ($functions as $function) {
 				$function();
 			}
@@ -491,9 +493,9 @@ class MagnaUpdater {
 	}
 	
 	public function updateDatabase() {
-		require_once(DIR_MAGNALISTER_INCLUDES.'lib/MagnaDB.php');
+		require_once(DIR_MAGNALISTER_FS_INCLUDES.'lib/MagnaDB.php');
 
-		$dbDir = DIR_MAGNALISTER.'db/';
+		$dbDir = DIR_MAGNALISTER_FS.'db/';
 		if (!$dirhandle = @opendir($dbDir)) {
 			return false;
 		}

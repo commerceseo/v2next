@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: admin_view_top.php 4399 2014-08-18 14:38:30Z miguel.heredia $
+ * $Id: admin_view_top.php 6246 2015-11-18 12:01:13Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -42,7 +42,7 @@ function renderTabs($pages, $kind, $selected, $baseURL) {
 		}
 		$html .= '
 				<li'.(($url == $selected) ? ' class="selected"' : '').'>
-					<a href="'.toURL($baseURL, array($kind => $url)).'" title="'.$title.'">'.$title.'</a>
+					<a href="'.toURL($baseURL, array($kind => $url, 'isTab' => 'true')).'" title="'.$title.'">'.$title.'</a>
 		 		</li>';
 	}
 	$html .= '
@@ -57,6 +57,9 @@ global $magnaConfig, $_executionTime, $_js, $_mainTitle, $_url,
 
 if (in_array(SHOPSYSTEM, array('oscommerce', 'xonsoft'))) {
 	global $PHP_SELF;
+	if (!isset($cfgModules)) {
+		global $cfgModules;
+	}
 }
 
 if (array_key_exists('module', $_GET) && array_key_exists($_GET['module'], $_modules)) {
@@ -87,7 +90,7 @@ if (!isset($_SESSION['language_charset'])) {
 	}
 }
 
-if ((SHOPSYSTEM == 'xtcmodified') && defined('RUN_MODE_ADMIN')) {
+if ((SHOPSYSTEM == 'xtcmodified') && defined('RUN_MODE_ADMIN') && file_exists(DIR_WS_INCLUDES.'head.php')) {
 	require (DIR_WS_INCLUDES.'head.php');
 } else {
 echo '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN""http://www.w3.org/TR/html4/loose.dtd">
@@ -115,6 +118,31 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 		</style>'."\n";
 			}
 ?>
+		<style>
+		@-moz-keyframes ml-css-spin {
+			0% {-moz-transform: rotate(0deg);}
+			100% {-moz-transform: rotate(360deg);}
+		}
+		@-webkit-keyframes ml-css-spin {
+			0% {-webkit-transform: rotate(0deg);}
+			100% {-webkit-transform: rotate(360deg);}
+		}
+		@keyframes ml-css-spin {
+			0% {transform: rotate(0deg);}
+			100% {transform: rotate(360deg);}
+		}
+
+		.ml-css-loading {
+			-o-box-sizing: border-box;
+			-ie-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			-webkit-box-sizing: border-box;
+			box-sizing: border-box;
+			-moz-animation: ml-css-spin .8s infinite linear;
+			-webkit-animation: ml-css-spin .8s infinite linear;
+			animation: ml-css-spin .8s infinite linear;
+		}
+		</style>
 		<script type="text/javascript" src="<?php echo DIR_MAGNALISTER_WS; ?>js/debugFunctions.js"></script>
 		<script type="text/javascript">/*<![CDATA[*/
 			var debugging = true;/*<?php echo (MAGNA_DEBUG) ? 'true' : 'false'; ?>;*/
@@ -164,19 +192,26 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 					'z-index': '9000'
 				},
 				css: {
-					'background': 'transparent url("<?php echo DIR_MAGNALISTER_WS; ?>images/loading.svg") no-repeat 50% 50%',
 					'width': '32px',
 					'height': '32px',
+					'border-width': '4px',
+					'border-style': 'solid',
+					'border-color': 'rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 0.25) rgba(199, 53, 47, 1)',
+					'border-radius': '32px',
+					'padding': '0',
 					'left': '50%',
-					'top': '230px',
-					'border': 'none',
-					'z-index': '9001'
+					'margin': '0 0 0 -16px',
+					'padding': '0',
+					'top': '300px',
+					'z-index': '9999',
+					'background': 'transparent'
 				},
+				blockMsgClass: 'ml-css-loading',
 				message: '<div></div>',
 				onBlock: function() {
-					$('.blockUI.blockMsg.blockPage').bind('dblclick', function() {
-						$.unblockUI();
-					});
+						jQuery('.blockUI.ml-css-loading.blockPage').bind('dblclick', function() {
+								jQuery.unblockUI();
+						});
 				}
 			};
 			var blockUIProgress = {
@@ -202,8 +237,6 @@ if (!isset($_GET['module']) || ($_GET['module'] != 'nojs')) {
 			};
 			
 			/* Preload Loading Animation */
-			loadingImage = new Image(); 
-			loadingImage.src = "<?php echo DIR_MAGNALISTER_WS; ?>images/loading.svg";
 			progressbarImage = new Image(); 
 			progressbarImage.src = "<?php echo DIR_MAGNALISTER_WS; ?>images/progressbar.png";
 		/*]]>*/</script>
@@ -238,6 +271,7 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 		}
 ?>
 		<script type="text/javascript">/*<![CDATA[*/
+			
 			(function(jQuery) {
 				jQuery.fn.jDialog = function(parameters, okFunction) {
 					if (okFunction == undefined) {
@@ -262,7 +296,7 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 				}
 			})(jQuery);
 
-			jQuery(document).ready(function() {
+			jQuery(window).load(function() {
 				jQuery("body").everyTime('960s', 'keepAlive', function(i) {
 					jQuery.get(
 						"<?php echo FILENAME_MAGNALISTER; ?>", {
@@ -274,7 +308,9 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 						}
 					);
 				});
+			});
 
+			jQuery(document).ready(function() {
 				var bgC = jQuery('#content').css('background-color');
 				if (bgC.length > 1) {
 					jQuery('td.boxCenter').css({'background-color': bgC});
@@ -283,6 +319,10 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 					// prevent multiple clicks on the button.
 					var executed = false;
 					return function (e) {
+						if ($(e.target).data('disabled') == 'yes') {
+							$('<div title="<?php echo ML_LABEL_NOTE; ?>"><?php echo ML_POPUP_NOT_AVAILABLE; ?></div>').jDialog();
+							return;
+						}
 						if (executed) {
 							e.preventDefault();
 							return;
@@ -331,16 +371,18 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 		ob_start();
 		if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) & ~E_NOTICE & ~E_STRICT);
 		$current_page = basename($_SERVER["PHP_SELF"]);
-		require(DIR_WS_INCLUDES . 'header.php'); 
+		if (!defined('ML_GAMBIO_USE_IFRAME') || ML_GAMBIO_USE_IFRAME !== true) {
+			require(DIR_WS_INCLUDES . 'header.php');
+		}
 		if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) | E_WARNING | E_NOTICE | E_STRICT);
 		$out = ob_get_contents();
-		ob_clean();
-		echo preg_replace('/(<script (type="text\/javascript")*.*jquery.[^tooltip].*(type="text\/javascript")* *><\/script>)/', '', $out);
+		ob_end_clean();
+		echo preg_replace('/(<script (type="text\/javascript")*.*jquery.[^tooltip|^colorbox].*(type="text\/javascript")* *><\/script>)/', '', $out);
 
 		/* Prepare Navigation */
 		$nav = '';
 		$tclass = '';
-		if (!$hasHeadNav && file_exists(DIR_WS_INCLUDES . 'column_left.php')) {
+		if (!$hasHeadNav && file_exists(DIR_WS_INCLUDES . 'column_left.php') && (!defined('ML_GAMBIO_USE_IFRAME') || ML_GAMBIO_USE_IFRAME !== true)) {
 			$tnav = file_get_contents(DIR_WS_INCLUDES . 'column_left.php');
 			if (in_array(SHOPSYSTEM, array('oscommerce', 'xonsoft'))) {
 				if (strpos($tnav, '$(\'#adminAppMenu\').accordion({') === false) {
@@ -354,7 +396,7 @@ echo '		<script type="text/javascript" src="'.$js.'"></script>'."\n";
 			require(DIR_WS_INCLUDES . 'column_left.php');
 			if (MAGNA_SHOW_WARNINGS) error_reporting(error_reporting(E_ALL) | E_WARNING | E_NOTICE | E_STRICT);
 			$nav = ob_get_contents();
-			ob_clean();
+			ob_end_clean();
 			unset($tnav);
 		}
 		
@@ -439,8 +481,19 @@ $globalButtons = array (
 		'link' => array('update' => 'true'),
 	),
 );
+
+if ($_MagnaSession['currentPlatform'] == 'ebay') {
+	$bSyncEnabled = (getDBConfigValue('ebay.listingdetails.sync', $_MagnaSession['mpID'], 'false') == 'true');
+	$globalButtons = array_merge(array(array(
+		'title' => ML_LABEL_SYNC_EBAY_LISTING_DETAILS,
+		'icon' => 'sync'.($bSyncEnabled ? '' : ' inactive'),
+		'link' => array('do' => 'SyncEbayListingDetails', 'MLDEBUG' => 'true'),
+		'disabled' => ($bSyncEnabled) ? 'no' : 'yes',
+	)), $globalButtons);
+}
+
 ?>
-					<table border="0" width="100%" cellspacing="0" cellpadding="2" style="padding: 0 10px;"><tbody>
+					<table border="0" width="100%" cellspacing="0" cellpadding="2" style="<?php echo ((defined('ML_GAMBIO_USE_IFRAME') && ML_GAMBIO_USE_IFRAME === true)) ? '' : 'padding: 0 10px;'?>"><tbody>
 						<tr>
 							<td width="100%">
 								<h1 id="magnalogo"><a href="<?php echo toURL(); ?>" title="<?php echo ML_HEADLINE_MAIN; ?>">
@@ -449,11 +502,9 @@ $globalButtons = array (
 								<?php if (isset($_SESSION['magna_UPDATE_PATH']) && (strpos($_SESSION['magna_UPDATE_PATH'], 'debug') !== false)) { ?>
 									<span style="display: inline-block; padding-left: 3px; padding-top: 36px;"> :: Debug &#4314;(&#3232;&#30410;&#3232;&#4314;</span>
 								<?php } ?>
-								<div id="antlogo" title="<?php echo ML_HEADLINE_MAIN; ?>">&nbsp;</div>
-								
 								<div id="globalButtonBox"><?php
 									foreach ($globalButtons as $blargh) {
-										echo '<span class="ml-js-noBlockUi gfxbutton border '.$blargh['icon'].'" data-href="'.toURL($_url, $blargh['link']).'" title="'.$blargh['title'].'"></span> ';
+										echo '<span class="gfxbutton border '.$blargh['icon'].'" data-disabled="'.(isset($blargh['disabled']) ? $blargh['disabled'] : 'no').'" data-href="'.toURL($_url, $blargh['link']).'" title="'.$blargh['title'].'"></span> ';
 									}
 								?></div>
 								<div class="visualClear">&nbsp;</div>

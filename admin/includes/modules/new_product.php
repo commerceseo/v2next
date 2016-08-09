@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: new_product.php 1044 2014-05-12 21:25:42Z akausch $
+ * 	$Id: new_product.php 1475 2015-07-22 20:49:33Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -110,9 +110,9 @@ while ($sperrgut = xtc_db_fetch_array($sperrgut_query)) {
     $sperrgut_array[] = array('id' => $s_id, 'text' => TEXT_PRODUCTS_SPERRGUT . ' ' . $s_id . ' (' . $currencies->format($sperrgut['configuration_value']) . ')');
 }
 
-$conditions = array(array('id' => 'neu', 'text' => 'Neu'));
-$conditions[] = array('id' => 'gebraucht', 'text' => 'Gebraucht');
-$conditions[] = array('id' => 'erneuert', 'text' => 'Erneuert');
+$conditions = array(array('id' => 'new', 'text' => 'Neu'));
+$conditions[] = array('id' => 'used', 'text' => 'Gebraucht');
+$conditions[] = array('id' => 'refurbished', 'text' => 'Erneuert');
 
 $products_google_gender = array(array('id' => '---', 'text' => '---'));
 $products_google_gender[] = array('id' => 'male', 'text' => 'Herren');
@@ -206,12 +206,6 @@ if (file_exists(DIR_WS_INCLUDES . 'addons/new_product_addon.php')) {
             dateFormat: 'yy-mm-dd'});
     });
 </script>
-<?php 
-if (USE_WYSIWYG == 'true') {
-    echo '<script src="includes/editor/ckeditor/ckeditor.js" type="text/javascript"></script>';
-    echo '<script src="includes/editor/ckfinder/ckfinder.js" type="text/javascript"></script>';
-}
-?>
 <tr>
     <td>
         <table class="table_pageHeading" border="0" width="100%" cellspacing="0" cellpadding="0">
@@ -254,12 +248,6 @@ echo xtc_draw_form('new_product', FILENAME_CATEGORIES, 'cPath=' . $_GET['cPath']
 					?>
                     <li><a href="#prodimg"><?php echo HEAD_IMAGES; ?></a></li>
                     <li><a href="#prodgoogle"><?php echo HEAD_GOOGLE; ?></a></li>
-					<?php if ($filter_list_active == 'true') { ?>
-                        <li><a href="#prodfilter"><?php echo HEAD_FILTER; ?></a></li>
-                    <?php } ?>
-                    <?php if (ADMIN_CSEO_ATTRIBUT_MANAGER == 'true') { ?>
-                        <li><a href="#prodattrib"><?php echo HEAD_ATTRIB; ?></a></li>
-                    <?php } ?>
                     <?php if (TREEPODIAACTIVE == 'true') { ?>
                         <li><a href="#prodtreepodia">Treepodia</a></li>
                     <?php } ?>
@@ -324,6 +312,18 @@ echo xtc_draw_form('new_product', FILENAME_CATEGORIES, 'cPath=' . $_GET['cPath']
                                     <td class="main"><?php echo TEXT_PRODUCTS_MANUFACTURER; ?></td>
                                     <td class="main"><?php echo xtc_draw_pull_down_menu('manufacturers_id', $manufacturers_array, $pInfo->manufacturers_id); ?></td>
                                 </tr>
+								<tr>
+									<td class="main"><?php echo TEXT_PRODUCTS_FREE_SHIPPING; ?></td>
+									<td class="main"><?php echo xtc_draw_selection_field('free_shipping', 'checkbox', '1',$pInfo->free_shipping==1 ? true : false); ?></td>
+								</tr>
+								<tr>
+									<td class="main"><?php echo TEXT_PRODUCTS_MAX_FREE_SHIPPING_CART; ?></td>
+									<td class="main"><?php echo xtc_draw_input_field('max_free_shipping_cart', $pInfo->max_free_shipping_cart, 'size=3'); ?></td>
+								</tr>
+								<tr>
+									<td class="main"><?php echo TEXT_PRODUCTS_MAX_FREE_SHIPPING_AMOUNT; ?></td>
+									<td class="main"><?php echo xtc_draw_input_field('max_free_shipping_amount', $pInfo->max_free_shipping_amount, 'size=3'); ?></td>
+								</tr>
                                 <tr>
                                     <td colspan="2" class="main"><?php draw_product_fields($pInfo); ?></td>
                                 </tr>
@@ -384,63 +384,6 @@ if ($hermes->getUsername() != '') {
 }
 // END HERMES 
 ?>
-                                <?php
-                                // Master / Slave
-                                if (MASTER_SLAVE_FUNCTION == 'true') {
-                                    ?>
-                                    <tr>
-                                        <td style="border-top: 1px solid #376e37; border-left: 1px solid #376e37;" class="main"><?php echo TEXT_PRODUCTS_MASTER; ?></td>
-                                        <td style="border-top: 1px solid #376e37; border-right: 1px solid #376e37;" class="main"><?php echo xtc_draw_selection_field('products_master', 'checkbox', '1', $pInfo->products_master == 1 ? true : false); ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-left: 1px solid #376e37;" class="main"><?php echo TEXT_PRODUCTS_MASTER_SUB; ?></td>
-                                        <td style="border-right: 1px solid #376e37;" class="main">
-    <?php
-    $checkMasterQuery = xtc_db_query("SELECT 
-																products_master 
-															FROM 
-																products 
-															WHERE 
-																products_master = '1' 
-															AND 
-																products_id != '" . (int) $_GET['pID'] . "' 
-															LIMIT 1");
-    if (xtc_db_num_rows($checkMasterQuery, true) > 0) {
-        $getProductsQuery = xtc_db_query("SELECT 
-																	p.products_id, pd.products_name 
-																FROM 
-																	products p, products_description pd 
-																WHERE 
-																	p.products_id = pd.products_id 
-																AND 
-																	pd.language_id = '" . $_SESSION['languages_id'] . "' 
-																AND
-																	pd.products_id != '" . (int) $_GET['pID'] . "' 
-																AND 
-																	p.products_master = '1' 
-																ORDER BY 
-																	pd.products_name ASC");
-        if (xtc_db_num_rows($getProductsQuery, true) > 0) {
-            $productDrop = array();
-            $productDrop = array(array('id' => '0', 'text' => 'w&auml;hlen Sie einen Masterartikel'));
-            while ($getProducts = xtc_db_fetch_array($getProductsQuery))
-                $productDrop[] = array('id' => $getProducts['products_id'], 'text' => $getProducts['products_name']);
-            echo xtc_draw_pull_down_menu('products_master_article', $productDrop, $pInfo->products_master_article);
-        }
-    } else
-        echo TEXT_PRODUCTS_MASTER_SUB_ERROR;
-    ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="border-bottom: 1px solid #376e37; border-left: 1px solid #376e37;" class="main"><?php echo TEXT_PRODUCTS_MASTER_LIST; ?></td>
-                                        <td style="border-bottom: 1px solid #376e37; border-right: 1px solid #376e37;"class="main"><?php echo xtc_draw_selection_field('products_slave_in_list', 'checkbox', '1', $pInfo->products_slave_in_list == 1 ? true : false); ?></td>
-                                    </tr>
-
-    <?php
-    // Master / Slave
-}
-?>
 
                                 <tr>
                                 <?php
@@ -493,54 +436,6 @@ if ($hermes->getUsername() != '') {
                                     echo '<td class="main">' . TEXT_CHOOSE_OPTIONS_TEMPLATE . ':' . '</td>';
                                     echo '<td class="main">' . xtc_draw_pull_down_menu('options_template', $files, $default_value) . '</td>';
                                     ?>
-                                </tr>
-                                <tr>
-                                    <td class="main" valign="top">
-                                    <?php echo TEXT_PAYMENT_METHOD; ?>
-                                    </td>
-                                    <td>
-                                        <table width="100%">
-                                        <?php
-                                        $modulepayment_value = xtc_db_fetch_array(xtc_db_query("SELECT configuration_value FROM configuration WHERE configuration_key = 'MODULE_PAYMENT_INSTALLED'"));
-                                        if ($modulepayment_value['configuration_value'] != '') {
-                                            $modulepayment_value = explode(';', $modulepayment_value['configuration_value']);
-                                            $zahlarten = explode('|', $pInfo->products_forbidden_payment);
-                                            foreach ($modulepayment_value AS $payment) {
-                                                include(DIR_FS_LANGUAGES . $_SESSION['language'] . '/modules/payment/' . $payment);
-                                                $payment_title = constant(strtoupper('MODULE_PAYMENT_' . str_replace('.php', '', $payment) . '_TEXT_TITLE'));
-                                                echo '<tr>
-															<td class="main">' . $payment_title . '</td>
-															<td class="main">' . xtc_draw_selection_field('forbidden_payment[]', 'checkbox', $payment, (in_array($payment, $zahlarten) ? true : false)) . '</td> 
-														</tr>';
-                                            }
-                                        }
-                                        ?>
-                                        </table>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="main" valign="top">
-                                    <?php echo TEXT_SHIPPING_METHOD; ?>
-                                    </td>
-                                    <td>
-                                        <table width="100%">
-                                        <?php
-                                        $moduleshipping_value = xtc_db_fetch_array(xtc_db_query("SELECT configuration_value FROM configuration WHERE configuration_key = 'MODULE_SHIPPING_INSTALLED'"));
-                                        if ($moduleshipping_value['configuration_value'] != '') {
-                                            $moduleshipping_value = explode(';', $moduleshipping_value['configuration_value']);
-                                            $shippingarten = explode('|', $pInfo->products_forbidden_shipping);
-                                            foreach ($moduleshipping_value AS $shipping) {
-                                                include(DIR_FS_LANGUAGES . $_SESSION['language'] . '/modules/shipping/' . $shipping);
-                                                $shipping_title = constant(strtoupper('MODULE_SHIPPING_' . str_replace('.php', '', $shipping) . '_TEXT_TITLE'));
-                                                echo '<tr>
-															<td class="main">' . $shipping_title . '</td>
-															<td class="main">' . xtc_draw_selection_field('forbidden_shipping[]', 'checkbox', $shipping, (in_array($shipping, $shippingarten) ? true : false)) . '</td> 
-														</tr>';
-                                            }
-                                        }
-                                        ?>
-                                        </table>
-                                    </td>
                                 </tr>	  
                                 <tr>
                                     <td class="main" valign="top">
@@ -628,35 +523,6 @@ if (file_exists(DIR_WS_MODULES . 'product_prices_advanced.php')) {
                                         </tr>
                                     </table>
                                 </div>
-                                <h3><?php echo GROUP_PRICES; ?></h3>
-                                <div>
-<?php
-//Gruppenpreise
-if (file_exists(DIR_WS_MODULES . 'group_prices.php')) {
-    include(DIR_WS_MODULES . 'group_prices.php');
-}
-?>
-                                </div>
-                                <h3><?php echo SPECIALS_TITLE; ?></h3>
-                                <div>
-                                    <?php
-                                    //Sonderangebote
-                                    if (file_exists(DIR_WS_MODULES . 'categories_specials.php')) {
-                                        require_once(DIR_WS_MODULES . 'categories_specials.php');
-                                        showSpecialsBox();
-                                    }
-                                    ?>
-                                </div>
-                                    <?php
-                                    if (file_exists(DIR_WS_MODULES . 'product_promotion.php') && MODULE_PRODUCT_PROMOTION_STATUS == 'true') {
-                                        echo '<h3>' . PROMO_TITLE . '</h3>';
-                                        echo '<div>';
-                                        include(DIR_WS_MODULES . 'product_promotion.php');
-                                        echo '</div>';
-                                    }
-                                    ?>
-
-                            </div>
                         </td>
                     </tr>
 
@@ -664,19 +530,6 @@ if (file_exists(DIR_WS_MODULES . 'group_prices.php')) {
 
                 <br class="clear">
             </div>
-                <?php if ($filter_list_active == 'true') { ?>
-                <div id="prodfilter">
-                    <table width="100%" border="0">
-                        <tr valign="top">
-                            <td>
-								<?php include (DIR_WS_MODULES . 'products_filter.php'); ?>
-                            </td>
-                        </tr>
-                    </table>
-                    <br class="clear">
-                </div>
-				<?php } ?>
-				
 				
             <div id="proddescr">
 <?php draw_product_desc_fields($pInfo);?>
@@ -765,19 +618,6 @@ if (file_exists(DIR_WS_MODULES . 'group_prices.php')) {
     ?>
                                                     <div id="quote_<?php echo $languages[$i]['id'] ?>"></div>
                                                     <a class="ajax_<?php echo $languages[$i]['id'] ?>" href="#" onclick="javascript:return false;"><?php echo TEXT_PRODUCTS_TAGCLOUD; ?></a>        
-                                                    <br>
-                                                    <!--<label for="jquery-tagbox-select">Dropdown TagBox</label>-->
-    <?php
-    // $tag_data_query = xtc_db_query("SELECT tag FROM tag_to_product WHERE lID = '" . $languages[$i]['id'] . "' GROUP BY tag;");
-    // if (xtc_db_num_rows($tag_data_query)) {
-        // while ($tag_data = xtc_db_fetch_array($tag_data_query)) {
-            // $tag_array[] = array('id' => $tag_data['tag'], 'text' => $tag_data['tag']);
-        // }
-        // echo xtc_draw_pull_down_menu('products_tag_cloud_drop', $tag_array, '', 'id="jquery-tagbox-select-options"');
-    // }
-    ?>
-
-
                                                 </td>
                                             </tr>
                                         </table>
@@ -788,52 +628,85 @@ if (file_exists(DIR_WS_MODULES . 'group_prices.php')) {
                                 <tr>
                                     <td>
                                         <strong><?php echo TEXT_PRODUCTS_DESCRIPTION; ?></strong><br>
-    <?php echo xtc_draw_textarea_field('products_description[' . $languages[$i]['id'] . ']', 'soft', '103', '30', (($products_description[$languages[$i]['id']]) ? stripslashes($products_description[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_description')), 'class="ckeditor" name="editor1"'); ?>
+    <?php echo xtc_draw_textarea_field('products_description[' . $languages[$i]['id'] . ']', 'soft', '103', '30', (($products_description[$languages[$i]['id']]) ? stripslashes($products_description[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_description')), ''); ?>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td valign="top">
                                         <strong><?php echo TEXT_PRODUCTS_SHORT_DESCRIPTION; ?></strong><br>
-    <?php echo xtc_draw_textarea_field('products_short_description[' . $languages[$i]['id'] . ']', 'soft', '103', '20', (($products_short_description[$languages[$i]['id']]) ? stripslashes($products_short_description[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_short_description')), 'class="ckeditor" name="editor2"'); ?>
+    <?php echo xtc_draw_textarea_field('products_short_description[' . $languages[$i]['id'] . ']', 'soft', '103', '20', (($products_short_description[$languages[$i]['id']]) ? stripslashes($products_short_description[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_short_description')), ''); ?>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td valign="top">
                                         <strong><?php echo TEXT_PRODUCTS_ZUSATZ_DESCRIPTION; ?></strong><br>
-    <?php echo xtc_draw_textarea_field('products_zusatz_description[' . $languages[$i]['id'] . ']', 'soft', '103', '20', (($products_zusatz_description[$languages[$i]['id']]) ? stripslashes($products_zusatz_description[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_zusatz_description')), 'class="ckeditor" name="editor3"'); ?>
+    <?php echo xtc_draw_textarea_field('products_zusatz_description[' . $languages[$i]['id'] . ']', 'soft', '103', '20', (($products_zusatz_description[$languages[$i]['id']]) ? stripslashes($products_zusatz_description[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_zusatz_description')), ''); ?>
                                     </td>
                                 </tr>			
                                 <tr>
                                     <td valign="top">
                                         <strong><?php echo TEXT_PRODUCTS_CART_DESCRIPTION; ?></strong><br>
-    <?php echo xtc_draw_textarea_field('products_cart_description[' . $languages[$i]['id'] . ']', 'soft', '103', '20', (($products_cart_description[$languages[$i]['id']]) ? stripslashes($products_cart_description[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_cart_description')), 'class="ckeditor" name="editor4"'); ?>
+    <?php echo xtc_draw_textarea_field('products_cart_description[' . $languages[$i]['id'] . ']', 'soft', '103', '20', (($products_cart_description[$languages[$i]['id']]) ? stripslashes($products_cart_description[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_cart_description')), ''); ?>
                                     </td>
                                 </tr>
                             </table>
-                                        <?php
-                                        if (USE_WYSIWYG == 'true') {
-                                            if (file_exists('includes/editor/ckfinder/ckfinder.js')) {
-                                                ?>	
-                                    <script type="text/javascript">
-                                        var newCKEdit = CKEDITOR.replace('<?php echo 'products_description[' . $languages[$i]['id'] . ']' ?>');
-                                        CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-                                    </script>
-                                    <script type="text/javascript">
-                                        var newCKEdit = CKEDITOR.replace('<?php echo 'products_short_description[' . $languages[$i]['id'] . ']' ?>');
-                                        CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-                                    </script>
-                                    <script type="text/javascript">
-                                        var newCKEdit = CKEDITOR.replace('<?php echo 'products_zusatz_description[' . $languages[$i]['id'] . ']' ?>');
-                                        CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-                                    </script>
-                                    <script type="text/javascript">
-                                        var newCKEdit = CKEDITOR.replace('<?php echo 'products_cart_description[' . $languages[$i]['id'] . ']' ?>');
-                                        CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-                                    </script>
-            <?php
-        }
-    }
-    ?>
+<?php
+if (USE_WYSIWYG == 'true') {
+	echo "<script src=\"includes/ckeditor/ckeditor.js\"></script>";
+	if (file_exists('includes/ckfinder/ckfinder.js')) {
+		echo "<script src=\"includes/ckfinder/ckfinder.js\"></script>
+				<script>
+					var newCKEdit = CKEDITOR.replace('products_description[" . $languages[$i]['id'] . "]');
+					CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+				</script>
+				<script>
+					var newCKEdit = CKEDITOR.replace('products_short_description[" . $languages[$i]['id'] . "]');
+					CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+				</script>
+				<script>
+					var newCKEdit = CKEDITOR.replace('products_zusatz_description[" . $languages[$i]['id'] . "]');
+					CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+				</script>
+				<script>
+					var newCKEdit = CKEDITOR.replace('products_cart_description[" . $languages[$i]['id'] . "]');
+					CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+				</script>";
+	} else {
+	echo "<script>
+			CKEDITOR.replace('products_description[" . $languages[$i]['id'] . "]', {
+				toolbar: \"ImageMapper\",
+				language: \"" . $_SESSION['language_code'] . "\",
+				baseHref: \"" . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . "\",
+				filebrowserBrowseUrl: \"includes/ckeditor/filemanager/index.html\"
+			});
+		</script>
+		<script>
+			CKEDITOR.replace('products_short_description[" . $languages[$i]['id'] . "]', {
+				toolbar: \"ImageMapper\",
+				language: \"" . $_SESSION['language_code'] . "\",
+				baseHref: \"" . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . "\",
+				filebrowserBrowseUrl: \"includes/ckeditor/filemanager/index.html\"
+			});
+		</script>
+		<script>
+			CKEDITOR.replace('products_zusatz_description[" . $languages[$i]['id'] . "]', {
+				toolbar: \"ImageMapper\",
+				language: \"" . $_SESSION['language_code'] . "\",
+				baseHref: \"" . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . "\",
+				filebrowserBrowseUrl: \"includes/ckeditor/filemanager/index.html\"
+			});
+		</script>
+		<script>
+			CKEDITOR.replace('products_cart_description[" . $languages[$i]['id'] . "]', {
+				toolbar: \"ImageMapper\",
+				language: \"" . $_SESSION['language_code'] . "\",
+				baseHref: \"" . HTTP_SERVER . DIR_WS_CATALOG . "\",
+				filebrowserBrowseUrl: \"includes/ckeditor/filemanager/index.html\"
+			});
+		</script>";			
+	}
+}
+?>
                         </div>
                         <?php } ?>
                     <br class="clear">
@@ -888,31 +761,32 @@ if (file_exists(DIR_WS_MODULES . 'group_prices.php')) {
                         <td class="main" width="60%"><?php echo xtc_draw_pull_down_menu('products_zustand', $conditions, $pInfo->products_zustand); ?></td>
                         <td class="main" width="25%"><?php echo P_HELP_ZUSTAND; ?></td>
                     </tr>
-                    <tr>
-                        <td class="main" width="15%"><?php echo TEXT_PRODUCTS_GOOGLE_TAXONOMIE; ?></td>
-                        <td class="main" width="60%"><?php
+<?php
 for ($i = 0; $i < sizeof($languages); $i++) {
-    echo xtc_draw_input_field('products_google_taxonomie[' . $languages[$i]['id'] . ']', (($products_products_google_taxonomie[$languages[$i]['id']]) ? stripslashes($products_products_google_taxonomie[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_google_taxonomie')), 'id="GOOGLE_MERCHANT" style="width:90%"');
-}
+?>
+                    <tr>
+                        <td class="main" width="15%"><?php echo xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']); ?>&nbsp;<?php echo TEXT_PRODUCTS_GOOGLE_TAXONOMIE; ?></td>
+                        <td class="main" width="60%">
+<?php
+    echo xtc_draw_input_field('products_google_taxonomie[' . $languages[$i]['id'] . ']', (($products_products_google_taxonomie[$languages[$i]['id']]) ? stripslashes($products_products_google_taxonomie[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_google_taxonomie')), 'id="GOOGLE_MERCHANT'.($languages[$i]['code'] == 'en' ? 'EN' : '').'" style="width:90%"');
 ?>
                         </td>
                         <td class="main" width="25%"><?php echo P_HELP_GOOGLE_TAXONOMIE; ?></td>
                     </tr>
                     <tr>
-                        <td class="main" width="15%"><?php echo TEXT_PRODUCTS_GOOGLE_TAXONOMIE_NEW; ?></td>
-                        <td class="main" width="60%"><?php echo '<span id="google_taxonomy"></span>'; ?></td>
+                        <td class="main" width="15%"><?php echo xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']); ?>&nbsp;<?php echo TEXT_PRODUCTS_GOOGLE_TAXONOMIE_NEW; ?></td>
+                        <td class="main" width="60%"><?php echo (($languages[$i]['code'] == 'de') ? '<span id="google_taxonomy_de"></span>' : '<span id="google_taxonomy_en"></span>'); ?></td>
                         <td class="main" width="25%"><?php echo P_HELP_GOOGLE_TAXONOMIE_NEW; ?></td>
                     </tr>
                     <tr>
-                        <td class="main" width="15%"><?php echo TEXT_PRODUCTS_TAXONOMIE; ?></td>
-                        <td class="main" width="60%"><?php
-                            for ($i = 0; $i < sizeof($languages); $i++) {
-                                echo xtc_draw_input_field('products_taxonomie[' . $languages[$i]['id'] . ']', (($products_products_taxonomie[$languages[$i]['id']]) ? stripslashes($products_products_taxonomie[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_taxonomie')), 'style="width:90%"');
-                            }
-?>
+                        <td class="main" width="15%"><?php echo xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']); ?>&nbsp;<?php echo TEXT_PRODUCTS_TAXONOMIE; ?></td>
+                        <td class="main" width="60%"><?php echo xtc_draw_input_field('products_taxonomie[' . $languages[$i]['id'] . ']', (($products_products_taxonomie[$languages[$i]['id']]) ? stripslashes($products_products_taxonomie[$languages[$i]['id']]) : xtc_get_product_field($pInfo->products_id, $languages[$i]['id'], 'products_taxonomie')), 'style="width:90%"');?>
                         </td>
                         <td class="main" width="25%"><?php echo P_HELP_PRODUCTS_TAXONOMIE; ?></td>
                     </tr>
+<?php 
+}
+?>
                     <tr>
                         <td class="main" width="15%"><?php echo TEXT_PRODUCTS_G_GENDER; ?></td>
                         <td class="main" width="60%"><?php echo xtc_draw_pull_down_menu('products_google_gender', $products_google_gender, $pInfo->products_google_gender); ?></td>
@@ -972,15 +846,6 @@ for ($i = 0; $i < sizeof($languages); $i++) {
                 </table>
                 <br class="clear">
             </div>
-<?php if (ADMIN_CSEO_ATTRIBUT_MANAGER == 'true') { ?>
-                <div id="prodattrib">
-    <?php
-    unset($_SESSION['pid']);
-    $_SESSION['pid'] = $pInfo->products_id;
-    include(DIR_WS_MODULES . 'attribut_manager.php');
-    ?>
-                    <br class="clear">
-                </div>
                 <?php } ?>
                 <?php if (TREEPODIAACTIVE == 'true') { ?>
                 <div id="prodtreepodia">
@@ -1014,13 +879,4 @@ for ($i = 0; $i < sizeof($languages); $i++) {
         </div>
     </form>
 
-
-
-
-    <script>
-        xajax_get_new_dropdown();
-    </script>
-    <script>
-        xajax_getOverview(<?php echo $pInfo->products_id; ?>);
-    </script>
 

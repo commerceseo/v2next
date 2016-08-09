@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: order_update_order.php 872 2014-03-21 14:46:30Z akausch $
+ * 	$Id: order_update_order.php 991 2014-04-24 07:38:43Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -280,22 +280,13 @@ if ($order_updated) {
                 $errno = curl_errno($ch);
                 $errmsg = curl_error($ch);
 
-                ###bug fix for PHP 4.1.0/4.1.2 (curl_errno() returns high negative value in case of successful termination)
                 if ($errno < 0)
                     $errno = 0;
-                ##bug fix for PHP 4.1.0/4.1.2
                 #close connection
                 curl_close($ch);
             }
         }
     }
-	if(strpos(MODULE_PAYMENT_INSTALLED, 'shopgate.php') !== false){
-	  /******* SHOPGATE **********/
-	  include_once DIR_FS_CATALOG.'includes/external/shopgate/base/admin/orders.php';
-	  setShopgateOrderStatus($oID, $status);
-	  /******* SHOPGATE **********/
-	}
-    ### END - CALL NOVALNET PAYGATE TO UPDATE THE BOOKING STATUS ###
     // $messageStack->add_session(SUCCESS_ORDER_UPDATED, 'success');
 } else {
     // $messageStack->add_session(WARNING_ORDER_NOT_UPDATED, 'warning');

@@ -1,0 +1,54 @@
+<div class="row">
+	<div class ="col-xs-12">
+		<h2>{$TITLE}</h2>
+	</div>
+	<ul class="nav nav-tabs">
+		<li{if $MODULE_blog_categories_list} class="active"{/if}><a href="{$FILENAME_BLOG}">{$TABLE_HEADING_NAVIGATION_OVERVIEW}</a></li>
+		<li{if $MODULE_blog_categories_edit} class="active"{/if}><a href="{$FILENAME_BLOG}?action=newcategorie">{$TABLE_HEADING_NAVIGATION_NEWCATEGORIE}</a></li>
+		<li{if $MODULE_blog_start} class="active"{/if}><a href="{$FILENAME_BLOG}?action=startsite">{$TABLE_HEADING_NAVIGATION_STARTSITE}</a></li>
+		<li{if $MODULE_blog_settings} class="active"{/if}><a href="{$FILENAME_BLOG}?action=settings">{$TABLE_HEADING_NAVIGATION_SETTINGS}</a></li>
+		<li{if $MODULE_blog_comments} class="active"{/if}><a href="{$FILENAME_BLOG}?action=comments">{$txt.TABLE_HEADING_NAVIGATION_COMMENTS} {$COUNTER}</a></li>
+	</ul>
+	{if $MODULE_blog_categories_list}
+		<form method="post" action="{$FILENAME_BLOG}?action=set" name="leiste">
+		<div class="tab-content">
+		  {$MODULE_blog_categories_list}
+		</div>
+		</form>
+	{/if}
+	{if $MODULE_blog_categories_edit}
+	<div class="tab-content">
+	  {$MODULE_blog_categories_edit}
+	</div>
+	{/if}
+	{if $MODULE_blog_start}
+	<div class="tab-content">
+	  {$MODULE_blog_start}
+	</div>
+	{/if}
+	{if $MODULE_blog_settings}
+	<div class="tab-content">
+	  {$MODULE_blog_settings}
+	</div>
+	{/if}
+	{if $MODULE_blog_comments}
+	<div class="tab-content">
+	  {$MODULE_blog_comments}
+	</div>
+	{/if}
+</div>
+
+{literal}
+<script>
+  function checkboxes(wert) {
+    var my = document.leiste;
+    var len = my.length;
+    for (var i = 0; i < len; i++) {
+      var e = my.elements[i];
+      if (e.name == "status[]") {
+        e.checked = wert;
+      }
+    }
+  }
+</script>
+{/literal}

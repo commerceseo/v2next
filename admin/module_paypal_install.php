@@ -432,7 +432,7 @@ function menue02($a = 0, $b = 0, $c = 0) {
 }
 
 /* * *********************************************************** */
-/* * *********** Daten Funktion fР РЋР Р‰r den Schritt 2 ************** */
+/* * *********** Daten Funktion Schritt 2 ************** */
 /* * *********************************************************** */
 
 function progdat02($wasn, $lang = '') {
@@ -443,46 +443,19 @@ function progdat02($wasn, $lang = '') {
                 'modules.php' => array('\'removepaypal\''),
             );
             break;
-        case 3: // im Shop (root)
-            return array(
-                    // 'checkout_payment.php' => array('isset($_SESSION[\'reshash\']', 'unset($_SESSION[\'reshash\'])', 'unset($_SESSION[\'nvpReqArray\'])'),
-                    // 'checkout_payment_address.php' => array('1', 'is_array($_SESSION[\'nvpReqArray\'])', 'xtc_href_link($link_checkout_payment', 'xtc_href_link($link_checkout_payment', 'xtc_href_link($link_checkout_payment', 'xtc_href_link($link_checkout_payment'),
-                    // 'checkout_shipping_address.php' => array('1', 'is_array($_SESSION[\'nvpReqArray\'])', 'xtc_href_link($link_checkout_shipping', 'xtc_href_link($link_checkout_shipping', 'xtc_href_link($link_checkout_shipping', 'xtc_href_link($link_checkout_shipping'),
-                    // 'shopping_cart.php' => array('1', 'paypal_warten', 'unset($_SESSION[\'paypal_fehler\'])', 'paypal_warten', 'order.php', '$_SESSION[\'reshash\'][\'FORMATED_ERRORS\']', 'paypal_warten', 'BUTTON_PAYPAL', 'paypal_warten')
-            );
-            break;
         case 4: // Shop Programme /includes
             return array(
-                'application_top.php' => array('1', 'get_magic_quotes_gpc()', 'get_magic_quotes_gpc()', 'DIR_WS_INCLUDES.FILENAME_CART_ACTIONS'),
-                'application_top_callback.php' => array('DIR_WS_FUNCTIONS.\'sessions.php\''),
                 'database_tables.php' => array('TABLE_PAYPAL', 'paypal', 'TABLE_PAYPAL_STATUS_HISTORY', 'paypal_status_history'),
                 'filenames.php' => array('FILENAME_PAYPAL_CHECKOUT', 'paypal_checkout.php', 'FILENAME_PAYPAL', 'paypal.php')
             );
             break;
-        case 5: // Shop Programme /includes/classes
-            return array(
-                    // 'order.php' => array('xtc_db_query("select text, value from', '$pp_order_tax', '$pp_order_fee+=$order_fee', 'xtc_db_query("select title, value', 'pp_total', 'pp_fee', 'delivery_country_iso_code_2', 'billing_country_iso_code_2', '$oder_total_values[\'class\'] == \'ot_total\'', '$this->tax_discount', 'price_formated', 'final_price_formated', '$this->tax_discount', '$this->tax_discount'),
-                    // 'order_total.php' => array('function pp_output()'),
-                    // 'payment.php' => array('$_SESSION[\'paypal_express_checkout\']', 'function giropay_process()'),
-                    // 'shipping.php' => array('$quotes[\'error\']', '$quotes[\'error\'][$i]'),
-                    // 'shopping_cart.php' => array('$this->tax = 0;', '$this->total_discount = array ();', '$this->total_discount[$product[\'products_tax_class_id\']]', '$this->total_discount[$product[\'products_tax_class_id\']]', '$this->total_discount as $value', '$gval=0;', 'gval+=$this->tax[$key][\'value\'];', 'return $gval;')
-            );
-            break;
+
         case 6: // Shop Programme /lang
             return array(
                 $lang . '.php' => array('NAVBAR_TITLE_PAYPAL_CHECKOUT', 'PAYPAL_ERROR', 'PAYPAL_NOT_AVIABLE', 'PAYPAL_FEHLER', 'PAYPAL_WARTEN', 'PAYPAL_NEUBUTTON', 'ERROR_ADDRESS_NOT_ACCEPTED', 'PAYPAL_GS', 'PAYPAL_TAX'),
-                'lang_' . $lang . '.conf' => array('text_or', '[checkout_paypal]', 'text_accept_adr'),
                 'admin/configuration.php' => array('PAYPAL_MODE_TITLE', 'PAYPAL_API_IMAGE_TITLE', 'PAYPAL_ERROR_DEBUG_TITLE'),
-                'admin/' . $lang . '.php' => array('BOX_PAYPAL'),
                 'admin/modules.php' => array('TEXT_INFO_DELETE_PAYPAL'),
                 'admin/orders.php' => array('TEXT_INFO_PAYPAL_DELETE')
-            );
-            break;
-        case 7: // Shop Programme /templates/xxx/mail
-            break;
-        case 8: // Shop Programme /templates/xxx/module
-            return array(
-                'shopping_cart.html' => array('$error', 'BUTTON_PAYPAL')
             );
             break;
     }
@@ -490,7 +463,7 @@ function progdat02($wasn, $lang = '') {
 }
 
 /* * *********************************************************** */
-/* * *********** Daten Funktion fР вЂњРЎВr den Schritt 1 ************** */
+/* * *********** Daten Funktion den Schritt 1 ************** */
 /* * *********************************************************** */
 
 function progdat01($wasn, $lang = '') {
@@ -548,9 +521,9 @@ function def_texte($wasn) {
     // Stand: 29.04.2009
     if ($_SESSION['language'] == 'german'):
         if ($wasn == 1):
-            define('HEADING_TITLE', "Prüfen ob PayPal-Express-Modul-Programme vorhanden sind...<br /><font style='color:#FF0000;'>Achtung:<br />Für commerce:SEO können Sie einfach auf 'Trotzdem Weiter' klicken und somit geht das Programm zum nГ¤chsten Schritt und -falls dort kein Fehler auftritt- zum Ende.<br />Ein erneuter Test erfolgt erst beim 'Installieren' eines der PayPal Module.</font>");
+            define('HEADING_TITLE', "Prüfen ob PayPal-Express-Modul-Programme vorhanden sind...<br /><font style='color:#FF0000;'>Achtung:<br />Für commerce:SEO können Sie einfach auf 'Trotzdem Weiter' klicken und somit geht das Programm zum nГ¤chsten Schritt und -falls dort kein Fehler auftritt- zum Ende.<br />Ein erneuter Test erfolgt erst beim 'Installieren' eines der PayPal Module.</font>");
         elseif ($wasn == 2):
-            define('HEADING_TITLE', "Teile des PayPal-Express-Moduls in den Shop Programmen suchen...<br /><font style='color:#FF0000;'>Achtung:<br />Es werden die Dateien bzw. Teile des geänderten Codes für die PayPal Module in den Dateien aus dem Module-Verzeichnis '2-Aenderungen-changed' gesucht.<br />Es werden nur markante, gern vergessene Teile des Moduls gesucht - NICHT der komplette Code!<br />Ein '<font style='color:#11E90C'>OK</font>' heisst nur, dass ein Teil des Codes gefunden wurde bzw. die Datei überhaupt vorhanden ist.<br />Das Programm kann NICHT die tatsächliche Funktion des Moduls prüfen und ob der Code an der richtigen Stelle steht.<br />Ein 'Fehlt!' zeigt das wichtiger Code nicht vorhanden ist und das Modul nicht ordnungsgemäß funktionieren wird.<br />Ein 'Falsch!' zeigt das die Reihenfolge der Code-Zeilen nicht stimmt und das Modul nicht ordnungsgemäß funktionieren wird.<br />Bauen Sie in diesem Fall den fehlenden/falschen Code richtig in das Programm ein und drР РЋР Р‰cken Sie auf 'Wiederholen'.<br />Bei 'Trotzdem Fertig' wird das Programm beendet.<br />Ein erneuter Test erfolgt erst beim 'Installieren' eines der PayPal Module.</font>");
+            define('HEADING_TITLE', "Teile des PayPal-Express-Moduls in den Shop Programmen suchen...<br /><font style='color:#FF0000;'>Achtung:<br />Es werden die Dateien bzw. Teile des geänderten Codes für die PayPal Module in den Dateien aus dem Module-Verzeichnis '2-Aenderungen-changed' gesucht.<br />Es werden nur markante, gern vergessene Teile des Moduls gesucht - NICHT der komplette Code!<br />Ein '<font style='color:#11E90C'>OK</font>' heisst nur, dass ein Teil des Codes gefunden wurde bzw. die Datei überhaupt vorhanden ist.<br />Das Programm kann NICHT die tatsächliche Funktion des Moduls prüfen und ob der Code an der richtigen Stelle steht.<br />Ein 'Fehlt!' zeigt das wichtiger Code nicht vorhanden ist und das Modul nicht ordnungsgemäß funktionieren wird.<br />Ein 'Falsch!' zeigt das die Reihenfolge der Code-Zeilen nicht stimmt und das Modul nicht ordnungsgemäß funktionieren wird.<br />Bauen Sie in diesem Fall den fehlenden/falschen Code richtig in das Programm ein und drР РЋР Р‰cken Sie auf 'Wiederholen'.<br />Bei 'Trotzdem Fertig' wird das Programm beendet.<br />Ein erneuter Test erfolgt erst beim 'Installieren' eines der PayPal Module.</font>");
         endif;
         define('ACT_01', "Suchen");
         define('ACT_02', "Vergleichen");
@@ -591,4 +564,3 @@ function def_texte($wasn) {
     endif;
     return;
 }
-?>

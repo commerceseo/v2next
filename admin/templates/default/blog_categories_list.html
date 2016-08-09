@@ -1,0 +1,104 @@
+<hr>
+<div class="row">
+{foreach name=blogkats item=module_blog from=$blogkat}
+<div class="panel-group" id="accordion">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<div class="col-md-1 col-sm-12">
+				{$module_blog.cat_status}
+			</div>
+			<div class="col-md-8 col-sm-12">
+				<h4 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne{$module_blog.catid}">
+					{$module_blog.catname}
+					{$module_blog.cateigen}
+					</a>
+					<a href="{$module_blog.linkeditcat}"><i class="glyphicon glyphicon-edit"></i></a>
+				</h4>
+			</div>
+			<div class="col-md-1 col-sm-12">
+				{$txt.POSITION} {$module_blog.position}
+			</div>
+			<div class="col-md-2 col-sm-12">
+				{$txt.AKTION} <a href="{$module_blog.linknew}"><i class="glyphicon glyphicon-plus"></i></a>
+			</div>
+		<br class="clearfix">
+		</div>
+		<div id="collapseOne{$module_blog.catid}" class="panel-collapse collapse">
+			<div class="panel-body">
+				{if $module_blog.un_cats}
+					<h4>Unterkategorien</h4>
+					{foreach name=blogucats item=module_ucats from=$module_blog.un_cats}
+					<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="col-md-1 col-sm-12">
+							{$module_ucats.cat_status}
+						</div>
+						<div class="col-md-8 col-sm-12">
+						<h4 class="panel-title">
+							<a href="blog.php?ucatid={$module_blog.catid}">
+								{$module_ucats.catname}
+								{$module_ucats.cateigen}
+							</a>
+							<a href="{$module_ucats.linkeditcat}"><i class="glyphicon glyphicon-edit"></i></a>
+						</h4>
+						</div>
+						<div class="col-md-1 col-xs-12">
+							{$txt.POSITION} {$module_ucats.position}
+						</div>
+						<div class="col-md-2col-xs-12">
+						{$txt.AKTION} 
+						<a href="{$module_ucats.linknew}"><i class="glyphicon glyphicon-plus"></i></a>
+						</div>
+					<br class="clearfix">
+					</div>
+					</div>
+					{/foreach}
+				{/if}
+				{if $module_blog.items}
+					<div class="row">
+						<h4>{$txt.BEIT}</h4>
+						<table class="table table-striped">
+							<tr>
+								<th class="col-xs-1"><b>{$txt.HEADING_NEWCATEGORIE_STATUS}</b></th>
+								<th class="col-xs-8"><b>{$txt.HEADING_TITLE_TAB}</b></th>
+								<th class="col-xs-1"><b>{$txt.POSITION}</b></th>
+								<th class="col-xs-2"><b>{$txt.AKTION}</b></th>
+							</tr>
+						{foreach name=blogitems item=module_item from=$module_blog.items}
+							<tr>
+								<td>
+									{if $module_item.status == 2}
+									<a class="btn btn-success btn-xs" href="blog.php?action=set&set_item_status=1&itemid={$module_item.itemid}"><i class="glyphicon glyphicon-ok"></i></a>
+									{else}
+									<a class="btn btn-danger btn-xs" href="blog.php?action=set&set_item_status=2&itemid={$module_item.itemid}"><i class="glyphicon glyphicon-remove"></i></a>
+									{/if}
+								</td>
+								<td>
+									{$module_item.titel} {$module_item.aktion}
+								</td>
+								<td>
+									{$module_item.position}
+								</td>
+								<td>
+									{$module_item.aktion2}
+								</td>
+							</tr>
+						{/foreach}
+						</table>
+					</div>
+				{/if}
+			</div>
+		</div>
+	</div>
+</div>
+{/foreach}
+</div>
+<div class="row">
+	<div class="col-xs-12">
+		<h3>{$txt.FOOTER_STATUS}</h3>
+		<div class="form-group">{$blogstatus}
+			<input type="submit" class="btn btn-info" value="{$txt.CHANGE_STATUS}" /></div>
+	</div>
+</div>
+{$FORM_END}

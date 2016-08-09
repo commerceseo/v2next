@@ -177,8 +177,14 @@ class MagnaRecalcOrdersTotal {
 	private function calcShippingTax($shippingCost) {
 		loadDBConfig($this->cOrder['mpID']);
 		
+		/*//{search: 1427198983}
 		$this->shipping['tax'] = (float)getDBConfigValue($this->cOrder['platform'].'.mwst.shipping', $this->cOrder['mpID'], 19);
-		
+		//*/
+		$this->shipping['tax'] = (float)$this->magnaDB->fetchOne("
+			SELECT max(products_tax)
+			FROM ".TABLE_ORDERS_PRODUCTS."
+			WHERE orders_id = '".$this->cOrder['orders_id']."'
+		");
 		$this->shipping['brutto'] = $shippingCost;
 		$this->shipping['netto'] = $this->sp->setPrice($this->shipping['brutto'])->removeTax($this->shipping['tax'])->getPrice();
 	
@@ -375,14 +381,14 @@ class MagnaRecalcOrdersTotal {
 			$aProcessedOrderIDs[$otSet['orders_id']] = true;
 		}
 
-		foreach($aProcessedOrderIDs as $sOrderId => $bValue) {
+		foreach ($aProcessedOrderIDs as $sOrderId => $bValue) {
 			// Gambio specific "Kleinunternehmer Regelung"
-			if (
-				    MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS
+			if (defined('MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS')
+				&& MAGNA_GAMBIO_PLUGIN_GM_TAX_FREE_STATUS
 				&& !MagnaDB::gi()->recordExists(TABLE_ORDERS_TOTAL, array (
-						'orders_id' => $sOrderId,
-						'class' => 'ot_gm_tax_free'
-					))
+					'orders_id' => $sOrderId,
+					'class' => 'ot_gm_tax_free'
+				))
 			) {
 				$this->magnaDB->insert(TABLE_ORDERS_TOTAL, array(
 					'orders_id' => $sOrderId,
@@ -407,8 +413,9 @@ class MagnaRecalcOrdersTotal {
 		$this->calcShippingDetails();
 		$this->finalizeOT();
 		
-		if (!$save) return;
-		
+		if (!$save) {
+			return;
+		}
 		$this->saveOrder();
 	}
 

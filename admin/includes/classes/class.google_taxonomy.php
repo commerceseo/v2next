@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.google_taxonomy.php 420 2013-06-19 18:04:39Z akausch $
+ * 	$Id: class.google_taxonomy.php 1072 2014-05-27 08:38:11Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -31,9 +31,8 @@ class googleTaxonomy {
 
         if (file_exists($this->local_url_de) && filesize($this->local_url_de) > 0) {
             $filetime = filectime($this->local_url_de);
-            $now = time();
             $tomorrow = mktime(date('h', $filetime), date('i', $filetime), date('s', $filetime), date('m', $filetime), date('d', $filetime) + 2, date('Y', $filetime));
-            if ($tomorrow > $now)
+			if ($filetime < $tomorrow)
                 return true;
         }
 
@@ -77,9 +76,8 @@ class googleTaxonomy {
 		
 		if (file_exists($this->local_url_en) && filesize($this->local_url_en) > 0) {
             $filetime = filectime($this->local_url_en);
-            $now = time();
             $tomorrow = mktime(date('h', $filetime), date('i', $filetime), date('s', $filetime), date('m', $filetime), date('d', $filetime) + 2, date('Y', $filetime));
-            if ($tomorrow > $now)
+            if ($filetime < $tomorrow)
                 return true;
         }
         if (empty($this->remote_url_en))
@@ -121,41 +119,43 @@ class googleTaxonomy {
         fclose($handle_en);
     }
 
-    function get_dropdown_data($parent = '') {
-        $data = $this->get_categories($parent);
+    function get_dropdown_data($parent = '', $lang = 'de') {
+        $data = $this->get_categories($parent, $lang);
         if (!empty($data)) {
-            if ($parent != '')
+            if ($parent != '') {
                 $result = array(array('id' => '', 'text' => ' -- bitte wählen -- '));
-
+			}
             foreach ($data AS $cat) {
-                if (!empty($cat))
+                if (!empty($cat)) {
                     $result[] = array('id' => utf8_encode($cat), 'text' => utf8_encode($cat));
+				}
             }
             return $result;
         }
         return false;
     }
 
-    function get_categories($parent = '') {
-        $parent = utf8_decode($parent);
-
-        $handle = fopen($this->local_url_de, 'r');
-
+    function get_categories($parent = '', $lang = 'de') {
+		$parent = utf8_decode($parent);
+        if ($lang == 'de') {
+			$handle = fopen($this->local_url_de, 'r');
+		} else {
+			$handle = fopen($this->local_url_en, 'r');
+		}
         $result = array();
         while (!feof($handle)) {
             $line = fgets($handle, 4096);
             $line = trim($line);
             $line = utf8_decode($line);
-
-            if (empty($parent) && !strstr($line, '>'))
+            if (empty($parent) && !strstr($line, '>')) {
                 $result[] = $line;
-
-            elseif (!empty($parent) && strstr($line, $parent . ' >')) {
+            } elseif (!empty($parent) && strstr($line, $parent . ' >')) {
                 $value = substr($line, strlen($parent));
                 $temp_array = explode(' > ', $value);
                 $value = trim($temp_array[1]);
-                if (!empty($value) && !isset($temp_array[2]))
+                if (!empty($value) && !isset($temp_array[2])) {
                     $result[] = $value;
+				}
             }
         }
         fclose($handle);

@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: order_details.php 1040 2014-05-12 19:22:49Z akausch $
+ * 	$Id: order_details.php 1380 2015-01-26 20:38:25Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -175,9 +175,8 @@ $shipping_tracking = xtc_get_tracking_status();
 					
 					include(DIR_FS_ADMIN . 'includes/modules/order_sepa.php');
 
-                    // begin modification for banktransfer
-                    $banktransfer_query = xtc_db_query("SELECT * FROM banktransfer WHERE orders_id = '" . xtc_db_input($_GET['oID']) . "'");
-                    $banktransfer = xtc_db_fetch_array($banktransfer_query);
+                    // begin modification for banktransfer Deprecated!!!
+                    $banktransfer = xtc_db_fetch_array(xtc_db_query("SELECT * FROM banktransfer WHERE orders_id = '" . xtc_db_input($_GET['oID']) . "'"));
                     if (($banktransfer['banktransfer_bankname']) || ($banktransfer['banktransfer_blz']) || ($banktransfer['banktransfer_number'])) {
                         ?>
                         <tr>
@@ -530,22 +529,6 @@ $shipping_tracking = xtc_get_tracking_status();
                     </tr>
 <?php if (function_exists('magnaExecute')) magnaExecute('magnaRenderOrderStatusSync', array(), array('order_details.php')); ?>
                     <tr>
-                        <td colspan="2">
-                            <?php
-                            $mail_template = array();
-                            $mail_template[] = array('id' => 0, 'text' => '---');
-                            $get_names_query = xtc_db_query("SELECT id, title, mail_text FROM mail_templates ORDER BY id");
-                            while ($get_names = xtc_db_fetch_array($get_names_query)) {
-                                $mail_template[] = array('id' => $get_names['id'], 'text' => $get_names['title']);
-                            }
-
-                            echo '<div><strong>Vorlage:</strong> ' . xtc_draw_pull_down_menu('mail_template', $mail_template, '', 'onchange="xajax_getMailTemplate(this.value);"') . '</div>';
-                            echo xtc_draw_textarea_field('comments', 'soft', '60', '5', $order->info['comments'], 'style="width:99.5%"');
-                            echo '<div><strong>Als neue Vorlage speichern unter:</strong> ' . xtc_draw_input_field('mail_template_title', '', 'maxlength="100"') . '</div>';
-                            ?>  
-                        </td>
-                    </tr>
-                    <tr>
                         <td>
                             <label for="notify"><?php echo ENTRY_NOTIFY_CUSTOMER; ?> </label>
                             <?php 
@@ -664,6 +647,11 @@ $shipping_tracking = xtc_get_tracking_status();
     </tr>
     <tr>
         <td colspan="2" align="right">
+			<!-- Paymill begin -->
+			<?php if ($order->info['payment_method'] == 'paymill_cc' || $order->info['payment_method'] == 'paymill_elv') { ?>
+			<?php include(dirname(__FILE__) . '/../lang/' . $_SESSION['language'] . '/modules/payment/' . $order->info['payment_method'] . '.php'); ?>
+			<a class="button" href="<?php echo xtc_href_link('paymill_refund.php','oID=' . $_GET['oID']); ?>"><?php echo PAYMILL_REFUND_BUTTON_TEXT; ?></a>
+			<?php } ?>
             <a class="button" href="javascript:void()" onclick="window.open('<?php echo xtc_href_link(FILENAME_PRINT_ORDER, 'oID=' . $_GET['oID']); ?>', 'popup', 'toolbar=0, width=640, height=600, scrollbars=yes')"><?php echo BUTTON_INVOICE; ?></a> 
             <a class="button" href="javascript:void()" onclick="window.open('<?php echo xtc_href_link(FILENAME_PRINT_PACKINGSLIP, 'oID=' . $_GET['oID']); ?>', 'popup', 'toolbar=0, width=640, height=600, scrollbars=yes')"><?php echo BUTTON_PACKINGSLIP; ?></a>
             <?php

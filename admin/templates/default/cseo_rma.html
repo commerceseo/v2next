@@ -363,11 +363,13 @@
                 <td>{$RMA_DESCRIPTION}</td>
             </tr>
         </table>
+        </div>
 
         {if $RMA_SHOW_STATISTIC == 'true'}
         <div class="col-md-12">
             <h2>{$txt.RMA_STATISTIC}</h2>
         </div>
+		<div class="col-md-12">
         <table class="table table-bordered table-striped">
             {foreach name=item item=module_item from=$RMA_STATISTIC}
             <tr>
@@ -377,11 +379,13 @@
             </tr>
             {/foreach}
         </table>
+        </div>
         {else}
         <div class="col-md-12">
             <h2>{$txt.RMA_OPTIONS}</h2>
         </div>
         {$RMA_EDIT_RMA_FORM}{$RMA_EDIT_RMA_HIDDEN}
+		<div class="col-md-12">
         <table class="table table-bordered table-striped">
             <tr>
                 <td>{$txt.RMA_EDIT_STATUS}</td>
@@ -390,6 +394,8 @@
                 <td>{$RMA_EDIT_RMA_TEXT} {$RMA_STATUS_BUTTON_GO}</td>
             </tr>
         </table>
+        </div>
+		<div class="col-md-12">
         <table class="table table-bordered table-striped">
             <tr>
                 <td>{$txt.RMA_COMMENT}</td>
@@ -404,10 +410,10 @@
                 <td>{$RMA_STATUS_COMMENTS_MAIL_SEND}</td>
             </tr>
         </table>
+        </div>
 
         {$RMA_STATUS_COMMENTS_SUBMIT}
         {$FORM_END}
         {/if}
-    </div>
 </div>
 {/if}

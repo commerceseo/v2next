@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: start.php 1158 2014-07-21 12:53:34Z akausch $
+ * 	$Id: start.php 1333 2014-12-18 23:13:25Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -31,24 +31,24 @@ $cs = $_SESSION['customers_status']['customers_status_id'];
 
 if (($cs == '0') && ($aa['stats_sales_report'] == '1')) {
 
-    $customers = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_CUSTOMERS));
-    $customers_gast = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_CUSTOMERS . " WHERE customers_status='1'"));
-    $customers_neukunde = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_CUSTOMERS . " WHERE customers_status='2'"));
-    $customers_haendler = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_CUSTOMERS . " WHERE customers_status='3'"));
-    $customers_rest = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_CUSTOMERS . " WHERE customers_status>'3'"));
+    $customers = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(customers_id) AS count FROM " . TABLE_CUSTOMERS));
+    $customers_gast = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(customers_id) AS count FROM " . TABLE_CUSTOMERS . " WHERE customers_status='1'"));
+    $customers_neukunde = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(customers_id) AS count FROM " . TABLE_CUSTOMERS . " WHERE customers_status='".DEFAULT_CUSTOMERS_STATUS_ID."'"));
+    $customers_haendler = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(customers_id) AS count FROM " . TABLE_CUSTOMERS . " WHERE customers_status='3'"));
+    $customers_rest = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(customers_id) AS count FROM " . TABLE_CUSTOMERS . " WHERE customers_status>'3'"));
 
 
-    $products = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_PRODUCTS . " WHERE products_status = '1'"));
-    $products1 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_PRODUCTS . " WHERE products_status = '0'"));
-    $products2 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_PRODUCTS . ""));
-    $category = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_CATEGORIES . " WHERE categories_status = '1'"));
-    $category2 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_CATEGORIES . " WHERE categories_status = '0'"));
+    $products = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(products_id) AS count FROM " . TABLE_PRODUCTS . " WHERE products_status = '1'"));
+    $products1 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(products_id) AS count FROM " . TABLE_PRODUCTS . " WHERE products_status = '0'"));
+    $products2 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(products_id) AS count FROM " . TABLE_PRODUCTS . ""));
+    $category = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(categories_id) AS count FROM " . TABLE_CATEGORIES . " WHERE categories_status = '1'"));
+    $category2 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(categories_id) AS count FROM " . TABLE_CATEGORIES . " WHERE categories_status = '0'"));
 
-    $orders0 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_ORDERS . " WHERE orders_status > '3' OR orders_status <= '0'"));
-    $orders1 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_ORDERS . " WHERE orders_status = '1'"));
-    $orders2 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_ORDERS . " WHERE orders_status = '2'"));
-    $orders3 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_ORDERS . " WHERE orders_status = '3'"));
-    $specials = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) as count FROM " . TABLE_SPECIALS));
+    $orders0 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(orders_id) AS count FROM " . TABLE_ORDERS . " WHERE orders_status > '3' OR orders_status <= '0'"));
+    $orders1 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(orders_id) AS count FROM " . TABLE_ORDERS . " WHERE orders_status = '1'"));
+    $orders2 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(orders_id) AS count FROM " . TABLE_ORDERS . " WHERE orders_status = '2'"));
+    $orders3 = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(orders_id) AS count FROM " . TABLE_ORDERS . " WHERE orders_status = '3'"));
+    $specials = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(specials_id) AS count FROM " . TABLE_SPECIALS . " WHERE status = '1';"));
 
     $datelastyear = date("Y");
     $datethisyear = date("Y");
@@ -125,7 +125,7 @@ if (($cs == '0') && ($aa['stats_sales_report'] == '1')) {
 														WHERE 
 															o.date_purchased LIKE '" . $datethisyear . "%';"));	
 
-	$datelastyearn = $datelastyear -1;
+	$datelastyearn = $datethisyear -1;
 	$orders_lastyear = xtc_db_fetch_array(xtc_db_query("SELECT 
 															sum(ot.value) 
 														FROM 
@@ -137,32 +137,28 @@ if (($cs == '0') && ($aa['stats_sales_report'] == '1')) {
 
 }
 
-
 require(DIR_WS_INCLUDES . 'header.php');
-?>
 
-
-<?php include(DIR_WS_MODULES . FILENAME_SECURITY_CHECK); ?>
-<?php 
+include(DIR_WS_MODULES . FILENAME_SECURITY_CHECK);
 // if ($htaccess_not_exists) {
 	// echo '<div class="myerrorlog">Achtung: Sie können einen Verzeichnisschutz für den Admin anlegen, das erhöht die Sicherheit!</div>';
 // }	
 
  ?>
     <?php if (($cs == '0') && ($aa['stats_sales_report'] == '1')) { ?>
-        <div class="content w100p">
-            <div class="title">
-                <div class="titleimg">
-                    <img  src="images/admin_icons/chart_pie.png" />
-                </div>
-                <div class="titlehead">
-                    <b>Statistiken:</b>
-                </div>
-            </div>
-            <table width="100%" class="dataTableStart">
+<div class="panel-group" id="accordion">
+<div class="panel panel-default">
+<div class="panel-heading pointer" data-toggle="collapse" href="#collapse1">
+      <h4 class="panel-title left"><i class="glyphicon glyphicon-signal"></i> Statistik</h4>
+	  <div class="collapse-indicator text-right">+</div>
+	  <div class="clear">&nbsp;</div>
+  </div>
+	 <div id="collapse1" class="panel-collapse collapse in"> 
+		<div class="table-responsive panel-body">
+            <table class="table table-bordered">
                 <tr>
-                    <td width="25%" valign="top">
-                        <table width="100%">
+                    <td class="col-xs-6">
+                        <table>
                             <tr>
                                 <td style="background:#FCF5DD">Umsatz heute:</td>
                                 <td  style="background:#FCF5DD" align="right"> <?php echo number_format($orders_today['sum(ot.value)'], 2); ?>&euro;</td>
@@ -197,34 +193,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                             </tr>
                         </table>
                     </td>
-                    <td width="25%" valign="top">
-                        <table width="100%" class="dataTableStart">
-                            <tr>
-                                <td colspan="2"><b>Kunden-Gruppenzuordnung</b></td>
-                            </tr>
-                            <tr>
-                                <td>Kunden gesamt</td>
-                                <td  align="center"> <?php echo $customers['count']; ?></td>
-                            </tr>
-                            <tr>
-                                <td>Gast-Kunden:</td>
-                                <td  align="center"> <?php echo $customers_gast['count']; ?></td>
-                            </tr>
-                            <tr>
-                                <td>Neu-Kunden:</td>
-                                <td  align="center"> <?php echo $customers_neukunde['count']; ?></td>
-                            </tr>
-                            <tr>
-                                <td>H&auml;ndler-Kunden:</td>
-                                <td align="center"> <?php echo $customers_haendler['count']; ?></td>
-                            </tr>
-                            <tr>
-                                <td>Restliche Gruppen:</td>
-                                <td align="center"><?php echo $customers_rest['count']; ?></td>
-                            </tr>
-                        </table>
-                    </td>
-                    <td width="25%" valign="top">
+                    <td class="col-xs-6">
                         <table width="100%" class="dataTableStart">
                             <tr>
                                 <td>Aktive Artikel:</td>
@@ -252,237 +221,141 @@ require(DIR_WS_INCLUDES . 'header.php');
                             </tr>
                         </table>
                     </td>
-                    <td width="25%" valign="top">
-                        <table width="100%" class="dataTableStart">
-                            <tr>
-                                <td colspan="2"><b>Bestellungen nach Status</b></td>
-                            </tr>
-                            <tr>
-                                <td>Offen</td>
-                                <td align="center"><?php echo $orders1['count']; ?></td>
-                            </tr>
-                            <tr>
-                                <td>In Bearbeitung</td>
-                                <td align="center"><?php echo $orders2['count']; ?></td>
-                            </tr>
-                            <tr>
-                                <td>Versendet</td>
-                                <td align="center"><?php echo $orders3['count']; ?></td>
-                            </tr>
-                            <tr>
-                                <td>Weitere</td>
-                                <td align="center"><?php echo $orders0['count']; ?></td>
-                            </tr>
-                        </table>
-                    </td>
                 </tr>
             </table>
         </div>
+	</div>
+	</div>
 <?php } ?>
     <?php if (ADMIN_CSEO_START_WHOISONLINE == 'true') { ?>
-        <div class="content w100p">
-            <div class="title">
-                <div class="titleimg">
-                    <img  src="images/admin_icons/chart_pie.png" />
-                </div>
-                <div class="titlehead">
-                    <b>Besucher:</b>
-                </div>
-            </div>
-
-            <table class="dataTableStart" width="100%">
-                <tr class="dataTableStartHeadingRow">
-                    <th class="dataTableStartHeadingContent" height="20" width="25%">Online seit (min.)</th>
-                    <th class="dataTableStartHeadingContent" height="20" width="23%">Name</th>
-                    <th class="dataTableStartHeadingContent" align="center" height="20" width="20%">Letzter Klick</th>
-                    <th class="dataTableStartHeadingContent" align="center" width="20%">letzte Seite</th>
-                    <th class="dataTableStartHeadingContent last" align="center" height="20" width="33%">Infos</th>
+  <div class="panel panel-default">
+<div class="panel-heading pointer" data-toggle="collapse" href="#collapse2">
+      <h4 class="panel-title left"><i class="glyphicon glyphicon-eye-open"></i> Besucher</a></h4>
+	  <div class="collapse-indicator text-right">+</div>
+	  <div class="clear">&nbsp;</div>
+  </div>
+	 <div id="collapse2" class="panel-collapse collapse in"> 
+		<div class="table-responsive panel-body">
+            <table class="table table-striped table-bordered table-hover">
+                <tr>
+                    <th class="col-xs-3">Online seit (min.)</th>
+                    <th class="col-xs-3">Name</th>
+                    <th class="col-xs-3">Letzter Klick</th>
+                    <th class="col-xs-3">letzte Seite</th>
                 </tr>
     <?php
     $whos_online_query = xtc_db_query("SELECT customer_id, full_name, ip_address, time_entry, time_last_click, last_page_url, session_id FROM " . TABLE_WHOS_ONLINE . " ORDER BY time_last_click desc LIMIT 10");
-    $rows = 1;
     while ($whos_online = xtc_db_fetch_array($whos_online_query)) {
         $time_online = (time() - $whos_online['time_entry']);
         if (((!$_GET['info']) || (@$_GET['info'] == $whos_online['session_id'])) && (!$info)) {
             $info = $whos_online['session_id'];
         }
-        if ($rows % 2 == 0)
-            $f = 'dataTableStartRow';
-        else
-            $f = '';
         ?>
-                    <tr class="<?php echo $f; ?>" onmouseover="this.className = 'dataTableStartRowOver'" onmouseout="this.className = '<?php echo $f; ?>'">
-                        <td class="dataTableStartContent" width="25%" height="22px" align="center">
-                            <a href="whos_online.php?info=<?php echo $whos_online['session_id']; ?>">
-        <?php echo gmdate('H:i:s', $time_online); ?>
-                            </a>
-                        </td>
-                        <td class="dataTableStartContent" width="33%">
-                            <a href="whos_online.php?info=<?php echo $whos_online['session_id']; ?>">
-        <?php echo $whos_online['full_name']; ?>
-                            </a>
-                        </td>
-                        <td class="dataTableStartContent" align="center" width="30%">
-                            <a href="whos_online.php?info=<?php echo $whos_online['session_id']; ?>">
-        <?php echo date('H:i:s', $whos_online['time_last_click']); ?>
-                            </a>
-                        </td>
-                        <td class="dataTableStartContent" align="center" width="20%">
-        <?php echo $whos_online['last_page_url']; ?>
-                        </td>
-                        <td class="dataTableStartContent last" align="center" width="33%">
-                            <a href="whos_online.php?info=<?php echo $whos_online['session_id']; ?>"><img src="images/icons/preview.gif" title="View" /></a>
-                        </td>
+                    <tr>
+                        <td><?php echo gmdate('H:i:s', $time_online); ?></td>
+                        <td><?php echo $whos_online['full_name']; ?> <a href="whos_online.php?info=<?php echo $whos_online['session_id']; ?>"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+                        <td><?php echo date('H:i:s', $whos_online['time_last_click']); ?></td>
+                        <td><?php echo $whos_online['last_page_url']; ?></td>
                     </tr>
 
-        <?php $rows++;
-    } ?>
+        <?php } ?>
             </table>
+        </div>
+        </div>
         </div>
     <?php } ?>
     <?php if (ADMIN_CSEO_START_ORDERS == 'true') { ?>
-        <div class="content w100p">
-            <div class="title">
-                <div class="titleimg">
-                    <img  src="images/admin_icons/User.png" />
-                </div>
-                <div class="titlehead">
-                    <b>Kunden:</b>
-                </div>
-            </div>
-            <table width="100%" class="dataTableStart" >
-                <tr>
-                    <td width="50%" valign="top">
-                        <table width="100%">
-                            <tr class="dataTableStartHeadingRow">
-                                <th class="dataTableStartHeadingContent" height="20" width="25%">Name</td>
-                                <th class="dataTableStartHeadingContent" height="20" width="25%">Vorname</td>
-                                <th class="dataTableStartHeadingContent" align="center" height="20" width="25%">angemeldet am</td>
-                                <th class="dataTableStartHeadingContent" align="center" height="20" width="12%">bearbeiten</td>
-                                <th class="dataTableStartHeadingContent last" align="center" height="20" width="12%">Bestellungen</td>
-                            </tr>
-                            <?php
-                            $ergebnis = xtc_db_query("SELECT * FROM customers ORDER BY customers_date_added DESC LIMIT 15");
-                            $rows = 1;
-                            while ($row = xtc_db_fetch_array($ergebnis)) {
-                                if ($rows % 2 == 0) {
-                                    $f = 'dataTableStartRow';
-                                } else {
-                                    $f = '';
-                                }
-                                ?>
-                                <tr class="<?php echo $f; ?>" onmouseover="this.className = 'dataTableStartRowOver'" onmouseout="this.className = '<?php echo $f; ?>'">
-                                    <td class="dataTableStartContent" width="25%" height="22px">
-                                        <?php echo $row['customers_lastname']; ?>
-                                    </td>
-                                    <td class="dataTableStartContent" width="25%">
-                                        <?php echo $row['customers_firstname']; ?>
-                                    </td>
-                                    <td class="dataTableStartContent" align="center" width="25%">
-                                        <?php echo $row['customers_date_added']; ?>
-                                    </td>
-                                    <td class="dataTableStartContent" align="center" width="12%">
-                                        <a href="customers.php?page=1&cID=<?php echo $row['customers_id']; ?>&action=edit"><img src="images/icons/pencil.png" title="Edit" /></a>
-                                    </td>
-                                    <td class="dataTableStartContent last" align="center" width="12%">
-                                        <a href="orders.php?cID=<?php echo $row['customers_id']; ?>"><img src="images/icons/preview.gif" title="View" /></a>
-                                    </td>
-                                </tr>
-                                <?php $rows++;
-                            } ?>
-                        </table>
-                    </td>
-                    <td width="50%" valign="top">
-                        <table class="dataTableStart" width="100%">
-                            <tr class="dataTableStartHeadingRow">
-                                <th class="dataTableStartHeadingContent" height="20" width="10%">Best-Nr.</td>
-                                <th class="dataTableStartHeadingContent" height="20" width="25%">Bestelldatum</td>
-                                <th class="dataTableStartHeadingContent" align="center" height="20" width="25%"> Kundenname</td>
-                                <th class="dataTableStartHeadingContent" align="center" height="20" width="15%"> Gesamt</td>
-                                <th class="dataTableStartHeadingContent" align="center" height="20" width="12%">bearbeiten</td>
-                                <th class="dataTableStartHeadingContent last" align="center" height="20" width="12%">l&ouml;schen</td>
-                            </tr>
-                            <?php
-                            $ergebnis = xtc_db_query("SELECT * FROM orders ORDER BY orders_id DESC LIMIT 20");
-                            $rows = 1;
-                            while ($row = xtc_db_fetch_array($ergebnis)) {
-                                if ($rows % 2 == 0) {
-                                    $f = 'dataTableStartRow';
-                                } else {
-                                    $f = '';
-                                }
-                                $preis = xtc_db_fetch_array(xtc_db_query("SELECT text FROM orders_total WHERE orders_id = '" . $row['orders_id'] . "' AND class = 'ot_total' "));
-                                ?>
-                                <tr class="<?php echo $f; ?>" onmouseover="this.className = 'dataTableStartRowOver'" onmouseout="this.className = '<?php echo $f; ?>'">
-                                    <td class="dataTableStartContent" width="10%" align="center">
-                                        <?php echo $row['orders_id']; ?>
-                                    </td>
-                                    <td class="dataTableStartContent" width="25%" height="22px">
-                                        <?php echo $row['date_purchased']; ?>
-                                    </td>
-                                    <td class="dataTableStartContent" align="left" width="25%">
-                                        <?php echo $row['delivery_name']; ?>
-                                    </td>
-                                    <td class="dataTableStartContent" width="25%" align="right">
-                                        <?php echo $preis['text']; ?>
-                                    </td>
-                                    <td class="dataTableStartContent" align="center" width="12%">
-                                        <a href="orders.php?page=1&oID=<?php echo $row['orders_id']; ?>&action=edit"><img src="images/icons/pencil.png" title="Edit" /></a>
-                                    </td>
-                                    <td class="dataTableStartContent last" align="center" width="12%">
-                                        <a href="orders.php?page=1&oID=<?php echo $row['orders_id']; ?>&action=delete"><img src="images/icons/icon_delete.png" title="Delete" /></a>
-                                    </td>
-                                </tr>
-                                <?php $rows++;
-                            } ?>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+  <div class="panel panel-default">
+<div class="panel-heading pointer" data-toggle="collapse" href="#collapse3">
+      <h4 class="panel-title left"><i class="glyphicon glyphicon-user"></i> Kunden (<b>gesamt: <?php echo $customers['count']; ?></b><?php if ($customers_gast['count'] > 0) {echo ' | Gast: ' . $customers_gast['count'];} ?><?php if ($customers_neukunde['count'] > 0) {echo ' | Neukunden: ' . $customers_neukunde['count'];} ?> <?php if ($customers_haendler['count'] > 0) {echo ' | Händler: ' . $customers_haendler['count'];} ?><?php if ($customers_rest['count'] > 0) {echo ' | Rest: ' . $customers_rest['count'];} ?>)</h4>
+	  <div class="collapse-indicator text-right">+</div>
+	  <div class="clear">&nbsp;</div>
+  </div>
+	 <div id="collapse3" class="panel-collapse collapse in"> 
+		<div class="table-responsive panel-body">
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th class="col-xs-3">Name</td>
+					<th class="col-xs-3">Vorname</td>
+					<th class="col-xs-3">angemeldet am</td>
+					<th class="col-xs-3">Bestellungen</td>
+				</tr>
+				<?php
+				$ergebnis = xtc_db_query("SELECT * FROM customers ORDER BY customers_date_added DESC LIMIT 10;");
+				while ($row = xtc_db_fetch_array($ergebnis)) {
+					?>
+					<tr>
+						<td><?php echo $row['customers_lastname']; ?><a href="customers.php?page=1&cID=<?php echo $row['customers_id']; ?>&action=edit"><i class="glyphicon glyphicon-edit"></i></a></td>
+						<td><?php echo $row['customers_firstname']; ?></td>
+						<td><?php echo $row['customers_date_added']; ?></td>
+						<td><a href="orders.php?cID=<?php echo $row['customers_id']; ?>"><i class="glyphicon glyphicon-eye-open"></i></a></td>
+					</tr>
+					<?php } ?>
+			</table>
+		</div>
+	</div>
+</div>
+  <div class="panel panel-default">
+<div class="panel-heading pointer" data-toggle="collapse" href="#collapse4">
+      <h4 class="panel-title left"><i class="glyphicon glyphicon-shopping-cart"></i> Bestellungen (<b>Offen: <?php echo $orders1['count']; ?></b><?php if ($orders2['count'] > 0) {echo ' | In Bearbeitung: ' . $orders2['count'];} ?><?php if ($orders3['count'] > 0) {echo ' | Versendet: '.$orders3['count'];} ?><?php if ($orders0['count'] > 0) {echo ' | Weitere: '.$orders0['count'];} ?>)</h4>
+	  <div class="collapse-indicator text-right">+</div>
+	  <div class="clear">&nbsp;</div>
+  </div>
+	 <div id="collapse4" class="panel-collapse collapse in"> 
+		<div class="table-responsive panel-body">
+			<table class="table table-striped table-bordered">
+				<tr>
+					<th class="col-xs-3">Best-Nr.</td>
+					<th class="col-xs-3">Bestelldatum</td>
+					<th class="col-xs-3">Kundenname</td>
+					<th class="col-xs-3">Gesamt</td>
+				</tr>
+				<?php
+				$ergebnis = xtc_db_query("SELECT * FROM orders ORDER BY orders_id DESC LIMIT 10;");
+				while ($row = xtc_db_fetch_array($ergebnis)) {
+					$preis = xtc_db_fetch_array(xtc_db_query("SELECT text FROM orders_total WHERE orders_id = '" . $row['orders_id'] . "' AND class = 'ot_total' "));
+					?>
+					<tr>
+						<td><?php echo $row['orders_id']; ?><a href="orders.php?page=1&oID=<?php echo $row['orders_id']; ?>&action=edit"><i class="glyphicon glyphicon-edit"></i></a></td>
+						<td><?php echo $row['date_purchased']; ?></td>
+						<td><?php echo $row['delivery_name']; ?></td>
+						<td><?php echo strip_tags($preis['text']); ?></td>
+					</tr>
+					<?php } ?>
+			</table>
+        </div>
+        </div>
         </div>
     <?php } ?>
 <?php if (ADMIN_CSEO_START_BIRTHDAY == 'true') { ?>
-
-        <div class="content w100p">
-            <div class="title">
-                <div class="titleimg">
-                    <img  src="images/admin_icons/clock.png" />
-                </div>
-                <div class="titlehead">
-                    <b>Geburtstage:</b>
-                </div>
-            </div>
+  <div class="panel panel-default">
+<div class="panel-heading pointer" data-toggle="collapse" href="#collapse5">
+      <h4 class="panel-title left"><i class="glyphicon glyphicon-gift"></i> Geburtstage</h4>
+	  <div class="collapse-indicator text-right">+</div>
+	  <div class="clear">&nbsp;</div>
+  </div>
+	 <div id="collapse5" class="panel-collapse collapse in"> 
+		<div class="table-responsive panel-body">
         <?php require(DIR_WS_INCLUDES . 'classes/start/geburtstag.php'); ?>
+        </div>
+        </div>
         </div>
     <?php } ?>
 
-        <div class="content w100p">
-            <div class="title">
-                <div class="titleimg">
-                    <img  src="images/admin_icons/Info.png" />
-                </div>
-                <div class="titlehead">
-                    <b>v2next Information:</b>
-                </div>
-            </div>
-            <table width="100%" class="dataTableStart">
-                <tr>
-                    <td>
-						<!--BOF - Barzahlen - 2013-05-17: Barzahlen Version Check-->
-						<?php include(DIR_WS_MODULES . "barzahlen_version_check.php"); ?>
-						<!--EOF - Barzahlen - 2013-05-17: Barzahlen Version Check-->
-						<?php 
-						$version = xtc_db_fetch_array(xtc_db_query("SELECT version FROM database_version"));
-						echo $version['version'].'<br>';
-						echo getDataFromMasterServer(); 
-						?>
-                    </td>
-                </tr>
-            </table>
+        <div class="row">
+            <h2>v2next Information</h2>
+			<!--BOF - Barzahlen - 2013-05-17: Barzahlen Version Check-->
+			<?php include(DIR_WS_MODULES . "barzahlen_version_check.php"); ?>
+			<!--EOF - Barzahlen - 2013-05-17: Barzahlen Version Check-->
+			<?php 
+			$version = xtc_db_fetch_array(xtc_db_query("SELECT version FROM database_version;"));
+			echo $version['version'].'<br>';
+			echo getDataFromMasterServer(); 
+			?>
         </div>
-    <br class="clear" />
+    <br class="clearfix" />
 <br />
-&copy; 2014 <a href="http://www.commerce-seo.de" target="_blank">commerce:SEO</a> ein Projekt von Webdesign Erfurt, based on xt:Commerce <a rel="nofollow" href="http://www.fsf.org/licenses/gpl.txt" target="_blank">GNU General Public License</a>
+&copy; 2015 <a href="https://www.commerce-seo.de" target="_blank">commerce:seo</a> ein Projekt von Webdesign Erfurt, based on xt:Commerce <a rel="nofollow" href="http://www.fsf.org/licenses/gpl.txt" target="_blank">GNU General Public License</a>
 <br />
 <br />
 <?php

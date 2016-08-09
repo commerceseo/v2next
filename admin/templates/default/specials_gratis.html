@@ -23,7 +23,7 @@
 {foreach name=aussen item=module_data from=$descaray}
 <tr>
 <td>{$module_data.IMG} {$txt.TEXT_PRODUCTS_DESCRIPTION}</td>
-<td>{$module_data.DESCRIPTION}</td>
+<td>{$module_data.DESCRIPTION}{$module_data.field_sdesc_wy}</td>
 </tr>
 {/foreach}
 <tr>

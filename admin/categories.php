@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: categories.php 625 2013-09-24 09:49:19Z akausch $
+ * 	$Id: categories.php 1424 2015-02-03 15:30:26Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -159,7 +159,7 @@ if ($_GET['action']) {
         case 'update_product' :
             $catfunc->insert_product($_POST, '', 'update');
             if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True') {
-                $commerceSeo->updateSeoDBTable('product', 'update', $_POST['products_id']);
+                $commerceSeo->updateSeoDBTable('product', 'update', $_POST['products_id'], $_POST['url_old_text']);
 			}
             break;
 
@@ -300,9 +300,7 @@ if (is_dir(DIR_FS_CATALOG_IMAGES)) {
     $messageStack->add(ERROR_CATALOG_IMAGE_DIRECTORY_DOES_NOT_EXIST, 'error');
 }
 
-
 require_once(DIR_WS_INCLUDES . 'header.php');
-
 
 if ($_GET['action'] == 'new_category' || $_GET['action'] == 'edit_category') {
     include (DIR_WS_MODULES . 'new_category.php');

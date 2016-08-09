@@ -199,16 +199,30 @@ function prepareMultiMarketplaces() {
 	}
 
 	foreach ($marketplaces as $mp) {
-		MagnaDB::gi()->query('
-			UPDATE `'.TABLE_MAGNA_CONFIG.'` SET `mpID`=\''.$mp['ID'].'\'
-			 WHERE mkey LIKE \''.$mp['Marketplace'].'.%\' AND `mpID`=0
-		');
+		$updated = (int)MagnaDB::gi()->fetchOne("
+			   SELECT mpID
+			     FROM `".TABLE_MAGNA_CONFIG."`
+			    WHERE mkey LIKE '".$mp['Marketplace'].".%'
+			          AND `mpID` = '".$mp['ID']."'
+			 ORDER BY mpID DESC
+			    LIMIT 1
+		") > 0;
+		if (!$updated) {
+			MagnaDB::gi()->query('
+				UPDATE `'.TABLE_MAGNA_CONFIG.'` SET `mpID`=\''.$mp['ID'].'\'
+				 WHERE mkey LIKE \''.$mp['Marketplace'].'.%\' AND `mpID`=0
+			');
+		}
 		if (MagnaDB::gi()->fetchRow('SELECT * FROM `'.$tbl.'` LIMIT 1') === false) {
 			continue;
 		}
 		foreach ($bleh as $tbl => $keyFix) {
-			if (MagnaDB::gi()->recordExists($tbl, array('mpID' => $mp['ID']))) continue;
-			if (! MagnaDB::gi()->columnExistsInTable('platform', $tbl)) continue;
+			if (MagnaDB::gi()->recordExists($tbl, array('mpID' => $mp['ID']))) {
+				continue;
+			}
+			if (!MagnaDB::gi()->columnExistsInTable('platform', $tbl)) {
+				continue;
+			}
 			MagnaDB::gi()->query('
 				UPDATE `'.$tbl.'` SET `mpID`=\''.$mp['ID'].'\'
 				 WHERE platform=\''.$mp['Marketplace'].'\'
@@ -475,13 +489,20 @@ function magnaAddNewAmazonErrorLog() {
 $functions[] = 'magnaAddNewAmazonErrorLog';
 
 function magnaOrdersUpdateAmazon() {
+	# only the last 10 000, to avoid execution time problems (normally, no one cares for very old orders)
+	$iLimit  = 10000;
 	$aoid = MagnaDB::gi()->query('
-		SELECT orders_id, data, internaldata
+		SELECT SQL_CALC_FOUND_ROWS orders_id, data, internaldata
 		  FROM `'.TABLE_MAGNA_ORDERS.'`
 		 WHERE platform=\'amazon\'
+		ORDER BY orders_id DESC
+		LIMIT '.$iLimit.'
 	');
 	while (($row = MagnaDB::gi()->fetchNext($aoid)) !== false) {
 		$row['data'] = @unserialize($row['data']);
+		if (!is_array($row['data'])) {
+			$row['data'] = array();
+		}
 		if (array_key_exists('AmazonOrderId', $row['data'])) {
 			$row['data']['AmazonOrderID'] = $row['data']['AmazonOrderId'];
 			unset($row['data']['AmazonOrderId']);

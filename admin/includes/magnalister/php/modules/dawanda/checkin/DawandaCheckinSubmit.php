@@ -55,6 +55,7 @@ class DawandaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 			'mlProductsUseLegacy' => false,
 		), $settings);
 		
+		$this->summaryAddText = "<br /><br />\n".ML_DAWANDA_UPLOAD_EXPLANATION;
 		parent::__construct($settings);
 	}
 
@@ -95,8 +96,11 @@ class DawandaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 			return;
 		}
 
-		foreach (array('MarketplaceCategories', 'StoreCategories', 'MpColors') as $jsonKey) {
+		foreach (array('MarketplaceCategories', 'StoreCategories', 'MpColors', 'Attributes') as $jsonKey) {
 			$aPropertiesRow[$jsonKey] = json_decode($aPropertiesRow[$jsonKey], true);
+			if (!is_array($aPropertiesRow[$jsonKey])) {
+				$aPropertiesRow[$jsonKey] = array();
+			}
 		}
 		
 		#echo print_m(func_get_args());
@@ -105,7 +109,11 @@ class DawandaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		 * set product data to submit array
 		 * language based
 		 */
-		$aData['submit']['SKU'] = $aProduct['ProductsModel'];
+		if (getDBConfigValue('general.keytype', '0') == 'artNr') {
+			$aData['submit']['SKU'] = $aProduct['ProductsModel'];
+		} else {
+			$aData['submit']['SKU'] = 'ML'.$aProduct['ProductId'];
+		}
 		foreach ($this->settings['additionalLanguages'] as $sLangId) {
 			$sLangCode = MLProduct::gi()->languageIdToCode($sLangId);
 			$aData['submit']['Descriptions'][$sLangCode] = array(
@@ -141,9 +149,11 @@ class DawandaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		$aData['submit']['Quantity'] = $aData['quantity'];
 
 		//Price
-		$aData['submit']['Price'] = $this->simpleprice
-			->setFinalPriceFromDB($iPID, $this->_magnasession['mpID'])
-			->roundPrice()->getPrice();
+		if (isset($aData['price']) && !empty($aData['price'])) {
+			$aData['submit']['Price'] = $aData['price'];
+		} else {
+			$aData['submit']['Price'] = $aProduct['Price'];
+		}
 
 		//BasePrice
 		if (!empty($aProduct['BasePrice'])) {
@@ -188,6 +198,23 @@ class DawandaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 		if (is_array($aPropertiesRow['MpColors'])) {
 			$aData['submit']['MpColors'] = $aPropertiesRow['MpColors'];
 		}
+		
+		if (!empty($aPropertiesRow['Attributes'])) {
+			$aData['submit']['Attributes'] = array();
+			foreach ($aPropertiesRow['Attributes'] as $attribGroup => $attribSets) {
+				if (!is_array($attribSets)) {
+					$attribSets = array($attribSets);
+				}
+				foreach ($attribSets as $attribs) {
+					if (!is_array($attribs)) {
+						$attribs = array($attribs);
+					}
+					$aData['submit']['Attributes'] = array_merge($aData['submit']['Attributes'], $attribs);
+				}
+			}
+			$aData['submit']['Attributes'] = array_unique($aData['submit']['Attributes']);
+		}
+		
 		// ListingDuration
 		$aData['submit']['ListingDuration'] = $aPropertiesRow['ListingDuration'];
 		
@@ -279,7 +306,10 @@ class DawandaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 
 	protected function postSubmit() {
 		try {
-			//*
+			/*
+			// wait only 15s on that request
+			MagnaConnector::gi()->setTimeOutInSeconds(15);
+			// this request can took some time because its live and uploads also update item requests
 			$result = MagnaConnector::gi()->submitRequest(array(
 				'ACTION' => 'UploadItems',
 			));
@@ -288,6 +318,7 @@ class DawandaCheckinSubmit extends MagnaCompatibleCheckinSubmit {
 			$this->submitSession['api']['exception'] = $e;
 			$this->submitSession['api']['html'] = MagnaError::gi()->exceptionsToHTML();
 		}
+		MagnaConnector::gi()->resetTimeOut();
 	}
 
 }

@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: InventoryView.php 4283 2014-07-24 22:00:04Z derpapst $
+ * $Id: InventoryView.php 6572 2016-03-21 09:00:26Z markus.bauer $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -50,13 +50,21 @@ class InventoryView {
 
 	public function __construct($settings = array()) {
 		global $_MagnaShopSession, $_MagnaSession, $_url;
+		$this->magnaSession = &$_MagnaSession;
+
+		if (isset($_GET['itemsPerPage'])) {
+			$this->magnaSession[$this->magnaSession['mpID']]['InventoryView']['ItemLimit'] = (int)$_GET['itemsPerPage'];
+		}
+		if (!isset($this->magnaSession[$this->magnaSession['mpID']]['InventoryView']['ItemLimit'])
+			|| ($this->magnaSession[$this->magnaSession['mpID']]['InventoryView']['ItemLimit'] <= 0)
+		) {
+			$this->magnaSession[$this->magnaSession['mpID']]['InventoryView']['ItemLimit'] = 50;
+		}
 		
 		$this->settings = array_merge(array(
 			'maxTitleChars'	=> 35,
-			'itemLimit'		=> 50,
+			'itemLimit'		=> $this->magnaSession[$this->magnaSession['mpID']]['InventoryView']['ItemLimit'],
 		), $settings);
-
-		$this->magnaSession = &$_MagnaSession;
 		
 		$this->simpleprice = new SimplePrice();
 		$this->simpleprice->setCurrency(getCurrencyFromMarketplace($this->magnaSession['mpID']));
@@ -241,9 +249,7 @@ class InventoryView {
 
 	private function prepareInventoryData() {
 		$result = $this->getInventory();
-		if (empty($this->add) && empty($this->updatedelete)) {
-			$this->getPendingItems();
-		}
+		$this->getPendingItems();
 		/*
 		echo print_m(array(
 			'add' => $this->add,
@@ -274,27 +280,43 @@ class InventoryView {
 				$item['Type'] = 'regular';
 				
 				$aID = magnaSKU2aID($item['SKU']);
-				$item['pID'] = magnaAmazonSKU2pID($item['SKU'], $item['ASIN']);
+				$item['pID'] = magnaSKU2pID($item['SKU']);
 				$item['aID'] = $aID;
 				
 				$variationTheme = false;
 				if ($aID !== false) {
-					$variationTheme = MagnaDB::gi()->fetchRow('
-					    SELECT pa.products_id AS pID, po.products_options_name AS VariationTitle,
-					           pov.products_options_values_name AS VariationValue
-					      FROM '.TABLE_PRODUCTS_ATTRIBUTES.' pa,
-					           '.TABLE_PRODUCTS_OPTIONS.' po, 
-					           '.TABLE_PRODUCTS_OPTIONS_VALUES.' pov, 
-					           '.TABLE_LANGUAGES.' l
-					     WHERE pa.products_attributes_id = \''.$aID.'\'
-					           AND po.language_id = l.languages_id
-					           AND po.products_options_id = pa.options_id
-					           AND pov.language_id = l.languages_id
-					           AND pov.products_options_values_id = pa.options_values_id
-					           AND l.directory = \''.$_SESSION['language'].'\'
-					     LIMIT 1
-					');
+					if (getDBConfigValue('general.options', '0', 'old') == 'gambioProperties') {
+						$variationTheme = MagnaDB::gi()->fetchArray(eecho('
+							SELECT ppi.products_id AS pID, ppi.properties_name AS VariationTitle,
+					   			ppi.values_name AS VariationValue
+				  			FROM products_properties_index ppi
+				 			WHERE ppi.products_id = \''.$item['pID'].'\'
+							AND ppi.products_properties_combis_id = \''.$aID.'\'
+				   			AND ppi.language_id = \''.getDBConfigValue(
+			                			$this->magnaSession['currentPlatform'].'.lang',
+			                			$this->magnaSession['mpID'],
+			                			$_SESSION['languages_id']
+										).'\''
+							, false));
+						$item['pID'] = $variationTheme[0]['pID'];
+					} else {
+						$variationTheme = MagnaDB::gi()->fetchRow('
+					    	SELECT pa.products_id AS pID, po.products_options_name AS VariationTitle,
+					           	pov.products_options_values_name AS VariationValue
+					      	FROM '.TABLE_PRODUCTS_ATTRIBUTES.' pa,
+					           	'.TABLE_PRODUCTS_OPTIONS.' po, 
+					           	'.TABLE_PRODUCTS_OPTIONS_VALUES.' pov, 
+					           	'.TABLE_LANGUAGES.' l
+					     	WHERE pa.products_attributes_id = \''.$aID.'\'
+					           	AND po.language_id = l.languages_id
+					           	AND po.products_options_id = pa.options_id
+					           	AND pov.language_id = l.languages_id
+					           	AND pov.products_options_values_id = pa.options_values_id
+					           	AND l.directory = \''.$_SESSION['language'].'\'
+					     	LIMIT 1
+						');
 					$item['pID'] = $variationTheme['pID'];
+					}
 				}
 				
 				if ($item['pID'] > 0) {
@@ -304,8 +326,15 @@ class InventoryView {
 						 WHERE products_id=\''.$item['pID'].'\'
 						       AND language_id = \''.$_SESSION['languages_id'].'\'
 					');
-					if (is_array($variationTheme) && !empty($variationTheme['VariationTitle']) && !empty($variationTheme['VariationValue'])) {
-						$item['ShopItemName'] .= ' '.$variationTheme['VariationTitle'].': '.$variationTheme['VariationValue'];
+					if (is_array($variationTheme)) {
+						if (array_key_exists('VariationTitle', $variationTheme)) {
+						$variationTheme = array($variationTheme);
+						}
+						foreach ($variationTheme as $theme) {
+							if(is_array($theme) && !empty($theme['VariationTitle']) && !empty($theme['VariationValue'])) {
+								$item['ShopItemName'] .= ' '.$theme['VariationTitle'].': '.$theme['VariationValue'];
+							}
+						}
 					}
 					$item['Type'] = 'inventory';
 				} else {
@@ -400,12 +429,7 @@ class InventoryView {
 						? ('<td>'.ML_AMAZON_LABEL_INCOMPLETE.'</td>')
 						: ('<td title="'.$item['ItemTitle'].'">'.str_replace(' ', '&nbsp;', $item['ItemTitleShort']).'</td>')
 					).'
-					<td>'.(empty($item['ASIN']) 
-						? '&mdash;' 
-						: '<a href="http://www.amazon.de/gp/offer-listing/'.$item['ASIN'].'" '.
-					      'title="'.ML_AMAZON_LABEL_PRODUCT_IN_AMAZON.'" '.
-					      'target="_blank">'.$item['ASIN'].'</a>').
-					'</td>
+					<td>'.getAmazonOfferLink($item['ASIN'], ML_AMAZON_LABEL_PRODUCT_IN_AMAZON).'</td>
 					<td>'.$this->simpleprice->setPrice($item['Price'])->format().'</td>
 					<td>'.(($item['Quantity'] > 0) ? $item['Quantity'] : ML_LABEL_SOLD_OUT).'</td>
 					<td>'.(($item['DateAdded'] == 0)
@@ -507,6 +531,16 @@ class InventoryView {
 			$currentPage = (int)$_GET['page'];
 		}
 
+		$itemsPerPageSelect = array(50, 100, 250, 500, 1000, 2500);
+		$chooser = '
+        		<select id="itemsPerPage" name="itemsPerPage" class="">'."\n";
+		foreach ($itemsPerPageSelect as $chc) {
+			$chcSelected = ($this->settings['itemLimit'] == $chc) ? 'selected' : '';
+			$chooser .= '<option value="'.$chc.'" '.$chcSelected.'>'.$chc.'</option>';
+		}
+		$chooser .= '
+        		</select>';
+
 		$offset = $currentPage * $this->settings['itemLimit'] - $this->settings['itemLimit'] + 1;
 		$limit = $offset + count($this->renderableData) - 1;
 		$html .= '<table class="listingInfo"><tbody><tr>
@@ -520,7 +554,7 @@ class InventoryView {
 						<span class="bold">'.ML_LABEL_CURRENT_PAGE.':&nbsp; '.$currentPage.'</span>
 					</td>
 					<td class="textright">
-						'.renderPagination($currentPage, $pages, $tmpURL).'
+						'.renderPagination($currentPage, $pages, $tmpURL).'&nbsp;'.$chooser.'
 					</td>
 				</tr></tbody></table>';
 		
@@ -553,6 +587,9 @@ $(document).ready(function() {
 	});
 	$('table.datagrid tbody tr td input[type="checkbox"]').click(function () {
 		this.checked = !this.checked;
+	});
+	$('#itemsPerPage').change(function() {
+		window.location.href = '<?php echo toURL($tmpURL, true);?>&itemsPerPage='+$(this).val();
 	});
 });
 /*]]>*/</script>

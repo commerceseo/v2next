@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: recover_cart_sales.php 872 2014-03-21 14:46:30Z akausch $
+ * 	$Id: recover_cart_sales.php 1344 2015-01-12 14:26:00Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -34,6 +34,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
     $status = xtc_db_fetch_array(xtc_db_query("SELECT c.customers_status, cs.customers_status_name,  cs.customers_status_image, cs.customers_status_ot_discount_flag, cs.customers_status_ot_discount FROM " . TABLE_CUSTOMERS . " c, " . TABLE_CUSTOMERS_STATUS . " cs WHERE c.customers_status=cs.customers_status_id AND c.customers_id=" . $cID . " AND cs.language_id='" . (int) $_SESSION['languages_id'] . "';"));
     $xtPrice = new xtcPrice(DEFAULT_CURRENCY, $status['customers_status']);
 
+    require (DIR_WS_CLASSES . 'class.order_rcs.php');
     $order = new order($cID);
 
     if ($order->billing['country']['iso_code_2'] != '' && $order->delivery['country']['iso_code_2'] == '') {
@@ -190,7 +191,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
         // Update products_ordered (for bestsellers list)
         xtc_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_ordered = products_ordered + " . sprintf('%d', $order->products[$i]['qty']) . " WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "';");
 
-        $sql_data_array = array('orders_id' => $insert_id, 'products_id' => xtc_get_prid($order->products[$i]['id']), 'products_model' => $order->products[$i]['model'], 'products_name' => $order->products[$i]['name'], 'products_shipping_time' => $order->products[$i]['shipping_time'], 'products_price' => $order->products[$i]['price'], 'final_price' => $order->products[$i]['final_price'], 'products_tax' => $order->products[$i]['tax'], 'products_discount_made' => $order->products[$i]['discount_allowed'], 'products_quantity' => $order->products[$i]['qty'], 'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax']);
+        $sql_data_array = array('orders_id' => $insert_id, 'products_id' => xtc_get_prid($order->products[$i]['id']), 'products_model' => $order->products[$i]['model'], 'products_name' => $order->products[$i]['name'], 'products_shipping_time' => $order->products[$i]['shipping_time'], 'products_price' => $order->products[$i]['price'], 'final_price' => $order->products[$i]['final_price'], 'products_tax' => $order->products[$i]['tax'], 'products_discount_made' => ($order->products[$i]['discount_allowed'] != '' ? $order->products[$i]['discount_allowed'] : '0', 'products_quantity' => $order->products[$i]['qty'], 'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax']);
 
         xtc_db_perform(TABLE_ORDERS_PRODUCTS, $sql_data_array);
         $order_products_id = xtc_db_insert_id();
@@ -256,8 +257,8 @@ if (isset($_GET['action']) && $_GET['action'] == 'complete') {
                 }
                 // update attribute stock
                 xtc_db_query("UPDATE " . TABLE_PRODUCTS_ATTRIBUTES . "
-                      SET attributes_stock=attributes_stock - '" . $order->products[$i]['qty'] . "'
-                                  WHERE products_id='" . $order->products[$i]['id'] . "'
+                      SET attributes_stock = attributes_stock - '" . $order->products[$i]['qty'] . "'
+                                  WHERE products_id='" . (int) $order->products[$i]['id'] . "'
                                   AND options_values_id='" . $order->products[$i]['attributes'][$j]['value_id'] . "'
                                   AND options_id='" . $order->products[$i]['attributes'][$j]['option_id'] . "'");
 

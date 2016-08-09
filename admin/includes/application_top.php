@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: application_top.php 1210 2014-09-22 09:04:30Z akausch $
+ * 	$Id: application_top.php 1363 2015-01-15 17:37:07Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -12,6 +12,10 @@
  * 	(c) 2005     xt:Commerce - www.xt-commerce.com
  * 	Released under the GNU General Public License
  * --------------------------------------------------------------- */
+//Loggin
+if(file_exists(str_replace('\\', '/', dirname(dirname(dirname(__FILE__)))) . '/system/core/logging')) {
+	require_once(str_replace('\\', '/', dirname(dirname(dirname(__FILE__)))) . '/system/core/logging/LogControl.inc.php');
+}
 
 // Start the clock for the page parse time log
 define('PAGE_PARSE_START_TIME', microtime());
@@ -82,7 +86,7 @@ include('includes/database_admin.php');
 // include needed functions
 
 require_once (DIR_FS_INC . 'cseo_db.inc.php');
-require_once (DIR_FS_INC.'cseo_htmlentities_wrapper.inc.php');
+require_once (DIR_FS_INC . 'cseo_htmlentities_wrapper.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_ip_address.inc.php');
 require_once (DIR_FS_INC . 'xtc_setcookie.inc.php');
 require_once (DIR_FS_INC . 'xtc_validate_email.inc.php');
@@ -93,6 +97,7 @@ require_once (DIR_FS_INC . 'xtc_get_qty.inc.php');
 require_once (DIR_FS_INC . 'xtc_product_link.inc.php');
 require_once (DIR_FS_INC . 'xtc_cleanName.inc.php');
 require_once (DIR_FS_INC . 'cseo_version.inc.php');
+require_once (DIR_FS_INC . 'xtc_word_count.inc.php');
 
 // Define how do we update currency exchange rates
 // Possible values are 'oanda' 'xe' or ''
@@ -317,15 +322,16 @@ if (!defined('DEFAULT_LANGUAGE')) {
 // for Customers Status
 xtc_get_customers_statuses();
 
-if( !defined( 'SUPPRESS_REDIRECT' ) ){
-
+if(!defined('SUPPRESS_REDIRECT') ) {
 	$pagename = strtok($current_page, '.');
-
 	if (!isset($_SESSION['customer_id'])) {
+		$t_message = 'Cumstomer not found in session.';
+		LogControl::get_instance()->notice($t_message, 'security', 'security');
 		xtc_redirect(xtc_href_link(FILENAME_LOGIN));
 	}
-
 	if (xtc_check_permission($pagename) == '0') {
+		$t_message = 'Access denied. User (ID: ' . (int)$_SESSION['customer_id'] . ') has no permission to access page "' . $current_page . '".';
+		LogControl::get_instance()->notice($t_message, 'security', 'security');
 		xtc_redirect(xtc_href_link(FILENAME_LOGIN));
 	}
 }
@@ -403,7 +409,7 @@ function getDataFromMasterServer() {
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+		curl_setopt($ch, CURLOPT_TIMEOUT, 3);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
         $output = curl_exec($ch);
         curl_close($ch);

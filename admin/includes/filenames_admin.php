@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: filenames_admin.php 1039 2014-05-12 16:01:33Z akausch $
+ * 	$Id: filenames_admin.php 1095 2014-06-12 14:44:28Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -133,6 +133,7 @@ define('FILENAME_PRODUCT_LISTINGS', 'product_listings.php');
 define('FILENAME_CSEO_PRODUCT_EXPORT', 'cseo_product_export.php');
 define('FILENAME_SHOPGATE', 'shopgate.php');
 define('FILENAME_CSEO_GALLERY_MANAGER', 'cseo_gallery_manager.php');
+define('FILENAME_CSEO_TAG_MANAGER', 'cseo_tagmanager.php');
 define('FILENAME_BOX_MANAGER', 'box_manager.php');
 define('FILENAME_RMA', 'cseo_rma.php');
 define('FILENAME_SPECIALS_GRATIS', 'specials_gratis.php');

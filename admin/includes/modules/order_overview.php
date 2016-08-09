@@ -268,28 +268,6 @@ switch ($_GET['action']) {
                 }
             }
 
-            $contents[] = array('align' => 'center', 'text' => '<hr size="1" style="color:#ccc" />');
-            $contents[] = array('align' => 'center', 'text' => '<b>' . TEXT_MARKED_ELEMENTS . '</b>');
-            //Rechnungen
-			$contents[] = array('text' => '<b>' . HEADING_MULTI_PDF . '</b>');
-            $contents[] = array('text' => '
-								<input type="radio" name="multistatus_genpdf" id ="multistatus_genpdf" onchange="document.getElementById(\'multistatus_mergepdf\').checked=false;" />
-								<label for="multistatus_genpdf">PDF Rechnung im Hintergrund generieren</label><br/>
-								<input type="radio" name="multistatus_mergepdf" id="multistatus_mergepdf" onchange="document.getElementById(\'multistatus_genpdf\').checked=false;" />
-								<label for="multistatus_mergepdf">PDF Rechnungen gesammelt downloaden</label><br/>
-								');
-            $contents[] = array('text' => '<br /><input type="checkbox" name="pdf_rechnung_senden" id="check_pdf_rechnung_senden" value="on" />' . PDF_BILL_STEP3);
-			//Lieferscheine
-            $contents[] = array('align' => 'center', 'text' => '<hr size="1" style="color:#ccc" />');
-            $contents[] = array('text' => '<b>' . HEADING_MULTI_PDF_DELIVERY . '</b>');
-            $contents[] = array('text' => '
-								<input type="radio" name="multistatus_genpdf_delivery" id ="multistatus_genpdf_delivery" onchange="document.getElementById(\'multistatus_mergepdf_delivery\').checked=false;" />
-								<label for="multistatus_genpdf_delivery">PDF Lieferschein im Hintergrund generieren</label><br/>
-								<input type="radio" name="multistatus_mergepdf_delivery" id="multistatus_mergepdf_delivery" onchange="document.getElementById(\'multistatus_genpdf_delivery\').checked=false;" />
-								<label for="multistatus_mergepdf_delivery">PDF Lieferscheine gesammelt downloaden</label><br/>
-								');
-            $contents[] = array('text' => '<input type="hidden" name="pdf_language_id" value="' . $_SESSION['languages_id'] . '" />');
-
 			if ($_GET['page'] != '') {
                 $contents[] = array('text' => xtc_draw_hidden_field('page', $_GET['page']));
             }
@@ -300,22 +278,6 @@ switch ($_GET['action']) {
                 $contents[] = array('text' => xtc_draw_hidden_field('anzahl', $_GET['anzahl']));
             }
 			
-			$contents[] = array('align' => 'center', 'text' => '<hr size="1" style="color:#ccc" />');
-            $contents[] = array('text' => '<b>' . HEADING_MULTI_STATUS . '</b>');
-            $mail_template = array();
-            $mail_template[] = array('id' => 0, 'text' => '---');
-            $get_names_query = xtc_db_query("SELECT id, title, mail_text FROM mail_templates order by id");
-            while ($get_names = xtc_db_fetch_array($get_names_query)) {
-                $mail_template[] = array('id' => $get_names['id'], 'text' => $get_names['title']);
-            }
-            $contents[] = array('text' => xtc_draw_pull_down_menu('mail_template', $mail_template, '', 'onchange="xajax_getMailTemplate(this.value);"'));
-            $contents[] = array('text' => xtc_draw_pull_down_menu('status', array_merge(array(array('id' => ' ', 'text' => TEXT_STATUS)), array(array('id' => '0', 'text' => TEXT_VALIDATING)), $orders_statuses)));
-            $contents[] = array('text' => xtc_draw_checkbox_field('notify', 'on') . ENTRY_NOTIFY_CUSTOMER);
-            $contents[] = array('text' => xtc_draw_checkbox_field('notify_comments', 'on') . ENTRY_NOTIFY_COMMENTS);
-            $contents[] = array('text' => TABLE_HEADING_COMMENTS . '<br>' . xtc_draw_textarea_field('comments', '', 24, 5, $_GET['comments'], '', 'id="comments"') . '<br>');
-            $contents[] = array('align' => 'left', 'text' => '<div align="center"><button type="submit" class="button">' . BUTTON_COMMIT . '</button></div>');
-            $contents[] = array('text' => '</form>');
-            // End Multiverarbeitung
         }
         break;
 }

@@ -109,7 +109,7 @@ if ($order->info['payment_method'] != '' && $order->info['payment_method'] != 'n
     $smarty->assign('PAYMENT_METHOD', $payment_method);
 }
 $smarty->assign('COMMENTS', $order->info['comments']);
-$smarty->assign('DATE', utf8_encode(xtc_date_long($order->info['date_purchased'])));
+$smarty->assign('DATE', xtc_date_long($order->info['date_purchased']));
 $smarty->assign('order_data', $order_data);
 $smarty->assign('order_total', $order_total);
 

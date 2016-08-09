@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: functionLib.php 4368 2014-08-12 09:17:05Z tim.neumann $
+ * $Id: functionLib.php 6797 2016-07-08 23:57:30Z MaW $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -53,7 +53,7 @@ function print_m($arr, $label = '', $text = false) {
 			);
 		}
 	}
-	return ($text ? '': '<pre>') . (($label != "") ? $label." :: " : '') . $arr . ($text ? '': '</pre>');
+	return ($text ? '': '<pre style="text-align:left">') . (($label != "") ? $label." :: " : '') . $arr . ($text ? '': '</pre>');
 }
 
 function var_dump_pre($obj, $label = "", $text = false) {
@@ -78,7 +78,7 @@ function var_dump_pre($obj, $label = "", $text = false) {
 			);
 		}
 	}
-	return ($text ? '': '<pre>') . (($label != "") ? $label." :: " : '') . $dump . ($text ? '': '</pre>');
+	return ($text ? '': '<pre style="text-align:left">') . (($label != "") ? $label." :: " : '') . $dump . ($text ? '': '</pre>');
 }
 
 function var_export_pre($obj, $label = "", $text = false) {
@@ -101,7 +101,7 @@ function var_export_pre($obj, $label = "", $text = false) {
 			);
 		}
 	}
-	return ($text ? '': '<pre>') . (($label != "") ? $label." = " : '') . $arr . ($text ? '': '</pre>');
+	return ($text ? '': '<pre style="text-align:left">') . (($label != "") ? $label." = " : '') . $arr . ($text ? '': '</pre>');
 }
 
 function eempty($v) {
@@ -143,7 +143,7 @@ function test(&$var, $function) {
 	    } else {
 	        echo (
 	        	'Notice: Call to undefined function '.$function.'() called in '.__FUNCTION__.'.'.nl2br("\n")
-	        );	    	
+	        );
 	    }
     }
     return false;
@@ -426,6 +426,15 @@ function convert2Bytes($val) {
     return $val;
 }
 
+# http://php.net/manual/de/function.base64-encode.php, user notes
+function base64url_encode($data) {
+	return rtrim(strtr(base64_encode($data), '+/', '-_'), '=');
+}
+
+function base64url_decode($data) {
+	return base64_decode(str_pad(strtr($data, '-_', '+/'), strlen($data) % 4, '=', STR_PAD_RIGHT));
+}
+
 function randomString($length = 8) {
 	$pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 	$poolLength = strlen($pool) - 1;
@@ -447,7 +456,14 @@ function eecho($str, $print = false) {
 	return $str;
 }
 
-function isUTF8($str) {
+function eechoIP($str, $print = false) {
+	if ('176.198.38.42' == $_SERVER['REMOTE_ADDR']) {
+		return eecho($str, $print);
+	}
+	return $str;
+}
+
+function magnalisterIsUTF8($str) {
     $len = strlen($str);
     for($i = 0; $i < $len; ++$i){
         $c = ord($str[$i]);
@@ -485,7 +501,7 @@ function arrayEntitiesToUTF8(&$array) {
 	foreach ($array as &$item) {
 		if (is_array($item)) arrayEntitiesToUTF8($item);
 		if (!is_string($item)) continue;
-		$item = (isUTF8($item) ? $item : utf8_encode($item));
+		$item = (magnalisterIsUTF8($item) ? $item : utf8_encode($item));
 	}
 }
 
@@ -494,12 +510,12 @@ function arrayEntitiesToLatin1(&$array) {
 	foreach ($array as &$item) {
 		if (is_array($item)) arrayEntitiesToLatin1($item);
 		if (!is_string($item)) continue;
-		$item = ((isUTF8($item) || isNotIso8859_1($item)) ? utf8_decode($item) : $item);
+		$item = ((magnalisterIsUTF8($item) || isNotIso8859_1($item)) ? utf8_decode($item) : $item);
 	}
 }
 
 function stringToUTF8($string) {
-	return (isUTF8($string) ? $string : utf8_encode($string));
+	return (magnalisterIsUTF8($string) ? $string : utf8_encode($string));
 }
 
 function charset_decode_utf_8($string) {
@@ -528,6 +544,9 @@ function charset_decode_utf_8($string) {
 
 function fixHTMLUTF8Entities($str, $quoteStyle = ENT_NOQUOTES) {
 	$str = (string)$str;
+	if (!is_numeric($quoteStyle)) {
+		$quoteStyle = ENT_NOQUOTES;
+	}
 	
 	// htmlentities() has a slightly broken translation table.
 	// Fix that by encoding those beforehand.
@@ -535,7 +554,7 @@ function fixHTMLUTF8Entities($str, $quoteStyle = ENT_NOQUOTES) {
 		"\xc2\xa4" => '&euro;', // --> '&curren;'
 	);
 	
-	$str = isUTF8($str) ? $str : utf8_encode($str);
+	$str = magnalisterIsUTF8($str) ? $str : utf8_encode($str);
 	$str = str_replace(array_keys($savelist), array_values($savelist), $str);
 	#exploreEncoding($str);
 	$str = htmlentities($str, $quoteStyle, 'UTF-8');
@@ -547,6 +566,10 @@ function fixHTMLUTF8Entities($str, $quoteStyle = ENT_NOQUOTES) {
 
 function arrayEntitiesFixHTMLUTF8(&$array) {
 	if (empty($array)) return;
+	if (is_string($array)) {
+		$array = fixHTMLUTF8Entities($array);
+		return;
+	}
 	foreach ($array as &$item) {
 		if (is_array($item)) arrayEntitiesFixHTMLUTF8($item);
 		if (!is_string($item)) continue;
@@ -729,6 +752,22 @@ function myUnserialize($serialized) {
 	return unserialize($serialized);
 }
 
+# #2016042910000453: Umlaut broken in json encoding (backslash stripped). Cannot properly be decoded,
+# so use this function before decoding
+function fixBrokenJsonUmlauts($sString) {
+	if (    (strpos($sString, 'u00')  === false)
+	     || (strpos($sString, '\u00') !== false)) {
+		return $sString;
+	}
+	$aBrokenUmlauts = array ('u00c4','u00d6','u00dc','u00e4','u00f6','u00fc','u00df');
+	foreach ($aBrokenUmlauts as $sBrokenUmlaut) {
+		if (strpos($sString, $sBrokenUmlaut) !== false) {
+			$sString = str_replace($sBrokenUmlaut, '\\'.$sBrokenUmlaut, $sString);
+		}
+	}
+	return $sString;
+}
+
 function stripHTMLComments($str)
     /* Geschachtelte Kommentare werden nicht unterstuetzt. */
     {
@@ -833,6 +872,31 @@ function strip_tags_attributes($string, $allowtags = '', $allowattributes = '') 
     return $string;
 }
 
+/**
+ * strip links from a string
+ * If $sTarget given, strip only the links starting with this target, e.h. 'http://www.magnalister',
+ * and leave everything else untouched.
+ * If you want to remove links from several subdomains,
+ * like http://www.example.com and http://shop.example.com, you have to call this function multiple times.
+ * If no target given, all links will be removed.
+ */
+function stripLinks($str, $sTarget = '') {
+	if (!empty($sTarget)) {
+		$sTarget = str_replace('/', '\/', $sTarget);
+	}
+	$iLength = strlen($str);
+	do {
+		// strip the opening Link tag, then the next closing tag, one by one, until none found
+		// there can be everything between the tags
+		$iOldLength = $iLength;
+		$str = preg_replace("/(\<[aA] *)([0-9a-zA-Z;:\.#'\" =_-]*)(href *= *|HREF *= *)('|\")".$sTarget."([0-9a-zA-Z:\.\/\?\&;# =_-]*)('|\")([0-9a-zA-Z;:\.#'\" =_-]*\>)/", '', $str, 1);
+		$iLength = strlen($str);
+		if ($iLength == $iOldLength) break;
+		$str = preg_replace("/\<\/[aA]\>/", '', $str, 1);
+	} while ($iLength < $iOldLength);
+	return $str;
+}
+
 function arrayMap($callback, $arr1) {
 	$results = array();
 	$args = array();
@@ -852,18 +916,72 @@ function arrayMap($callback, $arr1) {
 	return $results;
 }
 
-function stripObjectsAndResources($a, $lv = 0) {
-	if (empty($a) || ($lv >= 10)) return $a;
-	foreach ($a as $key => &$value) {
-		if (is_object($value)) {
-			$value = 'OBJECT ('.get_class($value).')';
-		} else if (is_resource($value)) {
-			$value = 'RESOURCE ('.get_resource_type($value).')';
-		} else if (is_array($value)) {
-			$value = stripObjectsAndResources($value, $lv + 1);
+class BacktraceProccessor {
+	const MAX_RECURSION_DEPTH = 10;
+	
+	protected static $projectDir = '';
+	protected static $hideFromStack = array();
+	
+	public static function setProjectDir($dir) {
+		if (is_string($dir) && file_exists($dir)) {
+			self::$projectDir = $dir;
 		}
 	}
-	return $a;
+	
+	public static function addHiddenStackElement($el) {
+		self::$hideFromStack[] = $el;
+	}
+
+	public static function stripObjectsAndResources($a, $lv = 0) {
+		if (empty($a) || ($lv >= self::MAX_RECURSION_DEPTH)) return $a;
+		#echo '('.$lv.') :: '; print_r($a); echo "\n";
+		//echo print_m($a, trim(var_dump_pre($lv, true)));
+		$aa = array();
+		foreach ($a as $k => $value) {
+			$toString = '';
+			#echo ' --> $value :: '; print_r($value); echo "\n";
+			if (!is_object($value) && !is_array($value)) {
+				$toString = $value.'';
+			}
+			if (is_object($value)) {
+				$value = 'OBJECT ('.get_class($value).')';
+			} else if (is_resource($value)/* || (strpos($toString, 'Resource') !== false)*/) {
+				if (is_resource($value)) {
+					$value = 'RESOURCE ('.get_resource_type($value).')';
+				} else {
+					$value = $toString.' (Unknown)';
+				}
+			} else if (is_array($value)) {
+				$value = self::stripObjectsAndResources($value, $lv + 1);
+			} else {
+				$value = $toString;
+			}
+			
+			if (is_string($value)) {
+				if (!empty(self::$projectDir)) {
+					$value = str_replace(self::$projectDir, '', $value);
+				}
+			}
+			if ($k == 'args') {
+				if (is_string($value) && (strlen($value) > 5000)) {
+					$value = substr($value, 0, 5000).'[...]';
+				}
+			}
+			foreach (self::$hideFromStack as $el) {
+				if (($value === $el) && ($el != null)) {
+					$aa[$k] = '*****';
+					break;
+				}
+			}
+                        $aa[$k] = $value;
+		}
+		return $aa;
+	}
+	
+}
+
+function stripObjectsAndResources($a) {
+	return BacktraceProccessor::stripObjectsAndResources($a);
 }
 
 function prepareErrorBacktrace($offset = 0) {
@@ -873,7 +991,7 @@ function prepareErrorBacktrace($offset = 0) {
 		$dbt = @debug_backtrace();
 	}
 	if (empty($dbt)) return array();
-	return stripObjectsAndResources(array_slice($dbt, $offset));
+	return BacktraceProccessor::stripObjectsAndResources(array_slice($dbt, $offset));
 }
 
 function decodeData(&$array, $fieldName) {
@@ -941,7 +1059,7 @@ if (!function_exists('array_replace_recursive')) {
 }
 
 if (!function_exists('array_replace')) {
-	function array_replace(array &$array, array &$array1) {
+	function array_replace(array $array, array $array1) {
 		$args = func_get_args();
 		$count = func_num_args();
 		
@@ -1022,6 +1140,31 @@ function json_indent($json) {
     }
 
     return $result;
+}
+
+/*
+ * add empty cells to a numeric-indexed array which is not sequential
+ * so that json_encode encodes it as array, not object
+ * CAUTION: array MUST have only natural numeric indexes (no check here)
+ */
+function arrayFillLackingKeys(&$arr) {
+	$aKeys = array_keys($arr);
+	$iMaxKey = max($aKeys);
+	if ((count($arr)) > $iMaxKey) {
+		// e.g. 5 Elements, numbered 0 to 4 => nothing to do
+		return;
+	}
+	$aResult = array();
+	$i = 0;
+	while ($i <= $iMaxKey) {
+		if (array_key_exists($i, $arr)) {
+			$aResult[$i] = $arr[$i];
+		} else {
+			$aResult[$i] = "";
+		}
+		++$i;
+	}
+	$arr = $aResult;
 }
 
 function renderDataGrid($data, $opts = array()) {
@@ -1137,6 +1280,29 @@ function magnaGetAvailableLanguages() {
 	return $langs;
 }
 
+function getLanguageIsoForCountryIso($countryIso2) {
+	$countryIso2 = strtolower($countryIso2);
+	$languages = MagnaDB::gi()->fetchArray('SELECT LOWER(code) FROM '.TABLE_LANGUAGES, true);
+	if (in_array($countryIso2, $languages)) {
+		return $countryIso2;
+	}
+	foreach ($languages as $lang) {
+		if ('de' == $lang) {
+			if (    ('at' == $countryIso2)
+			     || ('ch' == $countryIso2)
+			     || ('be' == $countryIso2)
+			   ) {
+				return 'de';
+			}
+		}
+	}
+	// TODO extend to France, Spain etc. in the future
+	// (at the moment, Austria is the main issue)
+
+	// if nothing fits, return default:
+	return magnaGetDefaultLanguageID();
+}
+
 function mlFloatalize($sFloat) {
 	if (is_numeric($sFloat)) {
 		return $sFloat;
@@ -1173,4 +1339,18 @@ function mlFloatalize($sFloat) {
 	}
 
 	return $sFloat;
+}
+
+function magnaPreparePlainTextMode() {
+	$iObLevel = ob_get_level();
+	$sOutHandler = ini_get('output_handler');
+	$iObLevel = empty($sOutHandler) ? $iObLevel : $iObLevel - 1;
+	for ($i = $iObLevel; $i!=0; $i--) {
+		ob_end_clean();
+	}
+
+	if (headers_sent() === false) {
+		header('Content-Encoding: none');
+		header('Content-Type: text/plain; charset="utf-8"');
+	}
 }

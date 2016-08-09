@@ -141,7 +141,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                             </table>
                             <br />
 <?php
-echo '<input type="submit" name="go" class="button" onClick="this.blur();" value="' . BUTTON_SAVE . '"/> ';
+echo '<input type="submit" name="go" class="button" value="' . BUTTON_SAVE . '"/> ';
 if (isset($cseo_orders_success) && $cseo_orders_success && $cseo_customers_success) {
     echo '<br />' . ID_STARTS_SUCCESS;
 } elseif (isset($cseo_orders_success)) {

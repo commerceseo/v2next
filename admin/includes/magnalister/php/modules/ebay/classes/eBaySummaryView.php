@@ -38,6 +38,7 @@ class eBaySummaryView extends SimpleSummaryView {
 		
 		$this->fixedPriceStockSync = getDBConfigValue($this->marketplace.'.fixed.quantity.type', $this->mpID);
 		$this->chineseStockSync = 'lump';
+		$this->inventoryPriceSync = getDBConfigValue($this->marketplace.'.inventorysync.price', $this->mpID, false);
 	}
 
 	protected function additionalInitialisation() {
@@ -139,6 +140,16 @@ class eBaySummaryView extends SimpleSummaryView {
 
 	protected function getAdditionalHeadlines() {
 		$ret = parent::getAdditionalHeadlines();
+
+		if ($this->inventoryPriceSync == 'auto') {
+			return '
+				<td title="'.ML_LABEL_BRUTTO.'">'.ML_EBAY_LABEL_EBAY_PRICE.'&nbsp;<span class="small">'.$this->settings['currency'].'</span></td>
+				'.$ret.'
+				<td>'.ML_LABEL_QUANTITY_AVAILABLE.'</td>
+				<td>'.$this->provideResetFunction(ML_LABEL_QUANTITY, 'quantity').'</td>
+			';
+		}
+
 		return '
 			<td title="'.ML_LABEL_BRUTTO.'">'.$this->provideResetFunction(
 				ML_EBAY_LABEL_EBAY_PRICE.' <span class="small">'.
@@ -176,9 +187,6 @@ class eBaySummaryView extends SimpleSummaryView {
 		     LIMIT 1
 		');
 
-		if (0.0 != $listingproperties['Price']) {
-			$data['price'] = $listingproperties['Price'];
-		}
 		if (!isset($data['price']) || ($data['price'] === null)) {
 			$data['price'] = makePrice($pID, $listingproperties['ListingType']);
 		}
@@ -189,6 +197,10 @@ class eBaySummaryView extends SimpleSummaryView {
 		}
 		
 		if ($data['listingsupertype'] == 'chinese') {
+			// frozen price only at chinese auction
+			if (0.0 != $listingproperties['Price']) {
+				$data['price'] = $listingproperties['Price'];
+			}
 			$availableQuantity = (int)MagnaDB::gi()->fetchOne('SELECT products_quantity FROM '.TABLE_PRODUCTS.' WHERE products_id=\''.$pID.'\'');
 			if ($availableQuantity > 0) {
 				$data['quantity'] = 1;
@@ -247,13 +259,11 @@ class eBaySummaryView extends SimpleSummaryView {
 			$stocktype = $this->fixedPriceStockSync;
 		}
 		$stock = (($stocktype == 'stock') || ($stocktype == 'stocksub'));
-		
+
 		return '
 			<td><table class="nostyle"><tbody>
-					<tr><td>'.ML_LABEL_NEW.':&nbsp;</td><td>
-						<input type="text" id="price_'.$dbRow['products_id'].'"
-					           name="price['.$dbRow['products_id'].']"
-					           value="'.$this->simplePrice->setPrice($this->selection[$dbRow['products_id']]['price'])->getPrice().'"/>
+					<tr><td>'.ML_LABEL_NEW.':&nbsp;</td><td>'
+			.$this->simplePrice->setPrice($this->selection[$dbRow['products_id']]['price'])->getPrice().'
 						<input type="hidden" id="backup_price_'.$dbRow['products_id'].'"
 					           value="'.$this->simplePrice->getPrice().'"/>
 					</td></tr>
@@ -269,15 +279,10 @@ class eBaySummaryView extends SimpleSummaryView {
 			<td>'.(int)$dbRow['products_quantity'].'</td>
 			<td><input type="hidden" id="old_quantity_'.$dbRow['products_id'].'"
 				       value="'.$this->selection[$dbRow['products_id']]['quantity'].'"/>
-				'.(($stock || ($type == 'chinese'))
-					? $this->selection[$dbRow['products_id']]['quantity']
-					: '
-			    <input type="text" id="quantity_'.$dbRow['products_id'].'"
-				       name="quantity['.$dbRow['products_id'].']" size="4" maxlength="4" 
-				       value="'.$this->selection[$dbRow['products_id']]['quantity'].'"/></td>'
-				);
+				'.$this->selection[$dbRow['products_id']]['quantity'].'</td>'
+				;
 	}
-	
+
 	# beim Preis anders als im allg. Fall: Reset gibt Preis aus Konfig, auch wenn sonst eingefroren
 	protected function resetSelectionAttributes($reset, $limit) {
 		if ('price' != $reset) {
@@ -303,6 +308,18 @@ class eBaySummaryView extends SimpleSummaryView {
 		');
 		$fetchedElements = 0;
 		while ($row = MagnaDB::gi()->fetchNext($itemsResult)) {
+			$sListingType = MagnaDB::gi()->fetchOne("
+				SELECT ListingType
+				  FROM ".TABLE_MAGNA_EBAY_PROPERTIES."
+				 WHERE     products_id = '".$row['pID']."'
+				       AND mpID = '".$this->_magnasession['mpID']."'
+			  ORDER BY products_id DESC LIMIT 1
+			");
+
+			if ($sListingType == 'chinese') {
+				continue;
+			}
+
 			++$fetchedElements;
 
 			$row['data'] = unserialize($row['data']);
@@ -312,12 +329,8 @@ class eBaySummaryView extends SimpleSummaryView {
 				continue;
 			}
 			unset($row['data'][$reset]);
-			$row['data']['price'] = makePrice($row['pID'],
-				MagnaDB::gi()->fetchOne('SELECT ListingType
-				 FROM ' .TABLE_MAGNA_EBAY_PROPERTIES
-				 .' WHERE products_id='.$row['pID']
-				 .' AND mpID='.$this->_magnasession['mpID']
-				 .' ORDER BY products_id DESC LIMIT 1'));
+
+			$row['data']['price'] = makePrice($row['pID'], $sListingType);
 			# $this->extendProductAttributes($row['pID'], $row['data']);
 			
 			$this->ajaxReply['changedData'][$row['pID']][$reset] = $row['data'][$reset];

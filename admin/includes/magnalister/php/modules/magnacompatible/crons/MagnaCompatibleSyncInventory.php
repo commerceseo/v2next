@@ -26,7 +26,8 @@ abstract class MagnaCompatibleSyncInventory extends MagnaCompatibleCronBase {
 	protected $offset = 0;
 	protected $limit = 100;
 	protected $steps = false;
-	
+
+	/** @var SimplePrice $simplePrice */
 	protected $simplePrice = null;
 	
 	protected $syncStock = false;
@@ -51,7 +52,8 @@ abstract class MagnaCompatibleSyncInventory extends MagnaCompatibleCronBase {
 		$this->limit = $limit;
 		
 		$this->initSync();
-
+		$this->initMLProduct();
+		
 		$this->helperClass = ucfirst($this->marketplace).'Helper';
 		$helperPath = DIR_MAGNALISTER_MODULES.strtolower($this->marketplace).'/'.$this->helperClass.'.php';
 		if (file_exists($helperPath)) {
@@ -67,11 +69,19 @@ abstract class MagnaCompatibleSyncInventory extends MagnaCompatibleCronBase {
 		$this->simplePrice = new SimplePrice();
 	}
 	
+	protected function initMLProduct() {
+		MLProduct::gi()->resetOptions();
+	}
+	
 	protected function getConfigKeys() {
 		return array (
 			'KeyType' => array (
 				'key' => 'general.keytype',
 				'default' => 'artNr',
+			),
+			'VarType' => array (
+				'key' => 'general.options',
+				'default' => 'old',
 			),
 			'StockSync' => array (
 				'key' => 'stocksync.tomarketplace',
@@ -85,6 +95,10 @@ abstract class MagnaCompatibleSyncInventory extends MagnaCompatibleCronBase {
 			),
 			'QuantityValue' => array (
 				'key' => 'quantity.value',
+				'default' => 0,
+			),
+			'QuantityMax' => array (
+				'key' => 'quantity.maxquantity',
 				'default' => 0,
 			),
 			'StatusMode' => array (
@@ -201,11 +215,26 @@ abstract class MagnaCompatibleSyncInventory extends MagnaCompatibleCronBase {
 		}
 		
 		$curQty = false;
-		if (($this->cItem['aID'] > 0) && $this->hasDbColumn['pa.attributes_stock']) {
-			$curQty = MagnaDB::gi()->fetchOne('
-				SELECT attributes_stock FROM '.TABLE_PRODUCTS_ATTRIBUTES.' 
-				 WHERE products_attributes_id = \''.$this->cItem['aID'].'\'
-			');
+		switch ($this->config['VarType']) {
+			case ('gambioProperties'): {
+				if ($this->cItem['aID'] > 0) {
+					$curQty = MagnaDB::gi()->fetchOne('
+						SELECT combi_quantity FROM products_properties_combis
+				 		WHERE products_properties_combis_id = \''.$this->cItem['aID'].'\'
+					');
+				}
+				break;
+			}
+			case('old'):
+			default: {
+				if (($this->cItem['aID'] > 0) && $this->hasDbColumn['pa.attributes_stock']) {
+					$curQty = MagnaDB::gi()->fetchOne('
+						SELECT attributes_stock FROM '.TABLE_PRODUCTS_ATTRIBUTES.' 
+				 		WHERE products_attributes_id = \''.$this->cItem['aID'].'\'
+					');
+				}
+				break;
+			}
 		}
 		if ($curQty === false) {
 			$curQty = MagnaDB::gi()->fetchOne('
@@ -218,6 +247,9 @@ abstract class MagnaCompatibleSyncInventory extends MagnaCompatibleCronBase {
 		}
 	
 		$curQty -= $this->config['QuantitySub'];
+		if (($this->config['QuantityMax'] > 0)) {
+			$curQty = min($curQty, $this->config['QuantityMax']);
+		}
 		if ($curQty < 0) {
 			$curQty = 0;
 		}
@@ -225,7 +257,7 @@ abstract class MagnaCompatibleSyncInventory extends MagnaCompatibleCronBase {
 	}
 	
 	protected function isAutoSyncEnabled() {
-		$this->syncStock = $this->config['StockSync'] == 'auto';
+		$this->syncStock = $this->config['StockSync'] == 'auto'  || ($this->config['StockSync'] == 'auto_fast');
 		$this->syncPrice = $this->config['PriceSync'] == 'auto';
 		
 		//$this->syncStock = $this->syncPrice = true;
@@ -325,7 +357,8 @@ abstract class MagnaCompatibleSyncInventory extends MagnaCompatibleCronBase {
 	final protected function addToBatch($data) {
 		$mpID = $this->mpID;
 		$marketplace = $this->marketplace;
-		/* {Hook} "SyncInventory_UpdateItem": Runs during the inventory synchronization from your shop to the marketplace.<br>
+		/* {Hook} "SyncInventory_UpdateItem": Runs at the end of an item synchronization. Here you can add additional data to the item that
+			   should be synchronized or change the calculated data.<br>
 			   Variables that can be used: 
 			   <ul><li>$this->mpID: The ID of the marketplace.</li>
 			       <li>$this->marketplace: The name of the marketplace.</li>
@@ -361,14 +394,38 @@ if (($this->marketplace == 'amazon') && ($this->cItem['SKU'] == 'blabla123')) {
 		$this->identifySKU();
 		$this->fixIdentification();
 		
+		$title = isset($this->cItem['Title'])
+			? $this->cItem['Title']
+			: (isset($this->cItem['ItemTitle'])
+				? $this->cItem['ItemTitle']
+				: 'unknown'
+			);
+		
+		/* {Hook} "SyncInventory_PreUpdateItem": Runs at the beginning of an item synchronization. Here you can try to fix the identification of
+			   the item to make sure it gets processed in case the SKU can not be found in the first try.<br>
+			   Variables that can be used: 
+			   <ul><li>$this->mpID: The ID of the marketplace.</li>
+			       <li>$this->marketplace: The name of the marketplace.</li>
+			       <li>$this->cItem (array): The current product from the marketplaces inventory including some identification information.
+			           <ul><li>SKU: Article number of marketplace</li>
+			               <li>pID: products_id of product</li>
+			               <li>aID: attributes_id of product</li></ul>
+			       </li>
+			   </ul>
+			   <p>Notice: In case the identification of the item was successfull the value of $this->cItem['pID'] is > 0.</p>
+		*/
+		if (($hp = magnaContribVerify('SyncInventory_PreUpdateItem', 1)) !== false) {
+			require($hp);
+		}
+		
 		if ((int)$this->cItem['pID'] <= 0) {
 			$this->log("\n".
-				'SKU: '.$this->cItem['SKU'].' ('.$this->cItem['ItemTitle'].') not found'
+				'SKU: '.$this->cItem['SKU'].' ('.$title.') not found'
 			);
 			return;
 		} else {
 			$this->log("\n".
-				'SKU: '.$this->cItem['SKU'].' ('.$this->cItem['ItemTitle'].') found ('.
+				'SKU: '.$this->cItem['SKU'].' ('.$title.') found ('.
 				'pID: '.$this->cItem['pID'].'; aID: '.$this->cItem['aID'].
 			')');
 		}

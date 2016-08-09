@@ -36,6 +36,8 @@ MagnaConnector::gi()->setAddRequestsProps(array(
 ));
 
 require_once(DIR_MAGNALISTER_MODULES.'ebay/ebayFunctions.php');
+require_once(DIR_MAGNALISTER_MODULES.'ebay/classes/EbayApiConfigValues.php');
+EbayApiConfigValues::gi()->init($_MagnaSession);
 
 loadDBConfig($_MagnaSession['mpID']);
 $requiredConfigKeys =$_modules[$_MagnaSession['currentPlatform']]['requiredConfigKeys'];
@@ -46,42 +48,42 @@ $_magnaQuery['messages'] = array();
 
 if (!allRequiredConfigKeysAvailable($requiredConfigKeys, $_MagnaSession['mpID'])) {
 	$_magnaQuery['mode'] = 'conf';
-} else {
-	if (!(
-		array_key_exists('conf', $_POST) && 
-		allRequiredConfigKeysAvailable($authConfigKeys, $_MagnaSession['mpID'], $_POST['conf'])
-	)) {
-		$authed = getDBConfigValue('ebay.authed', $_MagnaSession['mpID']);
-		//$authed = false;
-		if (!is_array($authed)) {
-			$authed = array('state' => false, 'expire' => 0);
-		}
+}
+if (!(
+	array_key_exists('conf', $_POST) && 
+	allRequiredConfigKeysAvailable($authConfigKeys, $_MagnaSession['mpID'], $_POST['conf'])
+)) {
+	$authed = getDBConfigValue('ebay.authed', $_MagnaSession['mpID']);
+	//$authed = false;
+	if (!is_array($authed)) {
+		$authed = array('state' => false, 'expire' => 0);
+	}
 
-		if (!$authed['state'] || ($authed['expire'] <= time())) {
-			$epires = '';
-			try {
-				$r = MagnaConnector::gi()->submitRequest(array(
-					'ACTION' => 'IsAuthed',
-				));
-				$authState = true;
-				if (isset($r['EXPIRES']) && (($ts = @strtotime($r['EXPIRES'])) !== false)) {
-					$epires = $ts;
-				}
-			} catch (MagnaException $e) {
-				$authState = false;
-				if ($e->getCode() != MagnaException::UNKNOWN_ERROR) {
-					$e->setCriticalStatus(false);
-				}
-				$authError = $e->getErrorArray();
-				$_GET['mode'] = $_magnaQuery['mode'] = 'conf';
+	if (!$authed['state'] || ($authed['expire'] <= time())) {
+		$epires = '';
+		try {
+			$r = MagnaConnector::gi()->submitRequest(array(
+				'ACTION' => 'IsAuthed',
+			));
+			#echo print_m($r, 'IsAuthed');
+			$authState = true;
+			if (isset($r['EXPIRES']) && (($ts = @strtotime($r['EXPIRES'])) !== false)) {
+				$epires = $ts;
 			}
-			$authed = array (
-				'state' => $authState,
-				'expire' => time() + 60 * 15 // 15 Min
-			);
-			setDBConfigValue('ebay.authed', $_MagnaSession['mpID'], $authed, true);
-			setDBConfigValue('ebay.token.expires', $_MagnaSession['mpID'], $epires, true);
+		} catch (MagnaException $e) {
+			$authState = false;
+			if ($e->getCode() != MagnaException::UNKNOWN_ERROR) {
+				$e->setCriticalStatus(false);
+			}
+			$authError = $e->getErrorArray();
+			$_GET['mode'] = $_magnaQuery['mode'] = 'conf';
 		}
+		$authed = array (
+			'state' => $authState,
+			'expire' => time() + 60 * 15 // 15 Min
+		);
+		setDBConfigValue('ebay.authed', $_MagnaSession['mpID'], $authed, true);
+		setDBConfigValue('ebay.token.expires', $_MagnaSession['mpID'], $epires, true);
 	}
 }
 
@@ -105,6 +107,9 @@ if ($_magnaQuery['mode'] == 'prepare') {
 
 } else if ($_magnaQuery['mode'] == 'listings') {
 	$includes[] = DIR_MAGNALISTER_MODULES.'ebay/listings.php';
+	
+} else if ($_magnaQuery['mode'] == 'errorlog') {
+	$includes[] = DIR_MAGNALISTER_MODULES.'ebay/errorlog.php';
 
 } else if ($_magnaQuery['mode'] == 'conf') {
 	$includes[] = DIR_MAGNALISTER_MODULES.'ebay/ebayConfig.php';

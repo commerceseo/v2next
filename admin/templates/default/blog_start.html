@@ -1,0 +1,98 @@
+{$FORM}
+<div class="row">
+	<div class ="pull-left">
+		<h1>{$txt.HEADING_TBLOG_START}</h1>
+	</div>
+	<div class="pull-right">
+		<input class="btn btn-success" type="submit" value="{$txt.BUTTON_SAVE}" />
+		<a class="btn btn-default" href="blog.php">{$txt.BUTTON_CANCEL}</a>
+	</div>
+</div>
+<div class="row">
+	<ul class="nav nav-tabs">
+		{foreach name=catedit item=module_cat from=$START_EDIT}
+		<li {if $module_cat.langid == '2'} class="active"{/if}><a href="#{$module_cat.langname}" data-toggle="tab">{$module_cat.lang_images} {$module_cat.langname}</a></li>
+		{/foreach}
+		<li><a href="#gallery" data-toggle="tab">{$txt.BILDERGAL}</a></li>
+	</ul>
+	<div class="tab-content">
+		{foreach name=catedit item=module_cat from=$START_EDIT}
+		<div class="tab-pane fade in{if $module_cat.langid == '2'} active{/if}" id="{$module_cat.langname}">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="panel-title"><b>META-{$txt.TABLE_HEADING_DESCRIPTION}</b></div>
+					</div>
+					<table class="table table-striped">
+						<tr>
+							<td class="col-xs-3"><b>{$txt.HEADING_SLIDERSET}</b></td>
+							<td class="col-xs-9">{$module_cat.field_slider}</td>
+						</tr>
+						<tr>
+							<td><b>{$txt.HEADING_META_TITLE}</b></td>
+							<td>{$module_cat.field_mtitle}</td>
+						</tr>
+						<tr>
+							<td><b>{$txt.HEADING_META_DESCRIPTION}</b></td>
+							<td>{$module_cat.field_mdesc}</td>
+						</tr>
+						<tr>
+							<td><b>{$txt.HEADING_META_KEYWORDS}</b></td>
+							<td>{$module_cat.field_mkeys}</td>
+						</tr>
+					</table>
+				</div>
+				{if $module_cat.langid == '2' && $KGRUPPE}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="panel-title"><b>{$KGRUPPE}</b></div>
+					</div>
+					<div class="panel-body">
+						{foreach name=catedit item=module_grp from=$GRUPPE}
+							{$module_grp.KGRUPPE}
+						{/foreach}
+					</div>
+				</div>
+				{/if}
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<div class="panel-title"><b>{$txt.TABLE_HEADING_DESCRIPTION}</b></div>
+					</div>		
+				<div class="panel-body">
+					{$module_cat.field_ldesc}
+					{$module_cat.field_sdesc_wy}
+				</div>		
+			</div>
+		</div>
+		{/foreach}
+		<div class="tab-pane fade in" id="gallery">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<div class="panel-title"><b>{$txt.BILDERGAL}</b></div>
+				</div>		
+				<table class="table table-striped">
+					{foreach name=bilder item=module_img from=$BILDER}
+						<tr>
+							<td><b>{$module_img.bildfeld1}</b></td>
+							<td>{if $module_img.bildfeld0 !=''}
+								{$module_img.bildfeld2}
+								{$module_img.bildfeld3}<br>
+								{$module_img.bildfeld4}
+								{else}
+								{$module_img.bildfeld5}
+								{/if}
+							</td>
+						</tr>
+					{/foreach}
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+{$HIDDEN}
+<div class="row">
+	<div class="text-right">
+		<input class="btn btn-success" type="submit" value="{$txt.BUTTON_SAVE}" />
+		<a class="btn btn-default" href="blog.php">{$txt.BUTTON_CANCEL}</a>
+	</div>
+</div>
+{$FORM_END}

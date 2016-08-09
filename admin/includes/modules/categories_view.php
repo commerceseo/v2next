@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: categories_view.php 1051 2014-05-14 17:07:17Z akausch $
+ * 	$Id: categories_view.php 1308 2014-12-11 07:43:57Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -158,9 +158,9 @@ if ($current_category_id == '')
                 $categories_count = 0;
                 $rows = 0;
                 if ($_GET['search']) {
-                    $categories_query = xtc_db_query("select c.categories_id, c.section, cd.categories_name, c.categories_image, c.parent_id, c.sort_order, c.date_added, c.last_modified, c.categories_status from " . TABLE_CATEGORIES . " c, " . TABLE_CATEGORIES_DESCRIPTION . " cd where c.categories_id = cd.categories_id and cd.language_id = '" . (int) $_SESSION['languages_id'] . "' and cd.categories_name like '%" . $_GET['search'] . "%' order by " . $catsort);
+                    $categories_query = xtc_db_query("SELECT c.categories_id, c.section, cd.categories_name, c.categories_image, c.parent_id, c.sort_order, c.date_added, c.last_modified, c.categories_status FROM " . TABLE_CATEGORIES . " AS c JOIN " . TABLE_CATEGORIES_DESCRIPTION . " AS cd ON(c.categories_id = cd.categories_id AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "') WHERE cd.categories_name LIKE '%" . $_GET['search'] . "%' ORDER BY " . $catsort);
                 } else {
-                    $categories_query = xtc_db_query("select c.categories_id, c.section, cd.categories_name, c.categories_image, c.parent_id, c.sort_order, c.date_added, c.last_modified, c.categories_status, cd.categories_url_alias from " . TABLE_CATEGORIES . " c, " . TABLE_CATEGORIES_DESCRIPTION . " cd where c.parent_id = '" . $current_category_id . "' and c.categories_id = cd.categories_id and cd.language_id = '" . (int) $_SESSION['languages_id'] . "' order by " . $catsort);
+                    $categories_query = xtc_db_query("SELECT c.categories_id, c.section, cd.categories_name, c.categories_image, c.parent_id, c.sort_order, c.date_added, c.last_modified, c.categories_status, cd.categories_url_alias FROM " . TABLE_CATEGORIES . " AS c JOIN " . TABLE_CATEGORIES_DESCRIPTION . " AS cd ON (c.categories_id = cd.categories_id  AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "') WHERE c.parent_id = '" . $current_category_id . "' ORDER BY " . $catsort);
                 }
                 if (xtc_db_num_rows($categories_query)) {
                     echo '<ul id="cat_sortable" class="ul_reset categorie_list">';
@@ -265,29 +265,20 @@ if ($current_category_id == '')
                     $products_query = xtc_db_query("SELECT
 														p.*,
 														pd.products_name
-													FROM 
-														" . TABLE_PRODUCTS . " p 
-													INNER JOIN 
-														" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "') 
-													INNER JOIN
-														" . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON(p.products_id = p2c.products_id)
-													WHERE 
-														(pd.products_name like '%" . $_GET['search'] . "%' 
-													OR
-														p.products_model like '%" . $_GET['search'] . "%') 
+													FROM " . TABLE_PRODUCTS . " p 
+													JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "') 
+													JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON(p.products_id = p2c.products_id)
+													WHERE (pd.products_name like '%" . $_GET['search'] . "%' 
+													OR p.products_model like '%" . $_GET['search'] . "%') 
 													ORDER BY " . $prodsort);
                 } else {
                     $products_query = xtc_db_query("SELECT
 														p.*,
 														pd.* 
-													FROM 
-														" . TABLE_PRODUCTS . " p 
-													INNER JOIN
-														" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-													INNER JOIN
-														" . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON(p.products_id = p2c.products_id)
-													WHERE 
-														p2c.categories_id = '" . $current_category_id . "' 
+													FROM " . TABLE_PRODUCTS . " p 
+													JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+													JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON(p.products_id = p2c.products_id)
+													WHERE p2c.categories_id = '" . $current_category_id . "' 
 													ORDER BY " . $prodsort);
                 }
 
@@ -344,11 +335,11 @@ if ($current_category_id == '')
                         <li class="w32p al" style="min-height: 50px;">
                             <?php
 							if ($products['products_image'] != '') {
-								echo '<div style="float:left; width: 50px;">' . xtc_image(DIR_WS_CATALOG_MINI_IMAGES . $products['products_image']) . '</div>';
+								echo '<div class="pimg">' . xtc_image(DIR_WS_CATALOG_MINI_IMAGES . $products['products_image']) . '</div>';
 							} else {
-								echo '<div style="float:left; width: 50px;">' . xtc_image(DIR_WS_CATALOG_MINI_IMAGES . 'no_img.jpg') . '</div>';
+								echo '<div class="pimg">' . xtc_image(DIR_WS_CATALOG_MINI_IMAGES . 'no_img.jpg') . '</div>';
 							}
-                            echo '<div style="float:left;position:relative; top:2px; width: 80%;">' . $products['products_name'] . '';
+                            echo '<div class="pname">' . $products['products_name'] . '';
                             echo'<br style="clear:both" />';
                             if ($products['products_url_alias'] != '')
                                 echo '<span class="url_alias"><em><u>URL Alias:</u> ' . $products['products_url_alias'] . '</em></span>';

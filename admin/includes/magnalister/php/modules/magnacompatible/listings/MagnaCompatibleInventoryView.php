@@ -91,7 +91,7 @@ class MagnaCompatibleInventoryView {
 				'SORTORDER' => $this->sort['type']
 			);
 			if (!empty($this->search)) {
-				#$request['SEARCH'] = (!isUTF8($this->search)) ? utf8_encode($this->search) : $this->search;
+				#$request['SEARCH'] = (!magnalisterIsUTF8($this->search)) ? utf8_encode($this->search) : $this->search;
 				$request['SEARCH'] = $this->search;
 			}
 			$result = MagnaConnector::gi()->submitRequest($request);
@@ -125,14 +125,18 @@ class MagnaCompatibleInventoryView {
 		} else {
 			$sorting = 'blabla'; // fallback for default
 		}
-		//ToDo
-		$sortFlags = array (
-			'sku' => 'SKU',
-			'meinpaketid' => 'MeinpaketID',
-			'price' => 'Price',
-			'quantity' => 'Quantity',
-			'dateadded' => 'DateAdded'
-		);
+		
+		$fields = $this->getFields();
+		$sortFlags = array ();
+		foreach ($fields as $key => $fieldCfg) {
+			if (empty($fieldCfg['Sorter'])) {
+				continue;
+			}
+			$sortFlags[$fieldCfg['Sorter']] = $key;
+		}
+		
+		#echo print_m($sortFlags, '$sortFlags');
+		
 		$order = 'ASC';
 		if (strpos($sorting, '-desc') !== false) {
 			$order = 'DESC';
@@ -149,7 +153,7 @@ class MagnaCompatibleInventoryView {
 	
 	protected function postDelete() { /* Nix :-) */ }
 	
-	private function initInventoryView() {
+	protected function initInventoryView() {
 		if (isset($_POST['SKUs']) && is_array($_POST['SKUs']) && isset($_POST['action'])
 			 //&& ($_SESSION['POST_TS'] != $_POST['timestamp']) // Re-Post Prevention
 		) {
@@ -216,7 +220,11 @@ class MagnaCompatibleInventoryView {
 			$this->offset = 0;
 		}
 	}
-	
+
+	protected function prepareInventoryItemData(&$item) {
+		
+	}
+
 	public function prepareInventoryData() {
 		global $magnaConfig;
 
@@ -228,20 +236,25 @@ class MagnaCompatibleInventoryView {
 					$item['Title'] = $item['ItemTitle'];
 					unset($item['ItemTitle']);
 				}
+				$this->prepareInventoryItemData($item);
 				$pID = magnaSKU2pID($item['SKU']);
-				$stitle = (string)MagnaDB::gi()->fetchOne('
-					SELECT products_name 
-					  FROM '.TABLE_PRODUCTS_DESCRIPTION.'
-					 WHERE products_id=\''.$pID.'\' 
-					       AND language_id = \''.$this->settings['language'].'\'
-				');
-				if (!empty($stitle)) {
-					$item['Title'] = $stitle;
+				if (is_array($this->settings['language'])) {
+					$iLanguageId = current($this->settings['language']);
+				} else {
+					$iLanguageId = $this->settings['language'];
 				}
-				$item['TitleShort'] = (strlen($item['Title']) > $this->settings['maxTitleChars'] + 2)
-						? (fixHTMLUTF8Entities(substr($item['Title'], 0, $this->settings['maxTitleChars'])).'&hellip;')
+				$sTitle = (string)MagnaDB::gi()->fetchOne("
+					SELECT products_name 
+					  FROM ".TABLE_PRODUCTS_DESCRIPTION."
+					 WHERE     products_id = '".$pID."'
+					       AND language_id = '".$iLanguageId."'
+				");
+				if (!empty($sTitle)) {
+					$item['Title'] = $sTitle;
+				}
+				$item['TitleShort'] = (mb_strlen($item['Title'], 'UTF-8') > $this->settings['maxTitleChars'] + 2)
+						? (fixHTMLUTF8Entities(mb_substr($item['Title'], 0, $this->settings['maxTitleChars'], 'UTF-8')).'&hellip;')
 						: fixHTMLUTF8Entities($item['Title']);
-				$item['DateAdded'] = ((isset($item['DateAdded'])) ? strtotime($item['DateAdded']) : '');
 			}
 			unset($result);
 		}
@@ -303,11 +316,14 @@ class MagnaCompatibleInventoryView {
 	}
 	
 	protected function getItemDateAdded($item) {
+		$item['DateAdded'] = ((isset($item['DateAdded'])) ? strtotime($item['DateAdded']) : '');
 		return '<td>'.date("d.m.Y", $item['DateAdded']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['DateAdded']).'</span>'.'</td>';	
 	}
 
-	private function renderDataGrid($id = '') {
+	protected function renderDataGrid($id = '') {
 		global $magnaConfig;
+
+		#echo print_m($this->renderableData, '$this->renderableData');
 
 		$html = '
 			<table'.(($id != '') ? ' id="'.$id.'"' : '').' class="datagrid">
@@ -318,31 +334,30 @@ class MagnaCompatibleInventoryView {
 		$fieldsDesc = $this->getFields();
 		foreach ($fieldsDesc as $fdesc) {
 			$html .= '
-					<td>'.$fdesc['Label'].(($fdesc['Sorter'] != null) ? ' '.$this->sortByType($fdesc['Sorter']) : '').'</td>';
+					<td>'.$fdesc['Label'].((isset($fdesc['Sorter']) && ($fdesc['Sorter'] != null)) ? ' '.$this->sortByType($fdesc['Sorter']) : '').'</td>';
 		}
 		$html .= '
 				</tr></thead>
-				<tbody>
-		';
+				<tbody>';
+		
 		$oddEven = false;
 		foreach ($this->renderableData as $item) {
 			$details = htmlspecialchars(str_replace('"', '\\"', serialize(array(
 			 	'SKU' => $item['SKU'],
 			 	'Price' => $item['Price'],
-			 	'Currency' => $item['Currency'],
+			 	'Currency' => isset($item['Currency']) ? $item['Currency'] : $this->mpCurrency,
 			))));
 			$html .= '
 				<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
 					<td><input type="checkbox" name="SKUs[]" value="'.$item['SKU'].'">
 						<input type="hidden" name="details['.$item['SKU'].']" value="'.$details.'"></td>';
 			foreach ($fieldsDesc as $fdesc) {
-				if ($fdesc['Field'] != null) {
-					$html .= '
-					<td>'.$item[$fdesc['Field']].'</td>';
-					
-				} else {
+				if (isset($fdesc['Getter']) && !empty($fdesc['Getter'])) {
 					$html .= '
 					'.call_user_func(array($this, $fdesc['Getter']), $item);
+				} else {
+					$html .= '
+					<td>'.$item[$fdesc['Field']].'</td>';
 				}
 			}
 			$html .= '	

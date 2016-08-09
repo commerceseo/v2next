@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: new_category.php 1039 2014-05-12 16:01:33Z akausch $
+ * 	$Id: new_category.php 1448 2015-03-12 09:35:22Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -48,10 +48,6 @@ $languages = xtc_get_languages();
 
 $text_new_or_edit = ($_GET['action'] == 'new_category_ACD') ? TEXT_INFO_HEADING_NEW_CATEGORY : TEXT_INFO_HEADING_EDIT_CATEGORY;
 echo '<script type="text/javascript" src="includes/javascript/categories.js"></script>';
-if (USE_WYSIWYG == 'true') {
-    echo '<script src="includes/editor/ckeditor/ckeditor.js" type="text/javascript"></script>';
-	echo '<script src="includes/editor/ckfinder/ckfinder.js" type="text/javascript"></script>';
-}
 if (file_exists(DIR_WS_INCLUDES . 'addons/new_category_addon.php')) {
 	include (DIR_WS_INCLUDES .'addons/new_category_addon.php');
 }
@@ -87,13 +83,28 @@ echo '<h1>' . sprintf($text_new_or_edit, xtc_output_generated_category_path($cur
         <table>
             <?php include_once(DIR_WS_MODULES.'is_menue.php');?>
             <?php
+			if ($cInfo->parent_id == 0) {
                 $section_array = array();
                 $section_array = array(array('id' => 0, 'text' => TXT_SECTION_STANDARD), array('id' => 1, 'text' => TXT_SECTION_ONE), array('id' => 2, 'text' => TXT_SECTION_TWO), array('id' => 3, 'text' => TXT_SECTION_THREE), array('id' => 4, 'text' => TXT_SECTION_FOUR), array('id' => 5, 'text' => TXT_SECTION_FIVE), array('id' => 6, 'text' => TXT_SECTION_SIX), array('id' => 7, 'text' => TXT_SECTION_SEVEN), array('id' => 8, 'text' => TXT_SECTION_EIGHT), array('id' => 9, 'text' => TXT_SECTION_NINE), array('id' => 10, 'text' => TXT_SECTION_TEN), array('id' => 11, 'text' => TXT_SECTION_ELEVEN));
-			?>		  
+			?>
 			<tr>
 				<td class="main gray" width="20%"><?php echo TABLE_HEADING_SECTION; ?></td>
 				<td class="main gray" width="80%"><?php echo xtc_draw_pull_down_menu('section', $section_array, $cInfo->section); ?></td>
 			</tr>
+			<?php
+			} else {
+			?>
+			
+			<tr>
+				<td class="main gray" width="20%"><?php echo TABLE_HEADING_SECTION; ?></td>
+				<td class="main gray" width="80%"><?php echo xtc_draw_pull_down_menu('cPath', xtc_get_category_tree(), $_GET['cID'], ''); ?></td>
+			</tr>
+				
+			<?php
+			}
+			?>
+			
+			
 			<?php for ($i = 0; $i < sizeof($languages); $i++) { 
 				$slider_set_sql = xtc_db_query("SELECT slider_id AS id, slider_title AS text FROM cseo_slider_gallery GROUP BY slider_title");
 				$slider_set_array = array(array('id' => 0, 'text' => TEXT_SELECT));
@@ -312,50 +323,77 @@ echo '<h1>' . sprintf($text_new_or_edit, xtc_output_generated_category_path($cur
                         </tr>
                         <tr>
                             <td class="main"><?php echo xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']); ?> <?php echo TEXT_EDIT_CATEGORIES_GOOGLE_TAX_TITLE; ?></td>
-                            <td class="main"><?php echo xtc_draw_input_field('categories_google_taxonomie[' . $languages[$i]['id'] . ']', (($categories_name[$languages[$i]['id']]) ? stripslashes($categories_name[$languages[$i]['id']]) : xtc_get_categories_field($cInfo->categories_id, $languages[$i]['id'], 'categories_google_taxonomie')), 'id="GOOGLE_MERCHANT" size=60'); ?></td>
+                            <td class="main"><?php echo xtc_draw_input_field('categories_google_taxonomie[' . $languages[$i]['id'] . ']', (($categories_name[$languages[$i]['id']]) ? stripslashes($categories_name[$languages[$i]['id']]) : xtc_get_categories_field($cInfo->categories_id, $languages[$i]['id'], 'categories_google_taxonomie')), 'id="GOOGLE_MERCHANT'.($languages[$i]['code'] == 'en' ? 'EN' : '').'" size=60 style="width:90%;"'); ?></td>
                         </tr>
                         <tr>
-                            <td class="main"><?php echo TEXT_EDIT_CATEGORIES_GOOGLE_TAX_NEW_TITLE; ?></td>
-                            <td id="google_taxonomy"></td>
+                            <td class="main"><?php echo xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']); ?> <?php echo TEXT_EDIT_CATEGORIES_GOOGLE_TAX_NEW_TITLE; ?></td>
+                            <td id="google_taxonomy_<?php echo $languages[$i]['code']; ?>"></td>
                         </tr>
                         <tr>
                             <td class="main gray" valign="top"><?php echo xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']); ?> <?php echo TEXT_EDIT_CATEGORIES_DESCRIPTION; ?></td>
                             <td class="main gray" valign="top">
-                                <?php echo xtc_draw_textarea_field('categories_description[' . $languages[$i]['id'] . ']', 'soft', '70', '25', (($categories_description[$languages[$i]['id']]) ? stripslashes($categories_description[$languages[$i]['id']]) : xtc_get_categories_field($cInfo->categories_id, $languages[$i]['id'], 'categories_description')), 'class="ckeditor" name="editor1"'); ?>
+                                <?php echo xtc_draw_textarea_field('categories_description[' . $languages[$i]['id'] . ']', 'soft', '70', '25', (($categories_description[$languages[$i]['id']]) ? stripslashes($categories_description[$languages[$i]['id']]) : xtc_get_categories_field($cInfo->categories_id, $languages[$i]['id'], 'categories_description')), ''); ?>
                             </td>
                         </tr>
                         <tr>
                             <td class="main gray" valign="top"><?php echo xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']); ?> <?php echo TEXT_EDIT_CATEGORIES_SHORT_DESCRIPTION; ?></td>
                             <td class="main gray" valign="top">
-                                <?php echo xtc_draw_textarea_field('categories_short_description[' . $languages[$i]['id'] . ']', 'soft', '70', '25', (($categories_short_description[$languages[$i]['id']]) ? stripslashes($categories_short_description[$languages[$i]['id']]) : xtc_get_categories_field($cInfo->categories_id, $languages[$i]['id'], 'categories_short_description')), 'class="ckeditor" name="editor1"'); ?>
+                                <?php echo xtc_draw_textarea_field('categories_short_description[' . $languages[$i]['id'] . ']', 'soft', '70', '25', (($categories_short_description[$languages[$i]['id']]) ? stripslashes($categories_short_description[$languages[$i]['id']]) : xtc_get_categories_field($cInfo->categories_id, $languages[$i]['id'], 'categories_short_description')), ''); ?>
                             </td>
                         </tr>
                         <tr>
 
                             <td class="main" valign="top"><?php echo xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']); ?> <?php echo TEXT_EDIT_CATEGORIES_DESCRIPTION_FOOTER; ?></td>
                             <td class="main" valign="top">
-                                <?php echo xtc_draw_textarea_field('categories_description_footer[' . $languages[$i]['id'] . ']', 'soft', '70', '25', (($categories_description_footer[$languages[$i]['id']]) ? stripslashes($categories_description_footer[$languages[$i]['id']]) : xtc_get_categories_field($cInfo->categories_id, $languages[$i]['id'], 'categories_description_footer')), 'class="ckeditor" name="editor1"'); ?>
+                                <?php echo xtc_draw_textarea_field('categories_description_footer[' . $languages[$i]['id'] . ']', 'soft', '70', '25', (($categories_description_footer[$languages[$i]['id']]) ? stripslashes($categories_description_footer[$languages[$i]['id']]) : xtc_get_categories_field($cInfo->categories_id, $languages[$i]['id'], 'categories_description_footer')), ''); ?>
                             </td>
                         </tr>
                     </table>
-                    <?php
-                    if (USE_WYSIWYG == 'true') {
-                            ?>	
-                            <script type="text/javascript">
-                                var newCKEdit = CKEDITOR.replace('<?php echo 'categories_short_description[' . $languages[$i]['id'] . ']' ?>');
-                                CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-                            </script>
-                            <script type="text/javascript">
-                                var newCKEdit = CKEDITOR.replace('<?php echo 'categories_description[' . $languages[$i]['id'] . ']' ?>');
-                                CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-                            </script>
-                            <script type="text/javascript">
-                                var newCKEdit = CKEDITOR.replace('<?php echo 'categories_description_footer[' . $languages[$i]['id'] . ']' ?>');
-                                CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-                            </script>
-                            <?php
-                    }
-                    ?>
+<?php
+if (USE_WYSIWYG == 'true') {
+	echo "<script src=\"includes/ckeditor/ckeditor.js\"></script>";
+	if (file_exists('includes/ckfinder/ckfinder.js')) {
+		echo "<script src=\"includes/ckfinder/ckfinder.js\"></script>
+				<script>
+					var newCKEdit = CKEDITOR.replace('categories_short_description[" . $languages[$i]['id'] . "]');
+					CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+				</script>
+				<script>
+					var newCKEdit = CKEDITOR.replace('categories_description[" . $languages[$i]['id'] . "]');
+					CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+				</script>
+				<script>
+					var newCKEdit = CKEDITOR.replace('categories_description_footer[" . $languages[$i]['id'] . "]');
+					CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+				</script>";
+	} else {
+		echo "<script>
+			CKEDITOR.replace('categories_short_description[" . $languages[$i]['id'] . "]', {
+				toolbar: \"ImageMapper\",
+				language: \"" . $_SESSION['language_code'] . "\",
+				baseHref: \"" . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . "\",
+				filebrowserBrowseUrl: \"includes/ckeditor/filemanager/index.html\"
+			});
+		</script>
+		<script>
+			CKEDITOR.replace('categories_description[" . $languages[$i]['id'] . "]', {
+				toolbar: \"ImageMapper\",
+				language: \"" . $_SESSION['language_code'] . "\",
+				baseHref: \"" . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . "\",
+				filebrowserBrowseUrl: \"includes/ckeditor/filemanager/index.html\"
+			});
+		</script>
+		<script>
+			CKEDITOR.replace('categories_description_footer[" . $languages[$i]['id'] . "]', {
+				toolbar: \"ImageMapper\",
+				language: \"" . $_SESSION['language_code'] . "\",
+				baseHref: \"" . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . "\",
+				filebrowserBrowseUrl: \"includes/ckeditor/filemanager/index.html\"
+			});
+		</script>";
+	}
+}
+?>
                 </div>
             <?php } ?>
         </div>
@@ -509,7 +547,3 @@ echo '<h1>' . sprintf($text_new_or_edit, xtc_output_generated_category_path($cur
     </tr>
 </table>
 </form>
-
-<script type="text/javascript">
-    xajax_get_new_dropdown();
-</script>

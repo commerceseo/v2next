@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: config.php 3895 2014-05-22 13:06:44Z derpapst $
+ * $Id: config.php 6760 2016-06-16 00:29:38Z MaW $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -43,7 +43,7 @@ function loadDBConfig($mpID = '0') {
 	if (empty($tmpConf)) return false;
 
 	foreach ($tmpConf as $row) {
-		$a = json_decode($row['value'], true);
+		$a = json_decode(fixBrokenJsonUmlauts($row['value']), true);
 		if (is_array($a)) {
 			$magnaConfig['db'][$row['mpID']][$row['mkey']] = $a;
 		} else {
@@ -117,7 +117,29 @@ function loadMaranonCacheConfig($purge = false) {
 			));
 		}
 	}
-
+	
+	#echo print_m($magnaConfig['maranon']);
+	
+	$currApiUrl = MagnaConnector::gi()->getApiUrl();
+	if (isset($magnaConfig['maranon']['APIUrl']) && ($currApiUrl != $magnaConfig['maranon']['APIUrl'])) {
+		MagnaConnector::gi()->setApiUrl($magnaConfig['maranon']['APIUrl']);
+		try {
+			$pong = MagnaConnector::gi()->submitRequest(array (
+				'SUBSYSTEM' => 'Core',
+				'ACTION' => 'Ping',
+			));
+			#echo print_m($pong);
+			if ($pong['STATUS'] == 'SUCCESS') {
+				setDBConfigValue('general.apiurl', 0, $magnaConfig['maranon']['APIUrl'], true);
+			}
+		} catch (MagnaException $e) {
+			MagnaConnector::gi()->setApiUrl($currApiUrl);
+			#echo print_m($e->toJson());
+		}
+	}
+	
+	#echo var_dump_pre(getDBConfigValue('general.apiurl', 0, ''), 'Setting ApiUrl');
+	
 	/* Part of soft deinstallation */
 	if ($magnaConfig['maranon']['IsAccessAllowed'] != 'yes') {
 		$interruptionCounter = (int)getDBConfigValue('InterruptionCounter', 0, 0) + 1;

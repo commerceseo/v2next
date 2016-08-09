@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.categories.php 1058 2014-05-18 13:29:18Z akausch $
+ * 	$Id: class.categories.php 1471 2015-07-22 20:34:59Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -136,7 +136,6 @@ class categories_ORIGINAL {
             'categories_content_status' => $categories_status_content,
             'products_sorting' => xtc_db_prepare_input($categories_data['products_sorting']),
             'products_sorting2' => xtc_db_prepare_input($categories_data['products_sorting2']),
-            'section' => xtc_db_prepare_input($categories_data['section']),
             'categories_template' => xtc_db_prepare_input($categories_data['categories_template']),
             'categories_col_top' => xtc_db_prepare_input($categories_data['categories_col_top']),
             'categories_col_bottom' => xtc_db_prepare_input($categories_data['categories_col_bottom']),
@@ -157,10 +156,26 @@ class categories_ORIGINAL {
             $sql_data_array = xtc_array_merge($sql_data_array, $insert_sql_data);
             xtc_db_perform(TABLE_CATEGORIES, $sql_data_array);
             $categories_id = xtc_db_insert_id();
+			if ($dest_category_id != 0) {
+				$section_query = xtc_db_fetch_array(xtc_db_query("SELECT section FROM " . TABLE_CATEGORIES . " WHERE categories_id = '" . $dest_category_id . "';"));
+				xtc_db_query("UPDATE " . TABLE_CATEGORIES . " SET section = '".$section_query['section']."' WHERE categories_id = '" . $categories_id . "';");
+			}
         } elseif ($action == 'update') {
-            $update_sql_data = array('last_modified' => 'now()');
+			$parent_query = xtc_db_query("SELECT parent_id FROM " . TABLE_CATEGORIES . " WHERE categories_id = '" . $categories_id . "' AND parent_id != 0;");
+			if(xtc_db_num_rows($parent_query)){
+			$parent_query = xtc_db_fetch_array($parent_query);
+				$section_query = xtc_db_fetch_array(xtc_db_query("SELECT section FROM " . TABLE_CATEGORIES . " WHERE categories_id = '" . $parent_query['parent_id'] . "';"));
+				$section = $section_query['section'];
+			} else {
+				$section = xtc_db_prepare_input($categories_data['section']);
+				//Kausch
+				// $this->parent_array($categories_id);
+			}
+			
+			$update_sql_data = array('last_modified' => 'now()', 'section' => $section);
             $sql_data_array = xtc_array_merge($sql_data_array, $update_sql_data);
             xtc_db_perform(TABLE_CATEGORIES, $sql_data_array, 'update', 'categories_id = \'' . $categories_id . '\'');
+			
         }
         xtc_set_groups($categories_id, $permission_array);
 
@@ -504,10 +519,9 @@ class categories_ORIGINAL {
             $products_data['products_price'] = round(($products_data['products_price'] / (xtc_get_tax_rate($products_data['products_tax_class_id']) + 100) * 100), PRICE_PRECISION);
         }
         $products_data['products_ekpprice'] = str_replace(',', '.', $products_data['products_ekpprice']);
-        if (PRICE_IS_BRUTTO == 'true' && $products_data['products_ekpprice']) {
-            $products_data['products_ekpprice'] = round(($products_data['products_ekpprice'] / (xtc_get_tax_rate($products_data['products_tax_class_id']) + 100) * 100), PRICE_PRECISION);
-        }
-        $products_data['products_uvpprice'] = str_replace(',', '.', $products_data['products_uvpprice']);
+		$products_data['products_ekpprice'] = xtc_round($products_data['products_ekpprice'], PRICE_PRECISION);
+       
+	   $products_data['products_uvpprice'] = str_replace(',', '.', $products_data['products_uvpprice']);
         if (PRICE_IS_BRUTTO == 'true' && $products_data['products_uvpprice']) {
             $products_data['products_uvpprice'] = round(($products_data['products_uvpprice'] / (xtc_get_tax_rate($products_data['products_tax_class_id']) + 100) * 100), PRICE_PRECISION);
         }
@@ -558,6 +572,9 @@ class categories_ORIGINAL {
         }
 
         $sql_data_array = array('products_quantity' => xtc_db_prepare_input($products_data['products_quantity']),
+			'free_shipping' => xtc_db_prepare_input($products_data['free_shipping']), 
+			'max_free_shipping_cart' => xtc_db_prepare_input($products_data['max_free_shipping_cart']), 
+			'max_free_shipping_amount' => xtc_db_prepare_input($products_data['max_free_shipping_amount']), 
             'products_model' => xtc_db_prepare_input($products_data['products_model']),
             'products_manufacturers_model' => xtc_db_prepare_input($products_data['products_manufacturers_model']),
             'products_ean' => xtc_db_prepare_input($products_data['products_ean']),
@@ -947,8 +964,9 @@ class categories_ORIGINAL {
 
             if (!empty($products_data['products_tag_cloud'][$language_id])) {
                 foreach ($products_data['products_tag_cloud'][$language_id] AS $tag) {
-                    if (!empty($tag))
-                        $db = xtc_db_query("INSERT INTO tag_to_product VALUES ('','" . $products_id . "','" . $language_id . "','" . trim($tag) . "') ");
+                    if (!empty($tag)) {
+                        $db = xtc_db_query("INSERT INTO tag_to_product (id, pID, lID, tag) VALUES ('','" . $products_id . "','" . $language_id . "','" . trim($tag) . "') ");
+					}
                 }
             }
 
@@ -979,7 +997,14 @@ class categories_ORIGINAL {
         }
         // END Hermes
         if (isset($products_data['cseo_update'])) {
-            xtc_redirect(xtc_href_link(FILENAME_CATEGORIES, 'cPath=' . $_GET['cPath'] . '&action=new_product&pID=' . $products_id));
+			if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True') {
+				require_once (DIR_FS_INC . 'commerce_seo.inc.php');
+				!$commerceSeo ? $commerceSeo = new CommerceSeo() : false;
+			}
+			if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True') {
+                $commerceSeo->updateSeoDBTable('product', 'update', $products_id);
+			}
+			xtc_redirect(xtc_href_link(FILENAME_CATEGORIES, 'cPath=' . $_GET['cPath'] . '&action=new_product&pID=' . $products_id));
         }
     }
 
@@ -1273,6 +1298,19 @@ class categories_ORIGINAL {
         }
         return $add_data_fields_array;
     }
-
+	
+	function parent_array($myid, $menuarray, $type) {
+		$mein_parray = xtc_db_query("select id, link_id, link_type from cseo_navilink where parent_id = '".$myid."' AND parent_type = '".$type."' ");
+		while ($meine = xtc_db_fetch_array($mein_parray)) {
+			$menu_array = array(
+				'first_id'		=> xtc_db_prepare_input($menuarray['first_id']),
+				'first_type'	=> xtc_db_prepare_input($menuarray['first_type']),
+				'cat_box_id'	=> xtc_db_prepare_input($menuarray['cat_box_id']),
+				'group_ids'		=> xtc_db_prepare_input($menuarray['group_ids'])
+			);			
+			xtc_db_perform('cseo_navilink', $menu_array, 'update', "id = '" . $meine['id'] . "' ");		
+			parent_array($meine['link_id'], $menu_array, $meine['link_type']);
+		}
+	}
 	
 }

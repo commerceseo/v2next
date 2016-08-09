@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: cseo_seolyze.php 1323 2014-12-17 17:50:47Z akausch $
+ * 	$Id: cseo_seolyze.php 1471 2015-07-22 20:34:59Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -108,7 +108,15 @@ if ($_GET['action']) {
 }
 
 require(DIR_WS_INCLUDES . 'header.php');
-
+echo '
+<style>
+iframe {
+  min-height:800px;
+  height:auto !important;
+  height:100%;
+}
+</style>
+';
 echo xtc_draw_form('configuration', 'cseo_seolyze.php', 'action=save');
 
 $test_query = xtc_db_fetch_array(xtc_db_query("SELECT cseo_value FROM cseo_configuration WHERE cseo_key = 'SEOLYZEAPIKEY' LIMIT 1;"));

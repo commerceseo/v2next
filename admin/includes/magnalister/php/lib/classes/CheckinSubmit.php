@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: CheckinSubmit.php 4349 2014-08-07 13:24:07Z tim.neumann $
+ * $Id: CheckinSubmit.php 5668 2015-05-26 13:01:31Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -32,6 +32,7 @@ abstract class CheckinSubmit {
 	protected $settings = array();
 	
 	protected $selection = array();
+	protected $variationCount = 0;
 	protected $badItems = array();
 	protected $disabledItems = array();
 	
@@ -50,6 +51,9 @@ abstract class CheckinSubmit {
 
 	protected $summaryAddText = ''; # extra Text, je nach Plattform (momentan belegt bei eBay und Hitmeister)
 
+	protected $deleteSelection = true;
+	protected $lastResponse = array();
+	
 	public function __construct($settings = array()) {
 		global $_MagnaSession, $_MagnaShopSession, $magnaConfig, $_magnaQuery, $_url;
 		
@@ -72,7 +76,7 @@ abstract class CheckinSubmit {
 		$this->url = $_url;
 		$this->realUrl = array (
 			'mp' => $this->mpID,
-			'mode' => $_magnaQuery['mode'],
+			'mode' => (isset($_magnaQuery['mode']) ? $_magnaQuery['mode'] : ''),
 			'view' => (isset($_magnaQuery['view']) ? $_magnaQuery['view'] : '')
 		);
 		
@@ -131,8 +135,8 @@ abstract class CheckinSubmit {
 			$this->selection[$row['pID']] = unserialize($row['data']);
 		}
 	}
-	
-	private function deleteSelection() {
+
+	protected function deleteSelection() {
 		foreach ($this->selection as $pID => &$data) {
 			$this->badItems[] = $pID;
 		}
@@ -160,8 +164,20 @@ abstract class CheckinSubmit {
 	protected function checkSingleItem($pID, $product, $data) {
 		return true;
 	}
+
+	protected function getProduct($pID) {
+		if ($this->settings['mlProductsUseLegacy']) {
+			$product = MLProduct::gi()->getProductByIdOld($pID, $this->settings['language']);
+		} else {
+			$product = MLProduct::gi()->getProductById($pID);
+		}
+		return $product;
+	}
 	
 	protected function setUpMLProduct() {
+		// reset everything to the defaults
+		MLProduct::gi()->resetOptions();
+		
 		// Set the language
 		MLProduct::gi()->setLanguage($this->settings['language']);
 		
@@ -191,13 +207,7 @@ abstract class CheckinSubmit {
 				$data['submit'] = array();
 			}
 			
-			if ($this->settings['mlProductsUseLegacy']) {
-				$product = MLProduct::gi()->getProductByIdOld($pID, $this->settings['language']);
-			} else {
-				// @todo: Do not always purge the variations.
-				$product = MLProduct::gi()->getProductById($pID, array('purgeVariations' => true));
-			}
-
+			$product = $this->getProduct($pID);
 			if (!$this->checkSingleItem($pID, $product, $data) || !is_array($product)) {
 				$this->badItems[] = $pID;
 				unset($this->selection[$pID]);
@@ -235,7 +245,7 @@ abstract class CheckinSubmit {
 
 	protected function requirementsMet($product, $requirements, &$failed) {
 		if (!is_array($product) || empty($product) || !is_array($requirements) || empty($requirements)) {
-			$failed = true;
+			$failed = array();
 			return false;
 		}
 		$failed = array();
@@ -290,7 +300,16 @@ abstract class CheckinSubmit {
 			//$this->ajaxReply['result'] = $checkInResult;
 			
 			$this->processSubmitResult($checkInResult);
-			$this->submitSession['state']['success'] += count($this->selection);
+			if (!array_key_exists('state', $this->submitSession)) {
+				$this->submitSession['state'] = array();
+			}
+			if (!array_key_exists('success', $this->submitSession['state'])) {
+				$this->submitSession['state']['success'] = 0;
+			}
+			if (!array_key_exists('failed', $this->submitSession['state'])) {
+				$this->submitSession['state']['failed'] = 0;
+			}
+			$this->submitSession['state']['success'] += count($this->selection) - $this->variationCount;
 			$this->submitSession['state']['failed']  += count($this->badItems);
 			
 			if (isset($this->submitSession['api'])) {
@@ -299,13 +318,13 @@ abstract class CheckinSubmit {
 			$retResponse = $checkInResult;
 
 		} catch (MagnaException $e) {
-			$this->submitSession['state']['failed']  += count($this->badItems) + count($this->selection);
+			$this->submitSession['state']['failed'] += count($this->badItems) + count($this->selection) - $this->variationCount;
 
 			$this->ajaxReply['exception'] = $e->getMessage();
 			$this->submitSession['api']['exception'] = $e->getErrorArray();
 			
 			$subsystem = $e->getSubsystem();
-			if (($subsystem != 'Core') || ($subsystem != 'PHP')) {
+			if (($subsystem != 'Core') && ($subsystem != 'PHP') && ($subsystem != 'Database')) {
 				$this->ajaxReply['ignoreErrors'] = $this->ignoreErrors;
 			} else {
 				$this->ajaxReply['ignoreErrors'] = false;
@@ -335,6 +354,10 @@ abstract class CheckinSubmit {
 		return false;
 	}
 
+	protected function afterPopulateSelectionWithData() {
+
+	}
+
 	public function submit($abort = false) {
 		if (isset($_SESSION['magna_deletedFilter'])) {
 			// Reset inventory infos. @see CheckinCategoryView
@@ -350,8 +373,9 @@ abstract class CheckinSubmit {
 		}
 		
 		$this->submitSession['state']['submitted'] += count($this->selection);
-		
+
 		$this->populateSelectionWithData();
+		$this->afterPopulateSelectionWithData();
 		$this->filterSelection();
 		
 		/* Wenn Artikel deaktiviert wurden (nicht fehlgeschlagen, z. B. Artikelanzahl == 0), 
@@ -366,10 +390,11 @@ abstract class CheckinSubmit {
 		if (!empty($this->selection)) {
 			MagnaConnector::gi()->setTimeOutInSeconds(600);
 			@set_time_limit(600);
-			$this->sendRequest($abort || isset($_GET['abort']));
+			$this->lastResponse = $this->sendRequest($abort || isset($_GET['abort']));
+			$this->afterSendRequest();
 			MagnaConnector::gi()->resetTimeOut();
 		} else {
-			$this->submitSession['state']['failed']  += count($this->badItems);
+			$this->submitSession['state']['failed'] += count($this->badItems);
 		}
 		
 		if (isset($this->submitSession['selectionFromErrorLog']) && !empty($this->submitSession['selectionFromErrorLog'])) {
@@ -393,7 +418,9 @@ abstract class CheckinSubmit {
 
 		if (empty($this->submitSession['api']) || $this->ajaxReply['ignoreErrors']) {
 			if (!isset($this->ajaxReply['reprocessSelection']) || !$this->ajaxReply['reprocessSelection']) {
-				$this->deleteSelection();
+				if ($this->deleteSelection === true) {
+					$this->deleteSelection();
+				}
 			}
 			if ($this->submitSession['state']['submitted'] >= $this->submitSession['state']['total']) {
 				$this->ajaxReply['proceed'] = $this->submitSession['proceed'] = false;
@@ -492,5 +519,9 @@ $(document).ready(function() {
 		$html .= ob_get_contents();	
 		ob_end_clean();
 		return $html;
+	}
+		
+	protected function afterSendRequest() {
+		
 	}
 }

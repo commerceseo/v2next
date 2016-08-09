@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: specials.php 1139 2014-07-09 10:35:27Z akausch $
+ * 	$Id: specials.php 1157 2014-07-21 12:31:00Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -80,6 +80,7 @@ switch ($_GET['action']) {
         $sid = xtc_db_prepare_input($_POST['specials_id']);
         $specials_price = xtc_db_prepare_input($_POST['specials_price']);
         $specials_expires = xtc_db_prepare_input($_POST['specials_expires']);
+        $products_price = xtc_db_prepare_input($_POST['products_price']);
 
         if (PRICE_IS_BRUTTO == 'true' && substr($specials_price, -1) != '%') {
             $tax = xtc_db_fetch_array(xtc_db_query("SELECT tr.tax_rate FROM " . TABLE_TAX_RATES . " tr, " . TABLE_PRODUCTS . " p  WHERE tr.tax_class_id = p. products_tax_class_id  AND p.products_id = '" . $_POST['products_up_id'] . "';"));
@@ -87,7 +88,7 @@ switch ($_GET['action']) {
         }
 
         if (substr($specials_price, -1) == '%') {
-            $specials_price = ($specials_price - (($specials_price / 100) * $_POST['products_price']));
+			$specials_price = ($products_price - (($specials_price / 100) * $products_price));
         }
         $expires_date = '';
         if ($specials_expires) {

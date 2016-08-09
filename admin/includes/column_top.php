@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: column_top.php 1157 2014-07-21 12:31:00Z akausch $
+ * 	$Id: column_top.php 1323 2014-12-17 17:50:47Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -397,8 +397,6 @@ $p = $p[0];
 						?>
 					</ul>
 				</li>
-				<!-- Shopgate -->
-				 <?php include_once DIR_FS_DOCUMENT_ROOT.'includes/external/shopgate/base/admin/includes/column_left.php'; ?>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
 				<?php

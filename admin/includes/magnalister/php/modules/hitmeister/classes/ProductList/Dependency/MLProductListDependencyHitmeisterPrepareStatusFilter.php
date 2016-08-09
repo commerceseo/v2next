@@ -23,13 +23,13 @@ class MLProductListDependencyHitmeisterPrepareStatusFilter extends MLProductList
 
 	protected function getPrepareCondition() {
 		return array(
-		    'failed' => "AND mp_category_id IS NULL OR mp_category_id = '' ",
-		    'prepared' => "AND mp_category_id IS NOT NULL AND mp_category_id <> '' ",
-		    'notprepared' => ""
+			'failed' => "AND Verified <> 'OK' AND Verified <> 'EMPTY' ",
+			'prepared' => "AND Verified = 'OK' ",
+			'notprepared' => "AND Verified != 'EMPTY' "
 		);
 	}
 
-	protected function getPrepareTabel() {
+	protected function getPrepareTable() {
 		return TABLE_MAGNA_HITMEISTER_PREPARE;
 	}
 

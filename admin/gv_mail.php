@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: gv_mail.php 980 2014-04-15 10:22:30Z akausch $
+ * 	$Id: gv_mail.php 1407 2015-01-29 15:47:09Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -385,9 +385,7 @@ if ($_GET['action'] == 'preview' && $error == "false") {
     while ($customers_values = xtc_db_fetch_array($mail_query)) {
         $customers[] = array('id' => $customers_values['customers_email_address'], 'text' => $customers_values['customers_lastname'] . ', ' . $customers_values['customers_firstname'] . ' (' . $customers_values['customers_email_address'] . ')');
     }
-if (USE_WYSIWYG == 'true') {
-echo '<script src="includes/editor/ckeditor/ckeditor.js" type="text/javascript"></script>';
-}
+
 	
     ?>
     <table border="0" width="100%" cellspacing="0" cellpadding="2">
@@ -495,7 +493,28 @@ echo '<script src="includes/editor/ckeditor/ckeditor.js" type="text/javascript">
         </tr>		 	  
         <tr>
             <td valign="top" class="main"><b><?php echo TEXT_MESSAGE; ?></b></td>
-            <td class="main" colspan="2"><?php echo xtc_draw_textarea_field('message', 'soft', '100%', '35', '', 'class="ckeditor" name="editor1"'); ?></td>
+            <td class="main" colspan="2"><?php echo xtc_draw_textarea_field('message', 'soft', '100%', '35', '', ''); ?></td>
+<?php
+if (USE_WYSIWYG == 'true') {
+echo '<script src="includes/ckeditor/ckeditor.js"></script>';
+	if (file_exists('includes/ckfinder/ckfinder.js')) {
+		echo '<script src="includes/ckfinder/ckfinder.js"></script>
+			<script>
+				var newCKEdit = CKEDITOR.replace(\'message\');
+				CKFinder.setupCKEditor(newCKEdit, \'includes/ckfinder/\');
+			</script>';
+	} else {
+		echo '<script>
+			CKEDITOR.replace(\'message\', {
+				toolbar: "ImageMapper",
+				language: "' . $_SESSION['language_code'] . '",
+				baseHref: "' . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . '",
+				filebrowserBrowseUrl: "includes/ckeditor/filemanager/index.html"
+			});
+		</script>';
+	}
+}
+?>
         </tr>
         <tr>
             <td class="main" colspan="3" align="right"><?php echo '<input type="submit" class="button" value="' . BUTTON_SEND_EMAIL . '"/>'; ?></td>

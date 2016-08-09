@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: DeletedView.php 4283 2014-07-24 22:00:04Z derpapst $
+ * $Id: DeletedView.php 5578 2015-05-05 22:27:23Z MaW $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -75,7 +75,7 @@ class DeletedView {
 				'FILTER' => 'DELETED'
 			);
 			if (!empty($this->search)) {
-				#$request['SEARCH'] = (!isUTF8($this->search)) ? utf8_encode($this->search) : $this->search;
+				#$request['SEARCH'] = (!magnalisterIsUTF8($this->search)) ? utf8_encode($this->search) : $this->search;
 				$request['SEARCH'] = $this->search;
 			}
 			MagnaConnector::gi()->setTimeOutInSeconds(1800);
@@ -143,6 +143,14 @@ class DeletedView {
 				break;
 			case 'dateadded-desc':
 				$this->sort['order'] = 'DateAdded';
+				$this->sort['type']  = 'DESC';
+				break;
+			case 'datedeleted':
+				$this->sort['order'] = 'End';
+				$this->sort['type']  = 'ASC';
+				break;
+			case 'datedeleted-desc':
+				$this->sort['order'] = 'End';
 				$this->sort['type']  = 'DESC';
 				break;
 	        default:
@@ -242,7 +250,7 @@ class DeletedView {
 						: fixHTMLUTF8Entities($item['ItemTitle']);
 				$item['VariationAttributesText'] = fixHTMLUTF8Entities($item['VariationAttributesText']);
 				$item['DateAdded'] = strtotime($item['DateAdded']);
-				$item['DateEnd'] = ('1'==$item['GTC']?'&mdash;':strtotime($item['End']));
+				$item['DateEnd'] = ('1'==$item['GTC']?max(strtotime($item['End']), strtotime($item['LastSync'])):strtotime($item['End']));
 				$item['LastSync'] = strtotime($item['LastSync']);
 			}
 			unset($result);
@@ -276,14 +284,47 @@ class DeletedView {
                                         AND pd.language_id='.$language.'
                                         AND CONCAT(\'ML\',p.products_id) IN ('.$SKUlist.')');
         }
-        $ShopDataForVariationItems = MagnaDB::gi()->fetchArray('SELECT DISTINCT v.'.mlGetVariationSkuField().' AS SKU, v.products_id products_id,
-                                        variation_attributes,
-                                        CAST(v.variation_quantity AS SIGNED) ShopQuantity, v.variation_price + p.products_price ShopPrice, pd.products_name ShopTitle
-                                        FROM '.TABLE_MAGNA_VARIATIONS.' v, '.TABLE_PRODUCTS.' p, '.TABLE_PRODUCTS_DESCRIPTION.' pd
-                                        WHERE v.products_id=p.products_id
-                                        AND v.products_id=pd.products_id
-                                        AND pd.language_id='.$language.'
-                                        AND v.'.mlGetVariationSkuField().' IN ('.$SKUlist.')');
+		if (getDBConfigValue('general.options', '0', 'old') == 'gambioProperties') {
+			if ('artNr' == getDBConfigValue('general.keytype', '0')) {
+				$selectSku = " CONCAT(p.products_model, '-', ppc.combi_model) ";
+           	$ShopDataForVariationItems = MagnaDB::gi()->fetchArray(eecho("
+			SELECT DISTINCT $selectSku AS SKU,
+				   ppc.products_id products_id, '' AS variation_attributes,
+				   CAST(ppc.combi_quantity AS SIGNED) AS ShopQuantity,
+				   ppc.combi_price + p.products_price AS ShopPrice,
+				   pd.products_name AS ShopTitle
+				FROM products_properties_combis ppc, ".TABLE_PRODUCTS." p, ".TABLE_PRODUCTS_DESCRIPTION." pd
+			   WHERE ppc.products_id=p.products_id
+					AND ppc.products_id=pd.products_id
+					AND pd.language_id='$language'
+					AND $selectSku IN ($SKUlist)", false));
+			} else {
+				$ShopDataForVariationItems = array();
+				foreach ($SKUarr as $sku) {
+					$combisId = magnaSKU2aID($sku, false, true);
+					$ShopDataForVariationItems[] = MagnaDB::gi()->fetchRow("
+						SELECT '$sku' AS SKU,
+				   		ppc.products_id AS products_id, '' AS variation_attributes,
+				   		CAST(ppc.combi_quantity AS SIGNED) AS ShopQuantity,
+				   		ppc.combi_price + p.products_price AS ShopPrice,
+				   		pd.products_name AS ShopTitle
+						FROM products_properties_combis ppc, ".TABLE_PRODUCTS." p, ".TABLE_PRODUCTS_DESCRIPTION." pd
+				   	  	WHERE ppc.products_id=p.products_id
+							AND ppc.products_id=pd.products_id
+							AND pd.language_id='$language'
+							AND ppc.products_properties_combis_id = '$combisId'");
+				}
+			}
+		} else {
+        	$ShopDataForVariationItems = MagnaDB::gi()->fetchArray('SELECT DISTINCT v.'.mlGetVariationSkuField().' AS SKU, v.products_id products_id,
+                                        	variation_attributes,
+                                        	CAST(v.variation_quantity AS SIGNED) ShopQuantity, v.variation_price + p.products_price ShopPrice, pd.products_name ShopTitle
+                                        	FROM '.TABLE_MAGNA_VARIATIONS.' v, '.TABLE_PRODUCTS.' p, '.TABLE_PRODUCTS_DESCRIPTION.' pd
+                                        	WHERE v.products_id=p.products_id
+                                        	AND v.products_id=pd.products_id
+                                        	AND pd.language_id='.$language.'
+                                        	AND v.'.mlGetVariationSkuField().' IN ('.$SKUlist.')');
+		}
         $ShopDataForItemsBySKU = array();
         foreach ($ShopDataForSimpleItems as $ShopDataForSimpleItem) {
             $ShopDataForItemsBySKU[$ShopDataForSimpleItem['SKU']] = $ShopDataForSimpleItem;
@@ -328,7 +369,8 @@ class DeletedView {
 					<td>'.ML_LABEL_EBAY_ITEM_ID.'</td>
 					<td>'.ML_PRICE_SHOP_PRICE_EBAY.' '.$this->sortByType('price').'</td>
 					<td>'.ML_LAST_SYNC.'</td>
-					<td>'.ML_LABEL_EBAY_LISTINGTIME.' '.$this->sortByType('dateadded').'</td>
+					<td>'.ML_LABEL_EBAY_STARTTIME.' '.$this->sortByType('dateadded').'</td>
+					<td>'.ML_LABEL_EBAY_ENDTIME.' '.$this->sortByType('datedeleted').'</td>
 					<td>'.ML_LABEL_EBAY_DELETION_REASON.'</td>
 				</tr></thead>
 				<tbody>
@@ -345,10 +387,11 @@ class DeletedView {
 
             $renderedShopPrice = (0 != $item['ShopPrice'])?$this->simplePrice->setPriceAndCurrency($item['ShopPrice'], $item['Currency'])->format():'&mdash;';
             switch ($item['deletedBy']) {
-                case('Sync'):   $deletedBy = ML_SYNCHRONIZATION; break;
-                case('Button'): $deletedBy = ML_DELETION_BUTTON; break;
-                case('notML'):  $deletedBy = ML_NOT_BY_ML;       break;
-                default:        $deletedBy = '&mdash;';          break;
+                case('Sync'):    $deletedBy = ML_SYNCHRONIZATION; break;
+                case('Button'):  $deletedBy = ML_DELETION_BUTTON; break;
+                case('expired'): $deletedBy = ML_EXPIRED;         break;
+                case('notML'):   $deletedBy = ML_NOT_BY_ML;       break;
+                default:         $deletedBy = '&mdash;';          break;
             }
 			$html .= '
 				<tr class="'.(($oddEven = !$oddEven) ? 'odd' : 'even').'">
@@ -357,8 +400,9 @@ class DeletedView {
 					<td title="'.fixHTMLUTF8Entities($item['ItemTitle'], ENT_COMPAT).'">'.$item['ItemTitleShort'].'<br /><span class="small">'.$item['VariationAttributesText'].'</span></td>
 					<td><a href="'.$item['SiteUrl'].'?ViewItem&item='.$item['ItemID'].'" target="_blank">'.$item['ItemID'].'</a></td>
 					<td>'.$renderedShopPrice.' / '.$this->simplePrice->setPriceAndCurrency($item['Price'], $item['Currency'])->format().'</td>
-					<td>'.date("d.m.Y", $item['LastSync']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['LastSync']).'</span></td>
-					<td>'.date("d.m.Y", $item['DateAdded']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['DateAdded']).'</span><br />'.('&mdash;' == $item['DateEnd']? '&mdash;' : date("d.m.Y", $item['DateEnd']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['DateEnd']).'</span>').'</td>
+					<td>'.($item['LastSync'] > 0 ? date("d.m.Y", $item['LastSync']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['LastSync']) : '&mdash;').'</span></td>
+					<td>'.date("d.m.Y", $item['DateAdded']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['DateAdded']).'</span></td>
+					<td>'.date("d.m.Y", $item['DateEnd']).' &nbsp;&nbsp;<span class="small">'.date("H:i", $item['DateEnd']).'</span></td>
 					<td>'.$deletedBy.'</td>';
 			$html .= '	
 				</tr>';

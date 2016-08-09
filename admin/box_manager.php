@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: box_manager.php 995 2014-04-29 17:59:27Z akausch $
+ * 	$Id: box_manager.php 1430 2015-02-05 14:59:36Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -193,11 +193,6 @@ $box_type[] = array('id' => 'file', 'text' => 'file');
 
 require_once (DIR_WS_INCLUDES . 'header.php');
 
-if (USE_WYSIWYG == 'true') {
-    echo '<script src="includes/editor/ckeditor/ckeditor.js" type="text/javascript"></script>';
-	echo '<script src="includes/editor/ckfinder/ckfinder.js" type="text/javascript"></script>';
-}
-
 if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
     //Liste
     $uebersicht_query = xtc_db_query("SELECT b.id AS bid,
@@ -321,20 +316,38 @@ if ((!isset($_GET['action'])) && ($_GET['action'] != 'edit_box')) {
             $name = xtc_db_fetch_array($name_query);
         }
         $lang_images = xtc_image(DIR_WS_LANGUAGES . $languages[$i]['directory'] . '/' . $languages[$i]['image'], $languages[$i]['name']);
-        if (file_exists('includes/editor/ckfinder/ckfinder.js') && USE_WYSIWYG == 'true') {
-            $field_sdesc_wy = '1';
-        } else {
-            $field_sdesc_wy = '0';
-        }
+		if (USE_WYSIWYG == 'true') {
+                if (file_exists('includes/ckfinder/ckfinder.js')) {
+					$field_sdesc_wy = "<script src=\"includes/ckeditor/ckeditor.js\"></script>
+										<script src=\"includes/ckfinder/ckfinder.js\"></script>
+										<script>
+											var newCKEdit = CKEDITOR.replace('new_box_" . $languages[$i]['id'] . "');
+											CKFinder.setupCKEditor(newCKEdit, 'includes/ckfinder/');
+										</script>";
+				} else {
+					$field_sdesc_wy = "<script src=\"includes/ckeditor/ckeditor.js\"></script>
+					<script>
+						CKEDITOR.replace('new_box_" . $languages[$i]['id'] . "', {
+							toolbar: \"ImageMapper\",
+							language: \"" . $_SESSION['language_code'] . "\",
+							baseHref: \"" . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . "\",
+							filebrowserBrowseUrl: \"includes/ckeditor/filemanager/index.html\"
+						});
+					</script>";
+				}
+		}
         $boxnewarray[$i] = array(
             'tabid' => $languages[$i]['id'],
             'langid' => $languages[$i]['id'],
             'langname' => $languages[$i]['name'],
             'lang_images' => $lang_images,
             'boxtitle' => xtc_draw_input_field('box_title_' . $languages[$i]['id'], $name['box_title']),
-            'boxtextfiled' => xtc_draw_textarea_field('new_box_' . $languages[$i]['id'], 'soft', '', '', $name['box_desc'], 'class="ckeditor" name="editor1"'),
+            'boxtextfiled' => xtc_draw_textarea_field('new_box_' . $languages[$i]['id'], 'soft', '', '', $name['box_desc'], ''),
+            'basepath' => (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG,
+            'language_code' => $_SESSION['language_code'],
             'field_sdesc_wy' => $field_sdesc_wy
         );
+
     }
     $smarty->assign('boxnewarray', $boxnewarray);
     if (xtc_db_num_rows($name_query)) {

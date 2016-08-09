@@ -16,11 +16,7 @@ table tbody tr td {
 body {
 font-size:12px;
 }
-iframe {
-  min-height:800px;
-  height:auto !important;
-  height:100%;
-}
+
 
 .fl {float: left;}
 .fr {float: right;}

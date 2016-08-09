@@ -35,6 +35,8 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 	protected $boxes = '';
 	
 	protected $isAuthed = false;
+
+	protected $exchangeRateField = false; // for exchange rate alert: leave false for default
 	
 	public function __construct(&$params) {
 		global $_modules, $_lang;
@@ -63,7 +65,8 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 	protected function getFormFiles() {
 		return array (
 			'login', 'prepare', 'checkin', 
-			'price', 'inventorysync', 'orders'
+			'price', 'inventorysync', 'orders',
+			'setImagePath'
 		);
 	}
 	
@@ -278,7 +281,23 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 	}
 	
 	/* Can be extendet by extending classes */
-	protected function finalizeForm() { }
+	protected function finalizeForm() {
+		// Tracking-Code-Matching only one of both settings for carrier is set display notice
+		if (( isset($_POST['conf'][$this->marketplace.'.orderstatus.carrier.default'])
+				&& isset($_POST['conf'][$this->marketplace.'.orderstatus.carrier.dbmatching.table']['table'])
+				&& isset($_POST['conf'][$this->marketplace.'.orderstatus.trackingcode.dbmatching.table']['table'])
+			)
+			&& (( empty($_POST['conf'][$this->marketplace.'.orderstatus.carrier.default'])
+					&& empty($_POST['conf'][$this->marketplace.'.orderstatus.carrier.dbmatching.table']['table'])
+				)
+				&& !empty($_POST['conf'][$this->marketplace.'.orderstatus.trackingcode.dbmatching.table']['table'])
+			)
+		) {
+			$this->boxes .= '<p class="errorBox">'.ML_GENERIC_ERROR_TRACKING_CODE_MATCHING.'</p>';
+		}
+	}
+	
+	protected function loadChoiseValuesAfterProcessPOST() { }
 
 	public function process() {
 		$this->form = $this->loadConfigForm(
@@ -295,6 +314,7 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 		$cG = new MLConfigurator($this->form, $this->mpID, 'conf_magnacompat');
 		$cG->setRenderTabIdent(true);
 		$allCorrect = $cG->processPOST();
+		$this->loadChoiseValuesAfterProcessPOST();
 
 		if ($this->isAjax) {
 			echo $cG->processAjaxRequest();
@@ -312,6 +332,10 @@ class MagnaCompatibleConfigure extends MagnaCompatibleBase {
 				}
 			}
 			echo $cG->renderConfigForm();
+			echo $cG->exchangeRateAlert($this->exchangeRateField);
+
+			//require_once(DIR_MAGNALISTER_INCLUDES . 'lib/classes/ShopAddOns.php');
+			//ML_ShopAddOns::generateConfigPopupOnCombobox('FastSyncInventory', "config_{$this->marketplaceTitle}_stocksync_tomarketplace", "#config_{$this->marketplaceTitle}", "$(this).val() == 'auto_fast'");
 		}
 	}
 }

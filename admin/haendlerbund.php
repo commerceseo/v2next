@@ -29,7 +29,8 @@ if ($_GET["api_konfiguration"] == 1) {
     ?>
 
     <link href="includes/haendlerbund/css/main.css" rel="stylesheet" type="text/css" />
-    <link href="http://fonts.googleapis.com/css?family=Cuprum" rel="stylesheet" type="text/css" />
+    <link href="//fonts.googleapis.com/css?family=Cuprum" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
     <script type="text/javascript" src="includes/haendlerbund/jquery.smartWizard.min.js"></script>
     <script type="text/javascript" src="includes/haendlerbund/custom.js"></script>
 
@@ -57,5 +58,6 @@ if ($_GET["api_konfiguration"] == 1) {
     </table>
 
     <?php
+    // require(DIR_WS_INCLUDES . 'footer.php');
     require(DIR_WS_INCLUDES . 'application_bottom.php');
 }

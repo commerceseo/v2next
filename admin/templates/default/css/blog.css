@@ -1,53 +1,4 @@
-/*
- * #########################################################################################################
- * Project: Blog_3.0
- * #########################################################################################################
- * 
- * blog.css
- * 
- * 23.02.2014 www.indiv-style.de
- * 
- * Copyright by H&S eCom 
- * @author little Pit(S.B.)
- * 
- * #########################################################################################################
- */
 
-
-.bloghead{
-    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.8);
-    border-radius: 5px;
-    margin: 20px 0;
-    padding: 15px;
-}
-
-.topbutton{
-    display: inline-flex;
-    float: left;
-    margin: 0 10px 0 0;
-	border-radius: 5px 5px 0 0;
-}
-
-.blogmenue{
-    border-bottom: 1px solid #666666;
-    display: inline-block;
-    width: 100%;	
-}
-
-
-.topbutton a {
-    color: #ffffff !important;
-   font-size: 14px;
-    min-width: 120px;
-    padding: 5px 20px;
-    text-align: center;
-}
-
-.topbutton a:hover{
-	background: none repeat scroll 0 0 #23B7E7;
-	text-decoration: none;
-	border-radius: 5px 5px 0 0;
-}
 .myspan {
     float: left;
     min-width: 150px;
@@ -61,4 +12,20 @@
     padding: 4px;
     text-align: center;
     width: 40px;	
+}
+
+ul.nav-tabs {margin-left:0}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+color: #fff;
+cursor: default;
+background-color: #2a8fbd;
+border: 1px solid #ddd;
+border-bottom-color: transparent;
+}
+.nav-tabs {
+border-bottom: 1px solid #ddd;
+}
+.nav-tabs > li  > a {
+border: 1px solid #ddd;
+border-radius: 4px 4px 0 0;
 }

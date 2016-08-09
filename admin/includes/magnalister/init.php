@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: init.php 4345 2014-08-06 20:04:19Z derpapst $
+ * $Id: init.php 6806 2016-07-19 09:59:44Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -34,6 +34,8 @@ defined('MAGNA_DEV_PRODUCTLIST') OR define('MAGNA_DEV_PRODUCTLIST', true);
 // backwards compat
 defined('DIR_MAGNALISTER_FS') OR define('DIR_MAGNALISTER_FS', DIR_MAGNALISTER);
 defined('DIR_MAGNALISTER_WS') OR define('DIR_MAGNALISTER_WS', DIR_MAGNALISTER);
+
+if (!array_key_exists('language', $_SESSION)) $_SESSION['language'] = 'english';
 
 function outOfOrder() {
 	require(DIR_MAGNALISTER_FS_INCLUDES.'admin_view_top.php');
@@ -399,7 +401,6 @@ function mlDetectShopFeatures() {
 	
 	// Detect Gambio GX2.1 property tables.
 	define('MAGNA_GAMBIO_VARIATIONS',
-		MAGNA_SECRET_DEV && // Remove before release!
 		MagnaDB::gi()->tableExists('products_properties_combis')
 		&& MagnaDB::gi()->columnExistsInTable('combi_ean', 'products_properties_combis')
 	);
@@ -489,6 +490,26 @@ if (isset($_GET['module']) && ($_GET['module'] == 'ajax') && isset($_GET['reques
 		//commerce:Seo v2
 		if (defined('DB_SERVER_CHARSET')) {
 			MagnaDB::gi()->setCharset(DB_SERVER_CHARSET);
+		} elseif (SHOPSYSTEM == 'gambio' && MagnaDB::gi()->tableExists('version_history')) {
+			$sVersion = MagnaDB::gi()->fetchOne("
+				SELECT version
+				  FROM version_history
+				 WHERE     type IN ('service_pack', 'master_update')
+				".((MagnaDB::gi()->columnExistsInTable('installed', 'version_history'))
+					? 'AND installed = 1'
+					: 'AND (is_full_version = 0 OR (is_full_version = 1 AND history_id = 1))'
+				)."
+			  ORDER BY installation_date DESC
+				 LIMIT 1
+			");
+			if (version_compare($sVersion, '2.1', '>=')) {
+				MagnaDB::gi()->setCharset('utf8');
+			}
+			// in gambio v2.5.2.1 ml will displayed in iframe so no stuff to display from gambio backend
+			if (version_compare($sVersion, '2.5.2.1', '>=')) {
+				define('ML_GAMBIO_USE_IFRAME', true);
+			}
+			MagnaDB::gi()->insert(TABLE_MAGNA_CONFIG, array('mpID' => '0', 'mkey' => 'ShopSystemVersion', 'value' => $sVersion), true);
 		}
 	}
 	echo 'live!';
@@ -583,11 +604,33 @@ $magnaDB = MagnaDB::gi(); /* Database Connector */
 //commerce:Seo v2
 if (defined('DB_SERVER_CHARSET')) {
 	MagnaDB::gi()->setCharset(DB_SERVER_CHARSET);
+} elseif (SHOPSYSTEM == 'gambio' && MagnaDB::gi()->tableExists('version_history')) {
+	$sVersion = MagnaDB::gi()->fetchOne("
+		SELECT version
+		  FROM version_history
+		 WHERE     type IN ('service_pack', 'master_update')
+		".((MagnaDB::gi()->columnExistsInTable('installed', 'version_history'))
+			? 'AND installed = 1'
+			: 'AND (is_full_version = 0 OR (is_full_version = 1 AND history_id = 1))'
+		)."
+	  ORDER BY installation_date DESC
+		 LIMIT 1
+	");
+	if (version_compare($sVersion, '2.1', '>=')) {
+		MagnaDB::gi()->setCharset('utf8');
+	}
+	// in gambio v2.5.2.1 ml will displayed in iframe so no stuff to display from gambio backend
+	if (version_compare($sVersion, '2.5.2.1', '>=')) {
+		define('ML_GAMBIO_USE_IFRAME', true);
+	}
 }
 
 mlDetectShopFeatures();
 
 require_once(DIR_MAGNALISTER_FS_INCLUDES.'lib/functionLib.php');
+
+BacktraceProccessor::setProjectDir(DIR_FS_CATALOG);
+BacktraceProccessor::addHiddenStackElement(DB_SERVER_PASSWORD);
 
 /* Update the database */
 $_dbUpdateErrors = null;
@@ -653,6 +696,33 @@ if (version_compare(CURRENT_CLIENT_VERSION, LOCAL_CLIENT_VERSION, '>') && versio
 	shopAdminDiePage($content);
 }
 
+
+if (isset($_GET['fix_ot_tax_free']) 
+	&& ($_GET['fix_ot_tax_free'] == 'true') 
+	// && (SHOPSYSTEM == 'gambio')
+	&& (
+		!defined('MODULE_ORDER_TOTAL_GM_TAX_FREE_STATUS')
+		|| (strtolower(MODULE_ORDER_TOTAL_GM_TAX_FREE_STATUS) != 'true')
+	)
+) {
+	$orderIds = MagnaDB::gi()->fetchArray("
+	    SELECT ot.orders_id 
+	      FROM ".TABLE_ORDERS_TOTAL." ot
+	INNER JOIN ".TABLE_MAGNA_ORDERS." mo ON ot.orders_id = mo.orders_id AND mo.platform='ebay'
+	     WHERE ot.`class` = 'ot_gm_tax_free'
+	           AND ot.sort_order = 0 
+	  ORDER BY ot.orders_id ASC
+	", true);
+	if (!empty($orderIds)) {
+		MagnaDB::gi()->query("
+			DELETE FROM ".TABLE_ORDERS_TOTAL."
+			 WHERE `class` = 'ot_gm_tax_free'
+			       AND sort_order = 0
+			       AND orders_id IN (".implode(', ', $orderIds).")
+		");
+	}
+}
+
 $_url = array();
 
 /* JavaScript is ABSOLUTELY required! */
@@ -711,7 +781,7 @@ $_magnaQuery = array();
 
 /* ViewPages */
 if (isset($_GET['module']) && in_array($_GET['module'], array(
-	'viewchangelog', 'fixcollations', 'fixorderstotal',
+	'fixcollations', 'fixorderstotal',
 	'toolbox', 'viewdbtables', 'sql', 'simpletest',
 ))) {
 	if ($_GET['module'] == 'sql') {
@@ -766,10 +836,15 @@ if (getDBConfigValue('general.keytype', '0', 'pID') == 'artNr') {
 /* If the PassPhrase is not set in the database show the global config */
 if (!allRequiredConfigKeysAvailable($requiredConfigKeys, '0') || ($forceConfigView !== false)) {
 	/* Send the user to the configuration panel */
-	$_url['module'] = $_GET['module'] = $_magnaQuery['module'] = 'configuration';
+	/* 2016-04-26 help page allowed here */
+	if ('guide' == $_GET['module']) {
+		$_url['module'] = $_magnaQuery['module'] = 'guide';
+	} else {
+		$_url['module'] = $_GET['module'] = $_magnaQuery['module'] = 'configuration';
+	}
 	$_MagnaSession['currentPlatform'] = '';
 	include_once(DIR_MAGNALISTER_FS_INCLUDES.'admin_view_top.php');
-	include_once(DIR_MAGNALISTER_MODULES.'configuration.php');
+	include_once(DIR_MAGNALISTER_MODULES.$_url['module'].'.php');
 	include_once(DIR_MAGNALISTER_FS_INCLUDES.'admin_view_bottom.php');
 	include_once(DIR_WS_INCLUDES . 'application_bottom.php');
 	exit();
@@ -788,6 +863,15 @@ if (!isset($_POST['conf']['general.passphrase']) && !loadMaranonCacheConfig()
 			: '<p>'. ML_ERROR_CANNOT_CONNECT_TO_SERVICE_LAYER_TEXT.'</p>'
 		).'
 	');
+}
+
+if (isset($_GET['module']) && in_array($_GET['module'], array(
+	'viewchangelog',
+))) {
+	if (file_exists(DIR_MAGNALISTER_MODULES.$_GET['module'].'.php')) {
+		$_url['module'] = $_magnaQuery['module'] = $_GET['module'];
+		include_once(DIR_MAGNALISTER_MODULES.$_GET['module'].'.php');
+	}
 }
 
 /* No modules are available (usually the case when the PassPhrase is wrong) or global config is requested.
@@ -884,36 +968,47 @@ if (array_key_exists('mp', $_GET) && array_key_exists($_GET['mp'], $magnaConfig[
 				<p>'.sprintf(ML_TEXT_CURRENT_MODULE_NOT_BOOKED, $_modules[$_GET['module']]['title']).'</p>
 			');
 		}
-	} else {
-		$marketingText = fileGetContents(MAGNA_SERVICE_URL.MAGNA_APIRELATED.'Marketing/', $warings, 10);
-		$marketingText = !empty($marketingText) ? '<div class="marketing">'.$marketingText.'</div>' : '';
-
-		$_mainTitle = ' - '.ML_HEADLINE_WELCOME;
-		$welcomeHTML = '
-			<h2>'.ML_HEADLINE_WELCOME.'</h2>
-			<p>'.ML_TEXT_MAKE_YOUR_CHOISE.'</p>';
-
-		if (!empty($globalStats)) {
-			$welcomeHTML .= '
-				<h2>'.ML_HEADLINE_STATS.'</h2>
-				<div id="stats">';
-			if (!function_exists('imagecreatetruecolor')) {
-				$welcomeHTML .= '<b class="noticeBox">'.ML_ERROR_GD_LIB_MISSING.'</b>';
-			} else {
-				foreach ($globalStats as $stat) {
-					$welcomeHTML .= '
-						<div class="stat" title="'.$stat['title'].'">
-							<img width="'.$globalStatSize['w'].'" height="'.$globalStatSize['h'].'" alt="'.$stat['title'].'" src="'.toURL($stat['url']).'"/>
-						</div>';
-				}
-			}
-			$welcomeHTML .= '
-				<div class="visualClear"></div>
-				</div>';
+	} elseif (isset($_GET['module']) && ($_GET['module'] == 'ajax') && isset($_GET['request']) && ($_GET['request'] == 'refreshPromotionHtml')) {
+		$partner = trim((string)@file_get_contents('magnabundle.dat'));
+		$sPromotionTextFile = DIR_MAGNALISTER_FS_CACHE.'promotion_'.$_langISO.'.html';
+		$sPromotionTextUrl = MAGNA_SERVICE_URL.MAGNA_APIRELATED.'promotion/?shopsystem='.SHOPSYSTEM.(!empty($partner) && ($partner != 'key') ? '&partner='.$partner : ''). '&lang='.$_langISO;
+		$sPromotionContent = fileGetContents($sPromotionTextUrl, $warings, 10);
+		if (!empty($sPromotionContent)) {
+			file_put_contents($sPromotionTextFile, $sPromotionContent);
 		}
-		$welcomeHTML .= '
-			'.$marketingText;
-		
-		shopAdminDiePage($welcomeHTML);
+		exit();
+	} else {
+		$sMarketingTextFile = DIR_MAGNALISTER_FS_CACHE.'marketing_'.$_langISO.'.html';
+		if (
+			isset($_GET['module']) && ($_GET['module'] == 'ajax') && isset($_GET['request']) && ($_GET['request'] == 'refreshMarketingHtml')
+			|| !file_exists($sMarketingTextFile)
+		) {
+			$marketingText = fileGetContents(MAGNA_SERVICE_URL.MAGNA_APIRELATED.'Marketing/?shop='.SHOPSYSTEM.'&build='.CLIENT_BUILD_VERSION.'&lang='.$_langISO, $warings, 10);
+			$marketingText = !empty($marketingText) ? '<div class="marketing">'.$marketingText.'</div>' : '';
+			if (!empty($marketingText)) {
+				file_put_contents($sMarketingTextFile, $marketingText);
+			}
+			if (isset($_GET['module']) && ($_GET['module'] == 'ajax') && isset($_GET['request']) && ($_GET['request'] == 'refreshMarketingHtml')) {
+				exit();
+			}
+		}
+		$marketingText = file_exists($sMarketingTextFile) ? file_get_contents($sMarketingTextFile) : '';
+		shopAdminDiePage($marketingText.'
+			<script type="text/javascript">/*<![CDATA[*/
+				(function(jQuery) {
+					jQuery(document).ready(function() {
+						jQuery.get(
+							"magnalister.php", {
+								"module":"ajax",
+								"request":"refreshMarketingHtml"
+							},
+							function(data) {
+								//myConsole.log(data);
+							}
+						);
+					});
+				})(jQuery);
+			/*]]>*/</script>
+		');
 	}
 }

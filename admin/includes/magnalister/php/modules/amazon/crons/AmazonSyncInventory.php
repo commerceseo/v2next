@@ -24,6 +24,16 @@ require_once(DIR_MAGNALISTER_MODULES.'magnacompatible/crons/MagnaCompatibleSyncI
 require_once(DIR_MAGNALISTER_MODULES.'amazon/amazonFunctions.php');
 
 class AmazonSyncInventory extends MagnaCompatibleSyncInventory {
+
+	protected function initMLProduct() {
+		parent::initMLProduct();
+		MLProduct::gi()->setOptions(array(
+			'sameVariationsToAttributes' => false,
+			'useGambioProperties' => (getDBConfigValue('general.options', '0', 'old') == 'gambioProperties'),
+			'sExtendFetchSingeVariationsQueryWhere' => AmazonHelper::getMLProductExtendFetchSingleVariationQueryWhere(),
+		));
+	}
+
 	protected function updateCustomFields(&$data) {
 		if (empty($data)) {
 			return;
@@ -33,4 +43,5 @@ class AmazonSyncInventory extends MagnaCompatibleSyncInventory {
 			$data['LeadtimeToShip'] = $timeToShip;
 		}
 	}
+
 }

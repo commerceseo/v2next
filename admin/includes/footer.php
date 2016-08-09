@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: footer.php 1157 2014-07-21 12:31:00Z akausch $
+ * 	$Id: footer.php 1337 2014-12-23 15:50:09Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -35,7 +35,6 @@ defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 				<li><a href="<?php echo xtc_href_link('delete_cache.php'); ?>" title="Cache leeren"><i class="glyphicon glyphicon-trash"></i> Cache leeren</a></li>
 				<li><a href="<?php echo xtc_href_link('module_system.php', 'set=&module=commerce_seo_url'); ?>" title="SEO-URL"><i class="glyphicon glyphicon-link"></i> SEO-URL</a></li>
 				<li><a href="http://support.commerce-seo.de/" target="_blank" title="Support"><i class="glyphicon glyphicon-comment"></i> Support</a></li>
-				<li><a href="http://bugtracker.commerce-seo.de/" target="_blank" title="Bugtracker"><i class="glyphicon glyphicon-eye-open"></i> Bugtracker</a></li>
 				<li><a href="<?php echo xtc_href_link(FILENAME_CREDITS) ?>" title="Credits"><i class="glyphicon glyphicon-copyright-mark"></i> Credits</a></li>
 				<li><a href="<?php echo xtc_href_link(FILENAME_LOGOUT) ?>" title="Logout"><i class="glyphicon glyphicon-off"></i> Logout</a></li>
 			</ul>
@@ -67,8 +66,7 @@ echo '<script src="'.DIR_WS_CATALOG.'shopscripte/head.min.js"></script>';
 echo '<script>
 	head.js(
 	';
-echo '"'.DIR_WS_CATALOG.'shopscripte/js/bootstrap.min.js",';
-// echo '"includes/javascript/growl/jquery.gritter.min.js",';
+echo '"//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js",';
 echo '"templates/' . CURRENT_ADMIN_TEMPLATE . '/javascript/tinycolor-0.9.15.min.js",';
 echo '"templates/' . CURRENT_ADMIN_TEMPLATE . '/javascript/pick-a-color-1.2.2.min.js",';
 echo '"includes/javascript/cseocustom.js",';

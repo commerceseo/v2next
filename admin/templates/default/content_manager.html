@@ -35,179 +35,180 @@
             <td>{$module_data.CONTENT_ID}</td>
         </tr>
         {if $module_data.CONTENT_CHILD}
-        {foreach name=child item=content_child from=$module_data.CONTENT_CHILD}
-        <tr>
-            <td>{$content_child.LANG_ICON}</td>
-            <td><b>{$content_child.CONTENT_GROUP}<b></td>
-                        <td><sup>|_</sup><b>{$content_child.CONTENT_TITLE}</b>{$content_child.CONTENT_URL_ALIAS}</td>
-                        <td>{$content_child.SORT_ORDER}</td>
-                        <td>{$content_child.CONTENT_FILE}</td>
-                        <td>{$content_child.CONTENT_STATUS}</td>
-                        <td>{$content_child.FILE_FLAG}</td>
-                        <td>{$content_child.CONTENT_OUT_LINK}</td>
-                        <td>{$content_child.ACTION_EDIT} {$content_child.ACTION_VIEW} {$content_child.ACTION_DEL}</td>
-                        <td>{$content_child.CONTENT_ID}</td>
-                        </tr>
-                        {/foreach}
-                        {/if}
-                        {/foreach}
-                        </table>
-
-                        <div class ="col-xs-12">
-                            <a href="{$NEW_CONTENT}"><button class="btn btn-success">{$txt.NEW_CONTENT}</button></a>
-                        </div>
-
-                        {/if}
-
-                        {if $NEW_CONTENT_FORM == 'true'}
-                        <div class ="col-xs-6">
-                            <h3>{$txt.NEW_CONTENT}</h3>
-                        </div>
-                        {$FORM}
-                        <div class ="col-xs-6 text-right">
-                            {$BUTTON_SUBMIT} {$BUTTON_UPDATE} {$BUTTON_CANCEL}
-                        </div>
-                        <div class ="col-xs-12">
-                            <ul class="nav nav-tabs">
-                                <li class="active"><a href="#desc" data-toggle="tab">{$txt.HEADING_CONTENT}</a></li>
-                                <li><a href="#desc_add" data-toggle="tab">{$txt.ADDON}</a></li>
-                            </ul>
-                            <div class="tab-content">
-                                <div class="tab-pane fade in active" id="desc">
-                                    <table class="table table-striped table-bordered">
-                                        <tr>
-                                            <td width="col-xs-2">{$txt.LANGUAGE}</td>
-                                            <td width="col-xs-4">{$LANG_PULLDOWN}</td>
-                                            <td width="col-xs-6">{$txt.LANG_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.LANGGOUP}</td>
-                                            <td>{$CONTENT_GROUP}</td>
-                                            <td>{$txt.TEXT_GROUP_DESC}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.FILE_FLAG}</td>
-                                            <td>{$FILE_FLAG}</td>
-                                            <td>{$txt.FILE_FLAG_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.SLIDER_SET}</td>
-                                            <td>{$SLIDER_SET}</td>
-                                            <td>{$txt.SLIDER_SET_DESC}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.SORT_ORDER}</td>
-                                            <td>{$SORT_ORDER}</td>
-                                            <td>{$txt.SORT_ORDER_DESC}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.STATUS}</td>
-                                            <td>{$STATUS}</td>
-                                            <td>{$txt.STATUS_HELP}</td>
-                                        </tr>
-                                        {if $GROUPCHECK}
-                                        <tr>
-                                            <td class="warning">{$txt.GROUPCHECK}</td>
-                                            <td class="warning">
-                                                {foreach name=group item=group_data from=$GROUPCHECK}
-                                                {$group_data.input}
-                                                {/foreach}
-                                            </td>
-                                            <td class="warning" width="65%">{$txt.GROUPCHECK_HELP}</td>
-                                        </tr>
-                                        {/if}
-                                        <tr>
-                                            <td>{$txt.CONT_TITLE}</td>
-                                            <td>{$CONT_TITLE}</td>
-                                            <td>{$txt.CONT_TITLE_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.CONT_HEADING}</td>
-                                            <td>{$CONT_HEADING}</td>
-                                            <td>{$txt.CONT_HEADING_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.CONT_URL_ALIAS}</td>
-                                            <td>{$CONT_URL_ALIAS}</td>
-                                            <td>{$txt.CONT_URL_ALIAS_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.CONT_META_TITLE}</td>
-                                            <td>{$CONT_META_TITLE}</td>
-                                            <td>{$txt.CONT_META_TITLE_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.CONT_META_DESCRIPTION}</td>
-                                            <td>{$CONT_META_DESCRIPTION}</td>
-                                            <td>{$txt.CONT_META_DESCRIPTION_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.CONT_META_KEYWORDS}</td>
-                                            <td>{$CONT_META_KEYWORDS}</td>
-                                            <td>{$txt.CONT_META_KEYWORDS_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td width="col-xs-2">{$txt.CONTENT}</td>
-                                            <td width="col-xs-10" colspan="2">{$txt.CONTENT_HELP}{$CONTENT}{$EDITOR}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div class="tab-pane fade" id="desc_add">
-                                    <div class ="col-xs-12">
-                                        <h3>{$txt.ADDON}</h3>
-                                    </div>
-                                    <table class="table table-striped table-bordered">
-                                        {if $PARENT_CONTENT}
-                                        <tr>
-                                            <td width="col-xs-2">{$txt.PARENT_CONTENT}</td>
-                                            <td width="col-xs-4">{$PARENT_CONTENT}</td>
-                                            <td width="col-xs-6">{$txt.PARENT_CONTENT_HELP}</td>
-                                        </tr>
-                                        {/if}
-                                        <tr>
-                                            <td width="col-xs-2">{$txt.TEXT_LINK}</td>
-                                            <td width="col-xs-4">{$TEXT_LINK}</td>
-                                            <td width="col-xs-6">{$txt.TEXT_LINK_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.TEXT_ZIEL}</td>
-                                            <td>{$TEXT_ZIEL}</td>
-                                            <td>{$txt.TEXT_ZIEL_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.TEXT_TYP}</td>
-                                            <td>{$TEXT_TYP}</td>
-                                            <td>{$txt.TEXT_TYP_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.UPLOAD}</td>
-                                            <td>{$UPLOAD}</td>
-                                            <td>{$txt.UPLOAD_HELP}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{$txt.FILE_SELECT}</td>
-                                            <td>{$FILE_SELECT}</td>
-                                            <td>{$txt.FILE_SELECT_HELP}</td>
-                                        </tr>
-                                        {if $CURRENT_FILE}
-                                        <tr>
-                                            <td>{$txt.CURRENT_FILE}</td>
-                                            <td>{$CURRENT_FILE}</td>
-                                            <td>{$txt.CURRENT_FILE_HELP}</td>
-                                        </tr>
-                                        {/if}
-                                        <tr>
-                                            <td>{$txt.content_col}</td>
-                                            <td>{$content_col_top}{$content_col_left}{$content_col_right}{$content_col_bottom}</td>
-                                            <td>{$TEMPLATE_CHOSE}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        <div class ="col-xs-12 text-right">
-                            {$BUTTON_SUBMIT} {$BUTTON_UPDATE} {$BUTTON_CANCEL}
-                        </div>
-                        {$FORM_END}
-                        {/if}
-                        </div>
+			{foreach name=child item=content_child from=$module_data.CONTENT_CHILD}
+			<tr>
+				<td>{$content_child.LANG_ICON}</td>
+				<td><b>{$content_child.CONTENT_GROUP}<b></td>
+				<td><sup>|_</sup><b>{$content_child.CONTENT_TITLE}</b>{$content_child.CONTENT_URL_ALIAS}</td>
+				<td>{$content_child.SORT_ORDER}</td>
+				<td>{$content_child.CONTENT_FILE}</td>
+				<td>{$content_child.CONTENT_STATUS}</td>
+				<td>{$content_child.FILE_FLAG}</td>
+				<td>{$content_child.CONTENT_OUT_LINK}</td>
+				<td>{$content_child.ACTION_EDIT} {$content_child.ACTION_VIEW} {$content_child.ACTION_DEL}</td>
+				<td>{$content_child.CONTENT_ID}</td>
+			</tr>
+			{/foreach}
+		{/if}
+		{/foreach}
+		</table>
+		<div class ="col-xs-12">
+			<a href="{$NEW_CONTENT}"><button class="btn btn-success">{$txt.NEW_CONTENT}</button></a>
+		</div>
+		{/if}
+		{if $NEW_CONTENT_FORM == 'true'}
+		<div class ="col-xs-6">
+			<h3>{$txt.NEW_CONTENT}</h3>
+		</div>
+		{$FORM}
+		<div class ="col-xs-6 text-right">
+			{$BUTTON_SUBMIT} {$BUTTON_UPDATE} {$BUTTON_CANCEL}
+		</div>
+		<div class ="col-xs-12">
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#desc" data-toggle="tab">{$txt.HEADING_CONTENT}</a></li>
+				<li><a href="#desc_add" data-toggle="tab">{$txt.ADDON}</a></li>
+			</ul>
+			<div class="tab-content">
+				<div class="tab-pane fade in active" id="desc">
+					<div class ="row">
+					<table class="table table-striped table-bordered">
+						<tr>
+							<td width="col-xs-2">{$txt.LANGUAGE}</td>
+							<td width="col-xs-4">{$LANG_PULLDOWN}</td>
+							<td width="col-xs-6">{$txt.LANG_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.LANGGOUP}</td>
+							<td>{$CONTENT_GROUP}</td>
+							<td>{$txt.TEXT_GROUP_DESC}</td>
+						</tr>
+						<tr>
+							<td>{$txt.FILE_FLAG}</td>
+							<td>{$FILE_FLAG}</td>
+							<td>{$txt.FILE_FLAG_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.SLIDER_SET}</td>
+							<td>{$SLIDER_SET}</td>
+							<td>{$txt.SLIDER_SET_DESC}</td>
+						</tr>
+						<tr>
+							<td>{$txt.SORT_ORDER}</td>
+							<td>{$SORT_ORDER}</td>
+							<td>{$txt.SORT_ORDER_DESC}</td>
+						</tr>
+						<tr>
+							<td>{$txt.STATUS}</td>
+							<td>{$STATUS}</td>
+							<td>{$txt.STATUS_HELP}</td>
+						</tr>
+						{if $GROUPCHECK}
+						<tr>
+							<td class="warning">{$txt.GROUPCHECK}</td>
+							<td class="warning">
+								{foreach name=group item=group_data from=$GROUPCHECK}
+								{$group_data.input}
+								{/foreach}
+							</td>
+							<td class="warning" width="65%">{$txt.GROUPCHECK_HELP}</td>
+						</tr>
+						{/if}
+						<tr>
+							<td>{$txt.CONT_TITLE}</td>
+							<td>{$CONT_TITLE}</td>
+							<td>{$txt.CONT_TITLE_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.CONT_HEADING}</td>
+							<td>{$CONT_HEADING}</td>
+							<td>{$txt.CONT_HEADING_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.CONT_URL_ALIAS}</td>
+							<td>{$CONT_URL_ALIAS}</td>
+							<td>{$txt.CONT_URL_ALIAS_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.CONT_META_TITLE}({if $CONTENT_TITLE_COUNT > 100}<b class="bg-danger">{else}<b class="bg-success">{/if}{$CONTENT_TITLE_COUNT}</b>)</td>
+							<td>{$CONT_META_TITLE}</td>
+							<td>{$txt.CONT_META_TITLE_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.CONT_META_DESCRIPTION}({$CONT_META_DESCRIPTION_COUNT})</td>
+							<td>{$CONT_META_DESCRIPTION}</td>
+							<td>{$txt.CONT_META_DESCRIPTION_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.CONT_META_KEYWORDS}</td>
+							<td>{$CONT_META_KEYWORDS}</td>
+							<td>{$txt.CONT_META_KEYWORDS_HELP}</td>
+						</tr>
+						<tr>
+							<td width="col-xs-2">{$txt.CONTENT}</td>
+							<td width="col-xs-10" colspan="2">{$txt.CONTENT_HELP}{$CONTENT}{$EDITOR}</td>
+						</tr>
+					</table>
+				</div>
+				</div>
+				<div class="tab-pane fade" id="desc_add">
+					<div class ="col-xs-12">
+						<h3>{$txt.ADDON}</h3>
+					</div>
+					<div class ="row">
+					<table class="table table-striped table-bordered">
+						{if $PARENT_CONTENT}
+						<tr>
+							<td width="col-xs-2">{$txt.PARENT_CONTENT}</td>
+							<td width="col-xs-4">{$PARENT_CONTENT}</td>
+							<td width="col-xs-6">{$txt.PARENT_CONTENT_HELP}</td>
+						</tr>
+						{/if}
+						<tr>
+							<td width="col-xs-2">{$txt.TEXT_LINK}</td>
+							<td width="col-xs-4">{$TEXT_LINK}</td>
+							<td width="col-xs-6">{$txt.TEXT_LINK_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.TEXT_ZIEL}</td>
+							<td>{$TEXT_ZIEL}</td>
+							<td>{$txt.TEXT_ZIEL_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.TEXT_TYP}</td>
+							<td>{$TEXT_TYP}</td>
+							<td>{$txt.TEXT_TYP_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.UPLOAD}</td>
+							<td>{$UPLOAD}</td>
+							<td>{$txt.UPLOAD_HELP}</td>
+						</tr>
+						<tr>
+							<td>{$txt.FILE_SELECT}</td>
+							<td>{$FILE_SELECT}</td>
+							<td>{$txt.FILE_SELECT_HELP}</td>
+						</tr>
+						{if $CURRENT_FILE}
+						<tr>
+							<td>{$txt.CURRENT_FILE}</td>
+							<td>{$CURRENT_FILE}</td>
+							<td>{$txt.CURRENT_FILE_HELP}</td>
+						</tr>
+						{/if}
+						<tr>
+							<td>{$txt.content_col}</td>
+							<td>{$content_col_top}{$content_col_left}{$content_col_right}{$content_col_bottom}</td>
+							<td>{$TEMPLATE_CHOSE}</td>
+						</tr>
+					</table>
+				</div>
+				</div>
+			</div>
+		</div>
+	<div class ="col-xs-12 text-right">
+		{$BUTTON_SUBMIT} {$BUTTON_UPDATE} {$BUTTON_CANCEL}
+	</div>
+{$FORM_END}
+{/if}
+</div>

@@ -21,6 +21,8 @@
 defined('_VALID_XTC') or die('Direct Access to this location is not allowed.');
 
 require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/SimplePrice.php');
+require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/ShopAddOns.php');
+require_once(DIR_MAGNALISTER_MODULES.'ebay/EbayHelper.php');
 
 # eBay gibt GMT-Zeit zurueck,
 # Format wie '2011-01-07T22:07:23.174Z',
@@ -414,6 +416,26 @@ function geteBaySingleReturnPolicyDetail($detailName) {
 	return $returnPolicyDetails[$detailName];
 }
 
+function geteBayPlusSettings() {
+	global $_MagnaSession;
+	$mpID = $_MagnaSession['mpID'];
+	$site = getDBConfigValue('ebay.site', $mpID);
+	initArrayIfNecessary($_MagnaSession, array($mpID, $site, 'eBayPlusSettings'));
+
+	if (!empty($_MagnaSession[$mpID][$site]['eBayPlusSettings'])) {
+		return $_MagnaSession[$mpID][$site]['eBayPlusSettings'];
+	}
+	try {
+		$eBayPlusSettings = MagnaConnector::gi()->submitRequest(array(
+			'ACTION' => 'GeteBayAccountSettings'
+		));
+	} catch (MagnaException $e) {
+		$eBayPlusSettings = array('DATA' => array('eBayPlus' => 'false', 'eBayPlusListingDefault' => 'false'));
+	}
+	$_MagnaSession[$mpID][$site]['eBayPlusSettings'] = $eBayPlusSettings['DATA'];
+	return $_MagnaSession[$mpID][$site]['eBayPlusSettings'];
+}
+
 function getEBayAttributes($cID, $mode, $preselectedValues = array()) {
 	global $_MagnaSession;
 	# erst schauen obs ItemSpecifics gibt (sind neuer & das andere ist uU deprecated)
@@ -444,9 +466,9 @@ function getEBayAttributes($cID, $mode, $preselectedValues = array()) {
 		: ML_LABEL_EBAY_SECONDARY_CATEGORY
 	);
 	if (!is_array($preselectedValues)) {
+		$preselectedValues = str_replace("%27","'",(fixBrokenJsonUmlauts($preselectedValues)));
 		$preselectedValues = json_decode($preselectedValues, true);
 	}
-	require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/GenerateProductsDetailInput.php');
 	if (!empty($preselectedValues)) {
 		if (!isset($preselectedValues[0])) {
 			if (isset($preselectedValues[1]))
@@ -454,9 +476,15 @@ function getEBayAttributes($cID, $mode, $preselectedValues = array()) {
 			else if (isset($preselectedValues[2]))
 				$preselectedValues = $preselectedValues[2];
 		}
-		$gPDI = new GenerateProductsDetailInput($attrOptions, $preselectedValues);
+	}
+	//change key for form-fields an fill preselected values with new key
+	labelToKey($attrOptions, $preselectedValues);
+
+	require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/GenerateProductsDetailInput.php');
+	if (!empty($preselectedValues)) {
+		$gPDI = new GenerateProductsDetailInput($attrOptions, $preselectedValues, $prefilledReadonlyFields);
 	} else
-		$gPDI = new GenerateProductsDetailInput($attrOptions);
+		$gPDI = new GenerateProductsDetailInput($attrOptions, array(), $prefilledReadonlyFields);
 	return $gPDI->render();
 }
 
@@ -486,20 +514,140 @@ function getEBayItemSpecifics($cID, $mode, $preselectedValues='') {
 		: ML_LABEL_EBAY_SECONDARY_CATEGORY
 	);
 	if (!is_array($preselectedValues)) {
+		$preselectedValues = str_replace("%27","'",(fixBrokenJsonUmlauts($preselectedValues)));
 		$preselectedValues = json_decode($preselectedValues, true);
 	}
-	require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/GenerateProductsDetailInput.php');
 	if (!empty($preselectedValues)) {
 		if (!isset($preselectedValues[0])) {
-			if (isset($preselectedValues[1]))
+			if (isset($preselectedValues[1]) && ($mode == 1)) {
 				$preselectedValues = $preselectedValues[1];
-			else if (isset($preselectedValues[2]))
+			} else if (isset($preselectedValues[2]) && ($mode == 2)) {
 				$preselectedValues = $preselectedValues[2];
+			}
 		}
-		$gPDI = new GenerateProductsDetailInput($specsOptions, $preselectedValues);
+	}
+
+	//change key for form-fields an fill preselected values with new key
+	labelToKey($specsOptions, $preselectedValues);
+	require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/GenerateProductsDetailInput.php');
+	/* if EbayProductIdentifierSync booked, prefill product identifier fields */
+	$prefilledReadonlyFields = array();
+	if (   getDBConfigValue('ebay.listingdetails.sync', $_MagnaSession['mpID'], false) != 'false'
+		&& ML_ShopAddOns::mlAddOnIsBooked('EbayProductIdentifierSync')
+	) {
+		$productIds = MagnaDB::gi()->fetchArray("
+			SELECT pID
+			  FROM ".TABLE_MAGNA_SELECTION."
+			WHERE     mpID = '".$_MagnaSession['mpID']."'
+			      AND selectionname = 'prepare'
+			      AND session_id = '".session_id()."'
+		", true);
+		if (count($productIds) > 1) {
+			$prefilledReadonlyFields = array (
+				'Brand' => '(matching)',
+				'MPN'   => '(matching)',
+				'EAN'   => '(matching)'
+			);
+			if (getDBConfigValue('ebay.listingdetails.mpn.dbmatching.table', $_MagnaSession['mpID'], false) == false) {
+				unset($prefilledReadonlyFields['MPN']);
+			}
+			if (getDBConfigValue('ebay.listingdetails.ean.dbmatching.table', $_MagnaSession['mpID'], false) == false) {
+				unset($prefilledReadonlyFields['EAN']);
+			}
+		} else {
+			$productId = array_pop($productIds);
+			$prefilledReadonlyFields = EbayHelper::getProductListingDetailsFromProduct($productId, getDBConfigValue('ebay.lang', $_MagnaSession['mpID']));
+		}
+	}
+
+	if (!empty($preselectedValues)) {
+		$gPDI = new GenerateProductsDetailInput($specsOptions, $preselectedValues, $prefilledReadonlyFields);
 	} else
-		$gPDI = new GenerateProductsDetailInput($specsOptions);
+		$gPDI = new GenerateProductsDetailInput($specsOptions, array(), $prefilledReadonlyFields);
 	return $gPDI->render();
+}
+
+# Helper function: change key for form-fields and fill preselected values with new key
+function labelToKey(&$aAttrOptions, &$preselectedValues) {
+	$aSpecKey2Spec = array();
+	reset($aAttrOptions['specifics']['fields']);
+	if (1 == key($aAttrOptions['specifics']['fields'])) {
+		$aAttrOptions['specifics']['fields'] = array_values($aAttrOptions['specifics']['fields']);
+	}
+	$aPreselectedValues = array();
+	if (empty($preselectedValues)) {
+		$preselectedValues = array();
+	}
+	foreach ($aAttrOptions as $sAttrOptionsKey => $aAttrOptionsValue) {
+		foreach ($aAttrOptionsValue['fields'] as $sAttrOptionsFieldKey => $aAttrOptionsFieldValue ) {
+			$sLabel = $aAttrOptionsFieldValue['label'];
+			$blMulti = count($aAttrOptionsFieldValue['inputs']) > 1;
+			foreach ($aAttrOptionsFieldValue['inputs'] as $sAttrOptionsInputKey => $aAttrOptionsInputValue) {
+				foreach ($aAttrOptionsInputValue['cols'] as $sAttrOptionsColsKey => $aAttrOptionsColsValue) {
+					$sKey = $sLabel.($blMulti ? '_'.$aAttrOptionsColsValue['key'] : '');
+					$aPack = unpack('H*', $sKey);
+					$aAttrOptions[$sAttrOptionsKey]['fields']
+						[$sAttrOptionsFieldKey]['inputs']
+						[$sAttrOptionsInputKey]['cols']
+						[$sAttrOptionsColsKey]['key'] = $aPack[1]
+					;
+					if (array_key_exists($sKey, $preselectedValues)) {
+						$aPreselectedValues[$aPack[1]] = $preselectedValues[$sKey];
+					} elseif(array_key_exists($aPack[1], $preselectedValues)) {
+						$aPreselectedValues[$aPack[1]] = $preselectedValues[$aPack[1]];
+					} elseif (array_key_exists($aAttrOptionsColsValue['key'], $preselectedValues)) {
+						$aPreselectedValues[$aPack[1]] = $preselectedValues[$aAttrOptionsColsValue['key']];
+					}
+					if (array_key_exists('values', $aAttrOptionsColsValue)) {
+						$aRealValues = array();
+						foreach ($aAttrOptionsColsValue['values'] as $iSelectKey => $sSelectValue) {
+							if ($iSelectKey < 0) {
+								$aRealValues[$iSelectKey] = $sSelectValue;
+							} else {
+								$aRealValues[$sSelectValue] = $sSelectValue;
+								if (
+									array_key_exists($aPack[1], $aPreselectedValues) 
+									&& is_array($aPreselectedValues[$aPack[1]])
+									&& array_key_exists('select', $aPreselectedValues[$aPack[1]])
+									&& (
+										(
+											!is_numeric($aPreselectedValues[$aPack[1]]['select'])
+											&& $aPreselectedValues[$aPack[1]]['select'] == $sSelectValue
+										) || (
+											is_numeric($aPreselectedValues[$aPack[1]]['select']) 
+											&& $aPreselectedValues[$aPack[1]]['select'] == $iSelectKey
+										)
+									)
+								) {
+									$aPreselectedValues[$aPack[1]]['select'] = $sSelectValue;
+								} elseif (
+									array_key_exists($aPack[1], $aPreselectedValues) 
+									&& is_array($aPreselectedValues[$aPack[1]])
+									&& array_key_exists(0, $aPreselectedValues[$aPack[1]])
+								) {//multiple
+									foreach ($aPreselectedValues[$aPack[1]] as $sMultipleValue) {
+										if (
+											(!is_numeric($sMultipleValue) && $sSelectValue == $sMultipleValue)
+											||
+											(is_numeric($sMultipleValue) && $iSelectKey == $sMultipleValue)
+										) {
+											$aPreselectedValues[$aPack[1]][$sSelectValue] = $sSelectValue;
+										}
+									}
+								}
+							}
+						}
+						$aAttrOptions[$sAttrOptionsKey]['fields']
+							[$sAttrOptionsFieldKey]['inputs']
+							[$sAttrOptionsInputKey]['cols']
+							[$sAttrOptionsColsKey]['values'] = $aRealValues
+						;
+					}
+				}
+			}
+		}
+	}
+	$preselectedValues = $aPreselectedValues;
 }
 
 function VariationsEnabled($cID) {
@@ -522,7 +670,31 @@ function VariationsEnabled($cID) {
 	return false;
 }
 
+function GetConditionValues($cID) {
+	global $_MagnaSession;
+    if (empty($cID)) return false;
+	try {
+		$GetConditionValuesResult = MagnaConnector::gi()->submitRequest(array(
+			'ACTION' => 'GetConditionValues',
+			'DATA' => array ('CategoryID' => $cID,
+							 'Site' => getDBConfigValue('ebay.site', $_MagnaSession['mpID'])),
+		));
+	} catch (MagnaException $e) {
+		return false;
+	}
+	if (isset($GetConditionValuesResult['DATA']['ConditionValues'])
+		&& (is_array($GetConditionValuesResult['DATA']['ConditionValues']))
+	) {
+		return $GetConditionValuesResult['DATA']['ConditionValues'];
+	}
+	return false;
+}
+
 function substitutePictures($tmplStr, $pID, $imagePath) {
+	if (version_compare(PHP_VERSION, '5.2.0', '>=') && version_compare(PHP_VERSION, '5.3.6', '<=')) {
+		@ini_set('pcre.backtrack_limit', '10000000');
+		@ini_set('pcre.recursion_limit', '10000000');
+	}
 	$undo = ml_extractBase64($tmplStr);
 
 	$pics = MLProduct::gi()->getProductImagesByID($pID);
@@ -545,26 +717,13 @@ function substitutePictures($tmplStr, $pID, $imagePath) {
 
 # Hilfsfunktion: Preis bestimmen
 # priceType: == ListingType oder BuyItNowPrice
-function makePrice($pID, $priceType, $takePrepared=false, $variationPrice = 0.0) {
+function makePrice($pID, $priceType, $takePrepared = false, $variationPrice = 0.0) {
 	global $_MagnaSession;
 	if ($takePrepared) {
-
-		if ('artNr' == getDBConfigValue('general.keytype', '0')) {
-			$preparedPriceQuery = 'SELECT '
-			.('BuyItNowPrice' == $priceType? 'ep.BuyItNowPrice':'ep.Price').' AS Price '
-			.' FROM '.TABLE_MAGNA_EBAY_PROPERTIES .' ep, '. TABLE_PRODUCTS .' p '
-			.' WHERE ep.products_model = p.products_model AND p.products_id = '.$pID
-			.' AND ep.mpID = '. $_MagnaSession['mpID']
-			.' LIMIT 1';
-		} else {
-			$preparedPriceQuery = 'SELECT '
-			.('BuyItNowPrice' == $priceType? 'BuyItNowPrice':'Price').' AS Price '
-			.' FROM '.TABLE_MAGNA_EBAY_PROPERTIES
-			.' WHERE products_id = '.$pID.' AND mpID = '. $_MagnaSession['mpID']
-			.' LIMIT 1';
+		$iBuyItNowPrice = magnalisterEbayGetPriceByType($pID, $priceType);
+		if ($iBuyItNowPrice !== false) {
+			return $iBuyItNowPrice;
 		}
-		$preparedPriceRow = MagnaDB::gi()->fetchArray($preparedPriceQuery);
-		if (1 == MagnaDB::gi()->numRows()) return($preparedPriceRow[0]['Price']);
 	}
 	require_once(DIR_MAGNALISTER_INCLUDES.'lib/classes/SimplePrice.php');
 	switch ($priceType) {
@@ -582,10 +741,12 @@ function makePrice($pID, $priceType, $takePrepared=false, $variationPrice = 0.0)
 		}
 	}
 	$myPrice = new SimplePrice(null,getCurrencyFromMarketplace($_MagnaSession['mpID']));
-	if ($variationPrice) 
+	if ($variationPrice) {
 		$myPrice->setPriceFromDB($pID, $_MagnaSession['mpID'], $which)->addLump($variationPrice)->finalizePrice($pID, $_MagnaSession['mpID'], $which);
-	else
+	} else {
 		$myPrice->setFinalPriceFromDB($pID, $_MagnaSession['mpID'], $which);
+	}
+
 	return $myPrice->getPrice();
 }
 
@@ -916,6 +1077,13 @@ function prepareEBayPropertiesRow($pID, $itemDetails) {
 	$row['ListingType']     = $itemDetails['ListingType'];
 	$row['ListingDuration'] = $itemDetails['ListingDuration'];
 	$row['PaymentMethods']  = json_encode($itemDetails['PaymentMethods']);
+
+	if (!empty($itemDetails['VariationDimensionForPictures'])) {
+		$row['VariationDimensionForPictures'] = trim($itemDetails['VariationDimensionForPictures']);
+	}
+	$row['eBayPicturePackPurge'] = '1';
+	$row['GalleryType'] = $itemDetails['GalleryType'];
+
 	if (!empty($itemDetails['Attributes'])) {
 		$row['Attributes'] = json_encode($itemDetails['Attributes']);
 	} elseif ($oldAttributes = MagnaDB::gi()->fetchOne('SELECT Attributes FROM '.TABLE_MAGNA_EBAY_PROPERTIES.' WHERE products_id ='.$pID.' AND mpID = '.$_MagnaSession['mpID'])) {
@@ -954,10 +1122,11 @@ function prepareEBayPropertiesRow($pID, $itemDetails) {
 		}
 		$next_service = true; # FreeShipping darf nur beim 1ten Service gesetzt sein
 	}
+	$row['DispatchTimeMax'] = $itemDetails['dispatchTime'];
 	if (isset($itemDetails['localProfile'])) {
 		$ShippingDetails['LocalProfile'] = $itemDetails['localProfile'];
 	}
-	if ('on' == $itemDetails['localPromotionalDiscount']) {
+	if ((array_key_exists('localPromotionalDiscount', $itemDetails)) && ('on' == $itemDetails['localPromotionalDiscount'])) {
 		$ShippingDetails['LocalPromotionalDiscount'] = 'true';
 	} else {
 		$ShippingDetails['LocalPromotionalDiscount'] = 'false';
@@ -984,6 +1153,10 @@ function prepareEBayPropertiesRow($pID, $itemDetails) {
 		) {
 			$ShippingDetails['InternationalShippingServiceOption'][$key]['ShippingServiceAdditionalCost'] = priceToFloat($intlService['addcost']);
 		}
+		if ('=GEWICHT' == strtoupper($intlService['cost'])) {
+			$ShippingDetails['InternationalShippingServiceOption'][$key]['ShippingServiceCost'] = '=GEWICHT';
+			$ShippingDetails['InternationalShippingServiceOption'][$key]['ShippingServiceAdditionalCost'] = 0.0;
+		}
 	}
 	if (0 == count($ShippingDetails['InternationalShippingServiceOption'])) {
 	 	unset($ShippingDetails['InternationalShippingServiceOption']);
@@ -991,7 +1164,7 @@ function prepareEBayPropertiesRow($pID, $itemDetails) {
 	if (isset($itemDetails['internationalProfile'])) {
 		$ShippingDetails['InternationalProfile'] = $itemDetails['internationalProfile'];
 	}
-	if ('on' == $itemDetails['internationalPromotionalDiscount']) {
+	if ((array_key_exists('internationalPromotionalDiscount', $itemDetails)) && ('on' == $itemDetails['internationalPromotionalDiscount'])) {
 		$ShippingDetails['InternationalPromotionalDiscount'] = 'true';
 	} else {
 		$ShippingDetails['InternationalPromotionalDiscount'] = 'false';
@@ -1003,15 +1176,28 @@ function prepareEBayPropertiesRow($pID, $itemDetails) {
 }
 
 function eBayInsertPrepareData($data) {
-	$data['topPrimaryCategory']	  = $data['PrimaryCategory']      == null ? '': $data['PrimaryCategory'];
-	$data['topSecondaryCategory'] = $data['topSecondaryCategory'] == null ? '': $data['SecondaryCategory'];
-	$data['topStoreCategory1']    = $data['topStoreCategory1']    == null ? '': $data['StoreCategory'];
-	$data['topStoreCategory2']    = $data['topStoreCategory2']    == null ? '': $data['StoreCategory2'];
-
-	# Filter Gambio TABs
-	if (SHOPSYSTEM == 'gambio') {
-		$data['Description'] = preg_replace('/\[TAB:([^\]]*)\]/', '<h1>${1}</h1>', $data['Description']);
+	foreach (array('ItemSpecifics', 'Attributes') as $sAttributeOrSpecific) {
+		if (array_key_exists($sAttributeOrSpecific, $data)) {
+			$aAttribute = json_decode(fixBrokenJsonUmlauts($data[$sAttributeOrSpecific]), true);
+			if (!empty($aAttribute) && is_array($aAttribute)) {
+				$aMyAttribute = array();
+				foreach ($aAttribute as $sKey => $aValue) {
+					foreach ($aValue as $sAttributeKey => $aAttributeValue) {
+						$aMyAttribute[$sKey][pack('H*', $sAttributeKey)] = $aAttributeValue;
+					}
+				}
+				$data[$sAttributeOrSpecific] = json_encode($aMyAttribute);
+			}
+		}
 	}
+	$data['topPrimaryCategory']	  = $data['PrimaryCategory']      == null ? '': $data['PrimaryCategory'];
+	$data['topSecondaryCategory'] = !array_key_exists('topSecondaryCategory', $data) || $data['topSecondaryCategory'] == null ? '': $data['SecondaryCategory'];
+	$data['topStoreCategory1']    = !array_key_exists('topStoreCategory1', $data)    || $data['topStoreCategory1']    == null ? '': $data['StoreCategory'];
+	$data['topStoreCategory2']    = !array_key_exists('topStoreCategory2', $data)    || $data['topStoreCategory2']    == null ? '': $data['StoreCategory2'];
+
+	// Filter JNH Tab
+	$data['Description'] = preg_replace('/\[TAB:([^\]]*)\]/', '<h1>${1}</h1>', $data['Description']);
+	
 	/* {Hook} "eBayInsertPrepareData": Enables you to modify the prepared product data before it will be saved.<br>
 	   Variables that can be used:
 	   <ul>
@@ -1029,20 +1215,24 @@ function SaveEBaySingleProductProperties($pID, $itemDetails) {
 	global $_MagnaSession;
 	$row = prepareEBayPropertiesRow($pID, $itemDetails);
 	$row['Title']           = trim(strip_tags(html_entity_decode($itemDetails['Title'])));
-	if (('on' == $itemDetails['enableSubtitle']) && !empty($itemDetails['Subtitle'])) {
+	if (array_key_exists('enableSubtitle', $itemDetails) && ('on' == $itemDetails['enableSubtitle']) && !empty($itemDetails['Subtitle'])) {
 		$row['Subtitle'] = trim(strip_tags($itemDetails['Subtitle']));
 	}
 	if (!empty($itemDetails['PictureURL'])) {
-		$row['PictureURL'] = trim($itemDetails['PictureURL']);
+		if (is_array($itemDetails['PictureURL'])) {
+			$row['PictureURL'] = json_encode($itemDetails['PictureURL']);
+		} else {
+			$row['PictureURL'] = trim($itemDetails['PictureURL']);
+		}
 	}
-	if (!empty($itemDetails['GalleryURL']) && ('on' == $itemDetails['enableGallery'])) {
-		$row['GalleryURL'] = trim($itemDetails['GalleryURL']);
-	}
-    if ('on' == $itemDetails['privateListing']) {
+	if (array_key_exists('privateListing', $itemDetails) && ('on' == $itemDetails['privateListing'])) {
         $row['PrivateListing'] = '1';
     }
-    if (('on' == $itemDetails['bestOfferEnabled']) && ('Chinese' != $itemDetails['ListingType'])){
+	if (array_key_exists('bestOfferEnabled', $itemDetails) && ('on' == $itemDetails['bestOfferEnabled']) && ('Chinese' != $itemDetails['ListingType'])){
         $row['BestOfferEnabled'] = '1';
+    }
+	if (array_key_exists('plus', $itemDetails) && ('on' == $itemDetails['plus']) && ('Chinese' != $itemDetails['ListingType'])){
+        $row['eBayPlus'] = '1';
     }
     if (!empty($itemDetails['startTime'])) {
         $row['StartTime'] = $itemDetails['startTime'];
@@ -1051,8 +1241,8 @@ function SaveEBaySingleProductProperties($pID, $itemDetails) {
         $row['HitCounter'] = $itemDetails['hitcounter'];
     }
 	
-	#if (isset($itemDetails['freezePrice'])) 
-	if ('true' == $itemDetails['isPriceFrozen']) {
+	// only set price if a chinese auction otherwise set it to zero
+	if (('true' == $itemDetails['isPriceFrozen']) && ('Chinese' == $itemDetails['ListingType'])) {
 		if ($itemDetails['frozenPrice'] == (string)(float) $itemDetails['frozenPrice']) {
 			$row['Price'] = $itemDetails['frozenPrice'];	
 		} else {
@@ -1063,6 +1253,7 @@ function SaveEBaySingleProductProperties($pID, $itemDetails) {
 	} else {
 		$row['Price'] = (float)0;
 	}
+
 	if (  isset($itemDetails['isPriceFrozen'])
 	   && isset($itemDetails['enableBuyItNowPrice'])
 	   && !empty($itemDetails['BuyItNowPrice'])
@@ -1088,6 +1279,7 @@ function SaveEBaySingleProductProperties($pID, $itemDetails) {
 			'products_id' => $pID
 		));
 	}
+	$row['PreparedTs'] = date('Y-m-d H:i:s');
 	eBayInsertPrepareData($row);
 }
 
@@ -1143,7 +1335,7 @@ function SaveEBayMultipleProductProperties($pIDs, $itemDetails) {
 	$imagePath = getDBConfigValue('ebay.imagepath',$_MagnaSession['mpID']);
 	$eBayTemplate = getDBConfigValue('ebay.template.content',$_MagnaSession['mpID']);
 	$eBayTitleTemplate = getDBConfigValue('ebay.template.name',$_MagnaSession['mpID'], '#TITLE#');
-	
+	$preparedTs = date('Y-m-d H:i:s');
 	foreach ($more_data as $dataRow) {
 		$row = prepareEBayPropertiesRow($dataRow['products_id'], $itemDetails);
 		$pID = $dataRow['products_id'];
@@ -1164,6 +1356,9 @@ function SaveEBayMultipleProductProperties($pIDs, $itemDetails) {
         if (('on' == $itemDetails['bestOfferEnabled']) && ('Chinese' != $itemDetails['ListingType'])){
             $row['BestOfferEnabled'] = '1';
         }
+        if (('on' == $itemDetails['plus']) && ('Chinese' != $itemDetails['ListingType'])){
+            $row['eBayPlus'] = '1';
+        }
         if (!empty($itemDetails['startTime'])) {
             $row['StartTime'] = $itemDetails['startTime'];
         }
@@ -1174,11 +1369,26 @@ function SaveEBayMultipleProductProperties($pIDs, $itemDetails) {
 		if (('Chinese' == $itemDetails['ListingType']) && getDBConfigValue(array('ebay.chinese.buyitnow.price.active', 'val'), $_MagnaSession['mpID'])) {
 			$row['BuyItNowPrice'] = makePrice($dataRow['products_id'], 'BuyItNowPrice');
 		}
-		$row['PictureURL'] = empty($dataRow['image'])? '': $imagePath . $dataRow['image'];
-		if ('on' == $itemDetails['enableGallery']) {
-			$galleryPath = getDBConfigValue('ebay.gallery.imagepath',$_MagnaSession['mpID']);
-			$row['GalleryURL'] = empty($dataRow['image'])? '': $galleryPath . $dataRow['image'];
+		if (    (ML_ShopAddOns::mlAddOnIsBooked('EbayPicturePack'))
+		     && (getDBConfigValue(array('ebay.picturepack', 'val'), $_MagnaSession['mpID'], false))) {
+			$aPictureUrls = MLProduct::gi()->getAllImagesByProductsId($dataRow['products_id']);
+			if (is_array($aPictureUrls) && (count($aPictureUrls) > 1)) {
+				foreach ($aPictureUrls as &$image) {
+					$image = str_replace(array(' ','&'),array('%20','%26'), $image);
+				}
+				$row['PictureURL'] = json_encode($aPictureUrls);
+			} else if (is_array($aPictureUrls) && !empty($aPictureUrls)) {
+				$row['PictureURL'] = $imagePath . str_replace(array(' ','&'),array('%20','%26'), current($aPictureUrls));
+			} else {
+				$row['PictureURL'] = '';
+			}
+		} else {
+			$row['PictureURL'] = empty($dataRow['image'])? '': $imagePath . $dataRow['image'];
 		}
+		#if ('on' == $itemDetails['enableGallery']) {
+		#	$galleryPath = getDBConfigValue('ebay.gallery.imagepath',$_MagnaSession['mpID']);
+		#	$row['GalleryURL'] = empty($dataRow['image'])? '': $galleryPath . $dataRow['image'];
+		#}
 		# Descriptions zusammenbauen
 		$substitution = array(
 			'#TITLE#' => fixHTMLUTF8Entities($dataRow['products_name']),
@@ -1187,7 +1397,7 @@ function SaveEBayMultipleProductProperties($pIDs, $itemDetails) {
 			'#SKU#' => magnaPID2SKU($dataRow['products_id']),
 			'#SHORTDESCRIPTION#' => $dataRow['products_short_description'],
 			'#DESCRIPTION#' => stripLocalWindowsLinks($dataRow['description']),
-			'#PICTURE1#' => $row['PictureURL'],
+			'#PICTURE1#' =>empty($dataRow['image']) ? '' : $imagePath . $dataRow['image'], 
 			'#WEIGHT#' => ((float)$dataRow['products_weight']>0)?$dataRow['products_weight']:'',
 		);
 		$row['Description'] = substitutePictures(eBaySubstituteTemplate(
@@ -1203,7 +1413,154 @@ function SaveEBayMultipleProductProperties($pIDs, $itemDetails) {
             $row['Price'] = (float)MagnaDB::gi()->fetchOne('SELECT Price FROM '.TABLE_MAGNA_EBAY_PROPERTIES.' WHERE mpID = '.$_MagnaSession['mpID'].' AND products_id = '.$dataRow['products_id']);
 			MagnaDB::gi()->delete(TABLE_MAGNA_EBAY_PROPERTIES, array('mpID'=>$_MagnaSession['mpID'], 'products_id'=>$dataRow['products_id']));
         }
+		// reset frozen price if not chinese auction
+		if ('Chinese' != $itemDetails['ListingType']) {
+			$row['Price'] = (float)0;
+		}
+
+		$row['PreparedTs'] = $preparedTs;
 		eBayInsertPrepareData($row);
 	}
+}
+
+function magnalisterEbayGetPriceByType($iProductsId, $sPriceType = false) {
+	global $_MagnaSession;
+	if ('artNr' == getDBConfigValue('general.keytype', '0')) {
+		$preparedPriceQuery = "
+			SELECT ".('BuyItNowPrice' == $sPriceType ? 'ep.BuyItNowPrice' : 'ep.Price')."
+			  FROM ".TABLE_MAGNA_EBAY_PROPERTIES ." ep, ".TABLE_PRODUCTS." p
+			 WHERE     ep.products_model = p.products_model
+			       AND p.products_id = ".$iProductsId."
+			       AND ep.mpID = ".$_MagnaSession['mpID']."
+			LIMIT 1
+		";
+	} else {
+		$preparedPriceQuery = "
+			SELECT ".('BuyItNowPrice' == $sPriceType ? 'ep.BuyItNowPrice' : 'ep.Price')."
+			  FROM ".TABLE_MAGNA_EBAY_PROPERTIES ." ep
+			 WHERE     ep.products_id = ".$iProductsId."
+			       AND ep.mpID = ".$_MagnaSession['mpID']."
+			LIMIT 1
+		";
+	}
+
+	return MagnaDB::gi()->fetchOne($preparedPriceQuery);
+}
+
+/* Zahlungsarten eBay:
+-AmEx
+CashInPerson
+-CashOnPickup
+-CCAccepted
+-COD
+CODPrePayDelivery # reserved for future use
+CustomCode        # reserved for future use
+-Diners           # CC 
+-Discover         # CC
+-ELV              # Lastschrift 
+Escrow            # reserved for future use 
+-IntegratedMerchantCreditCard # CC
+LoanCheck
+-MOCC             # Money order/cashiers check 
+-Moneybookers
+-MoneyXferAccepted# Direct transfer of money
+-MoneyXferAcceptedInCheckout
+None
+Other
+OtherOnlinePayments
+PaisaPayAccepted  # India only
+PaisaPayEscrow    # India only
+PaisaPayEscrowEMI # India only
+Paymate           # US only
+PaymentSeeDescription
+-PayOnPickup
+-PayPal
+-PersonalCheck
+PostalTransfer    # reserved for future use
+PrePayDelivery    # reserved for future use
+ProPay            # US only
+StandardPayment
+-VisaMC
+*/
+function getPaymentClassForEbayPaymentMethod($paymentMethod) {
+	$PaymentModules = explode(';', MODULE_PAYMENT_INSTALLED);
+    $class = 'ebay';
+
+    if (  ('MOCC' == $paymentMethod) || ('PersonalCheck' == $paymentMethod)
+        ||('MoneyXferAccepted' == $paymentMethod)
+        ||('MoneyXferAcceptedInCheckout' == $paymentMethod)) {
+        # money order / Zahlungsanweisung / Vorkasse
+        if (in_array('heidelpaypp.php', $PaymentModules))
+            $class = 'heidelpaypp';
+        else if (in_array('moneyorder.php', $PaymentModules))
+            $class = 'moneyorder';
+        else if (in_array('uos_vorkasse_modul.php', $PaymentModules))
+            $class = 'uos_vorkasse_modul';
+        
+    } else if ('Moneybookers' == $paymentMethod) {
+        # Moneybookers
+        if (in_array('monebookers.php', $PaymentModules))
+            $class = 'monebookers';
+
+    } else if ('COD' == $paymentMethod) {
+        # Nachnahme
+        if (in_array('cod.php', $PaymentModules))
+            $class = 'cod';
+        
+    } else if (  ('AmEx' == $paymentMethod) 
+               ||('CCAccepted' == $paymentMethod)
+               ||('Diners' == $paymentMethod)
+               ||('Discover' == $paymentMethod)
+               ||('IntegratedMerchantCreditCard' == $paymentMethod)
+               ||('VisaMC' == $paymentMethod)) {
+        # Kreditkarte
+        if (in_array('cc.php', $PaymentModules))
+            $class = 'cc';
+        else if (in_array('heidelpaycc.php', $PaymentModules))
+            $class = 'heidelpaycc';
+        else if (in_array('moneybookers_cc.php', $PaymentModules))
+            $class = 'moneybookers_cc';
+        else if (in_array('uos_kreditkarte_modul.php', $PaymentModules))
+            $class = 'uos_kreditkarte_modul';
+
+    } else if ('ELV' == $paymentMethod) {
+        # Lastschrift
+        # if (in_array('banktransfer.php', $PaymentModules))
+        #     $class = 'banktransfer';
+        # if (in_array('heidelpaydd.php', $PaymentModules))
+        #     $class = 'heidelpaydd';
+        # if (in_array('ipaymentelv.php', $PaymentModules))
+        #     $class = 'ipaymentelv';
+        if (in_array('moneybookers_elv.php', $PaymentModules))
+            $class = 'moneybookers_elv';
+        else if (in_array('uos_lastschrift_de_modul.php', $PaymentModules))
+            $class = 'uos_lastschrift_de_modul';
+
+    } else if ('PayPal' == $paymentMethod) {
+		# PayPal
+		if (in_array('paypal.php', $PaymentModules))
+			$class = 'paypal';
+		else if (in_array('paypalng.php', $PaymentModules))
+			$class = 'paypalng';
+		else if (in_array('paypal_ipn.php', $PaymentModules))
+			$class = 'paypal_ipn';
+		else if (in_array('paypalexpress.php', $PaymentModules))
+			$class = 'paypalexpress';
+		else if (in_array('paypal3.php', $PaymentModules))
+			$class = 'paypal3';
+    } else if (  (stripos($paymentMethod, 'Rechnung') !== false)
+	           ||('PayUponInvoice' == $paymentMethod)) {
+        # Auf Rechnung
+        if (in_array('invoice.php', $PaymentModules))
+            $class = 'invoice';
+
+    } else if (  ('CashOnPickup' == $paymentMethod)
+               ||('PayOnPickup'  == $paymentMethod)) {
+        # Barzahlung
+        if (in_array('cash.php', $PaymentModules))
+            $class = 'cash';
+    }
+
+    return $class;
 }
 

@@ -151,12 +151,7 @@
 											</div>
 											<div class ="col-md-10 col-xs-12 col-lg-10 col-sm-12">
 												{$module_edit.boxtextfiled}
-												{if $module_edit.field_sdesc_wy == '1'}
-												<script type="text/javascript">
-													var newCKEdit = CKEDITOR.replace(new_box_{$module_edit.langid});
-															CKFinder.setupCKEditor(newCKEdit, 'includes/editor/ckfinder/');
-												</script>
-												{/if}
+												{$module_edit.field_sdesc_wy}
 											</div>
 										</div>
 									<hr>

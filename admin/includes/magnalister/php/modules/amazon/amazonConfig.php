@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: amazonConfig.php 4337 2014-08-06 12:09:45Z tim.neumann $
+ * $Id: amazonConfig.php 6288 2015-12-04 15:08:12Z tim.neumann $
  *
  * (c) 2010 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -64,7 +64,7 @@ function amazonTopTenConfig($aArgs = array(), &$sValue = ''){
 			$aArgs['key'],
 			isset($_POST['conf'][$aArgs['key']])
 			? (int)$_POST['conf'][$aArgs['key']]
-			: (int)getDBConfigValue($aArgs['key'], $_MagnaSession['mpID'])
+			: (int)getDBConfigValue($aArgs['key'], $_MagnaSession['mpID'], 10)
 		);
 	}
 }
@@ -168,12 +168,16 @@ if (array_key_exists('conf', $_POST)) {
 	$nMerchant = trim($_POST['conf']['amazon.merchantid']);
 	$nMarketplace = trim($_POST['conf']['amazon.marketplaceid']);
 	$nSite = $_POST['conf']['amazon.site'];
+	$sToken = trim($_POST['conf']['amazon.mwstoken']);
 
 	if (!empty($nUser) && (getDBConfigValue('amazon.password', $_MagnaSession['mpID']) == '__saved__') && empty($nPass)) {
 		$nPass = '__saved__';
 	}
+	if (!empty($nUser) && (getDBConfigValue('amazon.mwstoken', $_MagnaSession['mpID']) == '__saved__') && empty($sToken)) {
+		$sToken = '__saved__';
+	}
 
-	if (!empty($nUser) && !empty($nPass)) {
+	if (!empty($nUser) && !empty($nPass) && !empty($sToken)) {
 		if ((strpos($nPass, '&#9679;') === false) && (strpos($nPass, '&#8226;') === false)) {
 			/*               Windows                                  Mac                */
 			setDBConfigValue('amazon.authed', $_MagnaSession['mpID'], array (
@@ -187,6 +191,7 @@ if (array_key_exists('conf', $_POST)) {
 					'PASSWORD' => $nPass,
 					'MERCHANTID' => $nMerchant,
 					'MARKETPLACE' => $nMarketplace,
+					'MWSToken' => $sToken,
 					'SITE' => $nSite
 				));
 				$boxes .= '
@@ -271,7 +276,8 @@ if (!$auth['state']) {
 	mlGetPaymentModules($form['import']['fields']['defaultpayment']);
 	mlGetShippingModules($form['import']['fields']['defaultshippingfba']);
 	mlGetPaymentModules($form['import']['fields']['defaultpaymentfba']);
-	
+
+	mlPresetTrackingCodeMatching($_MagnaSession['mpID'], 'amazon.orderstatus.carrier.carrierDBMatching', 'amazon.orderstatus.carrier.trackingcode');
 	
 	if ((getDBConfigValue('amazon.checkin.SkuAsMfrPartNo', $_MagnaSession['mpID']) == null) // setting doesn't exist yet
 		// has the config been saved before that feature was implemented?
@@ -305,5 +311,6 @@ if (isset($_GET['kind']) && ($_GET['kind'] == 'ajax')) {
 	}
 
 	echo $cG->renderConfigForm();
+	echo $cG->exchangeRateAlert();
 	include_once(DIR_MAGNALISTER_INCLUDES.'admin_view_bottom.php');
 }

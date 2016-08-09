@@ -100,11 +100,7 @@ if ($order->customer['firstname'] == '' && $order->customer['lastname'] == '' &&
     if ($_SESSION['payment'] == 'paypalexpress') {
         xtc_redirect(xtc_href_link(FILENAME_PAYPAL_CHECKOUT, 'error_message=' . $error_messa, 'SSL', true, false));
     } else {
-        if (CHECKOUT_AJAX_STAT == 'true') {
-            xtc_redirect(xtc_href_link(FILENAME_CHECKOUT, 'error_message=' . $error_messa, 'SSL', true, false));
-        } else {
-            xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, 'error_message=' . $error_messa, 'SSL', true, false));
-        }
+		xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, 'error_message=' . $error_messa, 'SSL', true, false));
     }
 }
 

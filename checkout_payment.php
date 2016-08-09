@@ -17,21 +17,6 @@ include ('includes/application_top.php');
 $smarty = new Smarty;
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
 
-if (CHECKOUT_AJAX_STAT == 'true') {
-    // SHOW PAYMENT ERROR
-    if (isset($_GET['payment_error']) && is_object(${ $_GET['payment_error'] }) && ($error = ${$_GET['payment_error']}->get_error())) {
-        $error = '&payment_error='.$error['error'];
-    } elseif (isset($_GET['error_c'])) {
-        $error = '&error_c='.defined($_GET['error_c']) ? constant($_GET['error_c']) : $_GET['error_c'];
-    } elseif (isset($_GET['error_message'])) {
-       $error = '&error_message='.defined($_GET['error_message']) ? constant($_GET['error_message']) : $_GET['error_message'];
-    } else {
-		$error = '';
-	}
-
-	xtc_redirect(xtc_href_link(FILENAME_CHECKOUT.$error, '', 'SSL'));
-}
-
 $smarty->assign('language', $_SESSION['language']);
 require_once (DIR_FS_INC . 'xtc_address_label.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_address_format_id.inc.php');

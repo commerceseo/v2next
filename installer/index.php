@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: index.php 1077 2014-05-27 08:54:06Z akausch $
+ * 	$Id: index.php 1499 2015-10-27 21:54:20Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -43,7 +43,7 @@ if (isset($_GET['precheck']) && $_GET['precheck'] == '1') {
     while ($t_line = fgets($fp, 1024)) {
         $t_dir = DIR_FS_CATALOG . $t_line;
         if (file_exists(trim($t_dir)) == false) {
-            if (is_dir(DIR_FS_CATALOG . 'templates/v2next-boot-flat/') == false && strstr($t_line, 'v2next-boot-flat') !== false)
+            if (is_dir(DIR_FS_CATALOG . 'templates/v2next-new-c2-blue/') == false && strstr($t_line, 'v2next-new-c2-blue') !== false)
                 continue;
             $t_missing_files_array[] = $t_line;
         }
@@ -1048,7 +1048,7 @@ if (empty($t_wrong_chmod_array) && !isset($_GET['chmod']) && isset($_GET['langua
                         <table class="server_data" width="750" border="0" cellspacing="5" cellpadding="0">
                             <tr>
                                 <td width="16%"><?php echo LABEL_DB_SERVER; ?></td>
-                                <td width="22%"><input type="text" class="input_field_short" name="DB_SERVER" size="15" /></td>
+                                <td width="22%"><input type="text" class="input_field_short" name="DB_SERVER" size="15" value="localhost" /></td>
                                 <td width="62%"><span class="input_error"><?php echo ERROR_INPUT_DB_CONNECTION; ?></span></td>
                             </tr>
                             <tr>

@@ -74,8 +74,8 @@ INSERT INTO address_format VALUES (7, '$firstname $lastname$cr$streets, $city$cr
 INSERT INTO address_format VALUES (8, '$firstname $lastname$cr$streets$cr$city$cr$state$cr$postcode$cr$country','$postcode / $country');
 
 
-INSERT INTO admin_access VALUES (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
-INSERT INTO admin_access VALUES ('groups', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 2, 4, 2, 2, 2, 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO admin_access VALUES (1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+INSERT INTO admin_access VALUES ('groups', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 2, 4, 2, 2, 2, 2, 5, 5, 5, 5, 5, 5, 5, 5, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 
 INSERT INTO configuration VALUES 
@@ -105,7 +105,7 @@ INSERT INTO configuration VALUES
 (NULL, 'DEFAULT_CUSTOMERS_STATUS_ID_GUEST', '1', 1, 24, NULL, NOW(), 'xtc_get_customers_status_name', 'xtc_cfg_pull_down_customers_status_list('),
 (NULL, 'DEFAULT_CUSTOMERS_STATUS_ID', '2', 1, 25, NULL, NOW(), 'xtc_get_customers_status_name', 'xtc_cfg_pull_down_customers_status_list('),
 (NULL, 'ALLOW_ADD_TO_CART', 'true', 1, 26, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CURRENT_TEMPLATE', 'v2next-boot-flat', 1, 26, NULL, NOW(), NULL, 'xtc_cfg_pull_down_template_sets('),
+(NULL, 'CURRENT_TEMPLATE', 'v2next-new-c2-blue', 1, 26, NULL, NOW(), NULL, 'xtc_cfg_pull_down_template_sets('),
 (NULL, 'PRICE_IS_BRUTTO', 'true', 1, 28, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'PRICE_PRECISION', '4', 1, 29, NULL, NOW(), NULL, ''),
 (NULL, 'DISPLAY_TAX', 'true', 1, 30, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
@@ -115,6 +115,8 @@ INSERT INTO configuration VALUES (NULL, 'PDF_RECHNUNG_OID', 'true', 1, 32, NULL,
 INSERT INTO configuration VALUES (NULL, 'PDF_RECHNUNG_DATE_ACT', 'true', 1, 33, NULL, '', NOW(), "xtc_cfg_select_option(array('true', 'false'),");
 INSERT INTO configuration VALUES (NULL, 'MODULE_CUSTOMERS_PDF_INVOICE_STATUS', 'false', 1, 34, NULL, '', NOW(), "xtc_cfg_select_option(array('true', 'false'),");
 INSERT INTO configuration VALUES (NULL, 'MODULE_CUSTOMERS_PDF_INVOICE_MAIL_STATUS', 'false', 1, 35, NULL, '', NOW(), "xtc_cfg_select_option(array('true', 'false'),");
+INSERT INTO configuration VALUES (NULL, 'MODULE_CUSTOMERS_PDF_INVOICE_PRINT_TEL', 'false', 1, 36, NULL, '', NOW(), "xtc_cfg_select_option(array('true', 'false'),");
+INSERT INTO configuration VALUES (NULL, 'MODULE_CUSTOMERS_PDF_INVOICE_PRINT_COMMENT', 'false', 1, 37, NULL, '', NOW(), "xtc_cfg_select_option(array('true', 'false'),");
 
 # configuration_group_id 2
 INSERT INTO configuration VALUES 
@@ -292,7 +294,10 @@ INSERT INTO configuration VALUES
 (NULL, 'SHIPPING_INFOS', '1', 7, 7, NULL, NOW(), NULL, NULL),
 (NULL, 'SHIPPING_SPERRGUT_1', '30', 7, 10, NULL , NOW( ) , NULL , NULL),
 (NULL, 'SHIPPING_SPERRGUT_2', '50', 7, 11, NULL , NOW( ) , NULL , NULL),
-(NULL, 'SHIPPING_SPERRGUT_3', '100', 7, 12, NULL , NOW( ) , NULL , NULL);
+(NULL, 'SHIPPING_SPERRGUT_3', '100', 7, 12, NULL , NOW( ) , NULL , NULL),
+(NULL, 'ATTRIBUTE_OPTION_AS_DEFAULT', 'true', 7, 13, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'FREE_SHIPPING_LOCAL_ONLY', 'true', 7, 14, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
+
 
 # configuration_group_id 8
 INSERT INTO configuration VALUES (NULL, 'PRODUCT_LIST_FILTER', '1', 8, 1, NULL, NOW(), NULL, NULL);
@@ -318,6 +323,11 @@ INSERT INTO configuration VALUES
 (NULL, 'STOCK_WARNING_GREEN', '2', 9, 9, NULL, NOW(), NULL, NULL),
 (NULL, 'STOCK_WARNING_YELLOW', '1', 9, 10, NULL, NOW(), NULL, NULL),
 (NULL, 'STOCK_WARNING_RED', '0', 9, 11, NULL, NOW(), NULL, NULL);
+
+
+INSERT INTO configuration VALUES (NULL, 'STOCK_DISABLE_PRODUCT', 'false', 9, 8, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
+
+
 
 # configuration_group_id 10
 INSERT INTO configuration VALUES 
@@ -514,8 +524,8 @@ INSERT INTO configuration VALUES
 #configuration_group_id 333, Ajax Checkout
 INSERT INTO configuration VALUES
 (NULL, 'BOXLESS_CHECKOUT', 'true', 333, 1, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CHECKOUT_AJAX_STAT', 'false', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CHECKOUT_AJAX_PRODUCTS', 'false', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'CHECKOUT_AJAX_STAT', 'true', 333, 2, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'CHECKOUT_AJAX_PRODUCTS', 'false', 333, 3, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_MODULES', 'true', 333, 5, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_ADDRESS', 'true', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_PAYMENT_MODULES', 'true', 333, 7, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
@@ -559,8 +569,7 @@ INSERT INTO configuration VALUES
 (NULL, 'ANTISPAM_PASSWORD', 'true', 363, 10, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'ACCOUNT_PASSWORD_SECURITY', 'true', 363, 12, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
 
-
-
+INSERT INTO configuration VALUES (NULL, 'SECURTY_LOGGIN_LOGIN', 'false', 363, 13, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
 
 INSERT INTO configuration VALUES
 (NULL, 'RCS_BASE_DAYS', '30', 33, 10, NULL, NOW(), '', ''),
@@ -607,10 +616,12 @@ INSERT INTO configuration VALUES
 (NULL, 'GOOGLE_ANAL_CODE', '', 361, 3, NULL, NOW(), NULL, ''),
 (NULL, 'GOOGLE_ANALYTICS_DOMAIN', '', 361, 4, NULL, NOW(), NULL, '');
 INSERT INTO configuration VALUES (NULL, 'GENERAL_SCRIPT_ADDON', '', 361, 5, NULL, NOW(), '', 'xtc_cfg_textarea(');
-INSERT INTO configuration VALUES (NULL, 'TRACKING_PIWIK_ACTIVE', 'false', 361, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
-INSERT INTO configuration VALUES (NULL, 'TRACKING_PIWIK_LOCAL_PATH', 'www.domain.de/piwik/', 361, 7, NULL, NOW(), NULL, NULL);
-INSERT INTO configuration VALUES (NULL, 'TRACKING_PIWIK_LOCAL_SSL_PATH', '', 361, 8, NULL, NOW(), NULL, NULL);
-INSERT INTO configuration VALUES (NULL, 'TRACKING_PIWIK_ID', '1', 361, 9, NULL, NOW(), NULL, NULL);
+INSERT INTO configuration VALUES (NULL, 'SCRIPT_CODE_BEVOR_BODY', '', 361, 6, NULL, NOW(), '', 'xtc_cfg_textarea(');
+INSERT INTO configuration VALUES (NULL, 'SCRIPT_CODE_AFTER_BODY', '', 361, 7, NULL, NOW(), '', 'xtc_cfg_textarea(');
+INSERT INTO configuration VALUES (NULL, 'TRACKING_PIWIK_ACTIVE', 'false', 361, 8, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
+INSERT INTO configuration VALUES (NULL, 'TRACKING_PIWIK_LOCAL_PATH', 'www.domain.de/piwik/', 361, 9, NULL, NOW(), NULL, NULL);
+INSERT INTO configuration VALUES (NULL, 'TRACKING_PIWIK_LOCAL_SSL_PATH', '', 361, 10, NULL, NOW(), NULL, NULL);
+INSERT INTO configuration VALUES (NULL, 'TRACKING_PIWIK_ID', '1', 361, 11, NULL, NOW(), NULL, NULL);
 
 
 #configuration_group_id 1000 Startseiteneinstellung
@@ -636,7 +647,10 @@ INSERT INTO configuration VALUES (NULL, 'AJAXRESPTABS', 'false', 1000, 22, NULL,
 INSERT INTO configuration VALUES (NULL, 'AJAXRESPSLIDE', 'true', 1000, 24, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'AJAXUNSLIDER', 'false', 1000, 25, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 INSERT INTO configuration VALUES (NULL, 'AJAXBOOTSTRAP', 'true', 1000, 26, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
-INSERT INTO configuration VALUES (NULL, 'DISPLAY_START_NEW_PRODUCTS', 'top', 1000, 50, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''top'', ''newproducts''),');
+INSERT INTO configuration VALUES (NULL, 'DISPLAY_START_NEW_PRODUCTS', 'top', 1000, 50, NULL, NOW(), NULL, "xtc_cfg_select_option(array('top', 'newproducts'),");
+INSERT INTO configuration VALUES (NULL, 'MOBILE_CONF_START_FOOTER', 'false', 1000, 51, NULL, '', NOW(), "xtc_cfg_select_option(array('true', 'false'),");
+INSERT INTO configuration VALUES (NULL, 'MOBILE_CONF_CATEGORY_FOOTER', 'false', 1000, 52, NULL, '', NOW(), "xtc_cfg_select_option(array('true', 'false'),");
+INSERT INTO configuration VALUES (NULL, 'AJAXCOOKIE', 'true', 1000, 53, NULL, NOW(), NULL, 'xtc_cfg_select_option(array(''true'', ''false''),');
 
 #configuration_group_id 1001, Twitterbox ab 2.1
 INSERT INTO configuration VALUES 
@@ -685,6 +699,7 @@ INSERT INTO configuration VALUES
 (NULL, 'PRODUCT_DETAILS_TAGS', 'true', 1002, 23, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'PRODUCT_DETAILS_SOCIAL', 'true', 1002, 24, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'PRODUCT_DETAILS_RELATED_CAT', 'true', 1002, 25, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'PRODUCT_DETAILS_RELATED_RAND', '4', 1002, 26, NULL, NOW(), NULL, NULL),
 (NULL, 'PRODUCT_GOOGLE_STANDARD_TAXONOMIE', '', 1002, 28, NULL, NOW(), NULL, NULL),
 (NULL, 'PRODUCT_INFO_QR', 'false', 1002, 29, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
 INSERT INTO configuration VALUES (NULL, 'PRODUCT_DETAILS_TAB_SHORT_DESCRIPTION', 'false', 1002, 11, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
@@ -1053,6 +1068,7 @@ INSERT INTO configuration VALUES (NULL, 'GOOGLEPLUS_URL', '', 16, 22, NULL , NOW
 INSERT INTO configuration VALUES (NULL, 'YOUTUBE_URL', '', 16, 23, NULL , NOW(), NULL , NULL);
 INSERT INTO configuration VALUES (NULL, 'TUMBLR_URL', '', 16, 24, NULL , NOW(), NULL , NULL);
 INSERT INTO configuration VALUES (NULL, 'BING_VERIFY', '', 16, 16, NULL , NOW(), NULL , NULL);
+INSERT INTO configuration VALUES (NULL, 'META_DISPLAY_DATE', 'true', 16, 25, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),");
 
 INSERT INTO cseo_antispam (id, question, answer, language_id) VALUES(NULL, 'What color is grass?', 'green', 1);
 INSERT INTO cseo_antispam (id, question, answer, language_id) VALUES(NULL, 'Welche Farbe hat Rasen?', 'grün', 2);
@@ -1134,10 +1150,10 @@ INSERT INTO configuration VALUES (NULL, 'CHECKOUT_LOGIN_ALLOW', 'false', 333, 0,
 
 INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'CSEO_LOGO', 'logo.png', '0', '0');
 INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZEEMAIL', '', 2, 1);
-INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZEVORNAME', '',  2, 2);
-INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZENACHNAME', '',  2, 3);
-INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZETELE', '',  2, 4);
-INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZEAPIKEY', '',  2, 5);
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZEVORNAME', '', 2, 2);
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZENACHNAME', '', 2, 3);
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZETELE', '', 2, 4);
+INSERT INTO cseo_configuration (cseo_configuration_id, cseo_key, cseo_value, cseo_group_id, cseo_sort_order) VALUES (NULL, 'SEOLYZEAPIKEY', '', 2, 5);
 INSERT INTO configuration VALUES (NULL, 'CSS_FRONTEND_BACKGROUND', '', 23, 31, NULL, NOW(), NULL, NULL);
 INSERT INTO configuration VALUES (NULL, 'CSS_FRONTEND_BACKGROUND_1', '', 23, 32, NULL, NOW(), NULL, NULL);
 INSERT INTO configuration VALUES (NULL, 'CSS_FRONTEND_BACKGROUND_2', '', 23, 33, NULL, NOW(), NULL, NULL);
@@ -1430,14 +1446,268 @@ INSERT INTO products_properties_index (products_id, language_id, properties_id, 
 (1, 2, 2, 6, 6, 'Farbe', '', 2, 'Schwarz', '2.0000', 3),
 (1, 2, 2, 9, 6, 'Farbe', '', 2, 'Schwarz', '2.0000', 3);
 
-DROP TABLE IF EXISTS orders_products_quantity_units;
-CREATE TABLE orders_products_quantity_units (
-  orders_products_id int(11) NOT NULL,
-  quantity_unit_id int(11) NOT NULL,
-  unit_name varchar(45) NOT NULL,
-  PRIMARY KEY (orders_products_id)
-);
+
+INSERT INTO configuration VALUES (NULL, 'MODULE_CSEO_MAILBEEZ', 'true', 6, 3, NULL, '', NOW(), '');
+INSERT INTO configuration VALUES (NULL, 'MODULE_CSEO_MAILBEEZ_SORT_ORDER', '1', 6, 2, NULL, '', NOW(), '');
+INSERT INTO configuration VALUES (NULL, 'MODULE_CSEO_MAILBEEZ_STATUS', 'true', 6, 1, NULL, '', NOW(), '');
+
+
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 2, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 3, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 3, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 1, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 2, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 3, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 3, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 2, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (1, 3, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 1, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 1, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 3, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 3, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 3, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 3, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 4, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 4, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 1, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 1, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 1, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 3, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 3, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 3, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 3, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 4, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 4, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 2, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (2, 3, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 1, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 1, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 2, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 3, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 3, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 3, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 3, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 4, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 4, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 1, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 2, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 3, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (3, 3, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 1, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 1, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 2, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 3, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 3, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 3, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 3, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 4, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 4, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 1, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 2, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 3, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (4, 3, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 1, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 1, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 3, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 3, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 3, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 3, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 4, 6);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 4, 7);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 1, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 1, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 1, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 1, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 1, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 1, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 3, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 3, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 3, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 3, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 3, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 3, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 4, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 4, 2);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 4, 3);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 4, 4);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 4, 5);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 2, 4, 8);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 3, 1, 1);
+INSERT INTO log_configuration (log_group_id, log_level_id, log_output_type_id, log_output_id) VALUES (5, 3, 4, 1);
+
+INSERT INTO log_groups (log_group_id, name) VALUES (1, 'error_handler');
+INSERT INTO log_groups (log_group_id, name) VALUES (2, 'security');
+INSERT INTO log_groups (log_group_id, name) VALUES (3, 'payment');
+INSERT INTO log_groups (log_group_id, name) VALUES (4, 'shipping');
+INSERT INTO log_groups (log_group_id, name) VALUES (5, 'widgets');
+
+INSERT INTO log_levels (log_level_id, name) VALUES (1, 'error');
+INSERT INTO log_levels (log_level_id, name) VALUES (2, 'warning');
+INSERT INTO log_levels (log_level_id, name) VALUES (3, 'notice');
+
+INSERT INTO log_output_types (log_output_type_id, name) VALUES (1, 'file');
+INSERT INTO log_output_types (log_output_type_id, name) VALUES (2, 'screen');
+INSERT INTO log_output_types (log_output_type_id, name) VALUES (3, 'mail');
+INSERT INTO log_output_types (log_output_type_id, name) VALUES (4, 'html_file');
+
+INSERT INTO log_outputs (log_output_id, name) VALUES (1, 'output');
+INSERT INTO log_outputs (log_output_id, name) VALUES (2, 'filepath');
+INSERT INTO log_outputs (log_output_id, name) VALUES (3, 'backtrace');
+INSERT INTO log_outputs (log_output_id, name) VALUES (4, 'request_data');
+INSERT INTO log_outputs (log_output_id, name) VALUES (5, 'code_snippet');
+INSERT INTO log_outputs (log_output_id, name) VALUES (6, 'class_data');
+INSERT INTO log_outputs (log_output_id, name) VALUES (7, 'function_data');
 
 
 #database Version
-INSERT INTO database_version VALUES ('commerce:seo v2next 2.5.11 CE');
+INSERT INTO database_version VALUES ('commerce:seo v2next 2.5.16 CE');

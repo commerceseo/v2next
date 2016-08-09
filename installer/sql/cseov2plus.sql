@@ -261,6 +261,8 @@ specials_gratis INT(1) NOT NULL DEFAULT '0',
 it_recht_kanzlei INT(1) NOT NULL DEFAULT '0',
 magnalister INT(1) NOT NULL DEFAULT '0',
 cseo_seolyze INT(1) NOT NULL DEFAULT '0',
+mailbeez INT(1) NOT NULL DEFAULT '0',
+protectedshops INT(1) NOT NULL DEFAULT '0',
 PRIMARY KEY (customers_id)
 );
 
@@ -1000,6 +1002,9 @@ products_last_modified datetime,
 products_date_available datetime,
 products_weight decimal(10,3) DEFAULT '0.00' NOT NULL,
 products_status TINYINT(1) NOT NULL,
+free_shipping TINYINT( 1 ) DEFAULT '0',
+max_free_shipping_amount INT( 11 ) DEFAULT '0',
+max_free_shipping_cart INT( 11 ) DEFAULT '0',
 products_tax_class_id INT NOT NULL,
 product_template VARCHAR (64),
 options_template VARCHAR (64),
@@ -1958,6 +1963,8 @@ CREATE TABLE blog_categories (
   parent_id int(11) NOT NULL DEFAULT 0,
   tmid int(11) NOT NULL DEFAULT 0,
   sort_order int(11) NOT NULL DEFAULT 0,
+  itemsort int(11) NOT NULL DEFAULT 1,
+  itemsortart int(11) NOT NULL DEFAULT 1,
   tmselect varchar(50) NOT NULL DEFAULT 'false',
   group_ids text NOT NULL,
   language_id int(11) NOT NULL DEFAULT 0,
@@ -1971,6 +1978,8 @@ CREATE TABLE blog_categories (
   meta_title text,
   meta_desc text,
   meta_key text,
+  slider_set int(11) NOT NULL DEFAULT '0',
+  canonical varchar(250) NOT NULL DEFAULT '',
   PRIMARY KEY (id,language_id)
 );
 
@@ -2058,8 +2067,10 @@ DROP TABLE IF EXISTS blog_items;
 CREATE TABLE blog_items (
   id int(11) NOT NULL AUTO_INCREMENT,
   item_id int(5) NOT NULL,
+  calender INT(5) NOT NULL DEFAULT '0',
   language_id int(11) NOT NULL DEFAULT '0',
   categories_id int(11) NOT NULL DEFAULT '0',
+  slider_set INT(11) NOT NULL DEFAULT '0',
   title varchar(150) NOT NULL DEFAULT '',
   name varchar(200) NOT NULL DEFAULT '',
   description text NOT NULL,
@@ -2071,6 +2082,8 @@ CREATE TABLE blog_items (
   date_update varchar(10) NOT NULL,
   date2 date NOT NULL,
   date_release DATETIME NULL,
+  datestart DATE NOT NULL,
+  dateend DATE NOT NULL,
   date_out DATETIME NULL,
   meta_title text,
   meta_keywords text,
@@ -2078,6 +2091,7 @@ CREATE TABLE blog_items (
   lenght int(5) DEFAULT NULL,
   item_viewed int(10) NOT NULL DEFAULT '0',
   blog_image VARCHAR( 254 ) NULL,
+  canonical varchar(250) NOT NULL DEFAULT '',
   PRIMARY KEY (id,language_id)
 );
 
@@ -2100,6 +2114,7 @@ CREATE TABLE blog_start (
   meta_description text NOT NULL,
   meta_keywords text NOT NULL,
   date datetime NOT NULL,
+  slider_set int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (id,language_id)
 );
 
@@ -2122,37 +2137,67 @@ CREATE TABLE IF NOT EXISTS cseo_share (
   UNIQUE KEY id (id)
 );
 
-DROP TABLE IF EXISTS cseo_slider_gallery;
-CREATE TABLE cseo_slider_gallery (
-  slider_id int(11) NOT NULL AUTO_INCREMENT,
-  slider_title varchar(255) NOT NULL,
-  slider_url varchar(255) NOT NULL,
-  slider_url_2 varchar(255) NOT NULL,
-  slider_url_3 varchar(255) NOT NULL,
-  slider_url_4 varchar(255) NOT NULL,
-  slider_url_5 varchar(255) NOT NULL,
-  slider_image varchar(64) NOT NULL,
-  slider_image_2 varchar(64) NOT NULL,
-  slider_image_3 varchar(255) NOT NULL,
-  slider_image_4 varchar(255) NOT NULL,
-  slider_image_5 varchar(255) NOT NULL,
-  slider_link_text varchar(255) NOT NULL,
-  slider_link_text_2 varchar(255) NOT NULL,
-  slider_link_text_3 varchar(255) NOT NULL,
-  slider_link_text_4 varchar(255) NOT NULL,
-  slider_link_text_5 varchar(255) NOT NULL,
-  slider_desc text,
-  slider_desc_2 text,
-  slider_desc_3 text,
-  slider_desc_4 text,
-  slider_desc_5 text,
-  slider_text text,
-  date_added datetime NOT NULL,
-  date_status_change datetime DEFAULT NULL,
-  status int(1) NOT NULL DEFAULT '1',
-  fullsize int(1) NOT NULL DEFAULT '1',
-  language_id int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (slider_id)
+DROP TABLE IF EXISTS `cseo_slider_gallery`;
+CREATE TABLE `cseo_slider_gallery` (
+  `slider_id` int(11) NOT NULL AUTO_INCREMENT,
+  `slider_title` varchar(255) NOT NULL,
+  `slider_url` varchar(255) NOT NULL,
+  `slider_url_2` varchar(255) NOT NULL,
+  `slider_url_3` varchar(255) NOT NULL,
+  `slider_url_4` varchar(255) NOT NULL,
+  `slider_url_5` varchar(255) NOT NULL,
+  `slider_url_6` varchar(255) NOT NULL,
+  `slider_url_7` varchar(255) NOT NULL,
+  `slider_url_8` varchar(255) NOT NULL,
+  `slider_image` varchar(64) NOT NULL,
+  `slider_image_2` varchar(64) NOT NULL,
+  `slider_image_3` varchar(255) NOT NULL,
+  `slider_image_4` varchar(255) NOT NULL,
+  `slider_image_5` varchar(255) NOT NULL,
+  `slider_image_6` varchar(255) NOT NULL,
+  `slider_image_7` varchar(255) NOT NULL,
+  `slider_image_8` varchar(255) NOT NULL,
+  `slider_link_text` varchar(255) NOT NULL,
+  `slider_link_text_2` varchar(255) NOT NULL,
+  `slider_link_text_3` varchar(255) NOT NULL,
+  `slider_link_text_4` varchar(255) NOT NULL,
+  `slider_link_text_5` varchar(255) NOT NULL,
+  `slider_link_text_6` varchar(255) NOT NULL,
+  `slider_link_text_7` varchar(255) NOT NULL,
+  `slider_link_text_8` varchar(255) NOT NULL,
+  `slider_desc` text,
+  `slider_desc_2` text,
+  `slider_desc_3` text,
+  `slider_desc_4` text,
+  `slider_desc_5` text,
+  `slider_desc_6` text,
+  `slider_desc_7` text,
+  `slider_desc_8` text,
+  `slider_text` text,
+  `date_added` datetime NOT NULL,
+  `date_status_change` datetime DEFAULT NULL,
+  `status` int(1) NOT NULL DEFAULT '1',
+  `fullsize` int(1) NOT NULL DEFAULT '1',
+  `language_id` int(11) NOT NULL DEFAULT '1',
+  `slider_mobile` int(1) NOT NULL DEFAULT '1',
+  `slider_nav_status` int(1) NOT NULL DEFAULT '1',
+  `slider_alt_text` varchar(255) NOT NULL,
+  `slider_alt_text_2` varchar(255) NOT NULL,
+  `slider_alt_text_3` varchar(255) NOT NULL,
+  `slider_alt_text_4` varchar(255) NOT NULL,
+  `slider_alt_text_5` varchar(255) NOT NULL,
+  `slider_alt_text_6` varchar(255) NOT NULL,
+  `slider_alt_text_7` varchar(255) NOT NULL,
+  `slider_alt_text_8` varchar(255) NOT NULL,
+  `slider_title_text` varchar(255) NOT NULL,
+  `slider_title_text_2` varchar(255) NOT NULL,
+  `slider_title_text_3` varchar(255) NOT NULL,
+  `slider_title_text_4` varchar(255) NOT NULL,
+  `slider_title_text_5` varchar(255) NOT NULL,
+  `slider_title_text_6` varchar(255) NOT NULL,
+  `slider_title_text_7` varchar(255) NOT NULL,
+  `slider_title_text_8` varchar(255) NOT NULL,
+  PRIMARY KEY (`slider_id`)
 );
 
 
@@ -2260,5 +2305,66 @@ CREATE TABLE withdrawals (
   date_created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   created_by_admin tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (withdrawal_id)
+);
+
+DROP TABLE IF EXISTS orders_products_quantity_units;
+CREATE TABLE orders_products_quantity_units (
+  orders_products_id int(11) NOT NULL,
+  quantity_unit_id int(11) NOT NULL,
+  unit_name varchar(45) NOT NULL,
+  PRIMARY KEY (orders_products_id)
+);
+
+DROP TABLE IF EXISTS log_configuration;
+CREATE TABLE log_configuration (
+  log_group_id int(11) NOT NULL,
+  log_level_id int(11) NOT NULL,
+  log_output_type_id int(11) NOT NULL,
+  log_output_id int(11) NOT NULL,
+  PRIMARY KEY (log_group_id,log_level_id,log_output_type_id,log_output_id)
+);
+
+DROP TABLE IF EXISTS log_groups;
+CREATE TABLE log_groups (
+  log_group_id int(11) NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  PRIMARY KEY (log_group_id),
+  UNIQUE KEY name (name)
+);
+
+DROP TABLE IF EXISTS log_levels;
+CREATE TABLE log_levels (
+  log_level_id int(11) NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  PRIMARY KEY (log_level_id),
+  UNIQUE KEY name (name)
+);
+
+DROP TABLE IF EXISTS log_output_types;
+CREATE TABLE log_output_types (
+  log_output_type_id int(11) NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  PRIMARY KEY (log_output_type_id),
+  UNIQUE KEY name (name)
+);
+
+DROP TABLE IF EXISTS log_outputs;
+CREATE TABLE log_outputs (
+  log_output_id int(11) NOT NULL AUTO_INCREMENT,
+  name varchar(255) NOT NULL,
+  PRIMARY KEY (log_output_id),
+  UNIQUE KEY name (name)
+);
+
+DROP TABLE IF EXISTS protectedshops;
+CREATE TABLE protectedshops (
+  ps_id int(11) NOT NULL AUTO_INCREMENT,
+  document_name varchar(255) NOT NULL,
+  document_date datetime NOT NULL,
+  md5 varchar(32) NOT NULL,
+  document_type varchar(32) NOT NULL,
+  content mediumtext NOT NULL,
+  PRIMARY KEY (ps_id),
+  KEY document_name (document_name,document_date,document_type)
 );
 

@@ -69,6 +69,8 @@ INSERT INTO admin_navigation VALUES (NULL, 'magnalister', 'magnalister', 'module
 INSERT INTO admin_navigation VALUES (NULL, 'magnalister', 'magnalister', 'modules', 'magnalister.php', NULL, 2, NULL, 7);
 INSERT INTO admin_navigation VALUES (NULL, 'haendlerbund', 'Haendlerbund', 'modules', 'haendlerbund.php', NULL, 1, NULL, 8);
 INSERT INTO admin_navigation VALUES (NULL, 'haendlerbund', 'Haendlerbund', 'modules', 'haendlerbund.php', NULL, 2, NULL, 8);
+INSERT INTO admin_navigation VALUES (NULL, 'protectedshops', 'Protectedshops', 'modules', 'protectedshops.php', NULL, 1, NULL, 9);
+INSERT INTO admin_navigation VALUES (NULL, 'protectedshops', 'Protectedshops', 'modules', 'protectedshops.php', NULL, 2, NULL, 9);
 
 INSERT INTO admin_navigation VALUES (NULL, 'whos_online', 'Whos Online', 'statistics', 'whos_online.php', NULL, 1, NULL, 1);
 INSERT INTO admin_navigation VALUES (NULL, 'whos_online', 'Wer ist Online', 'statistics', 'whos_online.php', NULL, 2, NULL, 1);
@@ -97,6 +99,8 @@ INSERT INTO admin_navigation VALUES (NULL, 'content_manager', 'Content Manager',
 INSERT INTO admin_navigation VALUES (NULL, 'content_manager', 'Content Manager', 'tools', 'content_manager.php', NULL, 2, NULL, 3);
 INSERT INTO admin_navigation VALUES (NULL, 'blog', 'Blog Manager', 'tools', 'blog.php', NULL, 1, NULL, 4);
 INSERT INTO admin_navigation VALUES (NULL, 'blog', 'Blog Manager', 'tools', 'blog.php', NULL, 2, NULL, 4);
+INSERT INTO admin_navigation VALUES (NULL, 'mailbeez', 'Mailbeez', 'tools', 'mailbeez.php', NULL, 1, NULL, 5);
+INSERT INTO admin_navigation VALUES (NULL, 'mailbeez', 'Mailbeez', 'tools', 'mailbeez.php', NULL, 2, NULL, 5);
 INSERT INTO admin_navigation VALUES (NULL, 'backup', 'Backup Manager', 'tools', 'backup.php', NULL, 1, NULL, 6);
 INSERT INTO admin_navigation VALUES (NULL, 'backup', 'Backup Manager', 'tools', 'backup.php', NULL, 2, NULL, 6);
 INSERT INTO admin_navigation VALUES (NULL, 'banner_manager', 'Banner Manager', 'tools', 'banner_manager.php', NULL, 1, NULL, 7);
@@ -252,5 +256,6 @@ INSERT INTO admin_navigation VALUES (NULL, 'specials_gratis', 'Specials-Free', '
 INSERT INTO admin_navigation VALUES (NULL, 'it_recht_kanzlei', 'IT-Rechtskanzlei', 'modules', 'it_recht_kanzlei.php', NULL, 2, NULL, 12);
 INSERT INTO admin_navigation VALUES (NULL, 'it_recht_kanzlei', 'IT-Rechtskanzlei', 'modules', 'it_recht_kanzlei.php', NULL, 1, NULL, 12);
 
-INSERT INTO admin_navigation VALUES (NULL, 'cseo_seolyze', 'SEOLYZE', 'seo_tools', 'cseo_seolyze.php', NULL, 2, NULL, 1);
 INSERT INTO admin_navigation VALUES (NULL, 'cseo_seolyze', 'SEOLYZE', 'seo_tools', 'cseo_seolyze.php', NULL, 1, NULL, 1);
+INSERT INTO admin_navigation VALUES (NULL, 'cseo_seolyze', 'SEOLYZE', 'seo_tools', 'cseo_seolyze.php', NULL, 2, NULL, 1);
+

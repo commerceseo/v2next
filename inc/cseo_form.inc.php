@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: cseo_form.inc.php 866 2014-03-17 12:07:35Z akausch $
+ * 	$Id: cseo_form.inc.php 995 2014-04-29 17:59:27Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -33,15 +33,15 @@ function xtc_draw_hidden_field($name, $value = '', $parameters = '') {
     $field = '<input type="hidden" id="' . xtc_parse_input_field_data($name, array('"' => '&quot;')) . '" name="' . xtc_parse_input_field_data($name, array('"' => '&quot;')) . '" value="';
 
     if (xtc_not_null($value)) {
-        $field .= xtc_parse_input_field_data($value, array('"' => '&quot;'));
+        $field .= xtc_parse_input_field_data($value, array('"' => '&quot;')) . '"';
     } else {
-        $field .= xtc_parse_input_field_data($GLOBALS[$name], array('"' => '&quot;'));
+        $field .= xtc_parse_input_field_data($GLOBALS[$name], array('"' => '&quot;')) . '"';
     }
 
     if (xtc_not_null($parameters))
         $field .= ' ' . $parameters;
 
-    $field .= '" />';
+    $field .= ' />';
 
     return $field;
 }

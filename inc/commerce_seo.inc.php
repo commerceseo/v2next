@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: commerce_seo.inc.php 1223 2014-10-07 13:22:43Z svvario $
+ * 	$Id: commerce_seo.inc.php 1301 2014-12-10 17:07:16Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -458,7 +458,7 @@ class CommerceSeo {
 								cd.categories_name != ''
 							");
 
-        // Kategorien durchlaufen und Indexierung fueÂr SEO Tabelle vornehmen
+        // Kategorien durchlaufen und Indexierung fuer SEO Tabelle vornehmen
         while ($categoryList = xtc_db_fetch_array($category_query)) {
             $categoryPath = $this->getCategoryPathForCategory($categoryList['categories_id'], $categoryList['language_id']);
             if ($useLanguageUrl) {
@@ -491,7 +491,7 @@ class CommerceSeo {
 									WHERE
 										bc.language_id = l.languages_id");
 
-            // Blog Datensaetze durchlaufen und Indexierung fueÂr SEO Tabelle vornehmen
+            // Blog Datensaetze durchlaufen und Indexierung fuer SEO Tabelle vornehmen
             while ($blogList = xtc_db_fetch_array($blog_data)) {
                 if ($useLanguageUrl)
                     $blogLink = $blogList['code'] . '/' . cseo_get_url_friendly_text($blogList['blog_cat_titel']);
@@ -560,7 +560,7 @@ class CommerceSeo {
 									WHERE
 										cm.languages_id = l.languages_id");
 
-        // Content Datensaetze durchlaufen und Indexierung fuer SEO Tabelle vornehmen
+        // Content Datensaetze durchlaufen und Indexierung fuer SEO Tabelle vornehmen
         while ($contentList = xtc_db_fetch_array($content_query)) {
             if ($contentList['content_url_alias'] != '') {
                 $content_url = $contentList['content_url_alias'];

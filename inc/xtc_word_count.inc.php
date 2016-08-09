@@ -18,3 +18,9 @@ function xtc_word_count($string, $needle) {
     $temp_array = explode($needle, $string);
     return sizeof($temp_array);
 }
+function xtc_zeichen_count($string, $needle) {
+	$needle = "!".str_replace("!", "\!", $needle)."!";
+	$temp_array = preg_split($needle, $string);
+
+	return sizeof($temp_array);
+}

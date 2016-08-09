@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: xtc_update_whos_online.inc.php 866 2014-03-17 12:07:35Z akausch $
+ * 	$Id: xtc_update_whos_online.inc.php 1524 2016-02-19 21:27:48Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -19,7 +19,7 @@ function xtc_update_whos_online() {
         $customer = xtc_db_fetch_array(xtc_db_query("SELECT customers_firstname, customers_lastname FROM " . TABLE_CUSTOMERS . " WHERE customers_id = '" . $wo_customer_id . "';"));
         $wo_full_name = addslashes($customer['customers_firstname'] . ' ' . $customer['customers_lastname']);
     } else {
-        $wo_customer_id = '';
+        $wo_customer_id = 0;
         $wo_full_name = 'Gast';
     }
 

@@ -105,27 +105,25 @@ function xtc_php_mail($from_email_address, $from_email_name, $to_email_address, 
 
                 $name = cseo_get_url_friendly_text($content_data['content_heading']);
                 $name = str_replace(' ', '-', $name) . '.pdf';
-                require_once(DIR_FS_CATALOG . 'pdf/html_table.php');
-                $pdf = new PDF_HTML_Table('P', 'mm', 'A4');
-                $pdf->AddPage();
-                $pdf->SetFont('Arial', 'U', 12);
-                $pdf->Cell(20, 10, utf8_decode($content_data['content_heading']));
-                $pdf->Ln(20);
-                $pdf->SetFont('Arial', '', 11);
-                if ($content_data['content_file'] != '') {
-                    ob_start();
-                    include (DIR_FS_CATALOG . 'media/content/' . $content_data['content_file']);
-                    $text = stripslashes(ob_get_contents());
-                    ob_end_clean();
-                } else {
-                    $text = stripslashes($content_data['content_text']);
-                }
-                $text = utf8_decode($text);
-                $text = html_entity_decode($text);
-                $pdf->WriteHTML($text);
-                $pdftext = $pdf->Output('', 'S');
-                $pdf = base64_decode($pdftext);
-                $mail->AddStringAttachment($pdftext, $name, 'base64', 'application/pdf');
+				require_once(DIR_FS_CATALOG.'pdf/html_table.php');
+				$pdf = new PDF_HTML_Table('P','mm','A4');
+				$pdf->AddPage();
+				$pdf->SetFont('Arial','U',12);
+				$pdf->Cell(20,10,utf8_decode(html_entity_decode($content_data['content_heading'])));
+				$pdf->Ln(20);
+				$pdf->SetFont('Arial','',11);
+				if($content_data['content_file'] !='') {
+					ob_start();
+					include (DIR_FS_CATALOG.'media/content/'.$content_data['content_file']);
+					$text = stripslashes(html_entity_decode(ob_get_contents()));
+					ob_end_clean();
+				} else
+					$text = stripslashes(html_entity_decode($content_data['content_text']));
+				$text = utf8_decode(html_entity_decode($text));
+				$pdf->WriteHTML($text);
+				$pdftext = $pdf->Output('','S');
+				$pdf = base64_decode($pdftext);
+			  	$mail->AddStringAttachment($pdftext,$name,'base64','application/pdf');
             }
         }
     }
@@ -142,8 +140,9 @@ function xtc_php_mail($from_email_address, $from_email_name, $to_email_address, 
     $mail->Subject = $email_subject;
 
     if (!$mail->Send()) {
-        echo "Die Mail konnte nicht versendet werden. <p>";
-        echo "Mailer Error: " . $mail->ErrorInfo;
-        exit;
+        // echo "Die Mail konnte nicht versendet werden. <p>";
+        // echo "Mailer Error: " . $mail->ErrorInfo;
+        // exit;
+		LogControl::get_instance()->notice($mail->ErrorInfo, 'error_handler', 'mail');
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: cseo_get_mail_data.inc.php 866 2014-03-17 12:07:35Z akausch $
+ * 	$Id: cseo_get_mail_data.inc.php 462 2015-09-10 12:17:28Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -24,7 +24,12 @@ function replaceVar($var) {
 function cseo_get_mail_data($name = '') {
     global $db;
     if ($name != '') {
-        $subject_query = xtc_db_fetch_array(xtc_db_query("SELECT * FROM " . TABLE_EMAILS . " WHERE email_name = '" . $name . "' AND languages_id = '" . (int) $_SESSION['languages_id'] . "' "));
+		if (isset($_SESSION['languages_id']) && $_SESSION['languages_id'] != '') {
+			$langid = (int) $_SESSION['languages_id'];
+		} else {
+			$langid = 2;
+		}
+        $subject_query = xtc_db_fetch_array(xtc_db_query("SELECT * FROM " . TABLE_EMAILS . " WHERE email_name = '" . $name . "' AND languages_id = '" . $langid . "' "));
 
         return array('EMAIL_ADDRESS' => replaceVar($subject_query['email_address']),
             'EMAIL_ADDRESS_NAME' => replaceVar($subject_query['email_address_name']),

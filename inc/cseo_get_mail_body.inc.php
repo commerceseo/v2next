@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: cseo_get_mail_body.inc.php 866 2014-03-17 12:07:35Z akausch $
+ * 	$Id: cseo_get_mail_body.inc.php 462 2015-09-10 12:17:28Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -17,7 +17,12 @@
 function html_get_template($tpl_name, &$tpl_source) {
     // Datenbankabfrage um unser Template zu laden,
     // und '$tpl_source' zuzuweisen
-    $tpl_data = xtc_db_fetch_array(xtc_db_query("SELECT email_content_html FROM emails WHERE email_name = '" . $tpl_name . "' AND languages_id = '" . (int) $_SESSION['languages_id'] . "' "));
+	if (isset($_SESSION['languages_id']) && $_SESSION['languages_id'] != '') {
+		$langid = (int) $_SESSION['languages_id'];
+	} else {
+		$langid = 2;
+	}
+    $tpl_data = xtc_db_fetch_array(xtc_db_query("SELECT email_content_html FROM emails WHERE email_name = '" . $tpl_name . "' AND languages_id = '" . $langid . "' "));
     if (sizeof($tpl_data) == 1) {
         $tpl_source = $tpl_data['email_content_html'];
         return true;
@@ -27,7 +32,12 @@ function html_get_template($tpl_name, &$tpl_source) {
 }
 
 function html_get_timestamp($tpl_name, &$tpl_timestamp) {
-    $tpl_data = xtc_db_fetch_array(xtc_db_query("SELECT email_timestamp FROM emails WHERE email_name = '" . $tpl_name . "' AND languages_id = '" . (int) $_SESSION['languages_id'] . "' "));
+	if (isset($_SESSION['languages_id']) && $_SESSION['languages_id'] != '') {
+		$langid = (int) $_SESSION['languages_id'];
+	} else {
+		$langid = 2;
+	}
+	$tpl_data = xtc_db_fetch_array(xtc_db_query("SELECT email_timestamp FROM emails WHERE email_name = '" . $tpl_name . "' AND languages_id = '" . $langid . "' "));
 
     if (sizeof($tpl_data['email_timestamp']) == 1) {
         $tpl_timestamp = $tpl_data['email_timestamp'];
@@ -83,8 +93,11 @@ function txt_get_trusted($tpl_name, &$smarty_obj) {
 
 $smarty->registerResource("html", array("html_get_template", "html_get_timestamp", "html_get_secure", "html_get_trusted"));
 $smarty->registerResource("txt", array("txt_get_template", "txt_get_timestamp", "txt_get_secure", "txt_get_trusted"));
-
+if (isset($_SESSION['language']) && $_SESSION['language'] != '') {
 $smarty->assign('language', $_SESSION['language']);
+} else {
+$smarty->assign('language', 'german');
+}
 $smarty->caching = false;
 $smarty->force_compile = true;
 $smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
@@ -101,8 +114,12 @@ $signatursmarty->registerResource("txt", array("txt_get_template", "txt_get_time
 
 
 $adresse = xtc_db_fetch_array(xtc_db_query("SELECT entry_firstname, entry_lastname, entry_street_address, entry_postcode, entry_city FROM address_book WHERE customers_id = 1"));
-
+if (isset($_SESSION['language']) && $_SESSION['language'] != '') {
 $signatursmarty->assign('language', $_SESSION['language']);
+} else {
+$signatursmarty->assign('language', 'german');
+}
+
 $signatursmarty->assign('SHOP_NAME', STORE_NAME);
 $signatursmarty->assign('SHOP_BESITZER', STORE_OWNER);
 $signatursmarty->assign('SHOP_USTID', STORE_OWNER_VAT_ID);

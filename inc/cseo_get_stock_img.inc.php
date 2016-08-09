@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: cseo_get_stock_img.inc.php 866 2014-03-17 12:07:35Z akausch $
+ * 	$Id: cseo_get_stock_img.inc.php 995 2014-04-29 17:59:27Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -20,7 +20,7 @@ function cseo_get_stock_img($qty) {
         } elseif ($qty > STOCK_WARNING_RED && $qty < STOCK_WARNING_GREEN) {
             $img = xtc_image('images/icons/icon_stock_2.png', $qty, IN_W_STOCK, 'product_stock_img');
         } elseif ($qty <= STOCK_WARNING_RED) {
-            $img = xtc_image('images/icons/icon_stock_3.png', $qty, IN_W_STOCK, 'product_stock_img');
+            $img = xtc_image('images/icons/icon_stock_3.png', $qty, IN_N_STOCK, 'product_stock_img');
         } else {
             $img = '';
         }

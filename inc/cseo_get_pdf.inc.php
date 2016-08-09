@@ -17,13 +17,11 @@ function cseo_get_pdf($oID, $createName = false, $checkPDF = false, $getNameShor
     if ($createName) {
         include_once(DIR_WS_CLASSES . 'class.order.php');
         $order = new order($oID);
-
         $name = str_replace('#bn#', $oID, TEXT_PDF_FILE_NAME);
         $name = str_replace('#rn#', $_POST['pdf_bill_nr'], $name);
         $name = str_replace('#vn#', $order->customer['firstname'], $name);
         $name = str_replace('#nn#', $order->customer['lastname'], $name);
         $name = str_replace('#d#', date("d-m-Y"), $name);
-
         $pfad = 'pdf_rechnungen/' . $name;
         return $pfad;
     } elseif ($checkPDF) {
@@ -61,7 +59,6 @@ function cseo_get_pdf_multistatus($oID, $createName = false, $checkPDF = false, 
         $name = str_replace('#vn#', $order->customer['firstname'], $name);
         $name = str_replace('#nn#', $order->customer['lastname'], $name);
         $name = str_replace('#d#', date("d-m-Y"), $name);
-
         $pfad = 'pdf_rechnungen/' . $name;
         return $pfad;
     } elseif ($checkPDF) {
@@ -94,13 +91,11 @@ function cseo_get_pdf_delivery($oID, $createName = false, $checkPDF = false, $ge
     if ($createName) {
         include_once(DIR_WS_CLASSES . 'class.order.php');
         $order = new order($oID);
-
         $name = str_replace('#bn#', $oID, TEXT_PDF_DELIVERY_FILE_NAME);
         $name = str_replace('#rn#', $_POST['pdf_bill_nr'], $name);
         $name = str_replace('#vn#', $order->customer['firstname'], $name);
         $name = str_replace('#nn#', $order->customer['lastname'], $name);
         $name = str_replace('#d#', date("d-m-Y"), $name);
-
         $pfad = 'pdf_lieferscheine/' . $name;
         return $pfad;
     } elseif ($checkPDF) {
@@ -116,16 +111,6 @@ function cseo_get_pdf_delivery($oID, $createName = false, $checkPDF = false, $ge
     } elseif ($getNameLong) {
         $pdf = xtc_db_fetch_array(xtc_db_query("SELECT delivery_name FROM orders_pdf_delivery WHERE order_id = '" . (int) $oID . "' "));
         return $pdf['delivery_name'];
-    } elseif ($CheckMail) {
-        $pdf_query = xtc_db_query("SELECT customer_notified, notified_date FROM orders_pdf_delivery WHERE order_id = '" . (int) $oID . "' ");
-        if (xtc_db_num_rows($pdf_query, true) > 0) {
-            $pdf = xtc_db_fetch_array($pdf_query);
-            if ($pdf['customer_notified'] == '1')
-                return xtc_date_short($pdf['notified_date']);
-            else
-                return false;
-        } else
-            return false;
     }
 }
 
@@ -154,15 +139,5 @@ function cseo_get_pdf_multistatus_delivery($oID, $createName = false, $checkPDF 
     } elseif ($getNameLong) {
         $pdf = xtc_db_fetch_array(xtc_db_query("SELECT delivery_name FROM orders_pdf_delivery WHERE order_id = '" . (int) $oID . "' "));
         return $pdf['delivery_name'];
-    } elseif ($CheckMail) {
-        $pdf_query = xtc_db_query("SELECT customer_notified, notified_date FROM orders_pdf_delivery WHERE order_id = '" . (int) $oID . "' ");
-        if (xtc_db_num_rows($pdf_query, true) > 0) {
-            $pdf = xtc_db_fetch_array($pdf_query);
-            if ($pdf['customer_notified'] == '1')
-                return xtc_date_short($pdf['notified_date']);
-            else
-                return false;
-        } else
-            return false;
     }
 }

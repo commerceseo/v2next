@@ -14,38 +14,24 @@
  * --------------------------------------------------------------- */
 
 if (MAX_RANDOM_PRODUCTS > 0) {
-
     $module_smarty = new Smarty;
     $module_smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
-
     $group_check = '';
     $fsk_lock = '';
     if (GROUP_CHECK == 'true') {
         $group_check = " AND p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . " = 1 ";
     }
-
     if ($_SESSION['customers_status']['customers_fsk18_display'] == '0') {
         $fsk_lock = ' AND p.products_fsk18 !=1';
     }
-
-    $random_products_query = xtDBquery("SELECT
-											p.*,
-											pd.*,
-											s.*
-										FROM 
-											" . TABLE_PRODUCTS . " p
-										LEFT JOIN 
-											" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(pd.products_id = p.products_id)
-										LEFT JOIN 
-											" . TABLE_SPECIALS . " s ON(p.products_id = s.products_id)
-										WHERE 
-											p.products_status = '1'
-										AND 
-											pd.language_id = '" . $_SESSION['languages_id'] . "'
-										AND 
-											s.status = '1'
-										AND
-											(p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+    $random_products_query = xtDBquery("SELECT p.*, pd.*, s.*
+										FROM " . TABLE_PRODUCTS . " p
+										LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(pd.products_id = p.products_id)
+										LEFT JOIN " . TABLE_SPECIALS . " s ON(p.products_id = s.products_id)
+										WHERE p.products_status = '1'
+										AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
+										AND s.status = '1'
+										AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
 										" . $fsk_lock . $group_check . "	
 										GROUP BY p.products_id
 										ORDER BY rand() 
@@ -53,7 +39,7 @@ if (MAX_RANDOM_PRODUCTS > 0) {
 
     $module_content = array();
     $row = 0;
-    while ($random_products = xtc_db_fetch_array($random_products_query, true)) {
+    while ($random_products = xtc_db_fetch_array($random_products_query)) {
         $row++;
         $module_content[] = $product->buildDataArray($random_products, 'thumbnail', 'random_specials', $row);
     }

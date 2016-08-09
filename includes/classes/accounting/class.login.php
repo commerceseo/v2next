@@ -51,11 +51,13 @@ class login_ORIGINAL {
                 $_GET['login'] = 'fail';
                 $info_message = TEXT_NO_EMAIL_ADDRESS_FOUND;
 				// die;
-                // xtc_db_query("INSERT INTO 
-									// intrusions 
-									// (name , badvalue , page , tags , ip , ip2 , impact , origin , created )
-									// VALUES 
-									// ('" . $email_address . "', '" . $password . "', '" . $_SERVER['REQUEST_URI'] . "', 'login', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
+				if (SECURTY_LOGGIN_LOGIN == 'true') {
+                xtc_db_query("INSERT INTO 
+									intrusions 
+									(name , badvalue , page , tags , ip , ip2 , impact , origin , created )
+									VALUES 
+									('" . $email_address . "', '" . $password . "', '" . $_SERVER['REQUEST_URI'] . "', 'login', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
+				}
             } else {
                 $check_customer = xtc_db_fetch_array($check_customer_query);
                 $login_success = true;

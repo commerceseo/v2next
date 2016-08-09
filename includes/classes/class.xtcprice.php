@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.xtcprice.php 1227 2014-10-07 18:08:04Z akausch $
+ * 	$Id: class.xtcprice.php 1484 2015-07-27 09:17:15Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -352,44 +352,25 @@ class xtcPrice_ORIGINAL {
         return $dc;
     }
 
-    // function checkAttributes($pID) {
-        // if (!$this->showFrom_Attributes)
-            // return;
-        // if ($pID == 0)
-            // return;
-        // $products_attributes = xtc_db_fetch_array(xtDBquery("SELECT count(*) AS total, sum(patrib.options_values_price) AS summe 
-		// FROM " . TABLE_PRODUCTS_OPTIONS . " popt, 
-		// " . TABLE_PRODUCTS_ATTRIBUTES . " patrib 
-		// WHERE 
-			// patrib.products_id='" . $pID . "' and 
-			// patrib.options_id = popt.products_options_id and 
-			// popt.language_id = '" . (int) $_SESSION['languages_id'] . "';"));
-        // if (($products_attributes['total'] > 0) && ($products_attributes['summe'] > 0)) {
-            // return ' ' . strtolower(FROM) . ' ';
-        // }
-    // }
+    function checkAttributes($pID) {
+        if (!$this->showFrom_Attributes) {
+            return;
+		}
+        if ($pID == 0) {
+            return;
+		}
+        $products_attributes = xtc_db_fetch_array(xtDBquery("SELECT count(*) AS total, sum(patrib.options_values_price) AS summe 
+		FROM " . TABLE_PRODUCTS_OPTIONS . " popt, 
+		" . TABLE_PRODUCTS_ATTRIBUTES . " patrib 
+		WHERE patrib.products_id='" . $pID . "' 
+		AND patrib.options_id = popt.products_options_id 
+		AND popt.language_id = '" . (int) $_SESSION['languages_id'] . "';"));
+        if (($products_attributes['total'] > 0) && ($products_attributes['summe'] > 0)) {
+            return ' ' . strtolower(FROM) . ' ';
+        }
+    }
 	
-	public function checkAttributes($p_products_id) {
-		if(!$this->showFrom_Attributes || (int)$p_products_id == 0) {
-			return;
-		}
-		
-		$t_attributes_array = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) AS total
-					FROM
-						" . TABLE_PRODUCTS_OPTIONS . " popt,
-						" . TABLE_PRODUCTS_ATTRIBUTES . " patrib
-					WHERE
-						patrib.products_id = '" . (int)$p_products_id . "' AND
-						patrib.options_id = popt.products_options_id AND
-						patrib.options_values_price > 0 AND
-						popt.language_id = '" . (int)$_SESSION['languages_id'] . "';"));
-		$t_properties_array = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) AS count FROM products_properties_combis WHERE products_id = '" . (int)$p_products_id . "' AND combi_price > 0;"));
 
-		if($t_attributes_array['total'] > 0 || $t_properties_array['count'] > 0) {
-			$t_return_string = ' ' . strtolower_wrapper(FROM) . ' ';
-			return $t_return_string;
-		}
-	}
 	
 
     function xtcCalculateCurrEx($price, $curr) {

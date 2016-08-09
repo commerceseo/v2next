@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: main_products_promotion.php 522 2013-07-24 11:44:51Z akausch $
+ * 	$Id: main_products_promotion.php 1468 2015-07-22 20:29:10Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -16,30 +16,20 @@
 require_once( 'includes/application_top.php');
 
 if (MODULE_PRODUCT_PROMOTION_STATUS == 'true') {
-
     $module_smarty = new Smarty;
     $module_smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
-
-    $pp_query = xtDBquery("SELECT
-								p.*,
-								pd.*
-							FROM 
-								" . TABLE_PRODUCTS . " p
-							LEFT JOIN 
-								" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id)
-							WHERE 
-								p.products_status = '1'
-							AND 
-								p.products_promotion_status = '1'
-							AND 
-								pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-							ORDER BY 
-								p.products_id");
+    $pp_query = xtc_db_query("SELECT p.*, pd.*
+							FROM " . TABLE_PRODUCTS . " p
+							JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+							WHERE p.products_status = '1'
+							AND p.products_promotion_status = '1'
+							GROUP BY p.products_id
+							ORDER BY p.products_id");
 
     $row = 0;
     $pp_modul = array();
-
-    while ($pp_data = xtc_db_fetch_array($pp_query, true)) {
+	if (xtc_db_num_rows($pp_query) > 0) {
+    while ($pp_data = xtc_db_fetch_array($pp_query)) {
         if ($pp_data['products_promotion_image'] != '') {
             $productimage = DIR_WS_IMAGES . 'products_promotion/' . $pp_data['products_promotion_image'];
         } elseif ($pp_data['products_image'] != '') {
@@ -66,6 +56,7 @@ if (MODULE_PRODUCT_PROMOTION_STATUS == 'true') {
             'PRODUCT_DESCRIPTION' => $promo_text,
             'PRODUCT_IMAGE' => $productimage);
         $row++;
+    }
     }
     $module_smarty->assign('language', $_SESSION['language']);
     $module_smarty->assign('promotion_modul', $pp_modul);

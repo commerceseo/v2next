@@ -247,7 +247,7 @@ class account_ORIGINAL {
 
         if ($error == false) {
             $sql_data_array = array('customers_vat_id' => $vat,
-                'customers_vat_id_status' => $customers_vat_id_status,
+                'customers_vat_id_status' => ($customers_vat_id_status != '' ? $customers_vat_id_status : '0'),
                 'customers_firstname' => $firstname,
                 'customers_lastname' => $lastname,
                 'customers_email_address' => $email_address,

@@ -1,0 +1,60 @@
+{config_load file="lang/$language/lang_$language.conf" section="checkout_shipping"}
+{if $error}
+	<div class="headerError bg-danger">{$error}</div>
+{/if}
+<h2>{#heading_shipping#}</h2>
+<div class="row text-center">
+	<div class="col-sm-3">
+		<div class="checkout_line"><img src="{$tpl_path}img/checkout_bullet.gif" alt="Bullet" /></div>
+		<div class="checkoutBarCurrent"><b>{#text_shipping_info#}</b></div>
+	</div>	
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{#text_payment_info#}</div>
+	</div>
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{#text_confirm#}</div>
+	</div>	
+	<div class="col-sm-3">
+		<div class="checkout_line">&nbsp;</div>
+		<div class="checkoutBarTo">{#text_finished#}</div>
+	</div>
+</div>
+<hr />
+{$FORM_ACTION}
+
+<div class="row">
+	<div class="col-md-6 col-sm-12">
+		<b>{#title_address#}</b><br><br>
+		{#text_addressbook#}
+	</div>
+	<div class="col-md-6 col-sm-12 bg-info">
+		{$ADDRESS_LABEL}<br><br>
+		{$BUTTON_ADDRESS}<br><br>
+	</div>
+</div>
+<hr />
+
+<div class="row">
+	<div class="col-sm-12">
+		<b>{#title_shipping#}</b><br><br>
+		{#text_shipping#}<br><br>
+		{$SHIPPING_BLOCK}
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-12">
+		<br><b>{#title_continue#}</b><br>
+		{#text_continue#}<br>
+	</div>
+</div>
+<hr />
+<div class="row">
+	<div class="col-sm-12 text-right">
+		{$BUTON_CONTINUE}
+	</div>
+</div>
+
+{$FORM_END}

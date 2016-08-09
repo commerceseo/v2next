@@ -1,0 +1,11 @@
+
+<div class="box box_calender">
+    {include file="$html_tpl_path/box.html" name=calender class=calender}
+    <div id="my-calendar"></div> <!-- initialize the calendar on ready -->
+    <div class="myevent"></div>
+</div>
+{literal}
+<script type="application/javascript">
+var eventData = {/literal}{$MYCALENDER}{literal};
+</script>
+{/literal}

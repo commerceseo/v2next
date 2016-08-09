@@ -50,15 +50,15 @@ if ($_GET['multisort'] == 'specialprice' || $_GET['multisort'] == 'new_asc' || $
 			$order_str = ' GROUP BY p.products_id ORDER BY p.products_price DESC';
 			break;
 		case 'manu_asc':
-			$from_str .= ' INNER JOIN ' . TABLE_MANUFACTURERS . ' AS m ON ( p.manufacturers_id = m.manufacturers_id )';
+			$from_str .= ' JOIN ' . TABLE_MANUFACTURERS . ' AS m ON ( p.manufacturers_id = m.manufacturers_id )';
 			$order_str = ' GROUP BY p.products_id ORDER BY m.manufacturers_name ASC';
 			break;
 		case 'manu_desc':
-			$from_str .= ' INNER JOIN ' . TABLE_MANUFACTURERS . ' AS m ON ( p.manufacturers_id = m.manufacturers_id )';
+			$from_str .= ' JOIN ' . TABLE_MANUFACTURERS . ' AS m ON ( p.manufacturers_id = m.manufacturers_id )';
 			$order_str = ' GROUP BY p.products_id ORDER BY m.manufacturers_name DESC';
 			break;
 		case 'specialprice':
-			$from_str .= " INNER JOIN " . TABLE_SPECIALS . " AS s ON (p.products_id = s.products_id) AND s.status = '1'";
+			$from_str .= " JOIN " . TABLE_SPECIALS . " AS s ON (p.products_id = s.products_id) AND s.status = '1'";
 			$order_str = ' GROUP BY p.products_id ORDER BY s.specials_new_products_price DESC';
 			break;
 		default:
@@ -67,17 +67,29 @@ if ($_GET['multisort'] == 'specialprice' || $_GET['multisort'] == 'new_asc' || $
 }
 
 if (PRODUCT_LIST_FILTER_SORT == 'true') {
+	// Abfrage, ob Sonderangebote da sind
+	$specials_query_raw = xtDBquery("SELECT s.products_id
+									FROM " . TABLE_SPECIALS . " AS s
+									JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS ptc ON(ptc.products_id = s.products_id)
+									WHERE status = '1' GROUP BY s.products_id;");
+	$count_specials = xtc_db_num_rows($specials_query_raw);
+	// Abfrage, ob Hersteller da sind
+	$count_manu = xtc_db_fetch_array(xtDBquery("SELECT COUNT(manufacturers_id) AS counter FROM " . TABLE_MANUFACTURERS . ";"));
 	$multisort_dropdown = xtc_draw_form('multisort', $_SERVER['REQUEST_URI'], 'GET') . "\n";
 	$options = array(array('text' => MULTISORT_STANDARD));
-	$options[] = array('id' => 'specialprice', 'text' => MULTISORT_SPECIALS_DESC);
+	if (($count_specials > 0)) {
+		$options[] = array('id' => 'specialprice', 'text' => MULTISORT_SPECIALS_DESC);
+	}
 	$options[] = array('id' => 'new_desc', 'text' => MULTISORT_NEW_DESC);
 	$options[] = array('id' => 'new_asc', 'text' => MULTISORT_NEW_ASC);
 	$options[] = array('id' => 'price_asc', 'text' => MULTISORT_PRICE_ASC);
 	$options[] = array('id' => 'price_desc', 'text' => MULTISORT_PRICE_DESC);
 	$options[] = array('id' => 'name_asc', 'text' => MULTISORT_ABC_AZ);
 	$options[] = array('id' => 'name_desc', 'text' => MULTISORT_ABC_ZA);
-	$options[] = array('id' => 'manu_asc', 'text' => MULTISORT_MANUFACTURER_ASC);
-	$options[] = array('id' => 'manu_desc', 'text' => MULTISORT_MANUFACTURER_DESC);
+	if (($count_manu['counter'] > 0)) {
+		$options[] = array('id' => 'manu_asc', 'text' => MULTISORT_MANUFACTURER_ASC);
+		$options[] = array('id' => 'manu_desc', 'text' => MULTISORT_MANUFACTURER_DESC);
+	}
 	$multisort_dropdown .= xtc_draw_pull_down_menu('multisort', $options, $_GET['multisort'], 'onchange="this.form.submit()"') . "\n";
 	$multisort_dropdown .= '</form>' . "\n";
 	$module_smarty->assign('multisort', $multisort_dropdown);
@@ -93,37 +105,25 @@ if ((!isset($new_products_category_id)) || ($new_products_category_id == '0')) {
 		$days = " AND p.products_date_added > '" . $date_new_products . "' ";
 	}
 	if (DISPLAY_START_NEW_PRODUCTS == 'top') {
-	$new_products_query = xtDBquery("SELECT 
-								p.*,
-								pd.*
-							FROM
-								" . TABLE_PRODUCTS . " p
-								LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-							WHERE
-								p.products_status = '1' 
-							AND
-								p.products_startpage = '1'
+	$new_products_query = xtDBquery("SELECT p.*, pd.*
+							FROM " . TABLE_PRODUCTS . " p
+							LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+							WHERE p.products_status = '1' 
+							AND p.products_startpage = '1'
 								" . $group_check . "
 								" . $fsk_lock . "
-							GROUP BY 
-								p.products_id
-							ORDER BY 
-								p.products_startpage_sort ASC 
+							GROUP BY p.products_id
+							ORDER BY p.products_startpage_sort ASC 
 							LIMIT " . MAX_DISPLAY_NEW_PRODUCTS . ";");
     } else {
-	$new_products_query = xtDBquery("SELECT 
-								p.*,
-								pd.*
-							FROM
-								" . TABLE_PRODUCTS . " p
-								LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-							WHERE
-								p.products_status = '1' 
-								" . $group_check . "
-								" . $fsk_lock . "
-								" . $days . "
-							GROUP BY 
-								p.products_id
+	$new_products_query = xtDBquery("SELECT p.*, pd.*
+							FROM " . TABLE_PRODUCTS . " p
+							LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+							WHERE p.products_status = '1' 
+							" . $group_check . "
+							" . $fsk_lock . "
+							" . $days . "
+							GROUP BY p.products_id
 							ORDER BY rand()
 							LIMIT " . MAX_DISPLAY_NEW_PRODUCTS . ";");
 	}
@@ -140,27 +140,16 @@ if ((!isset($new_products_category_id)) || ($new_products_category_id == '0')) {
     if (DISPLAY_SUBCAT_PRODUCTS == 'true') {
         $site = 'new_products';
         $title = SUBCAT_PRODUCTS;
-        $new_products_query = "SELECT 
-									p.*, 
-									pd.*, 
-									p2c.*, 
-									c.*
-								FROM
-									" . TABLE_PRODUCTS . " p 
-									LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id )
-									LEFT OUTER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON (p.products_id = p2c.products_id)
-									LEFT OUTER JOIN " . TABLE_CATEGORIES . " c ON (p2c.categories_id = c.categories_id)
-									" . $from_str . "
-								WHERE 
-									c.categories_status = '1'
-								AND
-								pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-									" . $group_check . "
-									" . $fsk_lock . "
-								AND 
-									c.parent_id = '" . $new_products_category_id . "'
-								AND 
-									p.products_status = '1' 
+        $new_products_query = "SELECT p.*, pd.*, p2c.*, c.*
+								FROM " . TABLE_PRODUCTS . " p 
+								LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+								LEFT OUTER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON (p.products_id = p2c.products_id)
+								LEFT OUTER JOIN " . TABLE_CATEGORIES . " c ON (p2c.categories_id = c.categories_id AND c.parent_id = '" . $new_products_category_id . "')
+								" . $from_str . "
+								WHERE c.categories_status = '1'
+								AND p.products_status = '1' 
+								" . $group_check . "
+								" . $fsk_lock . "
 								" . $order_str;
 
         if (isset($_GET['per_site']) && !empty($_GET['per_site']))
@@ -203,28 +192,17 @@ if ((!isset($new_products_category_id)) || ($new_products_category_id == '0')) {
             $days = " AND p.products_date_added > '" . $date_new_products . "' ";
         }
 
-        $new_products_query = "SELECT 
-									p.*, 
-									pd.*, 
-									p2c.*, 
-									c.*
-								FROM
-									" . TABLE_PRODUCTS . " p 
-									LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id )
-									LEFT OUTER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON (p.products_id = p2c.products_id)
-									LEFT OUTER JOIN " . TABLE_CATEGORIES . " c ON (p2c.categories_id = c.categories_id)
+        $new_products_query = "SELECT p.*, pd.*, p2c.*, c.*
+								FROM " . TABLE_PRODUCTS . " p 
+								LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+								LEFT OUTER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON (p.products_id = p2c.products_id)
+								LEFT OUTER JOIN " . TABLE_CATEGORIES . " c ON (p2c.categories_id = c.categories_id AND c.parent_id = '" . $new_products_category_id . "')
 								" . $from_str . "
-								WHERE 
-									c.categories_status='1'
-								AND
-								pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-									" . $group_check . "
-									" . $days . "
-									" . $fsk_lock . "
-								AND 
-									c.parent_id = '" . $new_products_category_id . "'
-								AND 
-									p.products_status = '1' 
+								WHERE c.categories_status='1'
+								AND p.products_status = '1' 
+								" . $group_check . "
+								" . $days . "
+								" . $fsk_lock . "
 								" . $order_str;
 
         if (isset($_GET['per_site']) && !empty($_GET['per_site']))

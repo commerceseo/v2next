@@ -469,13 +469,13 @@ class PHPMailer {
         } else {
             $PHPMAILER_LANG = array();
             $PHPMAILER_LANG["provide_address"] = 'You must provide at least one ' .
-                    $PHPMAILER_LANG["mailer_not_supported"] = ' mailer is not supported.';
+			$PHPMAILER_LANG["mailer_not_supported"] = ' mailer is not supported.';
             $PHPMAILER_LANG["execute"] = 'Could not execute: ';
             $PHPMAILER_LANG["instantiate"] = 'Could not instantiate mail function.';
             $PHPMAILER_LANG["authenticate"] = 'SMTP Error: Could not authenticate.';
             $PHPMAILER_LANG["from_failed"] = 'The following From address failed: ';
             $PHPMAILER_LANG["recipients_failed"] = 'SMTP Error: The following ' .
-                    $PHPMAILER_LANG["data_not_accepted"] = 'SMTP Error: Data not accepted.';
+			$PHPMAILER_LANG["data_not_accepted"] = 'SMTP Error: Data not accepted.';
             $PHPMAILER_LANG["connect_host"] = 'SMTP Error: Could not connect to SMTP host.';
             $PHPMAILER_LANG["file_access"] = 'Could not access file: ';
             $PHPMAILER_LANG["file_open"] = 'File Error: Could not open file: ';
@@ -1260,6 +1260,26 @@ class PHPMailer {
 
         return $encoded;
     }
+	
+   // function EncodeQ($str, $position = 'text') {
+        // /* There should not be any EOL in the string */
+        // $encoded = preg_replace("[\r\n]", '', $str);
+        // switch (strtolower($position)) {
+            // case 'phrase':
+                // $encoded = preg_replace_callback('/([^A-Za-z0-9!*+\/ -])/',function($m) { return '='.sprintf('%02X', ord('\\1'));}, $encoded);
+                // break;
+            // case 'comment':
+                // $encoded = preg_replace_callback('/([\(\)\"])/',function($m) { return '='.sprintf('%02X', ord('\\1'));}, $encoded);
+            // case 'text':
+            // default:
+                // /* Replace every high ascii, control =, ? and _ characters */
+                // $encoded = preg_replace_callback('/([\000-\011\013\014\016-\037\075\077\137\177-\377])/',function($m) { return '='.sprintf('%02X', ord(stripslashes($m[1]))); }, $encoded);
+                // break;
+        // }
+        // /* Replace every spaces to _ (more readable than =20) */
+        // $encoded = str_replace(' ', '_', $encoded);
+        // return $encoded;
+    // }
 
     /**
      * Adds a string or binary attachment (non-filesystem) to the list.

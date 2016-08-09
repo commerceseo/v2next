@@ -25,35 +25,30 @@ if (GROUP_CHECK == 'true')
 $path = explode('_', $cPath);
 $cat = array_reverse($path);
 
-$products_query = xtDBquery("SELECT
-									p.products_id,
-									p.products_image,
-									p.products_slave_in_list,
-									p.products_master,
-									pd.products_name
-								FROM 
-									" . TABLE_PRODUCTS . " p
-								INNER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " pc ON (p.products_id = pc.products_id)									
-								INNER JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-								WHERE 
-									pc.categories_id='" . $cat[0] . "'
-								AND 
-									p.products_status = 1
-								AND 
-									(p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
-								AND 
-									p.products_id <> '" . $product->data['products_id'] . "'
-								AND 
-									pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-									" . $fsk_lock . $group_check . "
-								ORDER BY rand() LIMIT 4");
+$products_query = xtDBquery("SELECT p.products_id, p.products_image, p.products_slave_in_list, p.products_master, pd.products_name
+								FROM  " . TABLE_PRODUCTS . " AS p
+								JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS pc ON (p.products_id = pc.products_id)									
+								JOIN " . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON (p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+								WHERE pc.categories_id='" . $cat[0] . "'
+								AND p.products_status = 1
+								AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+								AND p.products_id <> '" . $product->data['products_id'] . "'
+								" . $fsk_lock . $group_check . "
+								ORDER BY rand() LIMIT " . PRODUCT_DETAILS_RELATED_RAND);
 
 $product_related_products_cat = array();
 
-
-while ($products_data = xtc_db_fetch_array($products_query, true)) {
-    if ($products_data['products_image'] != '') {
-        $img = xtc_image(DIR_WS_MINI_IMAGES . $products_data['products_image'], $products_data['products_name']);
+while ($products_data = xtc_db_fetch_array($products_query)) {
+	if ($products_data['products_image'] != '') {
+		if(substr($products_data['products_image'],'0','7') == 'http://') {
+			$img = str_replace('images/','images/',$products_data['products_image']);
+			$img = '<img src="'.$img.'" alt="'.$products_data['products_name'].'" style="max-width:'.PRODUCT_IMAGE_MINI_WIDTH.'px;height:auto;">';
+		} elseif (substr($products_data['products_image'],'0','8') == 'https://') {
+			$img = str_replace('images/','images/',$products_data['products_image']);
+			$img = '<img src="'.$img.'" alt="'.$products_data['products_name'].'" style="max-width:'.PRODUCT_IMAGE_MINI_WIDTH.'px;height:auto;">';
+		} else {
+			$img = xtc_image(DIR_WS_MINI_IMAGES . $products_data['products_image'], $products_data['products_name']);
+		}
     } else {
         $img = xtc_image(DIR_WS_MINI_IMAGES . 'no_img.jpg', $products_data['products_name']);
     }
@@ -66,32 +61,29 @@ while ($products_data = xtc_db_fetch_array($products_query, true)) {
 }
 
 
-$products_query = xtDBquery("SELECT 
-									pc.products_id,
-									p.products_image,
-									p.products_slave_in_list,
-									p.products_master,
-									pd.products_name
-								FROM 
-									" . TABLE_PRODUCTS . " p
-								INNER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " pc ON (p.products_id = pc.products_id)									
-								INNER JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON (p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-								WHERE 
-									p.products_id <> '" . $product->data['products_id'] . "'
-								AND 
-									p.products_status = 1
-								AND 
-									(p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
-								AND 
-									pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-									" . $fsk_lock . $group_check . "
-								ORDER BY rand() LIMIT 4");
+$products_query = xtDBquery("SELECT pc.products_id, p.products_image, p.products_slave_in_list, p.products_master, pd.products_name
+								FROM " . TABLE_PRODUCTS . " AS p
+								JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS pc ON (p.products_id = pc.products_id)									
+								JOIN " . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON (p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+								WHERE p.products_id <> '" . $product->data['products_id'] . "'
+								AND p.products_status = 1
+								AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+								" . $fsk_lock . $group_check . "
+								ORDER BY rand() LIMIT " . PRODUCT_DETAILS_RELATED_RAND);
 
 $product_related_products_all = array();
 
 while ($products_data = xtc_db_fetch_array($products_query, true)) {
-    if ($products_data['products_image'] != '') {
-        $img = xtc_image(DIR_WS_MINI_IMAGES . $products_data['products_image'], $products_data['products_name']);
+	if ($products_data['products_image'] != '') {
+		if(substr($products_data['products_image'],'0','7') == 'http://') {
+			$img = str_replace('images/','images/',$products_data['products_image']);
+			$img = '<img src="'.$img.'" alt="'.$products_data['products_name'].'" style="max-width:'.PRODUCT_IMAGE_MINI_WIDTH.'px;height:auto;">';
+		} elseif (substr($products_data['products_image'],'0','8') == 'https://') {
+			$img = str_replace('images/','images/',$products_data['products_image']);
+			$img = '<img src="'.$img.'" alt="'.$products_data['products_name'].'" style="max-width:'.PRODUCT_IMAGE_MINI_WIDTH.'px;height:auto;">';
+		} else {
+			$img = xtc_image(DIR_WS_MINI_IMAGES . $products_data['products_image'], $products_data['products_name']);
+		}
     } else {
         $img = xtc_image(DIR_WS_MINI_IMAGES . 'no_img.jpg', $products_data['products_name']);
     }

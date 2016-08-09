@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: order_details_cart.php 1264 2014-11-10 09:17:15Z akausch $
+ * 	$Id: order_details_cart.php 1484 2015-07-27 09:17:15Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -28,18 +28,6 @@ require_once (DIR_FS_INC . 'xtc_get_short_description.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_long_description.inc.php');
 
 $coo_lang_file_master = cseohookfactory::create_object('LanguageTextManager', array(), true);
-// $coo_properties_control = cseohookfactory::create_object('PropertiesControl');
-
-// $t_products_quantity_array = array();
-// for ($i = 0, $n = sizeof($products); $i < $n; $i ++) {
-    // $t_combis_id = $coo_properties_control->extract_combis_id($products[$i]['id']);
-    // $t_extracted_products_id = xtc_get_prid($products[$i]['id']);
-    // $coo_products = cseohookfactory::create_object('GMDataObject', array('products', array('products_id' => $t_extracted_products_id)));
-    // $use_properties_combis_quantity = $coo_products->get_data_value('use_properties_combis_quantity');
-    // if ($use_properties_combis_quantity == 1 || ($use_properties_combis_quantity == 0 && ATTRIBUTE_STOCK_CHECK == 'false' && STOCK_CHECK == 'true')) {
-        // $t_products_quantity_array[$t_extracted_products_id] += $products[$i]['quantity'];
-    // }
-// }
 
 foreach ($t_products_quantity_array as $t_product_id => $t_product_quantity) {
     $t_mark_stock = xtc_check_stock($t_product_id, $t_product_quantity);
@@ -82,69 +70,7 @@ $minorder = array();
 $maxorder = array();
 
 for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
-    #properties
-    // $t_combis_id = $coo_properties_control->extract_combis_id($products[$i]['id']);
-    // if ($t_combis_id == '') {
-        // if (STOCK_CHECK == 'true') {
-            // $mark_stock = xtc_check_stock($products[$i]['id'], $products[$i]['quantity']);
-            // if ($mark_stock) {
-                // $_SESSION['any_out_of_stock'] = 1;
-            // }
-        // }
-    // }
-    // if ($t_combis_id != '') {
-        // $t_properties_html = $coo_properties_control->get_properties_combis_details($t_combis_id, $_SESSION['languages_id']);
-        // $coo_products = cseohookfactory::create_object('GMDataObject', array('products', array('products_id' => $products[$i]['id'])));
-        // $use_properties_combis_quantity = $coo_products->get_data_value('use_properties_combis_quantity');
-
-        // if ($use_properties_combis_quantity == 1 || ($use_properties_combis_quantity == 0 && ATTRIBUTE_STOCK_CHECK == 'false' && STOCK_CHECK == 'true')) {
-            // # check article quantity
-            // $mark_stock = xtc_check_stock($products[$i]['id'], $products[$i]['quantity']);
-            // if ($mark_stock) {
-                // $_SESSION['any_out_of_stock'] = 1;
-            // }
-        // } else if (($use_properties_combis_quantity == 0 && ATTRIBUTE_STOCK_CHECK == 'true' && STOCK_CHECK == 'true') || $use_properties_combis_quantity == 2) {
-            // # check combis quantity
-            // $t_properties_stock = $coo_properties_control->get_properties_combis_quantity($t_combis_id);
-            // if ($t_properties_stock < $products[$i]['quantity']) {
-                // $_SESSION['any_out_of_stock'] = 1;
-                // $mark_stock = '<span class="markProductOutOfStock">' . STOCK_MARK_PRODUCT_OUT_OF_STOCK . '</span>';
-            // }
-        // }
-
-        // if (array_key_exists($t_extracted_products_id, $t_products_quantity_array)) {
-            // $mark_stock = $t_products_quantity_array[$t_extracted_products_id];
-        // }
-
-        // if ($coo_products->get_data_value('use_properties_combis_weight') == 1) {
-            // $t_products_weight = $coo_properties_control->get_properties_combis_weight($t_combis_id);
-        // }
-
-        // if ($coo_products->get_data_value('use_properties_combis_shipping_time') == 1) {
-            // $t_shipping_time = $coo_properties_control->get_properties_combis_shipping_time($t_combis_id);
-        // }
-
-        // $t_combi_model = $coo_properties_control->get_properties_combis_model($t_combis_id);
-
-        // if (APPEND_PROPERTIES_MODEL == "true") {
-            // # Artikelnummer (Kombi) an Artikelnummer (Artikel) anhängen
-            // if ($t_products_model != '' && $t_combi_model != '') {
-                // $t_products_model = $t_products_model . '-' . $t_combi_model;
-            // } else if ($t_combi_model != '') {
-                // $t_products_model = $t_combi_model;
-            // }
-        // } else {
-            // # Artikelnummer (Artikel) durch Artikelnummer (Kombi) ersetzen
-            // if ($t_combi_model != '') {
-                // $t_products_model = $t_combi_model;
-            // }
-        // }
-    // } else {
-        // $t_properties_html = '';
-    // }
-	$t_properties_html = '';
-	#properties
-
+    $t_properties_html = '';
 
     if (STOCK_CHECK == 'true') {
         $mark_stock = xtc_check_stock($products[$i]['id'], $products[$i]['quantity']);
@@ -384,6 +310,26 @@ if ($_SESSION['customers_status']['customers_status_show_price'] == '1') {
         }
     }
 }
+
+// free shipping start - new code
+$free_shipping_products_query = xtDBquery("SELECT products_id, max_free_shipping_amount FROM " . TABLE_PRODUCTS . " WHERE free_shipping ='1';");
+$free_contents = 0;
+$free_amount = true;
+$free_shipping_cart = false;
+while ($free_shipping_products = xtc_db_fetch_array($free_shipping_products_query)) {
+    $products_id_fs = $_SESSION['cart']->in_cart_fs($free_shipping_products['products_id']);
+    if ($products_id_fs) {
+        $free_contents += $_SESSION['cart']->get_quantity_fs($products_id_fs);
+        if (($free_shipping_products['max_free_shipping_amount'] > 0) && ($_SESSION['cart']->get_quantity_fs($products_id_fs) > $free_shipping_products['max_free_shipping_amount'])) {
+            $free_amount = false;
+        }
+    }
+}
+
+if (($free_contents > 0) && ($free_contents == $_SESSION['cart']->count_contents()) && ($free_amount == true)) {
+    $free_shipping_cart = true;
+}
+// free shipping - end of code
 
 if (SHOW_SHIPPING == 'true') {
     $query = xtc_db_query("SELECT countries_id FROM " . TABLE_COUNTRIES . " WHERE status = '1';");

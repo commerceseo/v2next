@@ -17,19 +17,13 @@ $module_smarty = new Smarty;
 $module_smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
 
 if ($product->getAttributesCount() > 0) {
-    $products_options_name_query = xtDBquery("SELECT DISTINCT 
-												popt.products_options_id, 
-												popt.products_options_name 
-											FROM 
-												" . TABLE_PRODUCTS_OPTIONS . " popt 
-											INNER JOIN
-												" . TABLE_PRODUCTS_ATTRIBUTES . " patrib ON(patrib.options_id = popt.products_options_id)
-											WHERE 
-												patrib.products_id = '" . $product->data['products_id'] . "' 
-											AND 
-												popt.language_id = '" . (int) $_SESSION['languages_id'] . "' 
-											ORDER BY 
-												popt.products_options_sortorder, popt.products_options_id");
+    $products_options_name_query = xtDBquery("SELECT popt.products_options_id, popt.products_options_name 
+											FROM " . TABLE_PRODUCTS_OPTIONS . " AS popt 
+											JOIN " . TABLE_PRODUCTS_ATTRIBUTES . " patrib ON(patrib.options_id = popt.products_options_id)
+											WHERE patrib.products_id = '" . $product->data['products_id'] . "' 
+											AND popt.language_id = '" . (int) $_SESSION['languages_id'] . "' 
+											GROUP BY popt.products_options_id
+											ORDER BY popt.products_options_sortorder, popt.products_options_id");
 
     $row = 0;
     $col = 0;
@@ -37,7 +31,6 @@ if ($product->getAttributesCount() > 0) {
     while ($products_options_name = xtc_db_fetch_array($products_options_name_query)) {
         $selected = 0;
         $products_options_array = array();
-
         $products_options_data[$row] = array('NAME' => $products_options_name['products_options_name'],
             'ID' => $products_options_name['products_options_id'],
             'SORTORDER' => $products_options_name['products_options_sortorder'],
@@ -46,23 +39,19 @@ if ($product->getAttributesCount() > 0) {
 		if (ATTRIBUTE_STOCK_CHECK_DISPLAY == 'true') {
 			$pastockcheck = ' AND pa.attributes_stock > 0';
 		}
-        $products_options_query = xtDBquery("SELECT 
-												pov.*,
-												pa.*
-											FROM 
-												" . TABLE_PRODUCTS_ATTRIBUTES . " pa
-											INNER JOIN
-												" . TABLE_PRODUCTS_OPTIONS_VALUES . " pov ON(pa.options_values_id = pov.products_options_values_id)
-											WHERE 
-												pa.products_id = '" . $product->data['products_id'] . "'
+        $products_options_query = xtDBquery("SELECT pov.*, pa.*
+											FROM " . TABLE_PRODUCTS_ATTRIBUTES . " AS pa
+											JOIN " . TABLE_PRODUCTS_OPTIONS_VALUES . " AS pov ON(pa.options_values_id = pov.products_options_values_id AND pov.language_id = '" . (int) $_SESSION['languages_id'] . "')
+											WHERE pa.products_id = '" . $product->data['products_id'] . "'
 											$pastockcheck
-											AND 
-												pa.options_id = '" . $products_options_name['products_options_id'] . "'
-											AND 
-												pov.language_id = '" . (int) $_SESSION['languages_id'] . "'
+											AND pa.options_id = '" . $products_options_name['products_options_id'] . "'
+											GROUP BY pa.options_values_id
 											ORDER BY pa.sortorder, pa.options_values_price, pa.options_values_id;");
-		if (ATTRIBUTE_REQUIRED == 'true') {
+		if (ATTRIBUTE_REQUIRED == 'true' && ATTRIBUTE_OPTION_AS_DEFAULT == 'false') {
 			$products_options_data[$row]['DATA'][0] = array ('ID' => 0, 'TEXT' => PULL_DOWN_DEFAULT, 'STOCK' => 0, 'STOCKQTY' => 0);
+			$col = 1;
+		} elseif (ATTRIBUTE_REQUIRED == 'true' && ATTRIBUTE_OPTION_AS_DEFAULT == 'true') {
+			$products_options_data[$row]['DATA'][0] = array ('ID' => 0, 'TEXT' => $products_options_name['products_options_name'], 'STOCK' => 0, 'STOCKQTY' => 0);
 			$col = 1;
 		} else {
 			$col = 0;
@@ -70,7 +59,6 @@ if ($product->getAttributesCount() > 0) {
         while ($products_options = xtc_db_fetch_array($products_options_query)) {
             $price = '';
             $vpe_price = '';
-
             if ($products_options['products_options_values_image'] != '') {
                 $attrubut_image = DIR_WS_IMAGES . 'product_options/' . $products_options['products_options_values_image'];
             } else {
@@ -95,12 +83,8 @@ if ($product->getAttributesCount() > 0) {
                 if ($products_options['options_values_price'] != '0.00') {
                     $price = $xtPrice->xtcFormat($products_options['options_values_price'], false, $product->data['products_tax_class_id']);
                 }
-
                 $products_price = $xtPrice->xtcGetPrice($product->data['products_id'], $format = false, 1, $product->data['products_tax_class_id'], $product->data['products_price']);
                 //VPE
-				// echo '<pre>';
-				// print_r($products_options);
-				// echo '</pre>';
                 if ($products_options['attributes_vpe_status'] == '1' && (double)$products_options['attributes_vpe_value'] != 0.00) {
                     if ($products_options['options_values_price'] != 0.00) {
 						if ($products_options['price_prefix'] == "=") {
@@ -122,9 +106,7 @@ if ($product->getAttributesCount() > 0) {
                 if ($_SESSION['customers_status']['customers_status_discount_attributes'] == 1 && $products_options['price_prefix'] == '=') {
                     $price -= $price / 100 * $discount;
                 }
-
                 $attr_price = $price;
-                // echo $attr_price;
                 if ($products_options['price_prefix'] == "-") {
                     $attr_price = $price * (-1);
                 }
@@ -184,9 +166,6 @@ $module_smarty->assign('PRODUCTS_ID', $product->data['products_id']);
 $module_smarty->assign('language', $_SESSION['language']);
 $module_smarty->assign('options', $products_options_data);
 $module_smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
-
 $module_smarty->caching = false;
-
 $module = $module_smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/product_options/' . $product->data['options_template'], USE_TEMPLATE_DEVMODE));
-
 $info_smarty->assign('MODULE_product_options', $module);

@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: center_modules.php 722 2013-11-07 10:35:39Z akausch $
+* 	$Id: center_modules.php 1200 2014-09-17 06:30:45Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -13,6 +13,7 @@
 * ---------------------------------------------------------------*/
 
 require(DIR_WS_MODULES . FILENAME_NEW_PRODUCTS);
+// require(DIR_WS_MODULES . 'main_top_products.php');
 
 if(CATEGORY_LISTING_START == 'true' && file_exists(DIR_WS_MODULES . FILENAME_MAIN_CATEGORIES_LIST)) {
 	require(DIR_WS_MODULES . FILENAME_MAIN_CATEGORIES_LIST);
@@ -37,12 +38,9 @@ if (BLOG_START == 'true' && file_exists(DIR_WS_MODULES . FILENAME_MAIN_BLOG)) {
 if (MODULE_PRODUCT_PROMOTION_STATUS == 'true' && file_exists(DIR_WS_MODULES . FILENAME_MAIN_PRODUCTS_PROMOTION)) {
 	require(DIR_WS_MODULES . FILENAME_MAIN_PRODUCTS_PROMOTION);
 }
+
 if (BESTSELLER_START == 'true' && file_exists(DIR_WS_MODULES . FILENAME_MAIN_BESTSELLER)) {
 	require(DIR_WS_MODULES . FILENAME_MAIN_BESTSELLER);
 }
-// if (BESTSELLER_START == 'true' && file_exists(DIR_WS_MODULES . 'rss_reader.php')) {
-// if (file_exists(DIR_WS_MODULES . 'rss_reader.php')) {
-	// require(DIR_WS_MODULES . 'rss_reader.php');
-// }
 
 return $module;

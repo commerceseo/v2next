@@ -1,0 +1,21 @@
+{config_load file="lang/$language/lang_$language.conf" section="shopping_cart"} 
+{$HEADER}
+<link href="{$tpl_path}/stylesheet2.css" rel="stylesheet" type="text/css" />
+<title>{$PRODUCTS_NAME} / {$PRODUCTS_MODEL}</title>
+</head>
+<body onload="window.print()">
+<img src="{$tpl_path}/img/logo.gif" alt="{$store_name}" />
+<h1>{#heading_wish_list#}</h1>
+
+{if $cart_empty}
+	{#text_empty_wishlist#}
+	<div align="right">{$BUTTON_CONTINUE}</div>
+{else}
+		{$HIDDEN_OPTIONS}
+  		{$MODULE_order_details}
+
+<div style="display:block;width:100%; text-align:right">*Alle Preise inkl. MwSt. zzgl. {$SHIPPING_INFO}</div>	
+{/if}
+
+</body>
+</html>

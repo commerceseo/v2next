@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.product.php 1073 2014-05-27 08:39:08Z akausch $
+ * 	$Id: class.product.php 1540 2016-03-22 16:15:22Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -25,47 +25,44 @@ class product_ORIGINAL {
             return;
         }
 
-        $product_query = xtDBquery("SELECT
-											*
-										FROM
-											" . TABLE_PRODUCTS . " AS p 
-										JOIN 
-											" . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON (p.products_status = '1' AND pd.products_id = p.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-										WHERE
-											p.products_id = '" . $this->pID . "'
-										" . $this->groupCheck() . $this->fsk18() . "");
+        $product_query = xtDBquery("SELECT *
+									FROM " . TABLE_PRODUCTS . " AS p 
+									JOIN " . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON (p.products_status = '1' AND pd.products_id = p.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+									WHERE p.products_id = '" . $this->pID . "'
+									" . $this->groupCheck() . $this->fsk18() . "");
 
-        if (!xtc_db_num_rows($product_query, true)) {
+        if (!xtc_db_num_rows($product_query)) {
             $this->isProduct = false;
         } else {
             $this->isProduct = true;
-            $this->data = xtc_db_fetch_array($product_query, true);
+            $this->data = xtc_db_fetch_array($product_query);
         }
     }
 
     function fsk18() {
         if ($_SESSION['customers_status']['customers_fsk18_display'] == '0')
-            return $fsk_lock = ' AND p.products_fsk18!=1';
+            return $fsk_lock = ' AND p.products_fsk18 != 1 ';
     }
 
     function groupCheck() {
         if (GROUP_CHECK == 'true')
-            return " AND p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . "=1 ";
+            return " AND p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . " = 1 ";
     }
 
     function getTagCloud() {
-        $products_tags_query = xtDBquery("SELECT
-												tag
-											FROM
-												tag_to_product
-											WHERE
-												pID='" . $this->pID . "'
-											AND
-												lID = '" . (int) $_SESSION['languages_id'] . "'
-												ORDER BY tag ASC");
-        if (xtc_db_num_rows($products_tags_query, true) > 0) {
+        $products_tags_query = xtDBquery("SELECT tag
+										FROM tag_to_product
+										WHERE pID = '" . $this->pID . "'
+										AND lID = '" . (int) $_SESSION['languages_id'] . "'
+										ORDER BY tag ASC");
+        if (xtc_db_num_rows($products_tags_query) > 0) {
             while ($products_tags = xtc_db_fetch_array($products_tags_query, true)) {
-                $tags[] = array('tagcloud' => '<a class="product_info_tag" href="' . xtc_href_link('tag/' . urlencode($products_tags['tag'])) . '/">' . $products_tags['tag'] . '</a>');
+				if (MODULE_COMMERCE_SEO_URL_LOWERCASE == 'True') {
+					$tagkey = strtolower(urlencode($products_tags['tag']));
+				} else {			
+					$tagkey = urlencode($products_tags['tag']); 
+				}
+                $tags[] = array('tagcloud' => '<a class="product_info_tag" href="' . xtc_href_link('tag/' . $tagkey) . '/">' . $products_tags['tag'] . '</a>');
             }
             return $tags;
         } else
@@ -76,59 +73,46 @@ class product_ORIGINAL {
         if (ATTRIBUTE_STOCK_CHECK_DISPLAY == 'true') {
             $pastockcheck = ' AND attributes_stock > 0';
         }
-        $products_attributes_query = xtDBquery("SELECT
-													count(*) as total 
-												FROM
-													" . TABLE_PRODUCTS_ATTRIBUTES . " 
-												WHERE 
-													products_id='" . $this->pID . "'
-												$pastockcheck;");
-
-        $products_attributes = xtc_db_fetch_array($products_attributes_query, true);
+        $products_attributes = xtc_db_fetch_array(xtDBquery("SELECT count(products_id) AS total 
+												FROM " . TABLE_PRODUCTS_ATTRIBUTES . " 
+												WHERE products_id='" . $this->pID . "'
+												$pastockcheck;"));
         return $products_attributes['total'];
     }
 
+    function getPropertiesCount() {
+        $products_properties = xtc_db_fetch_array(xtDBquery("SELECT count(products_id) AS total 
+												FROM " . TABLE_PRODUCTS_PROPERTIES_COMBIS . " 
+												WHERE products_id='" . $this->pID . "';"));
+        return $products_properties['total'];
+    }
+
     function getReviewsCount() {
-        $reviews_query = xtDBquery("SELECT 
-										count(*) as total 
-									FROM 
-										" . TABLE_REVIEWS . " r, 
-										" . TABLE_REVIEWS_DESCRIPTION . " rd 
-									WHERE 
-										r.products_id = '" . $this->pID . "' 
-									AND 
-										r.reviews_status = '1' 
-									AND 
-										r.reviews_id = rd.reviews_id 
-									AND 
-										rd.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
-									AND 
-										rd.reviews_text !='';");
-        $reviews = xtc_db_fetch_array($reviews_query, true);
+        $reviews = xtc_db_fetch_array(xtDBquery("SELECT count(*) AS total 
+									FROM " . TABLE_REVIEWS . " r, 
+									" . TABLE_REVIEWS_DESCRIPTION . " rd 
+									WHERE r.products_id = '" . $this->pID . "' 
+									AND r.reviews_status = '1' 
+									AND r.reviews_id = rd.reviews_id 
+									AND rd.languages_id = '" . (int) $_SESSION['languages_id'] . "' 
+									AND rd.reviews_text !='';"));
         return $reviews['total'];
     }
 
     function getReviews() {
         $data_reviews = array();
-        $reviews_query = xtDBquery("SELECT
-	                                 r.*, 
-	                                 rd.reviews_text
-	                                 FROM 
-										" . TABLE_REVIEWS . " r,
-										" . TABLE_REVIEWS_DESCRIPTION . " rd
-	                                 WHERE 
-										r.products_id = '" . $this->pID . "'
-	                                 AND 
-										r.reviews_id = rd.reviews_id
-									 AND 
-										r.reviews_status = '1'
-	                                 AND 
-										rd.languages_id = '" . (int) $_SESSION['languages_id'] . "'
-	                                 ORDER BY reviews_id DESC;");
-        if (xtc_db_num_rows($reviews_query, true)) {
+        $reviews_query = xtDBquery("SELECT r.*, rd.reviews_text
+	                                FROM " . TABLE_REVIEWS . " r,
+									" . TABLE_REVIEWS_DESCRIPTION . " rd
+									WHERE r.products_id = '" . $this->pID . "'
+									AND r.reviews_id = rd.reviews_id
+									AND r.reviews_status = '1'
+									AND rd.languages_id = '" . (int) $_SESSION['languages_id'] . "'
+									ORDER BY reviews_id DESC;");
+        if (xtc_db_num_rows($reviews_query) > 0) {
             $row = 0;
             $data_reviews = array();
-            while ($reviews = xtc_db_fetch_array($reviews_query, true)) {
+            while ($reviews = xtc_db_fetch_array($reviews_query)) {
                 $row++;
                 $data_reviews[] = array('AUTHOR' => substr($reviews['customers_name'], 0, strrpos($reviews['customers_name'], " ") + 2) . '.',
                     'DATE' => xtc_date_short($reviews['date_added']),
@@ -150,75 +134,76 @@ class product_ORIGINAL {
 
     function getAlsoPurchased() {
         global $xtPrice;
-
         $module_content = array();
-
-        $orders_query = "SELECT 
-							p.*, 
-							pd.*
-						FROM 
-							" . TABLE_ORDERS_PRODUCTS . " op1 
-						LEFT JOIN 
-							" . TABLE_ORDERS_PRODUCTS . " op2 ON(op2.orders_id = op1.orders_id)
-						LEFT JOIN 
-							" . TABLE_PRODUCTS . " p ON(p.products_id = op2.products_id)
-						LEFT JOIN 
-							" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(pd.products_id = op2.products_id)
-						WHERE 
-							op1.products_id = '" . $this->pID . "'
-						AND 
-							op2.products_id != '" . $this->pID . "'
-						AND 
-							p.products_status = '1'
-						AND 
-							pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
+        $query = xtDBquery("SELECT p.*, pd.*
+						FROM " . TABLE_ORDERS_PRODUCTS . " op1 
+						LEFT JOIN " . TABLE_ORDERS_PRODUCTS . " op2 ON(op2.orders_id = op1.orders_id)
+						LEFT JOIN " . TABLE_PRODUCTS . " p ON(p.products_id = op2.products_id)
+						LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(pd.products_id = op2.products_id)
+						WHERE op1.products_id = '" . $this->pID . "'
+						AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+						AND op2.products_id != '" . $this->pID . "'
+						AND p.products_status = '1'
+						AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
 						" . $this->groupCheck() . $this->fsk18() . "
 						GROUP BY p.products_id 
-						LIMIT " . MAX_DISPLAY_ALSO_PURCHASED;
-
-        $orders_query = xtDBquery($orders_query);
+						LIMIT " . MAX_DISPLAY_ALSO_PURCHASED . ";");
         $row = 0;
-        while ($orders = xtc_db_fetch_array($orders_query, true)) {
+        while ($orders = xtc_db_fetch_array($query)) {
             $row++;
             $module_content[] = $this->buildDataArray($orders, 'thumbnail', 'also_purchased', $row);
         }
         return $module_content;
     }
+	
+    function cartSpecials() {
+		$module_content = array();
+        $query = xtDBquery("SELECT *
+								FROM " . TABLE_PRODUCTS . " AS p
+								JOIN " . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+								WHERE p.products_cartspecial = '1' 
+								AND p.products_status = '1' 
+									" . $this->groupCheck() . "
+									" . $this->fsk18() . "
+								GROUP BY p.products_id
+								LIMIT " . MAX_DISPLAY_CART_SPECIALS . ";");
+
+        $row = 0;
+        while ($cart_products = xtc_db_fetch_array($query)) {
+            $row++;
+            $module_content[] = $this->buildDataArray($cart_products, 'thumbnail', 'cart_special', $row);
+        }
+		if (USE_TEMPLATE_DEVMODE == 'true') {
+			echo '<pre>';
+			print_r($module_content);
+			echo '</pre>';
+		}
+        return $module_content;
+    }
 
     function getCrossSells() {
-        $cs_groups = "SELECT products_xsell_grp_name_id FROM " . TABLE_PRODUCTS_XSELL . " WHERE products_id = '" . $this->pID . "' GROUP BY products_xsell_grp_name_id";
-        $cs_groups = xtDBquery($cs_groups);
+        $cs_groups = xtDBquery("SELECT products_xsell_grp_name_id FROM " . TABLE_PRODUCTS_XSELL . " WHERE products_id = '" . $this->pID . "' GROUP BY products_xsell_grp_name_id;");
         $cross_sell_data = array();
         if (xtc_db_num_rows($cs_groups, true) > 0) {
-            while ($cross_sells = xtc_db_fetch_array($cs_groups, true)) {
-                $cross_query = "SELECT 
-								p.*,
-								pd.*,
-								xp.sort_order 
-							FROM 
-								" . TABLE_PRODUCTS_XSELL . " xp 
-							LEFT JOIN
-								" . TABLE_PRODUCTS . " p ON(xp.xsell_id = p.products_id)
-							LEFT JOIN	
-								" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id)
-							WHERE 
-								xp.products_id = '" . $this->pID . "'
-							AND 
-								xp.products_xsell_grp_name_id='" . $cross_sells['products_xsell_grp_name_id'] . "'
-							AND 
-								pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-							AND 
-								p.products_status = '1'
+            while ($cross_sells = xtc_db_fetch_array($cs_groups)) {
+                $cross_query = xtDBquery("SELECT p.*, pd.*, xp.sort_order 
+							FROM " . TABLE_PRODUCTS_XSELL . " xp 
+							LEFT JOIN " . TABLE_PRODUCTS . " p ON(xp.xsell_id = p.products_id)
+							LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id)
+							WHERE xp.products_id = '" . $this->pID . "'
+							AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+							AND xp.products_xsell_grp_name_id='" . $cross_sells['products_xsell_grp_name_id'] . "'
+							AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
+							AND p.products_status = '1'
 							" . $this->groupCheck() . $this->fsk18() . "
-							ORDER BY xp.sort_order ASC;";
+							ORDER BY xp.sort_order ASC;");
 
-                $cross_query = xtDBquery($cross_query);
-                if (xtc_db_num_rows($cross_query, true) > 0) {
+                if (xtc_db_num_rows($cross_query) > 0) {
                     require_once (DIR_FS_INC . 'get_cross_sell_name.inc.php');
                     $cross_sell_data[$cross_sells['products_xsell_grp_name_id']] = array('GROUP' => xtc_get_cross_sell_name($cross_sells['products_xsell_grp_name_id']), 'PRODUCTS' => array());
                 }
                 $row = 0;
-                while ($xsell = xtc_db_fetch_array($cross_query, true)) {
+                while ($xsell = xtc_db_fetch_array($cross_query)) {
                     $row++;
                     $cross_sell_data[$cross_sells['products_xsell_grp_name_id']]['PRODUCTS'][] = $this->buildDataArray($xsell, 'thumbnail', 'cross_selling', $row);
                 }
@@ -228,27 +213,18 @@ class product_ORIGINAL {
     }
 
     function getReverseCrossSells() {
-        $cross_query = xtDBquery("SELECT
-									p.*,
-									pd.*,
-									xp.sort_order
-								FROM
-									" . TABLE_PRODUCTS_XSELL . " xp
-								LEFT JOIN
-									" . TABLE_PRODUCTS . " p ON(xp.products_id = p.products_id)
-								LEFT JOIN
-									" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id)
-								WHERE
-									xp.xsell_id = '" . $this->pID . "'
-								AND
-									pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-								AND
-									p.products_status = '1'
+        $cross_query = xtDBquery("SELECT p.*, pd.*, xp.sort_order
+								FROM " . TABLE_PRODUCTS_XSELL . " xp
+								LEFT JOIN " . TABLE_PRODUCTS . " p ON(xp.products_id = p.products_id)
+								LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id)
+								WHERE xp.xsell_id = '" . $this->pID . "'
+								AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+								AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
+								AND p.products_status = '1'
 								" . $this->groupCheck() . $this->fsk18() . "
-								ORDER BY
-									xp.sort_order ASC;");
+								ORDER BY xp.sort_order ASC;");
         $i = 0;
-        while ($xsell = xtc_db_fetch_array($cross_query, true)) {
+        while ($xsell = xtc_db_fetch_array($cross_query)) {
             $i++;
             $cross_sell_data[] = $this->buildDataArray($xsell, 'thumbnail', 'reverse_cross_selling', $i);
         }
@@ -258,15 +234,16 @@ class product_ORIGINAL {
     function getGraduated() {
         global $xtPrice;
 
-        if ($_SESSION['customers_status']['customers_status_id'] == '0')
+        if ($_SESSION['customers_status']['customers_status_id'] == '0') {
             $gruppe = '1';
-        else
+        } else {
             $gruppe = (int) $_SESSION['customers_status']['customers_status_id'];
+		}
 
         $staffel_query = xtDBquery("SELECT * FROM " . TABLE_PERSONAL_OFFERS_BY . $gruppe . " WHERE products_id = '" . $this->pID . "'  AND personal_offer > 0 ORDER BY quantity ASC;");
         $discount = $xtPrice->xtcCheckDiscount($this->pID);
         $staffel = array();
-        while ($staffel_values = xtc_db_fetch_array($staffel_query, true))
+        while ($staffel_values = xtc_db_fetch_array($staffel_query))
             $staffel[] = array('stk' => $staffel_values['quantity'], 'price' => $staffel_values['personal_offer']);
 
         $staffel_data = array();
@@ -302,9 +279,11 @@ class product_ORIGINAL {
         if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True') {
             if (PRODUCT_ID > 0) {
                 return '<a title="' . TEXT_BUY . TEXT_NOW . '" rel ="nofollow" href="' . xtc_href_link(FILENAME_PRODUCT_INFO, 'products_id=' . $this->data['products_id'] . '&action=buy_now&BUYproducts_id=' . $id . '&' . xtc_get_all_get_params(array('action')), 'NONSSL') . '">' . cseo_wk_image_button('button_buy_now.gif', ((CSS_BUTTON_ACTIVE == 'true' || CSS_BUTTON_ACTIVE == 'css') ? TEXT_BUTTON_BUY_NOW : TEXT_BUY . $name . TEXT_NOW)) . '</a>';
-            } else {
+            } elseif ($current_category_id > 0) {
                 return '<a title="' . TEXT_BUY . TEXT_NOW . '" rel ="nofollow" href="' . xtc_href_link(FILENAME_DEFAULT, 'cPath=' . $current_category_id . '&action=buy_now&BUYproducts_id=' . $id . '&' . xtc_get_all_get_params(array('action', 'cat', 'cPath')), 'NONSSL') . '">' . cseo_wk_image_button('button_buy_now.gif', ((CSS_BUTTON_ACTIVE == 'true' || CSS_BUTTON_ACTIVE == 'css') ? TEXT_BUTTON_BUY_NOW : TEXT_BUY . $name . TEXT_NOW)) . '</a>';
-            }
+            } else {
+				return '<a title="' . TEXT_BUY . TEXT_NOW . '" rel ="nofollow" href="' . xtc_href_link(basename($_SERVER['SCRIPT_NAME']), 'action=buy_now&BUYproducts_id=' . $id . '&' . xtc_get_all_get_params(array('action')), 'NONSSL') . '">' . cseo_wk_image_button('button_buy_now.gif', ((CSS_BUTTON_ACTIVE == 'true' || CSS_BUTTON_ACTIVE == 'css') ? TEXT_BUTTON_BUY_NOW : TEXT_BUY . $name . TEXT_NOW)) . '</a>';
+			}
         } else {
             return '<a title="' . TEXT_BUY . TEXT_NOW . '" rel ="nofollow" href="' . xtc_href_link(basename($_SERVER['SCRIPT_NAME']), 'action=buy_now&BUYproducts_id=' . $id . '&' . xtc_get_all_get_params(array('action')), 'NONSSL') . '">' . cseo_wk_image_button('button_buy_now.gif', ((CSS_BUTTON_ACTIVE == 'true' || CSS_BUTTON_ACTIVE == 'css') ? TEXT_BUTTON_BUY_NOW : TEXT_BUY . $name . TEXT_NOW)) . '</a>';
         }
@@ -315,9 +294,11 @@ class product_ORIGINAL {
         if (MODULE_COMMERCE_SEO_INDEX_STATUS == 'True') {
             if (PRODUCT_ID > 0) {
                 return '<a title="' . $name . TEXT_NOW_TO_WISHLIST . '" rel ="nofollow" href="' . xtc_href_link(FILENAME_PRODUCT_INFO, 'products_id=' . $this->data['products_id'] . 'cPath=' . $current_category_id . '&action=wishlist&products_id=' . $id . '&' . xtc_get_all_get_params(array('action')), 'NONSSL') . '">' . xtc_image_button('button_to_wish_list.gif', ((CSS_BUTTON_ACTIVE == 'true' || CSS_BUTTON_ACTIVE == 'css') ? TEXT_TO_WISHLIST : $name . TEXT_NOW_TO_WISHLIST)) . '</a>';
-            } else {
+            } elseif ($current_category_id > 0) {
                 return '<a title="' . $name . TEXT_NOW_TO_WISHLIST . '" rel ="nofollow" href="' . xtc_href_link(FILENAME_DEFAULT, 'cPath=' . $current_category_id . '&action=wishlist&products_id=' . $id . '&' . xtc_get_all_get_params(array('action')), 'NONSSL') . '">' . xtc_image_button('button_to_wish_list.gif', ((CSS_BUTTON_ACTIVE == 'true' || CSS_BUTTON_ACTIVE == 'css') ? TEXT_TO_WISHLIST : $name . TEXT_NOW_TO_WISHLIST)) . '</a>';
-            }
+            } else {
+				return '<a title="' . $name . TEXT_NOW_TO_WISHLIST . '" rel ="nofollow" href="' . xtc_href_link(basename($_SERVER['SCRIPT_NAME']), 'action=wishlist&products_id=' . $id . '&' . xtc_get_all_get_params(array('action')), 'NONSSL') . '">' . xtc_image_button('button_to_wish_list.gif', ((CSS_BUTTON_ACTIVE == 'true' || CSS_BUTTON_ACTIVE == 'css') ? TEXT_TO_WISHLIST : $name . TEXT_NOW_TO_WISHLIST)) . '</a>';
+			}
         } else {
             return '<a title="' . $name . TEXT_NOW_TO_WISHLIST . '" rel ="nofollow" href="' . xtc_href_link(basename($_SERVER['SCRIPT_NAME']), 'action=wishlist&products_id=' . $id . '&' . xtc_get_all_get_params(array('action')), 'NONSSL') . '">' . xtc_image_button('button_to_wish_list.gif', ((CSS_BUTTON_ACTIVE == 'true' || CSS_BUTTON_ACTIVE == 'css') ? TEXT_TO_WISHLIST : $name . TEXT_NOW_TO_WISHLIST)) . '</a>';
         }
@@ -325,12 +306,10 @@ class product_ORIGINAL {
 
     function getVPEtext($product, $price) {
         global $xtPrice;
-
         require_once (DIR_FS_INC . 'xtc_get_vpe_name.inc.php');
-
-        if (!is_array($product))
+        if (!is_array($product)) {
             $product = $this->data;
-
+		}
         if ($product['products_vpe_status'] == 1 && $product['products_vpe_value'] != 0.0 && $price > 0) {
             return $xtPrice->xtcFormat($price * (1 / $product['products_vpe_value']), true) . TXT_PER . xtc_get_vpe_name($product['products_vpe']);
         }
@@ -338,67 +317,102 @@ class product_ORIGINAL {
     }
 
     function getAccessoriesCount() {
-        $products_accessories_query = xtDBquery("SELECT 
-													COUNT(ap.id) AS total 
-												FROM 
-													" . TABLE_ACCESSORIES_PRODUCTS . " ap
-												LEFT JOIN
-													" . TABLE_ACCESSORIES . " a ON(a.id = ap.accessories_id)
-												WHERE 
-													a.head_product_id = '" . $this->pID . "'");
+        $query = xtc_db_query("SELECT id FROM " . TABLE_ACCESSORIES . " WHERE head_product_id = '" . $this->pID . "';");
+		$count = xtc_db_num_rows($query);
+        return $count;
+    }
 
-        $products_accessories = xtc_db_fetch_array($products_accessories_query, true);
+    function getAccessories() {
+		global $xtPrice, $main;
+		if ($this->getAccessoriesCount() > 0) {
+			$accessories_data = array();
+			require_once (DIR_FS_INC . 'xtc_get_vpe_name.inc.php');
+			$query = xtDBquery("SELECT *				
+										FROM " . TABLE_PRODUCTS . " p 
+										LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+										LEFT JOIN " . TABLE_ACCESSORIES . " a ON(a.head_product_id = '" . $this->data['products_id'] . "')
+										LEFT JOIN " . TABLE_ACCESSORIES_PRODUCTS . " ap ON(a.id = ap.accessories_id)
+										WHERE ap.product_id = p.products_id 
+										GROUP BY p.products_id
+										ORDER BY ap.sort_order, a.id ASC;");
 
-        return $products_accessories['total'];
+			while ($products_accessories = xtc_db_fetch_array($query)) {
+				$products_price = $xtPrice->xtcGetPrice($products_accessories['products_id'], true, 1, $products_accessories['products_tax_class_id'], $products_accessories['products_price'], 1);
+				$price = $products_price['formated'];
+				$image = '';
+				if ($products_accessories['products_image'] != '') {
+					$image = DIR_WS_THUMBNAIL_IMAGES . $products_accessories['products_image'];
+				}
+				if ($products_accessories['products_vpe_status'] == 1 && $products_accessories['products_vpe_value'] != 0.0 && $products_price['plain'] > 0) {
+					$vpe = $xtPrice->xtcFormat($products_price['plain'] * (1 / $products_accessories['products_vpe_value']), true) . TXT_PER . xtc_get_vpe_name($products_accessories['products_vpe']);
+				}
+				if ($_SESSION['customers_status']['customers_status_show_price'] != 0) {
+					$tax_rate = $xtPrice->TAX[$products_accessories['products_tax_class_id']];
+					$tax_info = $main->getTaxInfo($tax_rate);
+				}
+
+				$module_content[] = array(
+					'PRODUCTS_NAME' => $products_accessories['products_name'],
+					'PRODUCTS_ID' => xtc_draw_selection_field('products_id[]', 'checkbox', $products_accessories['products_id']),
+					'PRODUCTS_VPE' => $vpe,
+					'PRODUCTS_IMAGE' => $image,
+					'PRODUCTS_LINK' => xtc_href_link(FILENAME_PRODUCT_INFO, xtc_product_link($products_accessories['products_id'], $products_accessories['products_name'])),
+					'PRODUCTS_PRICE' => $price,
+					'PRODUCTS_TAX_INFO' => $tax_info,
+					'PRODUCTS_SHORT_DESCRIPTION' => $products_accessories['products_short_description']);
+			}
+			if (USE_TEMPLATE_DEVMODE == 'true') {
+				echo '<pre>';
+				print_r($module_content);
+				echo '</pre>';
+			}
+			return $module_content;
+		}
     }
 
     function getReviewsImg($pID) {
-        $reviews_fetch = xtDBquery("SELECT 
-										r.*, 
-										LEFT(rd.reviews_text, 200) AS reviews_text
-									FROM 
-										" . TABLE_REVIEWS . " AS r 
-									INNER JOIN
-										" . TABLE_REVIEWS_DESCRIPTION . " AS rd ON(rd.reviews_id = r.reviews_id AND rd.languages_id = '" . (int) $_SESSION['languages_id'] . "')
-									INNER JOIN
-										" . TABLE_PRODUCTS . " AS p ON(p.products_id = '" . $pID . "' AND p.products_status = '1') 
-									INNER JOIN
-										" . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON(pd.products_id = '" . $pID . "' AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-									WHERE 
-										r.products_id = '" . $pID . "' 
+        $reviews_fetch = xtDBquery("SELECT r.*, LEFT(rd.reviews_text, 200) AS reviews_text
+									FROM " . TABLE_REVIEWS . " AS r 
+									JOIN " . TABLE_REVIEWS_DESCRIPTION . " AS rd ON(rd.reviews_id = r.reviews_id AND rd.languages_id = '" . (int) $_SESSION['languages_id'] . "')
+									JOIN " . TABLE_PRODUCTS . " AS p ON(p.products_id = '" . $pID . "' AND p.products_status = '1') 
+									JOIN " . TABLE_PRODUCTS_DESCRIPTION . " AS pd ON(pd.products_id = '" . $pID . "' AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+									WHERE r.products_id = '" . $pID . "' 
 									ORDER BY r.reviews_id DESC LIMIT 5");
-
 
         while ($reviews = xtc_db_fetch_array($reviews_fetch)) {
             $reviews_text_alt = htmlspecialchars($reviews['reviews_text']);
         }
-        $reviews_average = xtc_db_fetch_array(xtDBquery("SELECT (avg(reviews_rating) / 5 * 100) AS average_rating FROM " . TABLE_REVIEWS . " WHERE products_id = '" . $pID . "';"));
-        $reviews_query = xtDBquery("SELECT 
-										reviews_id,
-										COUNT(reviews_rating) AS anzahl, 
-										reviews_rating 
-									FROM 
-										" . TABLE_REVIEWS . " 
-									WHERE 
-										products_id = '" . $pID . "' 
-									AND 
-										reviews_status = '1' 
+        $reviews_average = xtc_db_fetch_array(xtDBquery("SELECT (avg(reviews_rating) / 5 * 100) AS average_rating FROM " . TABLE_REVIEWS . " WHERE products_id = '" . $pID . "' AND reviews_status = 1;"));
+		$reviews_average_query = xtc_db_fetch_array(xtDBquery("SELECT (avg(reviews_rating)) AS average_rating FROM " . TABLE_REVIEWS . " WHERE products_id = '" . $pID . "' AND reviews_status = 1;"));
+		require_once(DIR_FS_INC . 'xtc_round.inc.php');
+		$reviews_average_img = number_format($reviews_average_query['average_rating'],0);
+        $reviews_query = xtDBquery("SELECT reviews_id, COUNT(reviews_rating) AS anzahl, reviews_rating 
+									FROM " . TABLE_REVIEWS . " 
+									WHERE products_id = '" . $pID . "' 
+									AND reviews_status = '1' 
 									GROUP BY products_id ORDER BY reviews_rating DESC;");
 
         if (xtc_db_num_rows($reviews_query) > 0) {
             $reviews = xtc_db_fetch_array($reviews_query);
-            $reviews_img .= '<span class="fs85 product_listing_review_count" align="center">
-						(<a href="' . xtc_href_link(FILENAME_REVIEWS, 'show_pid=' . $pID) . '"';
+            $reviews_img .= '<span class="fs85 product_listing_review_count" align="center">(<a href="' . xtc_href_link(FILENAME_REVIEWS, 'show_pid=' . $pID) . '"';
 
             if ($_SESSION['customers_status']['customers_status_read_reviews'] != 0) {
                 $reviews_img .= ' title="' . $reviews_text_alt . '"';
             }
             $reviews_img .= '>' . $reviews['anzahl'] . '</a>)';
-            $reviews_img .= xtc_image('templates/' . CURRENT_TEMPLATE . '/img/stars_' . $reviews['reviews_rating'] . '.gif', sprintf(TEXT_OF_5_STARS, $reviews['reviews_rating']));
+            $reviews_img .= xtc_image('templates/' . CURRENT_TEMPLATE . '/img/stars_' . $reviews_average_img . '.gif', sprintf(TEXT_OF_5_STARS, $reviews_average_img));
             $reviews_img .= ' &Oslash; ' . number_format($reviews_average['average_rating'], 0) . '%</span>';
         }
         return $reviews_img;
     }
+	
+	function getReviewsAddon($pID) {
+		$reviews_average_query = xtc_db_fetch_array(xtDBquery("SELECT (avg(reviews_rating)) AS average_rating FROM " . TABLE_REVIEWS . " WHERE products_id = '" . $pID . "' AND reviews_status = 1;"));
+		require_once(DIR_FS_INC . 'xtc_round.inc.php');
+		$reviews_average = number_format($reviews_average_query['average_rating'],0);
+		$review_image = xtc_image('templates/' . CURRENT_TEMPLATE . '/img/stars_' . $reviews_average . '.gif', sprintf(TEXT_OF_5_STARS, $reviews_average));
+		return $review_image;
+	}
 
     function buildDataArrayAfter($product_array_after) {
         $product_array_after = array();
@@ -459,16 +473,10 @@ class product_ORIGINAL {
 		}
 
         if ($options['p_manu_img'] == 1 || $options['p_manu_name'] == 1) {
-            $manufacturer_query = xtDBquery("SELECT
-													*
-												FROM
-													" . TABLE_MANUFACTURERS . " m
-												INNER JOIN
-													" . TABLE_MANUFACTURERS_INFO . " mi ON(m.manufacturers_id = mi.manufacturers_id AND mi.languages_id = '" . (int) $_SESSION['languages_id'] . "')
-												WHERE 
-													m.manufacturers_id = '" . $array['manufacturers_id'] . "';");
-
-            $manufacturer = xtc_db_fetch_array($manufacturer_query);
+            $manufacturer = xtc_db_fetch_array(xtDBquery("SELECT *
+												FROM " . TABLE_MANUFACTURERS . " m
+												JOIN " . TABLE_MANUFACTURERS_INFO . " mi ON(m.manufacturers_id = mi.manufacturers_id AND mi.languages_id = '" . (int) $_SESSION['languages_id'] . "')
+												WHERE m.manufacturers_id = '" . $array['manufacturers_id'] . "';"));
         }
 
         if ($options['p_manu_img'] == 1) {
@@ -476,7 +484,6 @@ class product_ORIGINAL {
                 $manufacturer_image = xtc_image(DIR_WS_IMAGES . $manufacturer['manufacturers_image'], $manufacturer['manufacturers_name'], trim(cseo_truncate(strip_tags($manufacturer['manufacturers_description']), 35)), 'img-responsive');
         }
         if ($options['p_manu_name'] == 1) {
-
             if (!empty($manufacturer['manufacturers_url'])) {
                 $manufacturer_url = xtc_href_link(FILENAME_REDIRECT, 'action=manufacturer&' . xtc_manufacturer_link($manufacturer['manufacturers_id'], $manufacturer['manufacturers_name']));
             }
@@ -537,13 +544,23 @@ class product_ORIGINAL {
         } elseif ($array['products_img_alt'] != '') {
             $description_img_alt = trim(str_replace('"', '', $array['products_img_alt']));
         } else {
-            $description_img_alt = trim(str_replace('"', '', $array['products_name']));
+            $description_img_alt = cseo_truncate(strip_tags(str_replace('"', '', $array['products_name'])), 35);
         }
         $description_title_alt = cseo_truncate(strip_tags($array['products_description']), 35);
 
-        if ($options['p_img'] == 1) {
-            $img = $this->productImage($array['products_image'], $image);
-            $img = xtc_image($img, $description_img_alt, str_replace('"', '', $array['products_name']));
+		if ($options['p_img'] == 1) {
+			if(substr($array['products_image'],'0','7') == 'http://') {
+				$img = str_replace('images/','images/',$array['products_image']);
+				$img = '<img src="'.$img.'" alt="'.$description_img_alt.'" style="max-width:'.PRODUCT_IMAGE_THUMBNAIL_WIDTH.'px;height:auto;">';
+			} elseif (substr($array['products_image'],'0','8') == 'https://') {
+				$img = str_replace('images/','images/',$array['products_image']);
+				$img = '<img src="'.$img.'" alt="'.$description_img_alt.'" style="max-width:'.PRODUCT_IMAGE_THUMBNAIL_WIDTH.'px;height:auto;">';
+			} elseif (substr($array['products_image'],'0','7') != 'http://' || substr($array['products_image'],'0','8') != 'https://') {
+				$img = $this->productImage($array['products_image'], $image);
+				$img = xtc_image($img, $description_img_alt, str_replace('"', '', $array['products_name']));
+			} else {
+				$img = '<img src="'.DIR_WS_THUMBNAIL_IMAGES.'no_img.jpg'.'" alt="'.$description_img_alt.'">';
+			}
         } else {
             $img = '';
         }
@@ -590,9 +607,9 @@ class product_ORIGINAL {
         if ($options['b_order'] == 1 && $options['p_buy'] == 0) {
             $buy_now_button = $buy_now;
             $buy_listing = 'false';
-        } elseif ($options['b_order'] == 1 && $options['p_buy'] == 1) {
-            $buy_now_button = cseo_wk_image_submit('button_in_cart.gif', TEXT_BUTTON_BUY_NOW);
-            $buy_listing = 'true';
+        } elseif ($options['b_order'] == 1 && $options['p_buy'] == 1 && $array['products_master'] != '1') {
+			$buy_now_button = cseo_wk_image_submit('button_in_cart.gif', TEXT_BUTTON_BUY_NOW);
+			$buy_listing = 'true';
         } else {
             $buy_now_button = '';
             $buy_listing = 'false';

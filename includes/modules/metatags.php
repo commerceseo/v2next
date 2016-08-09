@@ -1,6 +1,6 @@
 <?php
 /* -----------------------------------------------------------------
- * 	$Id: metatags.php 1218 2014-10-01 21:39:46Z akausch $
+ * 	$Id: metatags.php 1396 2015-01-28 10:21:08Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -281,6 +281,7 @@ if (isset($_GET['products_id']) && is_numeric($_GET['products_id'])) {
         } else {
             $meta_descr = $product->data['products_name'] . ': ' . $product->data['products_description'];
         }
+		$meta_descr = metaClean($meta_descr, $metaDesLength);
 
         // Title ...
         if (!empty($product->data['products_meta_title'])) {
@@ -292,52 +293,34 @@ if (isset($_GET['products_id']) && is_numeric($_GET['products_id'])) {
     }
     echo '<meta property="og:site_name" content="'.STORE_NAME.'">';
     echo '<meta property="og:title" content="'.$product->data['products_name'].'">';
-    echo '<meta property="og:description" content="'.metaClean($meta_descr, $metaDesLength).'">';
+    echo '<meta property="og:description" content="'.$meta_descr.'">';
     echo '<meta property="og:type" content="product">';
     echo '<meta property="og:url" content="'.$canonical_url.'">';
 	
     if ($product->data['products_image'] != '') {
-        echo '<meta property="og:image" content="' . HTTP_SERVER . '/' . DIR_WS_POPUP_IMAGES . $product->data['products_image'] . '"/>';
+        echo '<meta property="og:image" content="' . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . DIR_WS_POPUP_IMAGES . $product->data['products_image'] . '"/>';
     }
     if ($product->data['products_rel'] == 0) {
         $meta_robots = 'noindex, nofollow, noodp';
     }
-	
-	if ($product->data['products_last_modified'] > 0) {
-		$metadate = $product->data['products_last_modified'];
-	} else {
-		$metadate = $product->data['products_date_added'];
+	if (META_DISPLAY_DATE == 'true') {
+		if ($product->data['products_last_modified'] > 0) {
+			$metadate = $product->data['products_last_modified'];
+		} else {
+			$metadate = $product->data['products_date_added'];
+		}
+		// echo '<link rel="schema.dc" href="http://purl.org/dc/elements/1.1/">';
+		echo '<meta name="DC.date.issued" content="'.date('Y-m-d', strtotime($metadate)).'">';
+		echo '<meta name="DC.title" content="'.$meta_title.'">';
+		echo '<meta name="DC.description" content="'.$meta_descr.'">';
 	}
-	
-	echo '<meta name="date" content="'.date('Y-m-d\TH:i:sP', strtotime($metadate)).'">';
 	$smarty->assign('seotext', $product->data['products_name']);
 	
-}
+} elseif ($_GET['cPath']) {
 //	Daten holen: Kategorie
-elseif ($_GET['cPath']) {
-    if (!empty($current_category_id)) {
-        $categories_meta_query = xtDBquery("
-				SELECT 	
-					cd.categories_meta_keywords, 
-					cd.categories_meta_description, 
-					cd.categories_meta_title, 
-					cd.categories_heading_title, 
-					c.categories_image, 
-					c.date_added, 
-					c.last_modified, 
-					cd.categories_name, 
-					cd.categories_description 
-				FROM 	
-					" . TABLE_CATEGORIES_DESCRIPTION . " AS cd
-				LEFT JOIN 
-					" . TABLE_CATEGORIES . " AS c ON(c.categories_id = cd.categories_id)
-				WHERE 
-					cd.categories_id='" . intval($current_category_id) . "' 
-				AND 
-					cd.language_id='" . intval($_SESSION['languages_id']) . "'
-			");
-        $categories_meta = xtc_db_fetch_array($categories_meta_query, true);
-    }
+	$current_category_id = (int) $current_category_id;
+	$classdefault = new classdefault();
+	$category = $classdefault->category($current_category_id);
 
     $manu_id = $manu_name = false;
 
@@ -352,69 +335,69 @@ elseif ($_GET['cPath']) {
         $manu_id = $_GET['filter_id'];
     }
 
-    // ggf. Herstellernamen herausfinden ...
     if ($manu_id) {
-        $manu_name_query = xtDBquery("
-				SELECT manufacturers_name FROM " . TABLE_MANUFACTURERS . " WHERE manufacturers_id ='" . intval($manu_id) . "'
-			");
-        $manu_name = implode('', xtc_db_fetch_array($manu_name_query, true));
+        $manu_name_query = xtDBquery("SELECT manufacturers_name FROM " . TABLE_MANUFACTURERS . " WHERE manufacturers_id ='" . intval($manu_id) . "';");
+        $manu_name = implode('', xtc_db_fetch_array($manu_name_query));
         $metaGoWords .= ',' . $manu_name; // <-- zu GoWords hinzufügen
     }
 
     // KeyWords ...
-    if (!empty($categories_meta['categories_meta_keywords'])) {
-        $meta_keyw = $categories_meta['categories_meta_keywords']; // <-- 1:1 übernehmen!
-    } elseif (!empty($categories_meta['categories_heading_title'])) {
-        $meta_keyw = metaKeyWords($categories_meta['categories_heading_title'] . ' ' . $manu_name . ' ' . $categories_meta['categories_description']);
+    if (!empty($category['categories_meta_keywords'])) {
+        $meta_keyw = $category['categories_meta_keywords'];
+    } elseif (!empty($category['CATEGORIES_HEADING_TITLE'])) {
+        $meta_keyw = metaKeyWords($category['CATEGORIES_HEADING_TITLE'] . ' ' . $manu_name . ' ' . $category['CATEGORIES_DESCRIPTION']);
     } else {
-        $meta_keyw = metaKeyWords($categories_meta['categories_name'] . ' ' . $manu_name . ' ' . $categories_meta['categories_description']);
+        $meta_keyw = metaKeyWords($category['CATEGORIES_NAME'] . ' ' . $manu_name . ' ' . $category['CATEGORIES_DESCRIPTION']);
     }
 
     // Description ...
-    if (!empty($categories_meta['categories_meta_description'])) {
-        $meta_descr = $categories_meta['categories_meta_description'] . (($manu_name) ? ' - ' . $manu_name : '');
+    if (!empty($category['categories_meta_description'])) {
+        $meta_descr = $category['categories_meta_description'] . (($manu_name) ? ' - ' . $manu_name : '');
         $metaDesLength = false;
-    } elseif ($categories_meta) {
-        $meta_descr = $categories_meta['categories_heading_title'] . ' - ' . $categories_meta['categories_name'] . (($manu_name) ? ' - ' . $manu_name : '') . (($categories_meta['categories_description']) ? ' - ' . $categories_meta['categories_description'] : '');
+    } else {
+        $meta_descr = (($category['CATEGORIES_HEADING_TITLE']) ? $category['CATEGORIES_HEADING_TITLE'] . ' - ' : '') . $category['CATEGORIES_NAME'] . (($manu_name) ? ' - ' . $manu_name : '') . (($category['CATEGORIES_DESCRIPTION']) ? ' - ' . $category['CATEGORIES_DESCRIPTION'] : '');
     }
+	$meta_descr = metaClean($meta_descr, $metaDesLength);
 
     // Title ...
-    if (!empty($categories_meta['categories_meta_title'])) {
-        $meta_title = $categories_meta['categories_meta_title'] . (($manu_name) ? ' - ' . $manu_name : '') . (($Page) ? ' - ' . $Page : '') . (($addCatShopTitle) ? ' - ' . ML_TITLE : '');
-    } elseif (!empty($categories_meta['categories_heading_title'])) {
-        $meta_title = metaTitle($categories_meta['categories_heading_title'], $manu_name, $Page, ($addCatShopTitle) ? ML_TITLE : '');
+    if (!empty($category['categories_meta_title'])) {
+        $meta_title = $category['categories_meta_title'] . (($manu_name) ? ' - ' . $manu_name : '') . (($Page) ? ' - ' . $Page : '') . (($addCatShopTitle) ? ' - ' . ML_TITLE : '');
+    } elseif (!empty($category['CATEGORIES_HEADING_TITLE'])) {
+        $meta_title = metaTitle($category['CATEGORIES_HEADING_TITLE'], $manu_name, $Page, ($addCatShopTitle) ? ML_TITLE : '');
     } else {
-        $meta_title = metaTitle($categories_meta['categories_name'], $manu_name, $Page, ($addCatShopTitle) ? ML_TITLE : '');
+        $meta_title = metaTitle($category['CATEGORIES_NAME'], $manu_name, $Page, ($addCatShopTitle) ? ML_TITLE : '');
     }
     $canonical_url = xtc_href_link(FILENAME_DEFAULT, xtc_category_link((int) $current_category_id)) . ((isset($_GET['page']) && (int) $_GET['page'] > 1 ? '&page=' . (int) $_GET['page'] : ''));
     
 	echo '<meta property="og:site_name" content="'.STORE_NAME.'">';
     echo '<meta property="og:title" content="'.$meta_title.'">';
-    echo '<meta property="og:description" content="'.metaClean($meta_descr, $metaDesLength).'">';
+    echo '<meta property="og:description" content="'.$meta_descr.'">';
     echo '<meta property="og:type" content="website">';
     echo '<meta property="og:url" content="'.$canonical_url.'">';
 	
-    if ($categories_meta['categories_image'] != '') {
-        echo '<meta property="og:image" content="' . HTTP_SERVER . '/categories/' . $categories_meta['categories_image'] . '"/>';
+    if ($category['CATEGORIES_IMAGE'] != '') {
+        echo '<meta property="og:image" content="' . (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG .$category['CATEGORIES_IMAGE_OG'] . '"/>';
     }
-	if ($categories_meta['last_modified'] > 0) {
-		$metadate = $categories_meta['last_modified'];
-	} else {
-		$metadate = $categories_meta['date_added'];
+	if (META_DISPLAY_DATE == 'true') {
+		if ($category['last_modified'] > 0) {
+			$metadate = $category['last_modified'];
+		} else {
+			$metadate = $category['date_added'];
+		}
+		// echo '<link rel="schema.dc" href="http://purl.org/dc/elements/1.1/">';
+		echo '<meta name="DC.date.issued" content="'.date('Y-m-d', strtotime($metadate)).'">';
+		echo '<meta name="DC.title" content="'.$meta_title.'">';
+		echo '<meta name="DC.description" content="'.$meta_descr.'">';
 	}
-	
-	echo '<meta name="date" content="'.date('Y-m-d\TH:i:sP', strtotime($metadate)).'">';
-	$smarty->assign('seotext', $categories_meta['categories_name'] . ' ' . $categories_meta['categories_heading_title']);
+	$smarty->assign('seotext', $category['CATEGORIES_NAME'] . ' ' . $category['CATEGORIES_HEADING_TITLE']);
     
-}
+} elseif (isset($_GET['coID']) && is_numeric($_GET['coID'])) {
 //	Daten holen: Inhalts-Seite (ContentManager)
-elseif (isset($_GET['coID']) && is_numeric($_GET['coID'])) {
-
     //  Noindex bei bestimmten Contet Seiten
     if (in_array(intval($_GET['coID']), $content_noIndex)) {
         $meta_robots = 'noindex, follow, noodp';
     }
-    $contents_meta_query = xtDBquery("
+    $contents_meta = xtc_db_fetch_array(xtDBquery("
 			SELECT 	content_meta_title,
 					content_meta_description, 
 					content_meta_keywords, 
@@ -427,8 +410,7 @@ elseif (isset($_GET['coID']) && is_numeric($_GET['coID'])) {
 			FROM 	" . TABLE_CONTENT_MANAGER . " 
 			WHERE 	content_group = '" . intval($_GET['coID']) . "' 
 			AND 	languages_id = '" . intval($_SESSION['languages_id']) . "'
-		");
-    $contents_meta = xtc_db_fetch_array($contents_meta_query);
+		"));
 
     if (count($contents_meta) > 0) {
         if ($contents_meta['content_file']) {
@@ -459,6 +441,7 @@ elseif (isset($_GET['coID']) && is_numeric($_GET['coID'])) {
             $meta_descr = ($contents_meta['content_heading']) ? $contents_meta['content_heading'] . ': ' : '';
             $meta_descr .= $contents_meta['content_text'];
         }
+		$meta_descr = metaClean($meta_descr, $metaDesLength);
     }
     if ($contents_meta['content_group'] == '5') {
         $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG;
@@ -466,17 +449,19 @@ elseif (isset($_GET['coID']) && is_numeric($_GET['coID'])) {
         $canonical_url = xtc_href_link(FILENAME_CONTENT, 'coID=' . $_GET['coID'] . '&language=' . $_SESSION['language_code']);
     }
 	//Datum ausgeben
-	if ($contents_meta['last_modified'] > 0) {
-		$metadate = $contents_meta['last_modified'];
-	} else {
-		$metadate = $contents_meta['last_modified'];
+	if (META_DISPLAY_DATE == 'true') {
+		if ($contents_meta['last_modified'] > 0) {
+			$metadate = $contents_meta['last_modified'];
+		}
+		// echo '<link rel="schema.dc" href="http://purl.org/dc/elements/1.1/">';
+		echo '<meta name="DC.date.issued" content="'.date('Y-m-d', strtotime($metadate)).'">';
+		echo '<meta name="DC.title" content="'.$meta_title.'">';
+		echo '<meta name="DC.description" content="'.$meta_descr.'">';
 	}
-	echo '<meta name="date" content="'.date('Y-m-d\TH:i:sP', strtotime($metadate)).'">';
 	$smarty->assign('seotext', $contents_meta['content_title'] . ' ' . $contents_meta['content_heading']);
-}
+} elseif ($_GET['manufacturers_id']) {
 //	Daten holen: Hersteller
-elseif ($_GET['manufacturers_id']) {
-    $manufacturers_meta_query = xtDBquery("SELECT
+    $manufacturers_data = xtc_db_fetch_array(xtDBquery("SELECT
 													m.manufacturers_name,
 													m.manufacturers_id,
 													mi.manufacturers_meta_title ,
@@ -484,155 +469,173 @@ elseif ($_GET['manufacturers_id']) {
 													mi.manufacturers_meta_description,
 													mi.manufacturers_meta_keywords
 												FROM
-													manufacturers m,
-													manufacturers_info mi
-												WHERE
-													m.manufacturers_id ='" . intval($_GET['manufacturers_id']) . "'
-												AND
-													mi.manufacturers_id ='" . intval($_GET['manufacturers_id']) . "'
-												AND
-													mi.languages_id ='" . intval($_SESSION['languages_id']) . "'");
-    $manufacturers_data = xtc_db_fetch_array($manufacturers_meta_query);
+													".TABLE_MANUFACTURERS." AS m
+												JOIN ".TABLE_MANUFACTURERS_INFO." AS mi ON(mi.manufacturers_id = m.manufacturers_id AND mi.languages_id ='" . (int) $_SESSION['languages_id'] . "')
+												WHERE m.manufacturers_id ='" . (int) $_GET['manufacturers_id'] . "'"));
 
-    if (!empty($manufacturers_data['manufacturers_meta_description']))
+    if (!empty($manufacturers_data['manufacturers_meta_description'])) {
         $meta_descr = $manufacturers_data['manufacturers_meta_description'];
-    else
+    } else {
         $meta_descr = metaTitle($manufacturers_data['manufacturers_name'], ($addOthersShopTitle) ? ML_TITLE : '');
+	}
+	$meta_descr = metaClean($meta_descr, $metaDesLength);
 
-    if (!empty($manufacturers_data['manufacturers_meta_keywords']))
+    if (!empty($manufacturers_data['manufacturers_meta_keywords'])) {
         $meta_keyw = $manufacturers_data['manufacturers_meta_keywords'];
-    else
+    } else {
         $meta_keyw = metaTitle($manufacturers_data['manufacturers_name'], ($addOthersShopTitle) ? ML_TITLE : '');
+	}
 
-    if (!empty($manufacturers_data['manufacturers_meta_title']))
+    if (!empty($manufacturers_data['manufacturers_meta_title'])) {
         $meta_title = $manufacturers_data['manufacturers_meta_title'];
-    else
+    } else {
         $meta_title = metaTitle($manufacturers_data['manufacturers_name'], ($addOthersShopTitle) ? ML_TITLE : '');
-}
+	}
+	$canonical_url = xtc_href_link(FILENAME_DEFAULT, 'manufacturers_id=' . $_GET['manufacturers_id']);
+} elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (!isset($_GET['blog_item']))) {
 //	Daten hole: Blog Kategorie
-elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (!isset($_GET['blog_item']))) {
-    $blog_meta_query = xtDBquery("SELECT meta_key,
-	                                        meta_desc,
-	                                        meta_title,
-	                                        titel
+    $blog_meta = xtc_db_fetch_array(xtDBquery("SELECT *
 	                                        FROM " . TABLE_BLOG_CATEGORIES . "
-	                                        WHERE categories_id = '" . $_GET['blog_cat'] . "'
-	                                        AND language_id = '" . intval($_SESSION['languages_id']) . "'");
-    $blog_meta = xtc_db_fetch_array($blog_meta_query, true);
+	                                        WHERE categories_id = '" . (int) $_GET['blog_cat'] . "'
+	                                        AND language_id = '" . (int) $_SESSION['languages_id'] . "'"));
 
-    if (!empty($blog_meta['meta_desc']))
+    if (!empty($blog_meta['meta_desc'])) {
         $meta_descr = $blog_meta['meta_desc'];
-    else
+    } elseif (!empty($blog_meta['description'])) {
+        $meta_descr = metaTitle($blog_meta['description'], ($addOthersShopTitle) ? ML_TITLE : '');
+    } elseif (!empty($blog_meta['short_description'])) {
+        $meta_descr = metaTitle($blog_meta['short_description'], ($addOthersShopTitle) ? ML_TITLE : '');
+    } else {
         $meta_descr = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
+	}
+	$meta_descr = metaClean($meta_descr, $metaDesLength);
 
-    if (!empty($blog_meta['meta_key']))
+    if (!empty($blog_meta['meta_key'])) {
         $meta_keyw = $blog_meta['meta_key'];
-    else
-        $meta_keyw = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
+    } else {
+		$meta_keyw = metaKeyWords($blog_meta['description'] . ' ' . $blog_meta['short_description'] . ' ' . $blog_meta['titel']);
+	}
 
-    if (!empty($blog_meta['meta_title']))
+    if (!empty($blog_meta['meta_title'])) {
         $meta_title = $blog_meta['meta_title'];
-    else
+    } else {
         $meta_title = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
-				$image = xtc_db_fetch_array(xtc_db_query("SELECT image FROM blog_cat_images WHERE cat_id = ".$_GET['blog_cat']." AND image_nr = 1 LIMIT 1 "));
-				if($image == ''){
-					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
-				}else{
-					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/' . $image['image'];
-				}
-    $url = explode('?', $_SERVER['REQUEST_URI']);
-    $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
+	}
+	$image = xtc_db_fetch_array(xtc_db_query("SELECT image FROM blog_cat_images WHERE cat_id = ".$_GET['blog_cat']." AND image_nr = 1 LIMIT 1 "));
+	if($image == ''){
+		$image_link = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
+	}else{
+		$image_link = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/' . $image['image'];
+	}
+    if (!empty($blog_meta['canonical'])) {
+		$canonical_url = $blog_meta['canonical'];
+	} else {
+		$url = explode('?', $_SERVER['REQUEST_URI']);
+		$canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
+	}
 	echo "\n".'<meta property="og:site_name" content="'.STORE_NAME.'">'."\n";
     echo '<meta property="og:title" content="'.$meta_title.'">'."\n";
-    echo '<meta property="og:description" content="'.metaClean($meta_descr, $metaDesLength).'">'."\n";
+    echo '<meta property="og:description" content="'.$meta_descr.'">'."\n";
     echo '<meta property="og:type" content="website">'."\n";
     echo '<meta property="og:url" content="'.$canonical_url.'">'."\n";	
 	echo '<meta property="og:image" content="' . htmlentities($image_link) . '" />' . "\n";
 	$smarty->assign('seotext', $blog_meta['titel']);
-}
+} elseif ($_SERVER['SCRIPT_NAME'] == '/blog.php' && !isset($_GET['blog_cat']) && !isset($_GET['blog_item'])) {
 //	Daten hole: Blog Startseite
-elseif ($_SERVER['SCRIPT_NAME'] == '/blog.php' && !isset($_GET['blog_cat']) && !isset($_GET['blog_item'])) {
-$blog_meta_query = xtDBquery("SELECT meta_keywords,
+	$blog_meta = xtc_db_fetch_array(xtDBquery("SELECT meta_keywords,
 	                                        meta_description,
 	                                        meta_title
 	                                        FROM " . TABLE_BLOG_START . "
-	                                        WHERE  language_id = '" . intval($_SESSION['languages_id']) . "'");
-    $blog_meta = xtc_db_fetch_array($blog_meta_query, true);
+	                                        WHERE  language_id = '" . (int) $_SESSION['languages_id'] . "'"));
 
-    if (!empty($blog_meta['meta_desc']))
-        $meta_descr = $blog_meta['meta_desc'];
-    else
+    if (!empty($blog_meta['meta_description'])) {
+        $meta_descr = $blog_meta['meta_description'];
+    } else {
         $meta_descr = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
+	}
+	$meta_descr = metaClean($meta_descr, $metaDesLength);
 
-    if (!empty($blog_meta['meta_key']))
-        $meta_keyw = $blog_meta['meta_key'];
-    else
-        $meta_keyw = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
+    if (!empty($blog_meta['meta_keywords'])) {
+        $meta_keyw = $blog_meta['meta_keywords'];
+    } else {
+		$meta_keyw = metaKeyWords($blog_meta['description']);
+	}
 
-    if (!empty($blog_meta['meta_title']))
+    if (!empty($blog_meta['meta_title'])) {
         $meta_title = $blog_meta['meta_title'];
-    else
+    } else {
         $meta_title = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
-				$image = xtc_db_fetch_array(xtc_db_query("select image from ".TABLE_BLOG_STARTIMG." where image_nr = 1 LIMIT 1 "));
-				if($image == ''){
-					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
-				}else{
-					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/' . $image['image'];
-				}
+	}
+	$image = xtc_db_fetch_array(xtc_db_query("select image from ".TABLE_BLOG_STARTIMG." where image_nr = 1 LIMIT 1 "));
+	if($image == ''){
+		$image_link = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
+	}else{
+		$image_link = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/' . $image['image'];
+	}
     $url = explode('?', $_SERVER['REQUEST_URI']);
     $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
 	echo "\n".'<meta property="og:site_name" content="'.STORE_NAME.'">'."\n";
     echo '<meta property="og:title" content="'.$meta_title.'">'."\n";
-    echo '<meta property="og:description" content="'.metaClean($meta_descr, $metaDesLength).'">'."\n";
+    echo '<meta property="og:description" content="'.$meta_descr.'">'."\n";
     echo '<meta property="og:type" content="website">'."\n";
     echo '<meta property="og:url" content="'.$canonical_url.'">'."\n";	
 	echo '<meta property="og:image" content="' . htmlentities($image_link) . '" />' . "\n";	
 	$smarty->assign('seotext', $blog_meta['meta_title']);
-}
+} elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (isset($_GET['blog_item']) && is_numeric($_GET['blog_item']))) {
 //	Daten hole: Blog Eintrag
-elseif ((isset($_GET['blog_cat']) && is_numeric($_GET['blog_cat'])) && (isset($_GET['blog_item']) && is_numeric($_GET['blog_item']))) {
-    $blog_meta_query = xtDBquery("SELECT meta_keywords,
-	                                        meta_description,
-	                                        meta_title,
-	                                        title
+    $blog_meta = xtc_db_fetch_array(xtDBquery("SELECT *
 	                                        FROM " . TABLE_BLOG_ITEMS . "
-	                                        WHERE item_id = '" . $_GET['blog_item'] . "'
-	                                        AND language_id = '" . intval($_SESSION['languages_id']) . "'");
-    $blog_meta = xtc_db_fetch_array($blog_meta_query, true);
-
-    if (!empty($blog_meta['meta_description']))
+	                                        WHERE item_id = '" . (int) $_GET['blog_item'] . "'
+	                                        AND language_id = '" . (int) $_SESSION['languages_id'] . "'"));
+	if (!empty($blog_meta['meta_description'])) {
         $meta_descr = $blog_meta['meta_description'];
-    else
+    } elseif (!empty($blog_meta['description'])) {
+        $meta_descr = metaTitle($blog_meta['description'], ($addOthersShopTitle) ? ML_TITLE : '');
+    } elseif (!empty($blog_meta['shortdesc'])) {
+        $meta_descr = metaTitle($blog_meta['shortdesc'], ($addOthersShopTitle) ? ML_TITLE : '');
+    } elseif (!empty($blog_meta['name'])) {
+        $meta_descr = metaTitle($blog_meta['name'], ($addOthersShopTitle) ? ML_TITLE : '');
+    } else {
         $meta_descr = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
+	}
+	$meta_descr = metaClean($meta_descr, $metaDesLength);
 
-    if (!empty($blog_meta['meta_keywords']))
+    if (!empty($blog_meta['meta_keywords'])) {
         $meta_keyw = $blog_meta['meta_keywords'];
-    else
-        $meta_keyw = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
+    } else {
+		$meta_keyw = metaKeyWords($blog_meta['titel'] . ' ' . $blog_meta['name'] . ' ' . $blog_meta['description']);
+	}
 
-    if (!empty($blog_meta['meta_title']))
+    if (!empty($blog_meta['meta_title'])) {
         $meta_title = $blog_meta['meta_title'];
-    else
+    } elseif (!empty($blog_meta['name'])) {
+        $meta_title = metaTitle($blog_meta['name'], ($addOthersShopTitle) ? ML_TITLE : '');
+    } else {
         $meta_title = metaTitle($blog_meta['titel'], ($addOthersShopTitle) ? ML_TITLE : '');
-				$image = xtc_db_fetch_array(xtc_db_query("select image from blog_item_images where item_id = ".$_GET['blog_item']." AND image_nr = 1 LIMIT 1 "));
-				if($image == ''){
-					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
-				}else{
-					$image_link = HTTP_SERVER . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/' . $image['image'];
-				}
-    $url = explode('?', $_SERVER['REQUEST_URI']);
-    $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
+	}
+
+	$image = xtc_db_fetch_array(xtc_db_query("select image from blog_item_images where item_id = ".$_GET['blog_item']." AND image_nr = 1 LIMIT 1 "));
+	if($image == ''){
+		$image_link = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/no_img_big.jpg';
+	}else{
+		$image_link = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . DIR_WS_IMAGES . 'blog_image/original_images/' . $image['image'];
+	}
+    if (!empty($blog_meta['canonical'])) {
+		$canonical_url = $blog_meta['canonical'];
+	} else {
+		$url = explode('?', $_SERVER['REQUEST_URI']);
+		$canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
+	}
+    
 	echo "\n".'<meta property="og:site_name" content="'.STORE_NAME.'">'."\n";
     echo '<meta property="og:title" content="'.$meta_title.'">'."\n";
-    echo '<meta property="og:description" content="'.metaClean($meta_descr, $metaDesLength).'">'."\n";
+    echo '<meta property="og:description" content="'.$meta_descr.'">'."\n";
     echo '<meta property="og:type" content="website">';
     echo '<meta property="og:url" content="'.$canonical_url.'">'."\n";
 	echo '<meta property="og:image" content="' . htmlentities($image_link) . '" />' . "\n";
 	$smarty->assign('seotext', $blog_meta['title']);
-}
-
+} elseif (basename($_SERVER['SCRIPT_NAME']) == FILENAME_SPECIALS) {
 //	Title fuer: Specials / Products New
-elseif (basename($_SERVER['SCRIPT_NAME']) == FILENAME_SPECIALS) {
     $meta_title = metaTitle(NAVBAR_TITLE_SPECIALS, TITLE);
 } elseif (basename($_SERVER['SCRIPT_NAME']) == FILENAME_PRODUCTS_NEW) {
     $meta_title = metaTitle(NAVBAR_TITLE_PRODUCTS_NEW, TITLE);
@@ -671,7 +674,12 @@ switch (basename($_SERVER['SCRIPT_NAME'])) {
         $meta_descr .= metaTitle($breadcrumbTitle, stripslashes(trim(urldecode($_GET['tag']))), ($addSearchShopTitle) ? ML_TITLE : '');
         $meta_title = metaTitle($breadcrumbTitle, stripslashes(trim(urldecode($_GET['tag']))), ($addSearchShopTitle) ? ML_TITLE : '');
         $url = explode('?', $_SERVER['REQUEST_URI']);
-        $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $url[0];
+		if (MODULE_COMMERCE_SEO_URL_LOWERCASE == 'True') {
+			$tag = strtolower($url[0]);
+		} else {
+			$tag = $url[0];
+		}
+        $canonical_url = (($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $tag;
         break;
 //	Title für Produkt-Filter
     case FILENAME_PRODUCT_FILTER :

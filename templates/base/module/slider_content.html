@@ -1,0 +1,220 @@
+{strip}
+{if $slider_text}
+	{$slider_text}
+{elseif $slider_image}
+	{if $fullsize == 1}
+	<div class="container-fluid{if $slider_mobile == '0'} hidden-xs{/if}">
+	{else}
+	    <div class="container{if $slider_mobile == '0'} hidden-xs{/if}">
+	    <div class="row">
+	{/if}
+	<div id="slider_galery" class="carousel slide slider_top" data-ride="carousel">
+		<ol class="carousel-indicators">
+			<li data-target="#slider_galery" data-slide-to="0" class="active"></li>
+			{if $slider_image_2}
+				<li data-target="#slider_galery" data-slide-to="1"></li>
+			{/if}
+			{if $slider_image_3}
+				<li data-target="#slider_galery" data-slide-to="2"></li>
+			{/if}
+			{if $slider_image_4}
+				<li data-target="#slider_galery" data-slide-to="3"></li>
+			{/if}
+			{if $slider_image_5}
+				<li data-target="#slider_galery" data-slide-to="4"></li>
+			{/if}
+			{if $slider_image_6}
+				<li data-target="#slider_galery" data-slide-to="5"></li>
+			{/if}
+			{if $slider_image_7}
+				<li data-target="#slider_galery" data-slide-to="6"></li>
+			{/if}
+			{if $slider_image_8}
+				<li data-target="#slider_galery" data-slide-to="7"></li>
+			{/if}
+		</ol>
+		<div class="carousel-inner">
+			<div class="item active">
+				{if $slider_url}
+					<a href="{$slider_url}">
+					{$slider_image}
+					</a>
+				{else}
+					{$slider_image}
+				{/if}
+				{if $slider_link_text || $slider_desc}
+					<div class="carousel-caption">
+						{if $slider_link_text}
+							<h2>{$slider_link_text}</h2>
+						{/if}
+						{if $slider_desc}
+							<p>{$slider_desc}</p>
+						{/if}
+					</div>
+				{/if}
+			</div>
+			{if $slider_image_2}
+				<div class="item">
+					{if $slider_url_2}
+						<a href="{$slider_url_2}">
+						{$slider_image_2}
+						</a>
+					{else}
+						{$slider_image_2}
+					{/if}
+					{if $slider_link_text_2 || $slider_desc_2}
+						<div class="carousel-caption">
+							{if $slider_link_text_2}
+							<h2>{$slider_link_text_2}</h2>
+							{/if}
+							{if $slider_desc_2}
+								<p>{$slider_desc_2}</p>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
+			{if $slider_image_3}
+				<div class="item">
+					{if $slider_url_3}
+						<a href="{$slider_url_3}">
+						{$slider_image_3}
+						</a>
+					{else}
+						{$slider_image_3}
+					{/if}
+					{if $slider_link_text_3 || $slider_desc_3}
+						<div class="carousel-caption">
+							{if $slider_link_text_3}
+							<h2>{$slider_link_text_3}</h2>
+							{/if}
+							{if $slider_desc_3}
+								<p>{$slider_desc_3}</p>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
+			{if $slider_image_4}
+				<div class="item">
+					{if $slider_url_4}
+						<a href="{$slider_url_4}">
+						{$slider_image_4}
+						</a>
+					{else}
+						{$slider_image_4}
+					{/if}
+					{if $slider_link_text_4 || $slider_desc_4}
+						<div class="carousel-caption">
+							{if $slider_link_text_4}
+							<h2>{$slider_link_text_4}</h2>
+							{/if}
+							{if $slider_desc_4}
+								<p>{$slider_desc_4}</p>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
+			{if $slider_image_5}
+				<div class="item">
+					{if $slider_url_5}
+						<a href="{$slider_url_5}">
+						{$slider_image_5}
+						</a>
+					{else}
+						{$slider_image_5}
+					{/if}
+					{if $slider_link_text_5 || $slider_desc_5}
+						<div class="carousel-caption">
+							{if $slider_link_text_5}
+							<h2>{$slider_link_text_5}</h2>
+							{/if}
+							{if $slider_desc_5}
+								<p>{$slider_desc_5}</p>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
+			{if $slider_image_6}
+				<div class="item">
+					{if $slider_url_6}
+						<a href="{$slider_url_6}">
+						{$slider_image_6}
+						</a>
+					{else}
+						{$slider_image_6}
+					{/if}
+					{if $slider_link_text_6 || $slider_desc_6}
+						<div class="carousel-caption">
+							{if $slider_link_text_6}
+							<h2>{$slider_link_text_6}</h2>
+							{/if}
+							{if $slider_desc_6}
+								<p>{$slider_desc_6}</p>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
+			{if $slider_image_7}
+				<div class="item">
+					{if $slider_url_7}
+						<a href="{$slider_url_7}">
+						{$slider_image_7}
+						</a>
+					{else}
+						{$slider_image_7}
+					{/if}
+					{if $slider_link_text_7 || $slider_desc_7}
+						<div class="carousel-caption">
+							{if $slider_link_text_7}
+							<h2>{$slider_link_text_7}</h2>
+							{/if}
+							{if $slider_desc_7}
+								<p>{$slider_desc_7}</p>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
+			{if $slider_image_8}
+				<div class="item">
+					{if $slider_url_8}
+						<a href="{$slider_url_8}">
+						{$slider_image_8}
+						</a>
+					{else}
+						{$slider_image_8}
+					{/if}
+					{if $slider_link_text_8 || $slider_desc_8}
+						<div class="carousel-caption">
+							{if $slider_link_text_8}
+							<h2>{$slider_link_text_8}</h2>
+							{/if}
+							{if $slider_desc_8}
+								<p>{$slider_desc_8}</p>
+							{/if}
+						</div>
+					{/if}
+				</div>
+			{/if}
+		</div>
+		{if $slider_nav_status == '1'}
+		<a class="left carousel-control" href="#slider_galery" data-slide="prev">
+			<span class="glyphicon glyphicon-chevron-left"></span>
+		</a>
+		<a class="right carousel-control" href="#slider_galery" data-slide="next">
+			<span class="glyphicon glyphicon-chevron-right"></span>
+		</a>
+		{/if}
+	</div>
+	{if $fullsize == 1}
+	</div>
+	{else}
+	</div>
+	</div>
+	{/if}
+{/if}
+{/strip}

@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: tagcloud.php 371 2013-06-10 12:44:12Z akausch $
+* 	$Id: tagcloud.php 1006 2014-05-07 12:06:27Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -24,7 +24,7 @@ else {
 }
 
 if(!$box_smarty->isCached(CURRENT_TEMPLATE.'/boxes/box_tagcloud.html', $cache_id) || !$cache){
-	function kshuffle(&$array) {
+	function kshuffle2(&$array) {
 	    if(!is_array($array) || empty($array))
 	        return false;
 	    $tmp = array();
@@ -38,16 +38,12 @@ if(!$box_smarty->isCached(CURRENT_TEMPLATE.'/boxes/box_tagcloud.html', $cache_id
 	    return true;
 	}
 
-	function printTagCloud($tags) {
-
-		kshuffle($tags); // Zufällige Anzeige
-
+	function printTagCloud2($tags) {
+		kshuffle2($tags); // Zufällige Anzeige
 	    $max_size = MAX_DISPLAY_TAGS_FONT; // max font size in pixels
 	    $min_size = MIN_DISPLAY_TAGS_FONT; // min font size in pixels
-
 	    $max_qty = max(array_values($tags));
 	    $min_qty = min(array_values($tags));
-
 	    $spread = $max_qty - $min_qty;
 	    if($spread == 0)
 	        $spread = 1;
@@ -65,13 +61,14 @@ if(!$box_smarty->isCached(CURRENT_TEMPLATE.'/boxes/box_tagcloud.html', $cache_id
 									tag, count(tag) AS tag_anzahl,
 									p.products_status
 								FROM
-									tag_to_product
-								INNER JOIN
-									".TABLE_PRODUCTS." AS p ON(p.products_id = pID)
+									tag_to_product,
+									".TABLE_PRODUCTS." as p
 								WHERE
 									lID = '".(int)$_SESSION['languages_id']."'
 								AND 
 									p.products_status = '1'
+								AND
+									p.products_id = pID
 								GROUP BY
 									tag
 								ORDER BY
@@ -86,7 +83,7 @@ if(!$box_smarty->isCached(CURRENT_TEMPLATE.'/boxes/box_tagcloud.html', $cache_id
 		}
 	}
 	if(is_array($tag_array))
-		$tag_cloud = printTagCloud($tag_array);
+		$tag_cloud = printTagCloud2($tag_array);
 	if ($tag_cloud!='')	{
 		$box_smarty->assign('box_name', getBoxName('tagcloud'));
 		$box_smarty->assign('box_class_name', getBoxCSSName('tagcloud'));

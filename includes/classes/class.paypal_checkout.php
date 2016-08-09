@@ -72,25 +72,15 @@ class paypal_checkout_ORIGINAL {
             $this->NOTIFY_URL = HTTPS_SERVER . DIR_WS_CATALOG . 'callback/paypal/ipn.php';
             $this->EXPRESS_CANCEL_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_SHOPPING_CART . '?cSEOid=' . xtc_session_id();
             $this->EXPRESS_RETURN_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_PAYPAL_CHECKOUT . '?cSEOid=' . xtc_session_id();
-            if (CHECKOUT_AJAX_STAT == 'true') {
-                $this->PRE_CANCEL_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT . '?cSEOid=' . xtc_session_id();
-                $this->CANCEL_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT . '?cSEOid=' . xtc_session_id() . '&error=true&error_message=' . PAYPAL_ERROR;
-            } else {
                 $this->PRE_CANCEL_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_PAYMENT . '?cSEOid=' . xtc_session_id();
                 $this->CANCEL_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_PAYMENT . '?cSEOid=' . xtc_session_id() . '&error=true&error_message=' . PAYPAL_ERROR;
-            }
             $this->RETURN_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_PROCESS . '?cSEOid=' . xtc_session_id();
             $this->GIROPAY_SUCCESS_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_SUCCESS . '?cSEOid=' . xtc_session_id();
             $this->GIROPAY_CANCEL_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_SHOPPING_CART . '?cSEOid=' . xtc_session_id();
             $this->BANKTXN_PENDING_URL = HTTPS_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_SUCCESS . '?cSEOid=' . xtc_session_id();
         } else {
-            if (CHECKOUT_AJAX_STAT == 'true') {
-                $this->CANCEL_URL = HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT . '?cSEOid=' . xtc_session_id() . '&error=true&error_message=' . PAYPAL_ERROR;
-                $this->PRE_CANCEL_URL = HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT . '?cSEOid=' . xtc_session_id();
-            } else {
                 $this->CANCEL_URL = HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_PAYMENT . '?cSEOid=' . xtc_session_id() . '&error=true&error_message=' . PAYPAL_ERROR;
                 $this->PRE_CANCEL_URL = HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_PAYMENT . '?cSEOid=' . xtc_session_id();
-            }
             $this->NOTIFY_URL = HTTP_SERVER . DIR_WS_CATALOG . 'callback/paypal/ipn.php';
             $this->EXPRESS_CANCEL_URL = HTTP_SERVER . DIR_WS_CATALOG . FILENAME_SHOPPING_CART . '?cSEOid=' . xtc_session_id();
             $this->EXPRESS_RETURN_URL = HTTP_SERVER . DIR_WS_CATALOG . FILENAME_PAYPAL_CHECKOUT . '?cSEOid=' . xtc_session_id();

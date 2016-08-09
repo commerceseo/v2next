@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.order.php 1107 2014-06-18 07:27:22Z sbraeutig $
+ * 	$Id: class.order.php 1332 2014-12-18 17:30:55Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -40,15 +40,8 @@ class order_ORIGINAL {
     }
 
     function query($order_id) {
-
         $order_id = xtc_db_prepare_input($order_id);
-
-        $order_query = xtc_db_query("SELECT
-							   *
-							   FROM " . TABLE_ORDERS . " WHERE
-							   orders_id = '" . xtc_db_input($order_id) . "'");
-
-        $order = xtc_db_fetch_array($order_query);
+        $order = xtc_db_fetch_array(xtc_db_query("SELECT * FROM " . TABLE_ORDERS . " WHERE orders_id = '" . xtc_db_input($order_id) . "';"));
 
         $totals_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_TOTAL . " where orders_id = '" . xtc_db_input($order_id) . "' order by sort_order");
         while ($totals = xtc_db_fetch_array($totals_query)) {
@@ -151,6 +144,9 @@ class order_ORIGINAL {
         $index = 0;
         $orders_products_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS . " WHERE orders_id = '" . xtc_db_input($order_id) . "';");
         while ($orders_products = xtc_db_fetch_array($orders_products_query)) {
+				// $coo_properties_control = cseohookfactory::create_object('PropertiesControl');
+				// $t_properties_array = $coo_properties_control->get_orders_products_properties($orders_products['orders_products_id']);
+
             $this->products[$index] = array('qty' => $orders_products['products_quantity'],
                 'id' => $orders_products['products_id'],
                 'name' => $orders_products['products_name'],
@@ -158,7 +154,9 @@ class order_ORIGINAL {
                 'tax' => $orders_products['products_tax'],
                 'price' => $orders_products['products_price'],
                 'shipping_time' => $orders_products['products_shipping_time'],
-                'final_price' => $orders_products['final_price']);
+                'final_price' => $orders_products['final_price'],
+				'properties' =>  $t_properties_array
+				);
 
             $subindex = 0;
             $attributes_query = xtc_db_query("SELECT * FROM " . TABLE_ORDERS_PRODUCTS_ATTRIBUTES . " WHERE orders_id = '" . xtc_db_input($order_id) . "' AND orders_products_id = '" . $orders_products['orders_products_id'] . "';");
@@ -202,6 +200,10 @@ class order_ORIGINAL {
                 $attributes_data .= '<br />' . $attributes_data_values['products_options'] . ':' . $attributes_data_values['products_options_values'];
                 $attributes_model .= '<br />' . xtc_get_attributes_model($order_data_values['products_id'], $attributes_data_values['products_options_values'], $attributes_data_values['products_options']);
             }
+			// properties
+			// $coo_properties_control = cseohookfactory::create_object('PropertiesControl');
+			// $t_properties_array = $coo_properties_control->get_orders_products_properties($order_data_values['orders_products_id']);
+
 			
 			require_once (DIR_FS_INC . 'xtc_get_cart_description.inc.php');
 			require_once (DIR_FS_INC . 'xtc_get_short_description.inc.php');
@@ -225,6 +227,7 @@ class order_ORIGINAL {
 				'PRODUCTS_IMAGE' => $image,
                 'PRODUCTS_ATTRIBUTES' => $attributes_data,
                 'PRODUCTS_ATTRIBUTES_MODEL' => $attributes_model,
+				'PRODUCTS_PROPERTIES' => $t_properties_array,
                 'PRODUCTS_PRICE' => $xtPrice->xtcFormat($order_data_values['final_price'], true),
                 'PRODUCTS_SINGLE_PRICE' => $xtPrice->xtcFormat($order_data_values['final_price'] / $order_data_values['products_quantity'], true),
                 'PRODUCTS_QTY' => $order_data_values['products_quantity']);
@@ -466,6 +469,16 @@ class order_ORIGINAL {
                 $this->info['total'] -= ($this->info['subtotal'] / 100 * $_SESSION['customers_status']['customers_status_ot_discount']);
             }
         }
+		if (file_exists(DIR_WS_MODULES . 'bonus_cart.php')) {
+			if($_SESSION['bonus']['active'] == 'true') {
+				$bonus_ammount = $_SESSION['bonus']['points'] * MODULE_BONUS_POINTS;
+				$bonus_netto = $bonus_ammount / 119 * 100;
+				$bonus_mwst = $bonus_ammount - $bonus_netto;
+				$this->info['total'] -= ($bonus_ammount);
+				$this->info['tax_groups'][TAX_ADD_TAX."$products_tax_description"] -= $bonus_mwst;
+			}
+			// Bonuspunkte Modul eof
+		}	
     }
 
 }

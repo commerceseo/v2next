@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: cod.php 849 2014-02-10 14:01:15Z akausch $
+ * 	$Id: cod.php 1468 2015-07-22 20:29:10Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -19,7 +19,6 @@ class cod {
 
     function cod() {
         global $order, $xtPrice;
-
         $this->code = 'cod';
         $this->title = MODULE_PAYMENT_COD_TEXT_TITLE;
         $this->description = MODULE_PAYMENT_COD_TEXT_DESCRIPTION;
@@ -31,13 +30,12 @@ class cod {
         } else {
             $this->cost;
         }
-
         if ((int) MODULE_PAYMENT_COD_ORDER_STATUS_ID > 0) {
             $this->order_status = MODULE_PAYMENT_COD_ORDER_STATUS_ID;
         }
-
-        if (is_object($order))
+        if (is_object($order)) {
             $this->update_status();
+        }
     }
 
     function update_status() {
@@ -45,9 +43,12 @@ class cod {
         if ($_SESSION['shipping']['id'] == 'selfpickup_selfpickup') {
             $this->enabled = false;
         }
+        if ($_SESSION['shipping']['id'] == 'hermes_hermes' && MODULE_SHIPPING_HERMES_COD_STATUS != 'True') {
+            $this->enabled = false;
+        }
         if (($this->enabled == true) && ((int) MODULE_PAYMENT_COD_ZONE > 0)) {
             $check_flag = false;
-            $check_query = xtc_db_query("select zone_id from " . TABLE_ZONES_TO_GEO_ZONES . " where geo_zone_id = '" . MODULE_PAYMENT_COD_ZONE . "' and zone_country_id = '" . $order->delivery['country']['id'] . "' order by zone_id");
+            $check_query = xtc_db_query("SELECT zone_id FROM " . TABLE_ZONES_TO_GEO_ZONES . " WHERE geo_zone_id = '" . MODULE_PAYMENT_COD_ZONE . "' AND zone_country_id = '" . $order->delivery['country']['id'] . "' ORDER BY zone_id;");
             while ($check = xtc_db_fetch_array($check_query)) {
                 if ($check['zone_id'] < 1) {
                     $check_flag = true;
@@ -70,14 +71,15 @@ class cod {
 
     function selection() {
         global $xtPrice, $order;
-
         if (MODULE_ORDER_TOTAL_COD_FEE_STATUS == 'true') {
-
-
             $cod_country = false;
             //process installed shipping modules
             if ($_SESSION['shipping']['id'] == 'flat_flat')
                 $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_FLAT);
+            if ($_SESSION['shipping']['id'] == 'hermesprops_hermesprops')
+                $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_HERMESPROPS);
+            if ($_SESSION['shipping']['id'] == 'hermes_hermes')
+                $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_HERMES);
             if ($_SESSION['shipping']['id'] == 'flex_flex')
                 $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_FLEX);
             if ($_SESSION['shipping']['id'] == 'flatde_flatde')
@@ -86,8 +88,8 @@ class cod {
                 $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_FLAT_AT);
             if ($_SESSION['shipping']['id'] == 'flatch_flatch')
                 $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_FLAT_CH);
-			if ($_SESSION['shipping']['id'] == 'intraship_intraship') 
-				$cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_INTRASHIP_FLAT);
+            if ($_SESSION['shipping']['id'] == 'intraship_intraship')
+                $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_INTRASHIP_FLAT);
             if ($_SESSION['shipping']['id'] == 'item_item')
                 $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_ITEM);
             if ($_SESSION['shipping']['id'] == 'table_table')
@@ -104,6 +106,8 @@ class cod {
                 $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_AP);
             if ($_SESSION['shipping']['id'] == 'dp_dp')
                 $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_DP);
+            if ($_SESSION['shipping']['id'] == 'dpd_dpd')
+                $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_DPD);
             if ($_SESSION['shipping']['id'] == 'chp_ECO')
                 $cod_zones = preg_split("/[:,]+/", MODULE_ORDER_TOTAL_COD_FEE_CHP);
             if ($_SESSION['shipping']['id'] == 'chp_PRI')
@@ -150,7 +154,6 @@ class cod {
         }
 
         if ($cod_country) {
-
             $cod_tax = xtc_get_tax_rate(MODULE_ORDER_TOTAL_COD_FEE_TAX_CLASS, $order->delivery['country']['id'], $order->delivery['zone_id']);
             $cod_tax_description = xtc_get_tax_description(MODULE_ORDER_TOTAL_COD_FEE_TAX_CLASS, $order->delivery['country']['id'], $order->delivery['zone_id']);
             if ($_SESSION['customers_status']['customers_status_show_price_tax'] == 1) {
@@ -158,7 +161,6 @@ class cod {
                 $cod_cost = $xtPrice->xtcFormat($cod_cost_value, true);
             }
             if ($_SESSION['customers_status']['customers_status_show_price_tax'] == 0 && $_SESSION['customers_status']['customers_status_add_tax_ot'] == 1) {
-
                 $cod_cost_value = $cod_cost;
                 $cod_cost = $xtPrice->xtcFormat($cod_cost, true);
             }
@@ -168,8 +170,6 @@ class cod {
             }
             $this->cost = '+ ' . $cod_cost;
         }
-
-
         return array('id' => $this->code, 'module' => $this->title, 'description' => $this->info, 'module_cost' => $this->cost);
     }
 
@@ -201,27 +201,28 @@ class cod {
 
     function check() {
         if (!isset($this->_check)) {
-            $check_query = xtc_db_query("select configuration_value from " . TABLE_CONFIGURATION . " where configuration_key = 'MODULE_PAYMENT_COD_STATUS'");
+            $check_query = xtc_db_query("SELECT configuration_value FROM " . TABLE_CONFIGURATION . " WHERE configuration_key = 'MODULE_PAYMENT_COD_STATUS'");
             $this->_check = xtc_db_num_rows($check_query);
         }
         return $this->_check;
     }
 
     function install() {
-        xtc_db_query("insert into " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, set_function, date_added) values ('MODULE_PAYMENT_COD_STATUS', 'True',  '6', '1', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now())");
-        xtc_db_query("insert into " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, date_added) values ('MODULE_PAYMENT_COD_ALLOWED', '', '6', '0', now())");
-        xtc_db_query("insert into " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, use_function, set_function, date_added) values ('MODULE_PAYMENT_COD_ZONE', '0', '6', '2', 'xtc_get_zone_class_title', 'xtc_cfg_pull_down_zone_classes(', now())");
-        xtc_db_query("insert into " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, date_added) values ('MODULE_PAYMENT_COD_SORT_ORDER', '0',  '6', '0', now())");
-        xtc_db_query("insert into " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, set_function, use_function, date_added) values ('MODULE_PAYMENT_COD_ORDER_STATUS_ID', '0','6', '0', 'xtc_cfg_pull_down_order_statuses(', 'xtc_get_order_status_name', now())");
+        xtc_db_query("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, set_function, date_added) VALUES ('MODULE_PAYMENT_COD_STATUS', 'True',  '6', '1', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now())");
+        xtc_db_query("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, set_function, date_added) VALUES ('MODULE_PAYMENT_COD_HINWEIS_STATUS', 'True',  '6', '1', 'xtc_cfg_select_option(array(\'True\', \'False\'), ', now())");
+        xtc_db_query("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, set_function, date_added) VALUES ('MODULE_PAYMENT_COD_HINWEIS_TEXT', 'Bei Nachnahme fallen zusätzlich 2,00 EUR Nachnahmegebühren an, die direkt an den Paketzusteller zu entrichten sind.',  '6', '1', 'xtc_cfg_textarea(', now())");
+        xtc_db_query("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, date_added) VALUES ('MODULE_PAYMENT_COD_ALLOWED', 'DE', '6', '0', now())");
+        xtc_db_query("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, use_function, set_function, date_added) VALUES ('MODULE_PAYMENT_COD_ZONE', '0', '6', '2', 'xtc_get_zone_class_title', 'xtc_cfg_pull_down_zone_classes(', now())");
+        xtc_db_query("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, date_added) VALUES ('MODULE_PAYMENT_COD_SORT_ORDER', '0',  '6', '0', now())");
+        xtc_db_query("INSERT INTO " . TABLE_CONFIGURATION . " ( configuration_key, configuration_value,  configuration_group_id, sort_order, set_function, use_function, date_added) VALUES ('MODULE_PAYMENT_COD_ORDER_STATUS_ID', '0','6', '0', 'xtc_cfg_pull_down_order_statuses(', 'xtc_get_order_status_name', now())");
     }
 
     function remove() {
-        xtc_db_query("delete from " . TABLE_CONFIGURATION . " where configuration_key in ('" . implode("', '", $this->keys()) . "')");
+        xtc_db_query("DELETE FROM " . TABLE_CONFIGURATION . " where configuration_key in ('" . implode("', '", $this->keys()) . "')");
     }
 
     function keys() {
-        return array('MODULE_PAYMENT_COD_STATUS', 'MODULE_PAYMENT_COD_ALLOWED', 'MODULE_PAYMENT_COD_ZONE', 'MODULE_PAYMENT_COD_ORDER_STATUS_ID', 'MODULE_PAYMENT_COD_SORT_ORDER');
+        return array('MODULE_PAYMENT_COD_STATUS', 'MODULE_PAYMENT_COD_ALLOWED', 'MODULE_PAYMENT_COD_ZONE', 'MODULE_PAYMENT_COD_ORDER_STATUS_ID', 'MODULE_PAYMENT_COD_SORT_ORDER', 'MODULE_PAYMENT_COD_HINWEIS_STATUS', 'MODULE_PAYMENT_COD_HINWEIS_TEXT');
     }
 
 }
-

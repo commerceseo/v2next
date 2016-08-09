@@ -80,19 +80,6 @@ class create_account_ORIGINAL {
         $create_account_smarty['INPUT_CODE'] = xtc_draw_input_fieldNote(array('name' => 'postcode', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_POST_CODE_TEXT) ? '<span class="inputRequirement">' . ENTRY_POST_CODE_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['postcode']), 'size="5" required class="create_account_postcode" id="create_postcode"');
         $create_account_smarty['INPUT_CITY'] = xtc_draw_input_fieldNote(array('name' => 'city', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_CITY_TEXT) ? '<span class="inputRequirement">' . ENTRY_CITY_TEXT . '</span>' : '')), xtc_db_prepare_input($_POST['city']), 'size="19" required class="create_account_city" id="create_city"');
 
-        if (ACCOUNT_STATE == 'true') {
-            $create_account_smarty['state'] = '1';
-            $zones_array = array();
-            $zones_query = xtc_db_query("SELECT zone_id, zone_name FROM " . TABLE_ZONES . " WHERE zone_country_id = '" . (isset($_POST['country']) ? (int) $country : STORE_COUNTRY) . "' ORDER BY zone_name");
-            while ($zones_values = xtc_db_fetch_array($zones_query)) {
-                $zones_array[] = array('id' => $zones_values['zone_id'], 'text' => $zones_values['zone_name']);
-            }
-            $state_input = xtc_draw_pull_down_menuNote(array('name' => 'state', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_STATE_TEXT) ? '<span class="inputRequirement">' . ENTRY_STATE_TEXT . '</span>' : '')), $zones_array, xtc_db_prepare_input($_POST['state']), ' class="create_account_state" id="create_state"');
-            $create_account_smarty['INPUT_STATE'] = $state_input;
-        } else {
-            $create_account_smarty['state'] = '0';
-        }
-
         if (isset($_POST['country'])) {
             $selected = $_POST['country'];
         } elseif (isset($_SESSION['country'])) {
@@ -100,6 +87,20 @@ class create_account_ORIGINAL {
         } else {
             $selected = STORE_COUNTRY;
         }
+
+		if (ACCOUNT_STATE == 'true') {
+			$create_account_smarty['state'] = '1';
+			$zones_array = array();
+			$zones_query = xtc_db_query("SELECT zone_id, zone_name FROM " . TABLE_ZONES . " WHERE zone_country_id = '" . (int)$selected . "' ORDER BY zone_name");
+			while ($zones_values = xtc_db_fetch_array($zones_query)) {
+				$zones_array[] = array('id' => $zones_values['zone_id'], 'text' => $zones_values['zone_name']);
+			}
+			$state_input = xtc_draw_pull_down_menuNote(array('name' => 'state', 'text' => '&nbsp;' . (xtc_not_null(ENTRY_STATE_TEXT) ? '<span class="inputRequirement">' . ENTRY_STATE_TEXT . '</span>' : '')), $zones_array, xtc_db_prepare_input($_POST['state']), ' class="create_account_state" id="create_state"');
+			$create_account_smarty['INPUT_STATE'] = $state_input;
+		} else {
+			$create_account_smarty['state'] = '0';
+		}
+		
         $counrty_count_query = xtc_db_query("SELECT countries_id, status FROM " . TABLE_COUNTRIES . " WHERE status = '1'");
         $counrty_count = xtc_db_num_rows($counrty_count_query);
         if ($counrty_count > 1) {
@@ -128,7 +129,9 @@ class create_account_ORIGINAL {
                 if ($shop_content_data['content_file'] == 'janolaw_datenschutz.php') {
                     include (DIR_FS_INC . 'janolaw.inc.php');
                     $datensg = JanolawContent('datenschutzerklaerung', 'txt');
-                } else {
+                } elseif ($shop_content_data['content_file'] == 'protected_shops_datenschutz.php') {
+                    $datensg = '<div class="agbframe">' . file_get_contents(DIR_FS_DOCUMENT_ROOT . 'media/content/ps_datenschutz.html') . '</div>';
+				} else {
                     $datensg = '<div class="agbframe">' . file_get_contents(DIR_FS_DOCUMENT_ROOT . 'media/content/' . $shop_content_data['content_file']) . '</div>';
                 }
             } else {
@@ -275,12 +278,10 @@ class create_account_ORIGINAL {
 
             if (ACCOUNT_STATE == 'true') {
                 $zone_id = 0;
-                $check_query = xtc_db_query("select count(*) as total from " . TABLE_ZONES . " where zone_country_id = '" . (int) $country . "'");
-                $check = xtc_db_fetch_array($check_query);
+                $check = xtc_db_fetch_array(xtc_db_query("SELECT COUNT(*) AS total FROM " . TABLE_ZONES . " WHERE zone_country_id = '" . (int) $country . "';"));
                 $entry_state_has_zones = ($check['total'] > 0);
                 if ($entry_state_has_zones == true) {
-                    $zone_query = xtc_db_query("select zone_id,zone_name from " . TABLE_ZONES . " where zone_country_id = '" . (int) $country . "' and zone_id = '" . (int) $state . "' ");
-
+                    $zone_query = xtc_db_query("SELECT zone_id, zone_name FROM " . TABLE_ZONES . " WHERE zone_country_id = '" . (int) $country . "' AND zone_id = '" . (int) $state . "';");
                     if (xtc_db_num_rows($zone_query) >= 1) {
                         $zone = xtc_db_fetch_array($zone_query);
                         $zone_id = $zone['zone_id'];
@@ -322,6 +323,9 @@ class create_account_ORIGINAL {
                     if (checkdate(substr(xtc_date_raw($dob), 4, 2), substr(xtc_date_raw($dob), 6, 2), substr(xtc_date_raw($dob), 0, 4)) == false) {
                         $error = true;
                         $messageStack->add('create_account', ENTRY_DATE_OF_BIRTH_ERROR);
+                    } elseif ($date_aktuell - $date_kunde < 0) {
+						$error = true;
+                        $messageStack->add('create_account', ENTRY_DATE_OF_BIRTH_ERROR);
                     } elseif ($date_aktuell - $date_kunde < $min_age && ACCOUNT_AGE_VERIFICATION == 'true') {
                         $error = true;
                         $messageStack->add('create_account', ENTRY_DATE_OF_BIRTH_OLD);
@@ -356,7 +360,7 @@ class create_account_ORIGINAL {
 
             if ($error == false) {
                 $sql_data_array = array('customers_vat_id' => $vat,
-                    'customers_vat_id_status' => $customers_vat_id_status,
+                    'customers_vat_id_status' => ($customers_vat_id_status != '' ? $customers_vat_id_status : '0'),
                     'customers_status' => $customers_status,
                     'customers_firstname' => $firstname,
                     'customers_lastname' => $lastname,
@@ -450,7 +454,7 @@ class create_account_ORIGINAL {
 
                     xtc_db_perform(TABLE_NEWSLETTER_RECIPIENTS, $sql_newletter_array);
 
-                    $link = xtc_href_link(FILENAME_NEWSLETTER, 'action=activate&email=' . $email_address . '&key=' . $vlcode, 'NONSSL');
+                    $link = xtc_href_link(FILENAME_NEWSLETTER, 'action=activate&email=' . $email_address . '&key=' . $vlcode, 'SSL');
 
                     $smarty->assign('EMAIL', xtc_db_input($_POST['email']));
                     $smarty->assign('LINK', $link);

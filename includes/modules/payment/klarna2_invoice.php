@@ -155,6 +155,7 @@ class klarna2_invoice {
             $selection = array(
                 'id' => $this->code,
                 'module' => $this->title,
+                'fields' => '-',
                 'description' => $description,
                 'module_cost' => $klarna->formatAmount($module_cost),
             );
@@ -165,6 +166,7 @@ class klarna2_invoice {
                 $selection = array(
                     'id' => $this->code,
                     'module' => $this->title,
+					'fields' => '-',
                     'description' => $no_b2b_description,
                 );
             } else {

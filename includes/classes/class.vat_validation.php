@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.vat_validation.php 598 2013-09-12 13:19:54Z akausch $
+ * 	$Id: class.vat_validation.php 1494 2015-09-29 09:50:22Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------

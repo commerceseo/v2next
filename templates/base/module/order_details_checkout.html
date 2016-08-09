@@ -17,16 +17,16 @@
 					<a class="shipping" href="{$module_data.PRODUCTS_LINK}"><b>{$module_data.PRODUCTS_NAME}</b></a><br>
                     {$module_data.PRODUCTS_SHORT_DESCRIPTION}
                     {if $module_data.PRODUCTS_SHIPPING_TIME}
-						<br><span class="fs85"><em>{$txt.text_shippingtime} {$module_data.PRODUCTS_SHIPPING_TIME}</em></span>
+						<br>{$txt.text_shippingtime} {$module_data.PRODUCTS_SHIPPING_TIME}
                     {/if}
 				
                     {if $module_data.ATTRIBUTES != ''}
 						{foreach key=key_data item=item_data from=$module_data.ATTRIBUTES}
 						<div class="col-xs-12">
 							<em><span class="fl mr5">{$item_data.NAME}:</span> <span id="atta_{$item_data.ATTRIBUTE_ID}"><span id="attt_{$item_data.ATTRIBUTE_ID}">{$item_data.VALUE_NAME}</span></span>{$item_data.ATTRIBUTE_EDIT}</em>
-							{if $item_data.ATTRIBUTE_SHIPPING}
+							{*if $item_data.ATTRIBUTE_SHIPPING}
 							<br>{$txt.text_shippingtime} {$item_data.ATTRIBUTE_SHIPPING}
-							{/if}
+							{/if*}
 							<em>{$item_data.PREFIX} {$item_data.PRICE}</em>
 							{if $item_data.ATTRIBUTE_HIDDEN}
 							<span id="attd_{$item_data.ATTRIBUTE_ID}" style="display:none;">

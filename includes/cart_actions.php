@@ -121,7 +121,22 @@ if (isset($_GET['action'])) {
 
 
 		case 'add_product' :
-		// freitext_module
+				//Properties Beta
+				$f_products_id = (int) $_POST['products_id'];
+				$t_products_properties_combis_id = 0;
+				if(isset($_POST['properties_values_ids'])) {
+					$coo_properties_control = cseohookfactory::create_object('PropertiesControl');
+					$t_products_properties_combis_id = $coo_properties_control->get_combis_id_by_value_ids_array(xtc_get_prid($f_products_id), $_POST['properties_values_ids']);
+					if($t_products_properties_combis_id == 0) {
+						die('combi not available');
+					}
+				}
+				// echo '<pre>';
+				// print_r($_POST);
+				// echo '</pre>';die;
+			// $c_products_id = gm_string_filter($t_products_id, '0-9{}x');
+			//Properties Beta
+
 			if($_POST['product_options_id_freitext']) {
 				$query_res = xtc_db_fetch_array(xtc_db_query("SELECT products_options_values_id FROM products_options_values WHERE products_options_values_name= 'Freitext' AND language_id= ".(int)$_SESSION['languages_id'].";"));
 				$_POST['id'][$_POST['product_options_id_freitext']] = $query_res['products_options_values_id'];
@@ -153,8 +168,8 @@ if (isset($_GET['action'])) {
 					}
 					$goto = 'wish_list.php';
 				} elseif ($_POST['cart_quantity'] != ''){
-					$_SESSION['cart']->add_cart((int)$_POST['products_id'], $_SESSION['cart']->get_quantity($_POST['products_id']) + $_POST['cart_quantity'], $_SESSION['cart']->get_attributes_from_id ($_POST['products_id']));//FIX-WISHLIST ATTRIBUTES call get_attributes_from_id()
-					$_SESSION['wishList']->remove($_POST['products_id']);//FIX LÖSCHEN (int) WEG 
+					$_SESSION['cart']->add_cart((int)$_POST['products_id'], $_SESSION['cart']->get_quantity($_POST['products_id']) + $_POST['cart_quantity'], $_SESSION['cart']->get_attributes_from_id ($_POST['products_id']), true, $t_products_properties_combis_id);
+					$_SESSION['wishList']->remove($_POST['products_id']);
 				} elseif (isset($_POST['master']) && !empty($_POST['master'])) {
 					//Master Slave
 					if (PRODUCT_DETAILS_TAB_ACCESSORIES == 'true') {
@@ -205,11 +220,15 @@ if (isset($_GET['action'])) {
 							} else {
 								$t_ids = array();
 							}					
-							$_SESSION['cart']->add_cart((int)$_POST['products_id'][$i], $_SESSION['cart']->get_quantity(xtc_get_uprid($_POST['products_id'][$i], $t_ids)) + xtc_remove_non_numeric($_POST['products_qty']), $t_ids);
+				// echo '<pre>';
+				// print_r($t_products_properties_combis_id);
+				// echo '</pre>';die;
+							$_SESSION['cart']->add_cart((int)$_POST['products_id'][$i], $_SESSION['cart']->get_quantity(xtc_get_uprid($_POST['products_id'][$i], $t_ids)) + xtc_remove_non_numeric($_POST['products_qty']), $t_ids, true, $t_products_properties_combis_id);
 						}
+
 					} else {
 						$cart_quantity = (xtc_remove_non_numeric($_POST['products_qty']) + $_SESSION['cart']->get_quantity(xtc_get_uprid($_POST['products_id'], isset($_POST['id'])?$_POST['id']:'')));
-						$_SESSION['cart']->add_cart((int)$_POST['products_id'], $cart_quantity, isset($_POST['id'])?$_POST['id']:'');
+						$_SESSION['cart']->add_cart((int)$_POST['products_id'], $cart_quantity, isset($_POST['id'])?$_POST['id']:'', true ,$t_products_properties_combis_id);
 					}
 				}
 			}

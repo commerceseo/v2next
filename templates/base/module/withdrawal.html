@@ -1,0 +1,95 @@
+{load_language_text section="withdrawal"}
+
+{if $error != ''}
+	<div class="headerError bg-danger">{$error}</div>
+{/if}
+
+{if $success == '1'}
+	<div class="headerSuccess">{$txt.text_success}</div>
+	<br>
+	{$BUTTON_CONTINUE}
+{else}
+
+<div class="login_pad">
+	<h2>{$txt.heading_withdrawal}</h2>
+	<b>{$txt.text_withdrawal}</b>
+	<hr>
+	{$FORM_ACTION}
+	{$CUSTOMER_ID}
+		{*if $ANTISPAMCODEACTIVE == 'true'}
+			<b>{#text_antispam#}</b>{$ANTISPAMCODEQUESTION}<br>
+			<b>{#text_antispam_input#}</b>  {$INPUT_ANTISPAMCODE}
+			{$ANTISPAMCODEID}
+			<br>
+		{/if*}
+<fieldset class="account">
+	<legend><b>{$txt.title_namefield}</b></legend>
+	<dl>
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_gender}</dt>
+		<dd class="col-lg-8 col-sm-12">{$CUSTOMER_GENDER}</dd>
+
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_firstname}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_FIRSTNAME}</dd>
+
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_lastname}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_LASTNAME}</dd>
+
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_email}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_EMAIL}</dd>
+
+	</dl>
+</fieldset>
+<fieldset class="account">
+	<legend><b>{$txt.title_adress}</b></legend>
+	<dl>
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_street}</dt>
+		<dd class="col-lg-8 col-sm-12">{$CUSTOMER_STREET_ADDRESS}</dd>
+
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_plz}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_POSTCODE}</dd>
+
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_city}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_CITY}</dd>
+		
+		{if $SELECT_COUNTRY_ENABLE == 'true'}
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_country}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_COUNTRY}</dd>
+		{else}
+		{$INPUT_COUNTRY}
+		{/if}
+
+	</dl>
+</fieldset>
+<fieldset class="account">
+	<legend><b>{$txt.title_message}</b></legend>
+	<dl>
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_message}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_TEXT}*<br>{$txt.text_warning}</dd>
+	</dl>
+</fieldset>
+<fieldset class="account">
+	<legend><b>{$txt.title_dates}</b></legend>
+	<dl>
+		{if $ORDER_ID_ENABLE == 'true'}
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_order_id}</dt>
+		<dd class="col-lg-8 col-sm-12">{$ORDER_ID}<br>{$txt.hinweis_order_id}</dd>
+		{else}
+			{$ORDER_ID}
+		{/if}
+		
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_orderdate}</dt>
+		<dd class="col-lg-8 col-sm-12">{$ORDER_DATE}<br>{$txt.text_date}</dd>
+		
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_deliverydate}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_DELIVERYDATE}<br>{$txt.text_date}</dd>
+				
+		<dt class="w200 col-lg-4 col-sm-12">{$txt.text_withdrawaldate}</dt>
+		<dd class="col-lg-8 col-sm-12">{$INPUT_WITHDRAWALDATE}<br>{$txt.text_date}</dd>
+	</dl>
+</fieldset>
+	{$BUTTON_SUBMIT}
+	{$FORM_END}
+	<hr>
+
+</div>
+{/if}

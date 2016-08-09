@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: class.shopping_cart.php 1294 2014-12-10 16:28:17Z akausch $
+ * 	$Id: class.shopping_cart.php 1466 2015-07-22 20:26:42Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -17,6 +17,7 @@ require_once (DIR_FS_INC . 'xtc_create_random_value.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_prid.inc.php');
 require_once (DIR_FS_INC . 'xtc_image_submit.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_tax_description.inc.php');
+require_once (DIR_FS_INC . 'check_allowed_amount.inc.php');
 
 class shoppingCart_ORIGINAL {
 
@@ -50,19 +51,19 @@ class shoppingCart_ORIGINAL {
                         }
                     }
                     // if (isset($this->contents[$products_id]['properties'])) {
-                        // reset($this->contents[$products_id]['properties']);
-                        // xtc_db_query("INSERT INTO " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " (customers_id, products_id, properties_id) VALUES ('" . (int) $_SESSION['customer_id'] . "', '" . $products_id . "', '" . (int) $this->contents[$products_id]['properties'] . "')");
+                    // reset($this->contents[$products_id]['properties']);
+                    // xtc_db_query("INSERT INTO " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " (customers_id, products_id, properties_id) VALUES ('" . (int) $_SESSION['customer_id'] . "', '" . $products_id . "', '" . (int) $this->contents[$products_id]['properties'] . "')");
                     // }
                     if (isset($this->contents[$products_id]['freitext'])) {
                         reset($this->contents[$products_id]['freitext']);
                         while (list ($option, $value) = each($this->contents[$products_id]['freitext'])) {
                             while (list ($foption, $fvalue) = each($value)) {
-                                xtc_db_query("INSERT INTO " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " (customers_id, products_id, products_options_id, products_options_value_id, products_option_ft) VALUES ('" . (int) $_SESSION['customer_id'] . "', '" . $products_id . "', '" . (int) $option . "', $foption, '" . $fvalue . "')");
+                                xtc_db_query("INSERT INTO " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " (customers_id, products_id, products_options_id, products_options_value_id, products_option_ft) VALUES ('" . (int) $_SESSION['customer_id'] . "', '" . $products_id . "', '" . $option . "', $foption, '" . $fvalue . "')");
                             }
                         }
                     }
                 } else {
-                    xtc_db_query("UPDATE " . TABLE_CUSTOMERS_BASKET . " SET customers_basket_quantity = '" . (int) $qty . "' WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . $products_id . "'");
+                    xtc_db_query("UPDATE " . TABLE_CUSTOMERS_BASKET . " SET customers_basket_quantity = '" . $qty . "' WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . $products_id . "'");
                 }
             }
         }
@@ -74,10 +75,7 @@ class shoppingCart_ORIGINAL {
 
         while ($products = xtc_db_fetch_array($products_query)) {
             $t_gm_products_id = xtc_get_prid($products['products_id']);
-            $t_gm_check_status = xtc_db_query("SELECT
-													products_status
-												FROM " . TABLE_PRODUCTS . "
-												WHERE products_id = '" . (int) $t_gm_products_id . "'");
+            $t_gm_check_status = xtc_db_query("SELECT products_status FROM " . TABLE_PRODUCTS . " WHERE products_id = '" . $t_gm_products_id . "'");
             if (xtc_db_num_rows($t_gm_check_status) == 1) {
                 $t_gm_status = xtc_db_fetch_array($t_gm_check_status);
                 if ($t_gm_status['products_status'] == 1) {
@@ -86,7 +84,7 @@ class shoppingCart_ORIGINAL {
                     // $properties_query = xtc_db_fetch_array(xtc_db_query("SELECT properties_id FROM " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . xtc_db_input($products['products_id']) . "'"));
                     // $this->contents[$products['products_id']]['properties'] = $properties_query['properties_id'];
                     // attributes
-                    $attributes_query = xtc_db_query("SELECT products_options_id, products_options_value_id FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . xtc_db_input($products['products_id']) . "'");
+                    $attributes_query = xtc_db_query("SELECT * FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . xtc_db_input($products['products_id']) . "'");
                     while ($attributes = xtc_db_fetch_array($attributes_query)) {
                         if ($attributes['products_option_ft'] == '') {
                             $this->contents[$products['products_id']]['attributes'][$attributes['products_options_id']] = $attributes['products_options_value_id'];
@@ -115,7 +113,6 @@ class shoppingCart_ORIGINAL {
         if (isset($_SESSION['customer_id']) && ($reset_database == true)) {
             xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "'");
             xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "'");
-            // xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "'");
         }
 
         unset($this->cartID);
@@ -142,55 +139,24 @@ class shoppingCart_ORIGINAL {
 
     function add_cart($products_id, $qty = '1', $attributes = '', $notify = true, $p_products_properties_combis_id = 0) {
         global $new_products_id_in_cart;
-        // if (!preg_match('/[0-9]+\{[0-9]+\}[0-9{}]*x[0-9]+/', $products_id)) {
-            // $c_products_properties_combis_id = (int) $p_products_properties_combis_id;
-            // if ($c_products_properties_combis_id == 0) {
-                // $coo_properties_control = cseohookfactory::create_object('PropertiesControl'); #check products_id for integrated combis_id
-                // $t_combis_id = $coo_properties_control->extract_combis_id($products_id);
-                // if ($t_combis_id != '') {
-                    // $c_products_properties_combis_id = $t_combis_id;
-                // }
-            // }
-        // }
+
         $products_id = xtc_get_uprid($products_id, $attributes);
+        $qty = check_allowed_amount($products_id, $qty);
         if ($notify == true) {
             $_SESSION['new_products_id_in_cart'] = $products_id;
         }
 
         if ($this->in_cart($products_id)) {
-            // echo $c_products_properties_combis_id;die;
             $this->update_quantity($products_id, $qty, $attributes, $c_products_properties_combis_id);
         } else {
-            // echo $c_products_properties_combis_id;die;
             $this->contents[] = array($products_id);
             $this->contents[$products_id] = array('qty' => $qty);
-            // insert into database
-            // if (isset($_SESSION['customer_id'])) {
-                // xtc_db_query("INSERT INTO " . TABLE_CUSTOMERS_BASKET . " 
-								// (customers_id, products_id, customers_basket_quantity, customers_basket_date_added, properties_id) 
-							// VALUES 
-								// ('" . $_SESSION['customer_id'] . "', '" . $products_id . "', '" . $qty . "', '" . date('Ymd') . "', '" . $c_products_properties_combis_id . "')");
-            // }
             if (isset($_SESSION['customer_id'])) {
                 xtc_db_query("INSERT INTO " . TABLE_CUSTOMERS_BASKET . " 
 								(customers_id, products_id, customers_basket_quantity, customers_basket_date_added) 
 							VALUES 
 								('" . $_SESSION['customer_id'] . "', '" . $products_id . "', '" . $qty . "', '" . date('Ymd') . "')");
             }
-
-            // if ($c_products_properties_combis_id > 0) {
-                // reset($c_products_properties_combis_id);
-                // if (isset($_SESSION['customer_id'])) {
-                    // xtc_db_query("INSERT INTO " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " 
-				// (customers_id, 
-				// products_id, 
-				// properties_id) 
-				// VALUES 
-				// ('" . $_SESSION['customer_id'] . "',
-				// '" . $products_id . "',
-				// '" . $c_products_properties_combis_id . "')");
-                // }
-            // }
             if (is_array($attributes)) {
                 $query_res = xtc_db_fetch_array(xtc_db_query("SELECT products_options_values_id FROM products_options_values WHERE products_options_values_name= 'Freitext' AND language_id= " . (int) $_SESSION['languages_id'] . ";"));
                 $query_res1 = xtc_db_fetch_array(xtc_db_query("SELECT products_options_values_id FROM products_options_values WHERE products_options_values_name= 'Freitext1' AND language_id= " . (int) $_SESSION['languages_id'] . ";"));
@@ -233,20 +199,6 @@ class shoppingCart_ORIGINAL {
 								WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' 
 					AND products_id = '" . $products_id . "'");
         }
-        // echo $this->contents[$products_id]['properties'];die;
-        // if ($c_products_properties_combis_id > 0) {
-            // reset($c_products_properties_combis_id);
-            // $this->contents[$products_id]['properties'] = $c_products_properties_combis_id;
-            // if (isset($_SESSION['customer_id'])) {
-                // xtc_db_query("UPDATE 
-					// " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " 
-					// SET 
-					// properties_id = '" . (int) $c_products_properties_combis_id . "' 
-					// WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' 
-					// AND products_id = '" . (int) $products_id . "' 
-					// AND properties_id = '" . (int) $c_products_properties_combis_id . "'");
-            // }
-        // }
 
         if (is_array($attributes)) {
             reset($attributes);
@@ -275,7 +227,6 @@ class shoppingCart_ORIGINAL {
                 if (isset($_SESSION['customer_id'])) {
                     xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . $key . "'");
                     xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . $key . "'");
-                    // xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . $key . "'");
                 }
             }
         }
@@ -315,7 +266,6 @@ class shoppingCart_ORIGINAL {
         if (isset($_SESSION['customer_id'])) {
             xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . $products_id . "'");
             xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_ATTRIBUTES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . $products_id . "'");
-            // xtc_db_query("DELETE FROM " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' AND products_id = '" . $products_id . "'");
         }
         $this->cleanup();
         $this->cartID = $this->generate_cart_id();
@@ -360,14 +310,12 @@ class shoppingCart_ORIGINAL {
                 $products_price = $xtPrice->xtcGetPrice($product['products_id'], $format = false, $qty, $product['products_tax_class_id'], $product['products_price']);
                 $this->total += $products_price * $qty;
                 $this->weight += ($qty * $product['products_weight']);
-                // attributes price
                 $attribute_price = 0;
                 if (isset($this->contents[$products_id]['attributes'])) {
                     reset($this->contents[$products_id]['attributes']);
                     while (list ($option, $value) = each($this->contents[$products_id]['attributes'])) {
                         $values = $xtPrice->xtcGetOptionPrice($product['products_id'], $option, $value, $products_price);
                         $this->weight += $values['weight'] * $qty;
-                        //scalepriceoption_module
                         if ($values['scale_price'] != '') {
                             $scale_price = $xtPrice->calculate_optionscale($values['price'], $values['scale_price'], $qty);
                             $scale_price_tax = $xtPrice->xtcFormat($scale_price, false, $product['products_tax_class_id']);
@@ -681,6 +629,44 @@ class shoppingCart_ORIGINAL {
     }
 
     //GV Code End
+    // free shipping start - new code
+
+    function in_cart_fs($p_id) {
+        $product_id_list = ', ';
+        if (is_array($this->contents)) {
+            reset($this->contents);
+            while (list ($products_id, ) = each($this->contents)) {
+                $product_id_list = ', ' . $products_id . '{';
+                $string_needle = ', ' . $p_id . '{';
+                if (substr_count($product_id_list, $string_needle) != '0') {
+                    return $products_id;
+                }
+            }
+            return false;
+        }
+    }
+
+    function get_quantity_fs($p_id) {
+        if (is_array($this->contents)) {
+            reset($this->contents);
+            if (substr_count($p_id, '{') == '0') {
+                return $this->get_quantity($p_id);
+            } else {
+                $p_quantity = 0;
+                $p_root_id = substr($p_id, 0, strpos($p_id, '{'));
+                while (list ($products_id, ) = each($this->contents)) {
+                    $product_id_list = ', ' . $products_id . '{';
+                    $string_needle = ', ' . $p_root_id . '{';
+                    if (substr_count($product_id_list, $string_needle) != '0') {
+                        $p_quantity += $this->get_quantity($products_id);
+                    }
+                }
+                return $p_quantity;
+            }
+        }
+    }
+
+    // free shipping - end of code
 
     function get_attributes_from_id($var) {
         if (!is_numeric($var)) {
@@ -740,18 +726,6 @@ class shoppingCart_ORIGINAL {
             // Properties price
             if ($this->contents[$products_id]['properties']) {
                 reset($this->contents[$products_id]['properties']);
-                // if ($c_products_properties_combis_id > 0) {
-                // if (isset($_SESSION['customer_id'])) {
-                // xtc_db_query("UPDATE 
-                // " . TABLE_CUSTOMERS_BASKET_PROPERTIES . " 
-                // SET 
-                // properties_id = '" . (int) $c_products_properties_combis_id . "' 
-                // WHERE customers_id = '" . (int) $_SESSION['customer_id'] . "' 
-                // AND products_id = '" . (int) $products_id . "' 
-                // AND properties_id = '" . (int) $c_products_properties_combis_id . "'");
-                // }
-                // echo $c_products_properties_combis_id;die;
-                // }
             }
             // attributes price
             if ($this->contents[$products_id]['attributes']) {

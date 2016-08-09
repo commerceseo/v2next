@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: main_upcoming_products.php 522 2013-07-24 11:44:51Z akausch $
+ * 	$Id: main_upcoming_products.php 1118 2014-06-25 19:54:28Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -26,28 +26,19 @@ if ($_SESSION['customers_status']['customers_fsk18_display'] == '0')
 if (GROUP_CHECK == 'true')
     $group_check = "and p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . "=1 ";
 
-$expected_query = xtDBquery("SELECT 
-									p.*,
-									pd.*									 
-								FROM 
-									" . TABLE_PRODUCTS . " p  
-								LEFT JOIN 
-									" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(pd.products_id = p.products_id)
-								WHERE 
-									to_days(products_date_available) >= to_days(now())
-								AND 
-									p.products_id = pd.products_id
-									" . $group_check . "
-									" . $fsk_lock . "
-								AND 
-									pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-								GROUP BY p.products_id
-								ORDER BY 
-									p.products_date_available " . EXPECTED_PRODUCTS_SORT . "
-								LIMIT 
-									" . MAX_DISPLAY_UPCOMING_PRODUCTS);
+$expected_query = xtDBquery("SELECT p.*, pd.products_name, pd.products_description, pd.products_short_description
+							FROM " . TABLE_PRODUCTS . " p  
+							JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(pd.products_id = p.products_id)
+							WHERE to_days(products_date_available) >= to_days(now())
+							AND p.products_id = pd.products_id
+							" . $group_check . "
+							" . $fsk_lock . "
+							AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
+							GROUP BY p.products_id
+							ORDER BY p.products_date_available " . EXPECTED_PRODUCTS_SORT . "
+							LIMIT " . MAX_DISPLAY_UPCOMING_PRODUCTS);
 
-if (xtc_db_num_rows($expected_query, true) > 0) {
+if (xtc_db_num_rows($expected_query) > 0) {
     $row = 0;
     while ($expected = xtc_db_fetch_array($expected_query, true)) {
         $row++;

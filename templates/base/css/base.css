@@ -1,3 +1,21 @@
+#cookie-bar {
+  background: #D2D2D2;
+  height: auto;
+  line-height: 1;
+  font-size: 0.825em;
+  color: #1E1E1E;
+  text-align: center;
+  padding: 0.25em 0.5em 0.5em 0.5em;
+}
+
+#cookie-bar .cb-enable {
+  font-size: 1.25em;
+  display: inline-block;
+  position: relative;
+  right: 0;
+  color: #1E1E1E;
+}
+
 .wk_table {width: 100%;}
 
 @media screen and (max-width: 600px) {
@@ -120,31 +138,3 @@
 	border-top: 6px solid transparent;
 }
 
-
-#properties_selection_container {
-	position: relative;
-}
-
-#properties_selection_container #properties_selection_shadow {
-	background: url("images/wait.gif") no-repeat scroll center center #FFFFFF;
-	display: none;
-    bottom: 0;
-    left: 0;
-    opacity: 0.8;
-    position: absolute;
-    right: 0;
-    top: 0;
-}
-
-#properties_selection_container.details_attributes_dropdown option:disabled{
-	color: #bbb;
-}
-
-#properties_selection_container #properties_error {
-	color: #D20202;
-}
-
-#cart_button.inactive {
-	opacity: 0.3;
-	filter: alpha(opacity=30);
-}

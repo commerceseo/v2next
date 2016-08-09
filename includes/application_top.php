@@ -1,6 +1,6 @@
 <?php
 /*-----------------------------------------------------------------
-* 	$Id: application_top.php 1012 2014-05-08 13:02:25Z akausch $
+* 	$Id: application_top.php 1297 2014-12-10 16:30:24Z akausch $
 * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
 * 	http://www.commerce-seo.de
 * ------------------------------------------------------------------
@@ -11,7 +11,10 @@
 * 	(c) 2005     xt:Commerce - www.xt-commerce.com
 * 	Released under the GNU General Public License
 * ---------------------------------------------------------------*/
-
+//Loggin
+if(file_exists(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/system/core/logging')) {
+	require_once(str_replace('\\', '/', dirname(dirname(__FILE__))) . '/system/core/logging/LogControl.inc.php');
+}
 // start the timer for the page parse time log
 define('PAGE_PARSE_START_TIME', microtime());
 
@@ -97,8 +100,7 @@ require_once (DIR_FS_INC.'cseo_truncate.inc.php');
 require_once (DIR_FS_INC.'cseo_get_content.inc.php');
 require_once (DIR_FS_INC.'cseo_get_content_child.inc.php');
 require_once (DIR_FS_INC.'cseo_get_customer_name.inc.php');
-
-// Links basics
+require_once (DIR_FS_INC.'cseo_htmlentities_wrapper.inc.php');
 require_once (DIR_FS_INC.'xtc_href_link.inc.php');
 require_once (DIR_FS_INC.'xtc_php_mail.inc.php');
 require_once (DIR_FS_INC.'xtc_product_link.inc.php');
@@ -153,6 +155,7 @@ require_once (DIR_FS_INC.'xtc_image.inc.php');
 require_once (DIR_FS_INC.'xtc_image_button.inc.php');
 require_once (DIR_FS_INC.'cseo_wk_image_submit.inc.php');
 require_once (DIR_FS_INC.'cseo_wk_image_button.inc.php');
+require_once (DIR_FS_INC.'strlen_wrapper.inc.php');
 
 $blog_settings_query = xtc_db_query("SELECT blog_key, wert AS blog_wert FROM blog_settings");
 while ($blog_settings = xtc_db_fetch_array($blog_settings_query)) {
@@ -161,7 +164,7 @@ while ($blog_settings = xtc_db_fetch_array($blog_settings_query)) {
 
 // Set the length of the redeem code, the longer the more secure
 // Kommt eigentlich schon aus der Table configuration
-if(defined(SECURITY_CODE_LENGTH)) {
+if(defined('SECURITY_CODE_LENGTH')) {
   define('SECURITY_CODE_LENGTH', '10');
 }
 
@@ -673,12 +676,17 @@ function strtolower_wrapper($p_string, $p_encoding = 'utf-8') {
 	}
 	return $t_strtolower; 
 }
+
 //Lagerwarung
 if (MODULE_CUSTOMERS_ADMINMAIL_STATUS == 'true') {
 	include_once(DIR_WS_FUNCTIONS . 'stock_mails.php');
 	sendstockmails();
 }
-
+//PDF invoice
+if (MODULE_CUSTOMERS_PDF_INVOICE_STATUS == 'true') {
+	include_once(DIR_WS_FUNCTIONS . 'pdf_invoice.php');
+	pdfinvoice();
+}
 //Delete Guest inactive Account 
 if (DELETE_GUEST_ACCOUNT == 'true') {
 	include_once(DIR_WS_FUNCTIONS . 'delete_unused_guest_account.php');
@@ -702,4 +710,3 @@ $cseo_application_bottom_extender_component->set_data('GET', $_GET);
 $cseo_application_bottom_extender_component->set_data('POST', $_POST);
 $cseo_application_bottom_extender_component->proceed();
 
-define('CHECKOUT_AJAX_STAT', 'false');

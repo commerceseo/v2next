@@ -15,41 +15,30 @@
 
 $module_smarty = new smarty;
 $module_content = '';
+$cache = true;
+$module_smarty->caching = true;
+$module_smarty->cache_lifetime = CACHE_LIFETIME;
+$module_smarty->cache_modified_check = CACHE_CHECK;
+$cache_id = $_SESSION['language'] . $_SESSION['customers_status']['customers_status_id'] . $cPath . '_maincat';
 
-if (!CacheCheck()) {
-    $cache = false;
-    $module_smarty->caching = false;
-} else {
-    $cache = true;
-    $module_smarty->caching = true;
-    $module_smarty->cache_lifetime = CACHE_LIFETIME;
-    $module_smarty->cache_modified_check = CACHE_CHECK;
-    $cache_id = $_SESSION['language'] . $_SESSION['customers_status']['customers_status_id'] . $cPath . '_maincat';
-}
 if (!$module_smarty->isCached(CURRENT_TEMPLATE . '/module/categories_list.html', $cache_id) || !$cache) {
     $module_smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
     $categories_string = '';
 
     if (GROUP_CHECK == 'true') {
-        $group_check = "c.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . "=1  and";
+        $group_check = "c.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . " = 1";
     }
 
-    $categories_query = xtDBquery("SELECT
-							*
-						FROM
-							" . TABLE_CATEGORIES . " c
-						LEFT JOIN 
-							" . TABLE_CATEGORIES_DESCRIPTION . " cd ON(c.categories_id = cd.categories_id AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-						WHERE
-							c.parent_id = '0' 
-						AND
-							" . $group_check . " 
-							c.categories_status = '1' 
-						ORDER BY
-							c.sort_order ASC");
+    $categories_query = xtDBquery("SELECT *
+						FROM " . TABLE_CATEGORIES . " AS c
+						JOIN " . TABLE_CATEGORIES_DESCRIPTION . " AS cd ON(c.categories_id = cd.categories_id AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+						WHERE c.parent_id = '0'
+						" . $group_check . " 
+						AND c.categories_status = '1'
+						GROUP BY c.categories_id
+						ORDER BY c.sort_order ASC");
 
-    while ($categories = xtc_db_fetch_array($categories_query, true)) {
-
+    while ($categories = xtc_db_fetch_array($categories_query)) {
         if ($categories['categories_main_status'] == '1') {
             if ($categories['categories_image'] != '' && CATEGORY_LISTING_START_PICTURE == 'true') {
                 $image = xtc_image(DIR_WS_IMAGES . 'categories/' . $categories['categories_image'], ($categories['categories_pic_alt'] != '' ? $categories['categories_pic_alt'] : $categories['categories_name']), ($categories['categories_heading_title'] != '' ? $categories['categories_heading_title'] : $categories['categories_name']));

@@ -1,0 +1,65 @@
+{strip}
+{config_load file="lang/$language/lang_$language.conf" section="shopping_cart"}
+
+    <h2>{#heading_cart#}</h2>
+
+    {if $info_message!=''}
+    <div class="headerError bg-danger">{$info_message}</div>
+    {/if}
+
+    {if $error!=''}
+    <div class="headerError bg-danger">{$error}</div><br>
+    {/if}
+    {if $cart_empty==true}
+    {#text_empty#}<br><br>
+    {$BUTTON_CONTINUE}
+    {else}
+    {if $FIRST_NAME || $SECOND_NAME}
+    <div class="row">
+		<div class="col-xs-12">
+			<h4>{#head_nav1#}</h4>
+			<ul>
+				{if $SECOND_NAME}<li>{#nav_back#}<a href="{$SECOND_LINK}">{$SECOND_NAME}</a></li>{/if}
+				{if $FIRST_NAME}<li>{#nav_back#}<a href="{$FIRST_LINK}">{$FIRST_NAME}</a></li>{/if}
+				<li>{#nav_back_start#}<a href="{$HOME}">{#nav_start#}</a></li>
+			</ul>
+		</div>
+    </div>
+    {/if}
+
+    {if $MODULE_bonus_cart}
+    <div class="row">{$MODULE_bonus_cart}</div>
+    {/if}
+    {if $MODULE_gift_cart}
+		{$MODULE_gift_cart}
+    {/if}
+    {$FORM_ACTION}
+    {$HIDDEN_OPTIONS}
+    {$MODULE_order_details}
+    {if $info_message_1!=''}
+    <div class="headerError bg-danger">
+        {$info_message_1}{$min_order}{$info_message_2}{$order_amount}
+        <br>
+    </div>			
+    {/if}
+    {/if}
+    <hr />
+    <div class="row">
+        <div class="col-xs-6 text-left">{$BUTTON_RELOAD} {$BUTTON_BACK} {$BUTTON_PRINT_CART}</div>
+        <div class="col-xs-6 text-right">
+            {$BUTTON_CHECKOUT}
+            {if $BUTTON_PAYPAL!=''}
+            <br>{#text_or#}<br>
+            {$BUTTON_PAYPAL}<br>
+            {$BUTTON_PAYPAL_TEXT}
+            {/if}
+        </div>
+    </div>
+    <hr />
+    {$FORM_END}
+    <div class="ar" id="amazon_checkout_button"></div>
+    {if $MODULE_cart_specials}		
+    {$MODULE_cart_specials}
+    {/if}
+
+{/strip}

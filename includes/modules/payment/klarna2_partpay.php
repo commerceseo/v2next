@@ -173,6 +173,7 @@ class klarna2_partpay {
             $selection = array(
                 'id' => $this->code,
                 'module' => $this->title,
+				'fields' => '-',
                 'description' => $description,
             );
         } else {
@@ -182,6 +183,7 @@ class klarna2_partpay {
                 $selection = array(
                     'id' => $this->code,
                     'module' => $this->title,
+					'fields' => '-',
                     'description' => $no_b2b_description,
                 );
             } else {
@@ -293,7 +295,6 @@ class klarna2_partpay {
 
         if (empty($_SESSION['klarna_pclass_id']) && !isset($data_arr['klarna_pclass_id'])) {
             if (CHECKOUT_AJAX_STAT == 'true') {
-                xtc_redirect(CSEO_HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT . '?' . http_build_query(array('payment_error' => $this->code, 'error_reason' => 'select_pclass')));
             } else {
                 xtc_redirect(CSEO_HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_PAYMENT . '?' . http_build_query(array('payment_error' => $this->code, 'error_reason' => 'select_pclass')));
             }
@@ -346,9 +347,9 @@ class klarna2_partpay {
             $this->_invalidateTempOrder($orders_id);
             $_SESSION['klarna2_error'] = $e->getMessage();
             if (CHECKOUT_AJAX_STAT == 'true') {
-                xtc_redirect(CSEO_HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT . '?' . http_build_query(array('payment_error' => $this->code)));
+                xtc_redirect(CSEO_HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT . '?' . http_build_query(array('payment_error' => $this->code, 'error_c' => urlencode(utf8_encode($_SESSION['klarna2_error'])))));
             } else {
-                xtc_redirect(CSEO_HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_PAYMENT . '?' . http_build_query(array('payment_error' => $this->code)));
+                xtc_redirect(CSEO_HTTP_SERVER . DIR_WS_CATALOG . FILENAME_CHECKOUT_PAYMENT . '?' . http_build_query(array('payment_error' => $this->code, 'error_c' => urlencode(utf8_encode($_SESSION['klarna2_error'])))));
             }
         }
         if ($result[1] == KlarnaFlags::PENDING || $result[1] == KlarnaFlags::ACCEPTED) {

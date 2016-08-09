@@ -18,6 +18,7 @@
                 <div class="fl wk2">{if $module_data.PRODUCTS_IMAGE!=''}<img src="{$module_data.PRODUCTS_IMAGE}" alt="{$module_data.IMAGE_ALT}" />{/if}</div>
                 <div class="fl wk3"><a href="{$module_data.PRODUCTS_LINK}">{$module_data.PRODUCTS_NAME}</a><br>
                     {$module_data.PRODUCTS_SHORT_DESCRIPTION}<br>
+					{if $module_data.PRODUCTS_MODEL}<b>{$txt.text_article_nr}{$module_data.PRODUCTS_MODEL}</b><br>{/if}
                     {if $module_data.PRODUCTS_SHIPPING_TIME}
                     {$txt.text_shippingtime} {$module_data.PRODUCTS_SHIPPING_TIME}
                     {/if}

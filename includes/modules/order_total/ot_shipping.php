@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: ot_shipping.php 873 2014-03-25 16:42:10Z akausch $
+ * 	$Id: ot_shipping.php 1484 2015-07-27 09:17:15Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -56,6 +56,29 @@ class ot_shipping {
                 $free_shipping = true;
             }
         }
+	  
+	  // free shipping start - new code
+	  if ((STORE_COUNTRY == $order->delivery['country']['id'] && FREE_SHIPPING_LOCAL_ONLY == 'true') || FREE_SHIPPING_LOCAL_ONLY == 'false') {
+		$free_shipping_products_query = xtDBquery("SELECT products_id, max_free_shipping_amount FROM ".TABLE_PRODUCTS." WHERE free_shipping ='1';");
+		$free_amount = true;
+		$free_contents = 0;
+		while ($free_shipping_products = xtc_db_fetch_array($free_shipping_products_query)){
+		  $products_id_fs = $_SESSION['cart']->in_cart_fs($free_shipping_products['products_id']);
+		  if ($products_id_fs){
+			$free_contents += $_SESSION['cart']->get_quantity_fs($products_id_fs);
+			if (($free_shipping_products['max_free_shipping_amount'] >0)&&($_SESSION['cart']->get_quantity_fs($products_id_fs) > $free_shipping_products['max_free_shipping_amount'])){
+			$free_amount = false;
+			}
+		  }
+		}
+		if (($free_contents > 0) && ($free_contents == $_SESSION['cart']->count_contents()) && ($free_amount == true)){
+          $order->info['shipping_method'] = $this->title;
+          $order->info['total'] -= $order->info['shipping_cost'];
+          $order->info['shipping_cost'] = 0;
+		}
+		}
+		// free shipping - end of code
+
 
         $module = substr($_SESSION['shipping']['id'], 0, strpos($_SESSION['shipping']['id'], '_'));
         if (!isset($GLOBALS[$module]) && file_exists(DIR_FS_CATALOG . 'includes/modules/shipping/' . basename($module) . '.php')) {

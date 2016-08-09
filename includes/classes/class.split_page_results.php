@@ -23,17 +23,65 @@
 class splitPageResults_ORIGINAL {
 
     var $sql_query, $number_of_rows, $current_page_number, $number_of_pages, $number_of_rows_per_page, $current_category_id;
+	
+	public function __construct($query, $page, $max_rows, $count_key = '*') {
+        $this->sql_query = $query;
+        if (empty($page) || (is_numeric($page) == false)) {
+            $page = 1;
+        }
+        $this->current_page_number = $page;
+        $this->number_of_rows_per_page = $max_rows;
+        $pos_to = strlen($this->sql_query);
+        $pos_from = strpos($this->sql_query, ' FROM', 0);
+        $pos_group_by = strpos($this->sql_query, ' GROUP BY', $pos_from);
+        if (($pos_group_by < $pos_to) && ($pos_group_by != false)) {
+            $pos_to = $pos_group_by;
+        }
 
-    public function splitPageResults_ORIGINAL($query, $page, $max_rows, $count_key = '*') {
-        $this->__construct($query, $page, $max_rows, $count_key);
+        $pos_having = strpos($this->sql_query, ' HAVING', $pos_from);
+        if (($pos_having < $pos_to) && ($pos_having != false)) {
+            $pos_to = $pos_having;
+        }
+
+        $pos_order_by = strpos($this->sql_query, ' ORDER BY', $pos_from);
+        if (($pos_order_by < $pos_to) && ($pos_order_by != false)) {
+            $pos_to = $pos_order_by;
+        }
+
+        if (strpos($this->sql_query, 'DISTINCT') || strpos($this->sql_query, 'GROUP BY')) {
+            $count_string = 'DISTINCT ' . xtc_db_input($count_key);
+        } else {
+            $count_string = xtc_db_input($count_key);
+		}
+
+        $count_query = xtDBquery($query);
+        $count = xtc_db_num_rows($count_query, true);
+        $this->number_of_rows = $count;
+        $this->number_of_pages = ceil($this->number_of_rows / $this->number_of_rows_per_page);
+        // Avoid indexing of non existing pages, excluding the first page
+        // (e.g. if there are no reviews, allow review.php!)
+        if (($page > 1) && ($page > $this->number_of_pages)) {
+            header("HTTP/1.0 404 Not Found");
+		}
+
+        if ($this->current_page_number > $this->number_of_pages) {
+            $this->current_page_number = $this->number_of_pages;
+		}
+
+        $offset = $this->number_of_rows_per_page * ($this->current_page_number - 1);
+        $offset = $offset < 0 ? 0 : $offset;
+
+        $this->sql_query .= " LIMIT " . $offset . ", " . $this->number_of_rows_per_page . ";";
     }
+    // public function splitPageResults_ORIGINAL($query, $page, $max_rows, $count_key = '*') {
+        // $this->__construct($query, $page, $max_rows, $count_key);
+    // }
 
     // display number of total products found Old Version
     public function display_links($max_page_links, $parameters = '') {
         global $PHP_SELF, $request_type;
 
         $display_links_string = '';
-
         $class = 'class="pageResults"';
 
         if (xtc_not_null($parameters) && (substr($parameters, -1) != '&'))
@@ -76,98 +124,15 @@ class splitPageResults_ORIGINAL {
         return $display_links_string;
     }
 
-    /**
-     * Der PHP5 Konstruktor der Klasse.
-     * Initialisiert die abzufragenden Seiten mit diversen Parametern.
-     *
-     * @param string $query
-     * @param int $page
-     * @param int $max_rows
-     * @param string $count_key
-     */
-    public function __construct($query, $page, $max_rows, $count_key = '*') {
-        $this->sql_query = $query;
-
-        if (empty($page) || (is_numeric($page) == false)) {
-            $page = 1;
-        }
-
-
-        $this->current_page_number = $page;
-
-        $this->number_of_rows_per_page = $max_rows;
-
-        $pos_to = strlen($this->sql_query);
-        $pos_from = strpos($this->sql_query, ' FROM', 0);
-
-        $pos_group_by = strpos($this->sql_query, ' GROUP BY', $pos_from);
-
-        if (($pos_group_by < $pos_to) && ($pos_group_by != false)) {
-            $pos_to = $pos_group_by;
-        }
-
-        $pos_having = strpos($this->sql_query, ' HAVING', $pos_from);
-
-        if (($pos_having < $pos_to) && ($pos_having != false)) {
-            $pos_to = $pos_having;
-        }
-
-        $pos_order_by = strpos($this->sql_query, ' ORDER BY', $pos_from);
-
-        if (($pos_order_by < $pos_to) && ($pos_order_by != false)) {
-            $pos_to = $pos_order_by;
-        }
-
-        if (strpos($this->sql_query, 'DISTINCT') || strpos($this->sql_query, 'GROUP BY'))
-            $count_string = 'DISTINCT ' . xtc_db_input($count_key);
-        else
-            $count_string = xtc_db_input($count_key);
-
-
-        $count_query = xtDBquery($query);
-        $count = xtc_db_num_rows($count_query, true);
-
-        $this->number_of_rows = $count;
-        $this->number_of_pages = ceil($this->number_of_rows / $this->number_of_rows_per_page);
-
-        // Avoid indexing of non existing pages, excluding the first page
-        // (e.g. if there are no reviews, allow review.php!)
-        if (($page > 1) && ($page > $this->number_of_pages))
-            header("HTTP/1.0 404 Not Found");
-
-        if ($this->current_page_number > $this->number_of_pages)
-            $this->current_page_number = $this->number_of_pages;
-
-        $offset = $this->number_of_rows_per_page * ($this->current_page_number - 1);
-        $offset = $offset < 0 ? 0 : $offset;
-
-        $this->sql_query .= " LIMIT " . $offset . ", " . $this->number_of_rows_per_page . ";";
-    }
-
-    /**
-     * Diese Funktion erzeugt ein Array mit Links zur Navigation
-     * durch die Produkte, bei eingeschalteten SEO-Urls.
-     *
-     * @param int $max_page_links
-     * @param mixed $parameters
-     * @param string $text_output
-     * @param string $active_site
-     */
     function getSEOLinksArray($max_page_links, $parameters = '', $text_output = "", $active_site = '') {
         global $request_type;
-
         $this->current_category_id = $_GET['cPath'];
-
         $start = $this->current_page_number - $max_page_links;
         $start = $start < 1 ? 1 : $start;
-
         $end = $this->current_page_number + $max_page_links;
         $end = $end > $this->number_of_pages ? $this->number_of_pages : $end;
-
         $links = array();
-
         $site = '&page=';
-
         $url = FILENAME_DEFAULT;
 
         // zurück Button - wird auf der ersten Seite nicht angezeigt
@@ -298,38 +263,16 @@ class splitPageResults_ORIGINAL {
         return $links;
     }
 
-    /** NOTICE BY N.SOELLINGER: OLD BUGGY VERSION OF THE METHOD!
-
-     * */
-
-    /**
-     * Diese Funktion erzeugt ein Array mit Links zur Navigation durch die Produkte.
-     *
-     * @param int $max_page_links
-     * @param mixed $parameters
-     * @param string $text_output
-     * @param string $active_site
-     * @param bool $no_seo
-     * @return mixed array()
-     */
     public function getLinksArray($max_page_links, $parameters = '', $text_output = "", $active_site = '', $no_seo = false) {
-
         global $request_type;
-
         $PHP_SELF = $_SERVER['PHP_SELF'];
-
         $this->current_category_id = $_GET['cPath'];
-
         $start = $this->current_page_number - $max_page_links;
         $start = $start < 1 ? 1 : $start;
-
         $end = $this->current_page_number + $max_page_links;
         $end = $end > $this->number_of_pages ? $this->number_of_pages : $end;
-
         $links = array();
-
         $site = 'page=';
-
 
         if ($_GET['fcat'] != '') {
             $url = FILENAME_PRODUCT_FILTER;
@@ -475,15 +418,11 @@ class splitPageResults_ORIGINAL {
 
     function getLinksArrayTag($max_page_links, $parameters = '', $text_output, $active_site = '', $tag) {
         global $request_type;
-
         $PHP_SELF = $_SERVER['PHP_SELF'];
-
         $start = $this->current_page_number - $max_page_links;
         $start = $start < 1 ? 1 : $start;
-
         $end = $this->current_page_number + $max_page_links;
         $end = $end > $this->number_of_pages ? $this->number_of_pages : $end;
-
         $links = array();
 
         if ($parameters != '' && (substr($parameters, -1) != '&'))
@@ -491,9 +430,7 @@ class splitPageResults_ORIGINAL {
         $site = 'page=';
 
         $tag = urlencode($tag);
-
         $url = 'tag/' . $tag . '/';
-
         // zurück Button - wird auf der ersten Seite nicht angezeigt
         if ($this->current_page_number > 1) {
 

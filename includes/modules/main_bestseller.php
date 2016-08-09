@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: main_bestseller.php 522 2013-07-24 11:44:51Z akausch $
+ * 	$Id: main_bestseller.php 1239 2014-10-20 13:03:45Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -27,27 +27,19 @@ if (MAX_DISPLAY_BESTSELLERS > 0) {
         $fsk_lock = ' AND p.products_fsk18!=1';
     }
 
-    $best_sellers_query = xtDBquery("SELECT DISTINCT
-										p.*,
-										pd.products_name 
-									FROM 
-										" . TABLE_PRODUCTS . " p 
-										LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id)
-									WHERE 
-										p.products_status = '1'
+    $best_sellers_query = xtDBquery("SELECT p.*, pd.products_name, pd.products_description, pd.products_short_description
+									FROM " . TABLE_PRODUCTS . " p 
+									JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+									WHERE p.products_status = '1'
 									" . $group_check . "
-									AND 
-										p.products_ordered > 0
+									AND p.products_ordered > 0
 									 " . $fsk_lock . "
-									AND 
-										pd.language_id = '" . (int) $_SESSION['languages_id'] . "'
-									AND
-										(p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
-									ORDER BY 
-										p.products_ordered DESC
+									AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+									GROUP BY p.products_id
+									ORDER BY p.products_ordered DESC
 									LIMIT " . MAX_DISPLAY_BESTSELLERS);
 
-    if (xtc_db_num_rows($best_sellers_query, true) >= MIN_DISPLAY_BESTSELLERS) {
+    if (xtc_db_num_rows($best_sellers_query) >= MIN_DISPLAY_BESTSELLERS) {
         $module_content = array();
         $row = 0;
         while ($best_sellers = xtc_db_fetch_array($best_sellers_query, true)) {

@@ -105,7 +105,7 @@ INSERT INTO configuration VALUES
 (NULL, 'DEFAULT_CUSTOMERS_STATUS_ID_GUEST', '1', 1, 24, NULL, NOW(), 'xtc_get_customers_status_name', 'xtc_cfg_pull_down_customers_status_list('),
 (NULL, 'DEFAULT_CUSTOMERS_STATUS_ID', '2', 1, 25, NULL, NOW(), 'xtc_get_customers_status_name', 'xtc_cfg_pull_down_customers_status_list('),
 (NULL, 'ALLOW_ADD_TO_CART', 'true', 1, 26, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CURRENT_TEMPLATE', 'v2next-new-c2-blue', 1, 26, NULL, NOW(), NULL, 'xtc_cfg_pull_down_template_sets('),
+(NULL, 'CURRENT_TEMPLATE', 'v2next-boot-flat', 1, 26, NULL, NOW(), NULL, 'xtc_cfg_pull_down_template_sets('),
 (NULL, 'PRICE_IS_BRUTTO', 'true', 1, 28, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'PRICE_PRECISION', '4', 1, 29, NULL, NOW(), NULL, ''),
 (NULL, 'DISPLAY_TAX', 'true', 1, 30, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
@@ -524,7 +524,7 @@ INSERT INTO configuration VALUES
 #configuration_group_id 333, Ajax Checkout
 INSERT INTO configuration VALUES
 (NULL, 'BOXLESS_CHECKOUT', 'true', 333, 1, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
-(NULL, 'CHECKOUT_AJAX_STAT', 'true', 333, 2, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
+(NULL, 'CHECKOUT_AJAX_STAT', 'false', 333, 2, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_AJAX_PRODUCTS', 'false', 333, 3, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_MODULES', 'true', 333, 5, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),
 (NULL, 'CHECKOUT_SHOW_SHIPPING_ADDRESS', 'true', 333, 6, NULL, NOW(), NULL, "xtc_cfg_select_option(array('true', 'false'),"),

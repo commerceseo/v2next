@@ -1,24 +1,38 @@
 <?php
-/* -----------------------------------------------------------------
- * 	ID:						general.js.php
- * 	Letzter Stand:			v2.2 R365
- * 	zuletzt geaendert von:	akausch
- * 	Datum:					2012/07/03
- *
- * 	Copyright (c) since 2010 commerce:SEO by Webdesign Erfurt
- * 	http://www.commerce-seo.de
- * ------------------------------------------------------------------
- * 	based on:
- * 	(c) 2000-2001 The Exchange Project  (earlier name of osCommerce)
- * 	(c) 2002-2003 osCommerce - www.oscommerce.com
- * 	(c) 2003     nextcommerce - www.nextcommerce.org
- * 	(c) 2005     xt:Commerce - www.xt-commerce.com
- * 	Released under the GNU General Public License
- * --------------------------------------------------------------- */
+/*-----------------------------------------------------------------
+* 	$Id: shopscript.php 1390 2015-01-27 15:27:24Z akausch $
+* 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
+* 	http://www.commerce-seo.de
+* ------------------------------------------------------------------
+* 	based on:
+* 	(c) 2000-2001 The Exchange Project  (earlier name of osCommerce)
+* 	(c) 2002-2003 osCommerce - www.oscommerce.com
+* 	(c) 2003     nextcommerce - www.nextcommerce.org
+* 	(c) 2005     xt:Commerce - www.xt-commerce.com
+* 	Released under the GNU General Public License
+* ---------------------------------------------------------------*/
 
 if (GENERAL_SCRIPT_ADDON != '') {
     echo GENERAL_SCRIPT_ADDON;
 }
+
+if (AJAXCOOKIE == 'true') {
+	echo "<script>
+			head.ready(function(){
+				$.cookieBar({
+					message: '<strong>Cookies auf der Webseite: </strong>Cookies helfen uns dabei, die Dienste für Sie bestmöglich bereit zu stellen. Wir setzen Cookies ein, um Ihre Benutzererfahrung zu verbessern, Ihnen Produkte vorzustellen, die für Sie von Interesse sein könnten sowie den Inhalt Ihres Einkaufswagens zu speichern. Fahren Sie fort, wenn Sie damit einverstanden sind oder lesen Sie Näheres in unserer <a href=\"/shop_content.php?coID=2\">Datenschutzerklärung</a>.',
+					policyButton: false,
+					zindex:2000,
+					autoEnable: 1,
+					acceptOnContinue: 0,
+					acceptButton: true,
+					acceptText: '<button class=\"btn btn-info\">OK</button>',
+					linkTitleText: 'Meldung schließen und nicht mehr anzeigen.'
+				});
+			});
+		</script>";
+}
+
 	
 if(strstr($_REQUEST['linkurl'], substr(FILENAME_CHECKOUT, 0, -5)) || 
 	strstr($_REQUEST['linkurl'], substr('checkout.php', 0, -5)) || 

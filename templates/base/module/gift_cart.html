@@ -1,31 +1,25 @@
+{strip}
 {config_load file="lang/$language/lang_$language.conf" section="gift_cart"}
-
 {if $ACTIVATE_GIFT == 'true'}
-<br class="clear"><br>
-
-	<div class="fl hundert">
-	
-	{$FORM_ACTION}
-	<h2>{#title#}</h2>
-
-	{if $GV_AMOUNT neq ''}
-		<p>{#voucher_balance#} <strong>{$GV_AMOUNT}</strong></p>
-		<p>{#text_send_to_friend#} <a href="{$GV_SEND_TO_FRIEND_LINK}">{#box_send_to_friend#}</a></p>
-	{/if}
-
-	{if $SHOW_COUPON_INFOS neq ''}
-		<p>{#text_redeem#} {$COUPON_TYPE} {if $COUPON_AMOUNT neq ''} {$COUPON_AMOUNT}{/if}</p>
-		<p><a href="#gift_infos" onclick="javascript:show_coupon_infos(); return false;">{#text_info#}</a></p>
-		
-		{$SHOW_COUPON_INFOS}
-	{/if}
-	
-	<div id="input_code">
-		{#text_code#} {$INPUT_CODE} {$BUTTON_SUBMIT}
+<div class="row">
+	<div class="col-xs-12">
+		{$FORM_ACTION}
+		<h2>{#title#}</h2>
+		{if $GV_AMOUNT neq ''}
+			<p>{#voucher_balance#} <strong>{$GV_AMOUNT}</strong></p>
+			<p>{#text_send_to_friend#} <a href="{$GV_SEND_TO_FRIEND_LINK}">{#box_send_to_friend#}</a></p>
+		{/if}
+		{if $SHOW_COUPON_INFOS neq ''}
+			<p>{#text_redeem#} {$COUPON_TYPE} {if $COUPON_AMOUNT neq ''} {$COUPON_AMOUNT}{/if}</p>
+			<p><a href="popup_coupon_help.php" class="shipping">{#text_info#}</a></p>
+			{$SHOW_COUPON_INFOS}
+		{/if}
+		<div id="input_code">
+			{#text_code#} {$INPUT_CODE} {$BUTTON_SUBMIT}
+		</div>
+		{$FORM_END}
 	</div>
-
-	{$FORM_END}
-	</div>	
-
-
+</div>	
+<hr>
 {/if}
+{/strip}

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: product_info.php 1239 2014-10-20 13:03:45Z akausch $
+ * 	$Id: product_info.php 1475 2015-07-22 20:49:33Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -12,11 +12,7 @@
  * 	(c) 2005     xt:Commerce - www.xt-commerce.com
  * 	Released under the GNU General Public License
  * --------------------------------------------------------------- */
-/* * ***** SHOPGATE ********* */
-if (strpos(MODULE_PAYMENT_INSTALLED, 'shopgate.php') !== false && strpos($_SESSION['customers_status']['customers_status_payment_unallowed'], 'shopgate') === false) {
-    include_once DIR_FS_CATALOG . 'includes/external/shopgate/base/includes/modules/product_info.php';
-}
-/* * ***** SHOPGATE ********* */
+
 require_once (DIR_FS_INC . 'xtc_get_vpe_name.inc.php');
 
 $info_smarty = new Smarty;
@@ -51,9 +47,9 @@ if (!is_object($product) || !$product->isProduct()) {
             if ($_SESSION['customers_status']['customers_fsk18'] == '1') {
                 if ($product->data['products_fsk18'] == '0') {
                     if (PRODUCT_DETAILS_TAB_ACCESSORIES == 'true') {
-                        $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id[]', $product->data['products_id'], 'id="gm_products_id"') . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
+                        $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id[]', $product->data['products_id']) . xtc_draw_hidden_field('gm_products_id', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
                     } else {
-                        $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id', $product->data['products_id'], 'id="gm_products_id"') . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
+                        $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id', $product->data['products_id']) . xtc_draw_hidden_field('gm_products_id', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id']));
                     }
                     $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART, 'id="cart_button"'));
                     if (PRODUCT_DETAILS_WISHLIST == 'true') {
@@ -62,10 +58,10 @@ if (!is_object($product) || !$product->isProduct()) {
                 }
             } else {
                 if (PRODUCT_DETAILS_TAB_ACCESSORIES == 'true') {
-                    $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id[]', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id'], 'id="gm_products_id"'));
+                    $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id[]', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id']) . xtc_draw_hidden_field('gm_products_id', $product->data['products_id']));
                     $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART, 'id="cart_button"'));
                 } else {
-                    $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id'], 'id="gm_products_id"'));
+                    $info_smarty->assign('ADD_QTY', xtc_draw_input_field('products_qty', $order_qty, 'size="3" class="products_qty" title="' . WCAG_QTY . '" id="gm_attr_calc_qty"') . ' ' . xtc_draw_hidden_field('products_id', $product->data['products_id']) . xtc_draw_hidden_field('products_update_id', $product->data['products_id']) . xtc_draw_hidden_field('gm_products_id', $product->data['products_id']));
                     $info_smarty->assign('ADD_CART_BUTTON', cseo_wk_image_submit('button_in_cart.gif', IMAGE_BUTTON_IN_CART, 'id="cart_button"'));
                 }
                 if (PRODUCT_DETAILS_WISHLIST == 'true') {
@@ -281,13 +277,25 @@ if (!is_object($product) || !$product->isProduct()) {
     }
 
     if (!empty($product->data['products_image'])) {
+		if(substr($product->data['products_image'],'0','7') == 'http://') {
+			$img = str_replace('images/','images/',$product->data['products_image']);
+			$info_smarty->assign('img_dimension', 'width="'.PRODUCT_IMAGE_INFO_WIDTH.'" height="auto"');
+			$info_smarty->assign('img_path_info', $img);
+			$info_smarty->assign('img_path_popup', $img);
+		} elseif (substr($product->data['products_image'],'0','8') == 'https://') {
+			$img = str_replace('images/','images/',$product->data['products_image']);
+			$info_smarty->assign('img_dimension', 'width="'.PRODUCT_IMAGE_INFO_WIDTH.'" height="auto"');
+			$info_smarty->assign('img_path_info', $img);
+			$info_smarty->assign('img_path_popup', $img);
+		} else {
+			$info_smarty->assign('img_path_info', DIR_WS_CATALOG . DIR_WS_INFO_IMAGES . $product->data['products_image']);
+			$info_smarty->assign('img_path_popup', DIR_WS_CATALOG . DIR_WS_POPUP_IMAGES . $product->data['products_image']);
+			$info_smarty->assign('img_dimension', cseo_get_img_size(DIR_WS_INFO_IMAGES . $product->data['products_image']));
+		}
         $info_smarty->assign('img_name', $product->data['products_image']);
         $info_smarty->assign('img_nr', '1');
         $info_smarty->assign('img_path_mini', DIR_WS_CATALOG . DIR_WS_MINI_IMAGES . $product->data['products_image']);
         $info_smarty->assign('img_path_thumb', DIR_WS_CATALOG . DIR_WS_THUMBNAIL_IMAGES . $product->data['products_image']);
-        $info_smarty->assign('img_path_info', DIR_WS_CATALOG . DIR_WS_INFO_IMAGES . $product->data['products_image']);
-        $info_smarty->assign('img_path_popup', DIR_WS_CATALOG . DIR_WS_POPUP_IMAGES . $product->data['products_image']);
-        $info_smarty->assign('img_dimension', cseo_get_img_size(DIR_WS_INFO_IMAGES . $product->data['products_image']));
         $info_smarty->assign('img_popup_dimension', cseo_get_img_size(DIR_WS_POPUP_IMAGES . $product->data['products_image']));
         $info_smarty->assign('img_mini_dimension', cseo_get_img_size(DIR_WS_MINI_IMAGES . $product->data['products_image']));
         $info_smarty->assign('img_path_org', DIR_WS_ORIGINAL_IMAGES . $product->data['products_image']);
@@ -295,14 +303,10 @@ if (!is_object($product) || !$product->isProduct()) {
         $js_img = '\'' . DIR_WS_POPUP_IMAGES . $product->data['products_image'] . '\'';
         $js_title = '\'' . $product->data['products_name'] . '\'';
 
-        $products_mo_images_query = xtc_db_query("SELECT
-													image_id, image_nr, image_name, alt_langID_" . (int) $_SESSION['languages_id'] . "
-												FROM
-													products_images
-												WHERE
-													products_id = '" . $product->data['products_id'] . "'
-												ORDER BY
-													image_nr");
+        $products_mo_images_query = xtc_db_query("SELECT image_id, image_nr, image_name, alt_langID_" . (int) $_SESSION['languages_id'] . "
+												FROM ".TABLE_PRODUCTS_IMAGES."
+												WHERE products_id = '" . $product->data['products_id'] . "'
+												ORDER BY image_nr");
 
         if (xtc_db_num_rows($products_mo_images_query) > 0) {
             while ($img = xtc_db_fetch_array($products_mo_images_query)) {
@@ -334,6 +338,9 @@ if (!is_object($product) || !$product->isProduct()) {
 
     if (PRODUCT_DETAILS_TAB_REVIEWS == 'true' && $_SESSION['customers_status']['customers_status_read_reviews'] != 0) {
         include (DIR_WS_MODULES . 'product_reviews.php');
+		if ($product->getReviewsCount() > 0) {
+			$info_smarty->assign('REVIEWIMG', $product->getReviewsAddon($product->data['products_id']));
+		}
     }
 
     if (xtc_not_null($product->data['products_url']))
@@ -420,12 +427,12 @@ if (!is_object($product) || !$product->isProduct()) {
     if (file_exists(DIR_WS_MODULES . 'konfigurator.php')) {
         include (DIR_WS_MODULES . 'konfigurator.php');
     }
-    // if (file_exists(DIR_WS_MODULES . 'product_properties.php')) {
-        // include (DIR_WS_MODULES . 'product_properties.php');
-    // }
-
+	
+    if ($product->data['free_shipping'] == '1') {
+		$info_smarty->assign('PRODUCTS_FREE_SHIPPING', FREE_SHIPPING_DESCRIPTION);
+	}
     $info_smarty->assign('PRODUCTS_QUANTITY', $product->data['products_quantity']);
-    $info_smarty->assign('BASE_PATH', $_SERVER['REQUEST_URI']);
+    $info_smarty->assign('BASE_PATH', ((($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . $_SERVER['REQUEST_URI']));
     $info_smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 
     if (file_exists(DIR_WS_INCLUDES . 'addons/product_info_addon.php')) {

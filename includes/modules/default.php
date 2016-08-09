@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: default.php 1118 2014-06-25 19:54:28Z akausch $
+ * 	$Id: default.php 1424 2015-02-03 15:30:26Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------

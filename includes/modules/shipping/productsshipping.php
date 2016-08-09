@@ -194,7 +194,7 @@ class productsshipping {
             $shipping = -1;
             $zones_cost = constant('MODULE_SHIPPING_PRODUCTSSHIPPING_COST_' . $dest_zone);
 
-            $zones_table = explode(",", $zones_cost);
+			$zones_table = preg_split("/[:,]/", $zones_cost);
             $size = sizeof($zones_table);
             for ($i = 0; $i < $size; $i+=2) {
                 if ($shipping_weight <= $zones_table[$i]) {

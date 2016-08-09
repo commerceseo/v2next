@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: product_listing.php 1065 2014-05-22 12:08:08Z akausch $
+ * 	$Id: product_listing.php 1354 2015-01-12 15:49:48Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -75,21 +75,14 @@ if ($listing_split->number_of_rows > 0) {
     $navigation_smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
     $navigation = $navigation_smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/product_navigation/products_page_navigation.html', USE_TEMPLATE_DEVMODE));
 
-    $group_check = ';';
     if (GROUP_CHECK == 'true') {
-        $group_check = " AND c.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . " = '1';";
+        $group_check = " AND c.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . " = '1'";
     }
-
-    $category = xtc_db_fetch_array(xtDBquery("SELECT DISTINCT
-                                	cd.*,
-                                	c.*
-								FROM
-									" . TABLE_CATEGORIES . " c
-								INNER JOIN 
-									" . TABLE_CATEGORIES_DESCRIPTION . " cd ON (cd.categories_id = '" . (int) $current_category_id . "' AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-                                WHERE
-									c.categories_id = '" . (int) $current_category_id . "'" .
-                    $group_check));
+    $category = xtc_db_fetch_array(xtDBquery("SELECT cd.*, c.*
+								FROM " . TABLE_CATEGORIES . " AS c
+								JOIN " . TABLE_CATEGORIES_DESCRIPTION . " AS cd ON (cd.categories_id = '" . (int) $current_category_id . "' AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+                                WHERE c.categories_id = '" . (int) $current_category_id . "'
+								" . $group_check . " GROUP BY c.categories_id;"));
 
     $image = '';
     if ($category['categories_image'] != '') {
@@ -125,19 +118,21 @@ if ($listing_split->number_of_rows > 0) {
     //Kategoriebeschreibung beim blaettern raus
     if (!isset($_GET['page']) || $_GET['page'] == '1') {
         $module_smarty->assign('CATEGORIES_DESCRIPTION', $category['categories_description']);
-        $module_smarty->assign('CATEGORIES_DESCRIPTION_FOOTER', $category['categories_description_footer']);
+			if (MOBILE_CONF_CATEGORY_FOOTER == 'true' || $browser->getBrowser() != Browser::BROWSER_IPHONE) {
+				$module_smarty->assign('CATEGORIES_DESCRIPTION_FOOTER', $category['categories_description_footer']);
+			} elseif (MOBILE_CONF_CATEGORY_FOOTER == 'false' || $browser->getBrowser() == Browser::BROWSER_IPHONE) {
+				$module_smarty->assign('CATEGORIES_DESCRIPTION_FOOTER', '');
+			}
+		
     }
 
     //Hersteller Ausgabe
     if ($_SESSION['MANUFACTURES_SORTBOX_IS_IN_USE'] == true) {
-        $manRes = xtc_db_fetch_array(xtDBquery("SELECT 
-									m.*, 
-									mi.manufacturers_description 
-								FROM 
-									" . TABLE_MANUFACTURERS . " AS m
-									INNER JOIN " . TABLE_MANUFACTURERS_INFO . " AS mi ON(mi.manufacturers_id = m.manufacturers_id AND mi.languages_id = '" . (int) $_SESSION['languages_id'] . "') 
-								WHERE 
-									m.manufacturers_id = '" . (int) $_GET['manufacturers_id'] . "';"));
+        $manRes = xtc_db_fetch_array(xtDBquery("SELECT m.*, mi.manufacturers_description 
+								FROM " . TABLE_MANUFACTURERS . " AS m
+								JOIN " . TABLE_MANUFACTURERS_INFO . " AS mi ON(mi.manufacturers_id = m.manufacturers_id AND mi.languages_id = '" . (int) $_SESSION['languages_id'] . "') 
+								WHERE m.manufacturers_id = '" . (int) $_GET['manufacturers_id'] . "'
+								GROUP BY manufacturers_id;"));
 
         $module_smarty->assign("MANUFACTURERS_NAME", $manRes['manufacturers_name']);
         $module_smarty->assign("MANUFACTURERS_DESCRIPTION", $manRes['manufacturers_description']);
@@ -158,21 +153,15 @@ if ($listing_split->number_of_rows > 0) {
     }
 } else {
     //Keine Produkte, Kategoriebeschreibung wird aber trotzdem ausgegeben
-    $group_check = ';';
     if (GROUP_CHECK == 'true') {
-        $group_check = " AND c.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . "='1';";
+        $group_check = " AND c.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . "='1'";
     }
-
-    $category = xtc_db_fetch_array(xtDBquery("SELECT DISTINCT
-                                	cd.*,
-                                	c.*
-								FROM
-									" . TABLE_CATEGORIES . " c
-								INNER JOIN 
-									" . TABLE_CATEGORIES_DESCRIPTION . " cd ON (cd.categories_id = '" . (int) $current_category_id . "' AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-                                WHERE
-									c.categories_id = '" . (int) $current_category_id . "'" .
-                    $group_check));
+    $category = xtc_db_fetch_array(xtDBquery("SELECT cd.*, c.*
+								FROM " . TABLE_CATEGORIES . " AS c
+								JOIN " . TABLE_CATEGORIES_DESCRIPTION . " AS cd ON (cd.categories_id = '" . (int) $current_category_id . "' AND cd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+                                WHERE c.categories_id = '" . (int) $current_category_id . "'
+								" . $group_check . " 
+								GROUP BY c.categories_id;"));
     $image = '';
     if ($category['categories_image'] != '') {
         $image = xtc_image(DIR_WS_IMAGES . 'categories_info/' . $category['categories_image'], ($category['categories_pic_alt'] != '' ? $category['categories_pic_alt'] : $category['categories_name']), ($category['categories_heading_title'] != '' ? $category['categories_heading_title'] : $category['categories_name']));
@@ -200,7 +189,6 @@ if ($listing_split->number_of_rows > 0) {
     $module_smarty->assign('BASE_PATH', xtc_href_link(FILENAME_DEFAULT, 'cPath=' . $current_category_id));
     $result = false;
 }
-
 
 if ($result) {
     $module_smarty->assign('manufacturer', $manufacturer_dropdown);

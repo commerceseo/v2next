@@ -18,4 +18,3 @@ define('NOVALNET_SEPA_CUSTOM_CSS_STYLE', 'color: #555555; font-family: Arial,San
 
 define('NOVALNET_CC_CUSTOM_CSS', 'body~~~input ,select~~~input[type="text"]');
 define('NOVALNET_CC_CUSTOM_CSS_STYLE', 'color: #555555; font-family: Arial,Sans-serif !important; font-size: 12px !important; line-height: 18px;~~~background: rgba(0, 0, 0, 0); border: 1px solid #666666; padding: 2px;~~~ width: 200px;');
-?>

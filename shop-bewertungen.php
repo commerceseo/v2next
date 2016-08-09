@@ -117,7 +117,11 @@ $smarty->assign('OPINION_LINK', '<a rel="nofollow" href="' . xtc_href_link(Shopv
 $smarty->caching = false;
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/shopbewertung.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/shopbewertung.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/shopbewertung.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/shopbewertung.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
 $smarty->loadFilter('output', 'note');
 $smarty->loadFilter('output', 'trimwhitespace');

@@ -124,7 +124,11 @@ $smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
 $smarty->assign('logo_path', HTTP_SERVER . DIR_WS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/img/');
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/shopbewertung_schreiben.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/shopbewertung_schreiben.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/shopbewertung_schreiben.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/shopbewertung_schreiben.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
 $smarty->loadFilter('output', 'note');
 $smarty->loadFilter('output', 'trimwhitespace');

@@ -11,7 +11,7 @@
  *                                      boost your Online-Shop
  *
  * -----------------------------------------------------------------------------
- * $Id: magnaCallback.php 4419 2014-08-21 11:13:43Z derpapst $
+ * $Id: magnaCallback.php 4990 2014-12-17 13:26:48Z derpapst $
  *
  * (c) 2010 - 2013 RedGecko GmbH -- http://www.redgecko.de
  *     Released under the MIT License (Expat)
@@ -47,21 +47,6 @@ define('MAGNA_PUBLIC_SERVER', 'http://magnalister.com/');
 define('MAGNA_SUPPORT_URL', '<a href="'.MAGNA_PUBLIC_SERVER.'" title="'.MAGNA_PUBLIC_SERVER.'">'.MAGNA_PUBLIC_SERVER.'</a>');
 
 $_magnacallbacktimer = $_executionTime = microtime(true);
-
-$safe_mode = strtolower(ini_get('safe_mode'));
-switch ($safe_mode) {
-	case 'on':
-	case 'yes':
-	case 'true': {
-		define('MAGNA_SAFE_MODE', true);
-		break;
-	}
-	default: {
-		define('MAGNA_SAFE_MODE', (bool)((int)$safe_mode));
-		break;
-	}
-}
-unset($safe_mode);
 
 function magnaHandleFatalError() {
 	$errorOccured = false;
@@ -437,11 +422,8 @@ function defineMagnalisterDir() {
 	}
 }
 
-function magnaConfigureForFrontendMode() {
-	/* Let's hope there is a admin dir :) */
-	if (!defined('DIR_FS_ADMIN') && is_dir(dirname(__FILE__) . '/admin/') && is_dir(dirname(__FILE__) . '/admin/includes/')) {
-		define('DIR_FS_ADMIN', str_replace('\\', '/', dirname(__FILE__)) . '/admin/');
-	} else if (!defined('DIR_FS_ADMIN')) {
+function magnalisterFilesLocated() {
+	if (!defined('DIR_MAGNALISTER_FS') || (($dir_magnalister_fs = DIR_MAGNALISTER_FS) && empty($dir_magnalister_fs))) {
 		magnaEchoDiePage(
 			'Shop Admin directory not found / Shop Admin Verzeichnis nicht gefunden.', 
 			'<p>The Shop Admin directory can not be found. To fix this open the file 
@@ -455,7 +437,7 @@ function magnaConfigureForFrontendMode() {
 			<p>Bitte benutzen Sie den absoluten Pfad zum Shop Admin Verzeichnis.</p>
 		');
 	}
-	defineMagnalisterDir();
+	return true;
 }
 
 function magnaInstalled($woDBCheck = false) {
@@ -491,6 +473,16 @@ function magnaInstalled($woDBCheck = false) {
 	//commerce:Seo v2
 	if (defined('DB_SERVER_CHARSET')) {
 		MagnaDB::gi()->setCharset(DB_SERVER_CHARSET);
+	} elseif (SHOPSYSTEM == 'gambio' && MagnaDB::gi()->tableExists('version_history')) {
+		$sVersion = MagnaDB::gi()->fetchOne('
+			    SELECT version
+			      FROM version_history
+			  ORDER BY installation_date DESC
+			     LIMIT 1
+			');
+		if (version_compare($sVersion, '2.1', '>=')) {
+			MagnaDB::gi()->setCharset('utf8');
+		}
 	}
 	$_magnaIsInstalled = MagnaDB::gi()->tableExists(TABLE_MAGNA_CONFIG);
 	if (!$_magnaIsInstalled) return $_magnaIsInstalled;
@@ -649,16 +641,40 @@ function magnaCallbackRun() {
 	}
 	unset($str);
 	
-	if (!defined('DIR_MAGNALISTER_FS')) { /* included in admin area, everything works out of the box */
-		defineMagnalisterDir();
-		if (DIR_MAGNALISTER_FS == false) {
-			if (MAGNA_CALLBACK_MODE == 'STANDALONE') {
-				echo 'Unable to initialize.';
-			}
-			return;
+	// detect safe mode
+	$safe_mode = strtolower(ini_get('safe_mode'));
+	switch ($safe_mode) {
+		case 'on':
+		case 'yes':
+		case 'true': {
+			define('MAGNA_SAFE_MODE', true);
+			break;
+		}
+		default: {
+			define('MAGNA_SAFE_MODE', (bool)((int)$safe_mode));
+			break;
 		}
 	}
+	unset($safe_mode);
 	
+	// locate the magnalister files if that has not been done yet
+	if (!defined('DIR_MAGNALISTER_FS')) {
+		defineMagnalisterDir();
+	}
+	// check if the magnalister files have been located
+	if (DIR_MAGNALISTER_FS == false) {
+		// They have not. Show a warning if the magnaCallback is running standalone.
+		if (MAGNA_CALLBACK_MODE == 'STANDALONE') {
+			magnalisterFilesLocated();
+		}
+		// Otherwise simply abort the rest of the magnaCallback bootstrap and don't do anything.
+		#echo 'NO NOEZ';
+		return;
+	}
+	
+	#echo 'HAI :D';
+	#var_dump(DIR_MAGNALISTER_FS);
+		
 	if (!defined('DIR_FS_DOCUMENT_ROOT')) {
 		define('DIR_FS_DOCUMENT_ROOT', dirname(__FILE__).'/');
 	}
@@ -714,6 +730,16 @@ function magnaCallbackRun() {
 	//commerce:Seo v2
 	if (defined('DB_SERVER_CHARSET')) {
 		MagnaDB::gi()->setCharset(DB_SERVER_CHARSET);
+	} elseif (SHOPSYSTEM == 'gambio' && MagnaDB::gi()->tableExists('version_history')) {
+		$sVersion = MagnaDB::gi()->fetchOne('
+			    SELECT version
+			      FROM version_history
+			  ORDER BY installation_date DESC
+			     LIMIT 1
+			');
+		if (version_compare($sVersion, '2.1', '>=')) {
+			MagnaDB::gi()->setCharset('utf8');
+		}
 	}
 	/* Language-Foo */
 	$_magnaAvailableLanguages = magnaGetAvailableLanguages();
@@ -892,7 +918,6 @@ if (MAGNA_CALLBACK_MODE == 'STANDALONE') {
 		
 		unset($_backup);
 	}
-	magnaConfigureForFrontendMode();
 	header('Content-Type: text/plain; charset=utf-8');
 } else {
 	/* Where have we been called? Frontend or backend?! */
@@ -904,7 +929,6 @@ if (MAGNA_CALLBACK_MODE == 'STANDALONE') {
 	) {
 		/* Frontend */
 		define('MAGNA_IN_ADMIN', false);
-		magnaConfigureForFrontendMode();
 	} else {
 		define('MAGNA_IN_ADMIN', true);
 	}

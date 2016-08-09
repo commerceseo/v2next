@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: send_order.php 1040 2014-05-12 19:22:49Z akausch $
+ * 	$Id: send_order.php 1455 2015-03-20 14:47:36Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -68,12 +68,12 @@ if ($_SESSION['customer_id'] == $order_check['customers_id'] || $send_by_admin |
 		$vpe_query = xtc_db_fetch_array(xtc_db_query("SELECT products_vpe_status, products_price, products_vpe, products_vpe_value, products_tax_class_id FROM products WHERE products_id = '" . $order_data_values['products_id'] . "' AND products_vpe_status = '1';"));
 		$vpe = '';
 		if ($vpe_query['products_vpe_status'] == 1 && $vpe_query['products_vpe_value'] != 0.0) {
-			// $vpe = $xtPrice->xtcGetPrice($order_data_values['products_id'], false, 0, $vpe_query['products_tax_class_id'], $vpe_query['products_price']);;
 			if ($attributes_vpe == $vpe_query['products_vpe_value']) {
-			$vpe = $order_data_values['products_price'] * (1 / $vpe_query['products_vpe_value']);
+				$vpe = $order_data_values['products_price'] * (1 / $vpe_query['products_vpe_value']);
+			} elseif ($attributes_vpe == '') {
+				$vpe = $order_data_values['products_price'] * (1 / $vpe_query['products_vpe_value']);;
 			} else {
-			$vpe = $order_data_values['products_price'] * (1 / $attributes_vpe);
-			
+				$vpe = $order_data_values['products_price'] * (1 / $attributes_vpe);
 			}
 			$vpe = $xtPrice->xtcFormat($vpe, true) . TXT_PER . xtc_get_vpe_name($vpe_query['products_vpe']);
 		} else {
@@ -84,8 +84,6 @@ if ($_SESSION['customer_id'] == $order_check['customers_id'] || $send_by_admin |
 		} else {
 			$pprice = $xtPrice->xtcFormat($order_data_values['final_price'] / $order_data_values['products_quantity'], true);
 		}
-		
-
 
         $order_data[] = array(
 			'PRODUCTS_MODEL' => $order_data_values['products_model'],
@@ -126,7 +124,7 @@ if ($_SESSION['customer_id'] == $order_check['customers_id'] || $send_by_admin |
     $smarty->assign('NNAME', $order->customer['lastname']);
     $smarty->assign('UID', $order->customer['customers_vat_id']);
     $smarty->assign('PAYMENT_METHOD', $payment_method);
-    $smarty->assign('DATE', utf8_encode(xtc_date_long($order->info['date_purchased'])));
+    $smarty->assign('DATE', xtc_date_long($order->info['date_purchased']));
     $smarty->assign('order_data', $order_data);
     $smarty->assign('order_total', $order_total);
     $smarty->assign('NAME', $order->customer['name']);
@@ -239,5 +237,9 @@ if ($_SESSION['customer_id'] == $order_check['customers_id'] || $send_by_admin |
     }
 } else {
     $smarty->assign('ERROR', 'You are not allowed to view this order!');
-    $smarty->display(cseo_get_usermod('base/module/error_message.html', USE_TEMPLATE_DEVMODE));
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/error_message.html')) {
+		$smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/module/error_message.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$smarty->display(cseo_get_usermod('base/module/error_message.html', USE_TEMPLATE_DEVMODE));
+	}
 }

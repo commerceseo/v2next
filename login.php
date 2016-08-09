@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: login.php 865 2014-03-16 12:44:08Z akausch $
+ * 	$Id: login.php 1425 2015-02-03 15:51:57Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -20,7 +20,6 @@ if ($_SERVER['HTTPS'] != 'on' && ENABLE_SSL) {
 }
 
 $smarty = new Smarty;
-//Login
 $login = new login();
 //Login checken und ebenfalls Smary holen wegen Antispam
 if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
@@ -30,36 +29,24 @@ if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
             if ($key == 'email_address' || $key == 'password') {
                 $postarray[$key] = xtc_db_prepare_input($value);
             } else {
-                // $postarray[$key] = '';
-                // xtc_db_query("INSERT INTO 
-                // intrusions 
-                // (name , badvalue , page , tags , ip , ip2 , impact , origin , created )
-                // VALUES 
-                // ('" . $postarray[$key] . "', '" . $value . "', '" . $_SERVER['REQUEST_URI'] . "', 'login', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
-                // $postarray[$key] = '';
-                // xtc_redirect(xtc_href_link(FILENAME_LOGIN, '', 'SSL'));
-                die;
+                // die('Bad Value');
             }
         }
         $email = xtc_db_prepare_input($postarray['email_address']);
         $password = xtc_db_prepare_input($postarray['password']);
-
         $check_login = $login->check_login('login', $email, $password);
-        if (is_array($check_login)) {
-            foreach ($check_login AS $t_key => $t_value) {
-                $smarty->assign($t_key, $t_value);
-            }
-        }
     }
 }
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
 
-// redirect the customer to a friendly cookie-must-be-enabled page if cookies are disabled (or the session has not started)
 if ($session_started == false) {
     xtc_redirect(xtc_href_link(FILENAME_COOKIE_USAGE));
 }
-
-
+if (is_array($check_login)) {
+	foreach ($check_login AS $t_key => $t_value) {
+		$smarty->assign($t_key, $t_value);
+	}
+}
 $breadcrumb->add(NAVBAR_TITLE_LOGIN, xtc_href_link(FILENAME_LOGIN, '', 'SSL'));
 require_once (DIR_WS_INCLUDES . 'header.php');
 $login = new login();
@@ -108,16 +95,17 @@ $create_account_info->assign('tpl_path', 'templates/base/');
 $create_account_info->assign('language', $_SESSION['language']);
 $create_account_info = $create_account_info->fetch(cseo_get_usermod('base/module/create_account.html', USE_TEMPLATE_DEVMODE));
 $smarty->assign('create_account_content', $create_account_info);
-
 //Create Account end
-
 $smarty->assign('language', $_SESSION['language']);
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->caching = false;
 
-$main_content = $smarty->fetch(cseo_get_usermod('base/module/login.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/login.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/login.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/login.html', USE_TEMPLATE_DEVMODE));
+}
+
 $smarty->assign('main_content', $main_content);
-
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
-
 include ('includes/application_bottom.php');

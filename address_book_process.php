@@ -35,11 +35,9 @@ if (isset($_GET['action']) && ($_GET['action'] == 'deleteconfirm') && isset($_GE
 $process = false;
 if (isset($_POST['action']) && (($_POST['action'] == 'address_book_process') || ($_POST['action'] == 'update'))) {
     $address_book_process_edit_array = $account->address_book_process_edit();
-	// print_r($address_book_process_edit_array);
 	if ($address_book_process_edit_array != '') {
-	$messageStack->add_session('addressbook', $address_book_process_edit_array);
-}
-
+		$messageStack->add_session('addressbook', $address_book_process_edit_array);
+	}
 }
 
 if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
@@ -100,26 +98,27 @@ if (isset($_GET['delete'])) {
     $smarty->assign('BUTTON_BACK', '<a href="' . xtc_href_link(FILENAME_ADDRESS_BOOK, '', 'SSL') . '">' . xtc_image_button('button_back.gif', IMAGE_BUTTON_BACK) . '</a>');
     $smarty->assign('BUTTON_DELETE', '<a href="' . xtc_href_link(FILENAME_ADDRESS_BOOK_PROCESS, 'delete=' . $_GET['delete'] . '&action=deleteconfirm', 'SSL') . '">' . xtc_image_button('button_delete.gif', IMAGE_BUTTON_DELETE) . '</a>');
 } else {
-    $address_book_process_smarty = new Smarty;
-    $address_book_process_smarty_var = $account->address_book_process($entry);
-    if (is_array($address_book_process_smarty_var)) {
-        foreach ($address_book_process_smarty_var AS $t_key => $t_value) {
-            $address_book_process_smarty->assign($t_key, $t_value);
+    $abp_smarty = new Smarty;
+    $abp_smarty_var = $account->address_book_process($entry);
+    if (is_array($abp_smarty_var)) {
+        foreach ($abp_smarty_var AS $t_key => $t_value) {
+            $abp_smarty->assign($t_key, $t_value);
         }
     }
 
     if ((isset($_GET['edit']) && ($_SESSION['customer_default_address_id'] != $_GET['edit'])) || (isset($_GET['edit']) == false)) {
-        $address_book_process_smarty->assign('new', '1');
-        $address_book_process_smarty->assign('CHECKBOX_PRIMARY', xtc_draw_checkbox_field('primary', 'on', false, 'id="primary"'));
+        $abp_smarty->assign('new', '1');
+        $abp_smarty->assign('CHECKBOX_PRIMARY', xtc_draw_checkbox_field('primary', 'on', false, 'id="primary"'));
     }
 
-
-    $address_book_process_smarty->assign('language', $_SESSION['language']);
-    $address_book_process_smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
-    $address_book_process_smarty->caching = false;
-
-    $main_content = $address_book_process_smarty->fetch(cseo_get_usermod('base/module/address_book_details.html', USE_TEMPLATE_DEVMODE));
-
+    $abp_smarty->assign('language', $_SESSION['language']);
+    $abp_smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
+    $abp_smarty->caching = false;
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/address_book_details.html')) {
+		$main_content = $abp_smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/address_book_details.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$main_content = $abp_smarty->fetch(cseo_get_usermod('base/module/address_book_details.html', USE_TEMPLATE_DEVMODE));
+	}
     $smarty->assign('MODULE_address_book_details', $main_content);
 
     if (isset($_GET['edit']) && is_numeric($_GET['edit'])) {
@@ -150,7 +149,11 @@ $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
 
-$main_content = $smarty->fetch(cseo_get_usermod('base/module/address_book_process.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/address_book_process.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/address_book_process.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/address_book_process.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
 include ('includes/application_bottom.php');

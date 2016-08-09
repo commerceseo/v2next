@@ -295,11 +295,16 @@ if ($_SESSION['customers_status']['customers_status_id'] == 0) {
 		}
 	}
 
-	$smarty->caching = false;
-	$smarty->assign('language', $_SESSION['language']);
 	$smarty->assign('CONTENT_BODY', $main_content);
 	$smarty->assign('BUTTON_CONTINUE', '<a href="' . xtc_href_link(FILENAME_START) . '">' . xtc_image_button('button_continue.gif', IMAGE_BUTTON_CONTINUE) . '</a>');
-	$main_content = $smarty->fetch('base/module/google_sitemap.html');
+	$smarty->caching = false;
+	$smarty->assign('language', $_SESSION['language']);
+	$smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/google_sitemap.html')) {
+		$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/google_sitemap.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$main_content = $smarty->fetch(cseo_get_usermod('base/module/google_sitemap.html', USE_TEMPLATE_DEVMODE));
+	}
 	$smarty->assign('main_content', $main_content);
 	$smarty->display(CURRENT_TEMPLATE . '/index.html');
 

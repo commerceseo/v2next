@@ -61,13 +61,21 @@ $smarty->assign('language', $_SESSION['language']);
 // set cache ID
 if (!CacheCheck()) {
     $smarty->caching = false;
-    $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/product_reviews_info.html', USE_TEMPLATE_DEVMODE));
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/product_reviews_info.html')) {
+		$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/product_reviews_info.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$main_content = $smarty->fetch(cseo_get_usermod('base/module/product_reviews_info.html', USE_TEMPLATE_DEVMODE));
+	}
 } else {
     $smarty->caching = true;
     $smarty->cache_lifetime = CACHE_LIFETIME;
     $smarty->cache_modified_check = CACHE_CHECK;
     $cache_id = $_SESSION['language'] . $reviews['reviews_id'] . '-reviewinfo';
-    $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/product_reviews_info.html', USE_TEMPLATE_DEVMODE), $cache_id);
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/product_reviews_info.html')) {
+		$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/product_reviews_info.html', USE_TEMPLATE_DEVMODE, $cache_id));
+	}else{
+		$main_content = $smarty->fetch(cseo_get_usermod('base/module/product_reviews_info.html', USE_TEMPLATE_DEVMODE, $cache_id));
+	}
 }
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);

@@ -103,7 +103,11 @@ $smarty->assign('FORM_END', '</form>');
 $smarty->caching = false;
 $smarty->assign('language', $_SESSION['language']);
 
-$main_content = $smarty->fetch(CURRENT_TEMPLATE . '/module/404.html');
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/404.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/404.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/404.html', USE_TEMPLATE_DEVMODE));
+}
 
 $smarty->assign('main_content', $main_content);
 $smarty->caching = false;

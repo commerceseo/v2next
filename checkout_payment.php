@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_payment.php 928 2014-03-31 13:56:47Z akausch $
+ * 	$Id: checkout_payment.php 1099 2014-06-12 14:51:40Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -16,6 +16,21 @@
 include ('includes/application_top.php');
 $smarty = new Smarty;
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
+
+if (CHECKOUT_AJAX_STAT == 'true') {
+    // SHOW PAYMENT ERROR
+    if (isset($_GET['payment_error']) && is_object(${ $_GET['payment_error'] }) && ($error = ${$_GET['payment_error']}->get_error())) {
+        $error = '&payment_error='.$error['error'];
+    } elseif (isset($_GET['error_c'])) {
+        $error = '&error_c='.defined($_GET['error_c']) ? constant($_GET['error_c']) : $_GET['error_c'];
+    } elseif (isset($_GET['error_message'])) {
+       $error = '&error_message='.defined($_GET['error_message']) ? constant($_GET['error_message']) : $_GET['error_message'];
+    } else {
+		$error = '';
+	}
+
+	xtc_redirect(xtc_href_link(FILENAME_CHECKOUT.$error, '', 'SSL'));
+}
 
 $smarty->assign('language', $_SESSION['language']);
 require_once (DIR_FS_INC . 'xtc_address_label.inc.php');
@@ -379,7 +394,11 @@ if (is_array($cseo_extender_result_array)) {
 	}
 }
 
-$main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_payment.html',USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/checkout_payment.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/checkout_payment.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_payment.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
 
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html',USE_TEMPLATE_DEVMODE));

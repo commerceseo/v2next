@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_product_info.php 521 2013-07-24 11:34:09Z akausch $
+ * 	$Id: checkout_product_info.php 1236 2014-10-16 14:17:00Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -21,19 +21,19 @@ require_once (DIR_FS_INC . 'xtc_get_vpe_name.inc.php');
 
 $smarty = new Smarty;
 
-$product_info_query = xtDBquery("select * FROM " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_DESCRIPTION . " pd where p.products_status = '1' and p.products_id = '" . (int) $_GET['products_id'] . "' and pd.products_id = p.products_id and pd.language_id = '" . (int) $_SESSION['languages_id'] . "'");
+$product_info_query = xtc_db_query("select * FROM " . TABLE_PRODUCTS . " p, " . TABLE_PRODUCTS_DESCRIPTION . " pd where p.products_status = '1' and p.products_id = '" . (int) $_GET['products_id'] . "' and pd.products_id = p.products_id and pd.language_id = '" . (int) $_SESSION['languages_id'] . "'");
 $product_info = xtc_db_fetch_array($product_info_query);
 
 $products_price = $xtPrice->xtcGetPrice($product_info['products_id'], $format = true, 1, $product_info['products_tax_class_id'], $product_info['products_price'], 1);
 
-$products_attributes_query = xtDBquery("select count(*) as total from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_ATTRIBUTES . " patrib where patrib.products_id='" . (int) $_GET['products_id'] . "' and patrib.options_id = popt.products_options_id and popt.language_id = '" . (int) $_SESSION['languages_id'] . "'");
+$products_attributes_query = xtc_db_query("select count(*) as total from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_ATTRIBUTES . " patrib where patrib.products_id='" . (int) $_GET['products_id'] . "' and patrib.options_id = popt.products_options_id and popt.language_id = '" . (int) $_SESSION['languages_id'] . "'");
 $products_attributes = xtc_db_fetch_array($products_attributes_query);
 if ($products_attributes['total'] > 0) {
-    $products_options_name_query = xtDBquery("select distinct popt.products_options_id, popt.products_options_name from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_ATTRIBUTES . " patrib where patrib.products_id='" . (int) $_GET['products_id'] . "' and patrib.options_id = popt.products_options_id and popt.language_id = '" . (int) $_SESSION['languages_id'] . "' order by popt.products_options_name");
+    $products_options_name_query = xtc_db_query("select distinct popt.products_options_id, popt.products_options_name from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_ATTRIBUTES . " patrib where patrib.products_id='" . (int) $_GET['products_id'] . "' and patrib.options_id = popt.products_options_id and popt.language_id = '" . (int) $_SESSION['languages_id'] . "' order by popt.products_options_name");
     while ($products_options_name = xtc_db_fetch_array($products_options_name_query)) {
         $selected = 0;
 
-        $products_options_query = xtDBquery("select pov.products_options_values_id, pov.products_options_values_name, pa.options_values_price, pa.price_prefix,pa.attributes_stock, pa.attributes_model from " . TABLE_PRODUCTS_ATTRIBUTES . " pa, " . TABLE_PRODUCTS_OPTIONS_VALUES . " pov where pa.products_id = '" . (int) $_GET['products_id'] . "' and pa.options_id = '" . $products_options_name['products_options_id'] . "' and pa.options_values_id = pov.products_options_values_id and pov.language_id = '" . (int) $_SESSION['languages_id'] . "'");
+        $products_options_query = xtc_db_query("select pov.products_options_values_id, pov.products_options_values_name, pa.options_values_price, pa.price_prefix,pa.attributes_stock, pa.attributes_model from " . TABLE_PRODUCTS_ATTRIBUTES . " pa, " . TABLE_PRODUCTS_OPTIONS_VALUES . " pov where pa.products_id = '" . (int) $_GET['products_id'] . "' and pa.options_id = '" . $products_options_name['products_options_id'] . "' and pa.options_values_id = pov.products_options_values_id and pov.language_id = '" . (int) $_SESSION['languages_id'] . "'");
         while ($products_options = xtc_db_fetch_array($products_options_query)) {
             $module_content[] = array('GROUP' => $products_options_name['products_options_name'], 'NAME' => $products_options['products_options_values_name']);
 
@@ -126,4 +126,9 @@ if (is_array($mo_images)) {
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->caching = false;
 
-$smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/module/checkout_product_info.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/checkout_product_info.html')) {
+	$smarty->display(CURRENT_TEMPLATE.'/module/checkout_product_info.html', USE_TEMPLATE_DEVMODE);
+}else{
+	$smarty->display('base/module/checkout_product_info.html');
+}
+

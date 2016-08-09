@@ -15,13 +15,9 @@
 
 require ('includes/application_top.php');
 
-$content_query = xtc_db_query("SELECT content_name, content_read, content_file FROM " . TABLE_PRODUCTS_CONTENT . " WHERE content_id = '" . (int) $_GET['coID'] . "';");
-$content_data = xtc_db_fetch_array($content_query);
-
+$content_data = xtc_db_fetch_array(xtc_db_query("SELECT content_name, content_read, content_file FROM " . TABLE_PRODUCTS_CONTENT . " WHERE content_id = '" . (int) $_GET['coID'] . "';"));
 // update file counter
-
 xtc_db_query("UPDATE " . TABLE_PRODUCTS_CONTENT . " SET content_read='" . ($content_data['content_read'] + 1) . "' WHERE content_id='" . (int) $_GET['coID'] . "';");
-
 if ($content_data['content_file'] != '') {
 	if (strpos($content_data['content_file'], '.txt'))
 		echo '<pre>';

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: shop_content.php 943 2014-04-08 13:26:37Z akausch $
+ * 	$Id: shop_content.php 1099 2014-06-12 14:51:40Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -24,15 +24,11 @@ if (GROUP_CHECK == 'true') {
     $group_check = "AND group_ids LIKE '%c_" . $_SESSION['customers_status']['customers_status_id'] . "_group%'";
 }
 
-$shop_content_data = xtc_db_fetch_array(xtDBquery("SELECT
-									*
-								 FROM 
-									" . TABLE_CONTENT_MANAGER . "
-								 WHERE 
-									content_group = '" . $coid . "' 
+$shop_content_data = xtc_db_fetch_array(xtDBquery("SELECT *
+								 FROM " . TABLE_CONTENT_MANAGER . "
+								 WHERE content_group = '" . $coid . "' 
 								 " . $group_check . "
-								 AND 
-									languages_id='" . (int) $_SESSION['languages_id'] . "'"));
+								 AND languages_id='" . (int) $_SESSION['languages_id'] . "'"));
 
 $breadcrumb->add($shop_content_data['content_title'], xtc_href_link(FILENAME_CONTENT, 'coID=' . (int) $_GET['coID']));
 
@@ -62,12 +58,10 @@ if ($coid == 7) {
         }
         if (ANTISPAM_CONTACT == 'true') {
             //Antispam
-            $antispam_query = xtc_db_fetch_array(xtDBquery("SELECT 
-															id, answer 
+            $antispam_query = xtc_db_fetch_array(xtDBquery("SELECT id, answer 
 															FROM " . TABLE_CSEO_ANTISPAM . " 
 															WHERE language_id = '" . (int) $_SESSION['languages_id'] . "'
-															AND id = '" . $_POST['antispamid'] . "'
-															"));
+															AND id = '" . $_POST['antispamid'] . "';"));
 
             if (empty($_POST["codeanwser"])) {
                 $error = true;
@@ -161,9 +155,12 @@ if ($coid == 7) {
     $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
     $smarty->assign('language', $_SESSION['language']);
     $smarty->caching = false;
-    $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/contact_us.html', USE_TEMPLATE_DEVMODE));
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/contact_us.html')) {
+		$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/contact_us.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$main_content = $smarty->fetch(cseo_get_usermod('base/module/contact_us.html', USE_TEMPLATE_DEVMODE));
+	}
 } else {
-
     if ($shop_content_data['content_file'] != '') {
         ob_start();
         if (strpos($shop_content_data['content_file'], '.txt'))
@@ -184,13 +181,21 @@ if ($coid == 7) {
     $smarty->assign('BUTTON_CONTINUE', '<a href="javascript:history.back(1)">' . xtc_image_button('button_back.gif', IMAGE_BUTTON_BACK) . '</a>');
     if (!CacheCheck()) {
         $smarty->caching = false;
-        $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/content.html', USE_TEMPLATE_DEVMODE));
+		if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/content.html')) {
+			$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/content.html', USE_TEMPLATE_DEVMODE));
+		}else{
+			$main_content = $smarty->fetch(cseo_get_usermod('base/module/content.html', USE_TEMPLATE_DEVMODE));
+		}
     } else {
         $smarty->caching = true;
         $smarty->cache_lifetime = CACHE_LIFETIME;
         $smarty->cache_modified_check = CACHE_CHECK;
         $cache_id = $_SESSION['language'] . $shop_content_data['content_id'] . 'shopcontent';
-        $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/content.html', USE_TEMPLATE_DEVMODE), $cache_id);
+		if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/content.html')) {
+			$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/content.html', USE_TEMPLATE_DEVMODE, $cache_id));
+		}else{
+			$main_content = $smarty->fetch(cseo_get_usermod('base/module/content.html', USE_TEMPLATE_DEVMODE, $cache_id));
+		}
     }
 }
 

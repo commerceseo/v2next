@@ -109,9 +109,11 @@ $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
 $smarty->loadFilter('output', 'note');
 $smarty->loadFilter('output', 'trimwhitespace');
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/reviews.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/reviews.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/reviews.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/reviews.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
-
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
-
 include ('includes/application_bottom.php');

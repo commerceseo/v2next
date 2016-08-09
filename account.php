@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: account.php 1002 2014-05-05 15:14:06Z akausch $
+ * 	$Id: account.php 1099 2014-06-12 14:51:40Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -17,7 +17,6 @@ include ('includes/application_top.php');
 $smarty = new Smarty;
 $account = new account;
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
-
 require_once (DIR_FS_INC . 'xtc_count_customer_orders.inc.php');
 
 $breadcrumb->add(NAVBAR_TITLE_ACCOUNT, xtc_href_link(FILENAME_ACCOUNT, '', 'SSL'));
@@ -84,8 +83,12 @@ if (is_array($cseo_extender_result_array)) {
         $smarty->assign($t_key, $t_value);
     }
 }
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/account.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/account.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/account.html', USE_TEMPLATE_DEVMODE));
+}
 
-$main_content = $smarty->fetch(cseo_get_usermod('base/module/account.html', USE_TEMPLATE_DEVMODE));
 $smarty->assign('main_content', $main_content);
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
 include ('includes/application_bottom.php');

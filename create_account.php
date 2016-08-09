@@ -53,10 +53,12 @@ if (is_array($cseo_extender_result_array)) {
 $smarty->assign('language', $_SESSION['language']);
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->caching = false;
-
-$main_content = $smarty->fetch(cseo_get_usermod('base/module/create_account.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/create_account.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/create_account.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/create_account.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
 
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
-
 include ('includes/application_bottom.php');

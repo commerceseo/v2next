@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_success.php 1068 2014-05-22 12:11:34Z akausch $
+ * 	$Id: checkout_success.php 1137 2014-07-08 16:36:26Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -100,8 +100,11 @@ if (is_array($cseo_extender_result_array)) {
 if (file_exists(DIR_WS_INCLUDES . 'addons/checkout_success_addon.php')) {
 	include(DIR_WS_INCLUDES . 'addons/checkout_success_addon.php');
 }
-
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/checkout_success.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/checkout_success.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/checkout_success.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_success.html', USE_TEMPLATE_DEVMODE));
+}
 
 //Beginn Partnerseller Anbindung
 if (PARTNER_SELLER_ACTIVE == 'true') {
@@ -141,8 +144,6 @@ if (PARTNER_SELLER_ACTIVE == 'true') {
 
 	$main_content.=xtc_psl(PARTNER_SELLER_PATH, $_SESSION['customer_id'], $last_order, PARTNER_SELLER_PWD, PARTNER_SELLER_CHK);
 }
-
-
 //Ende Partnerseller Anbindung
 
 if (($_SESSION['account_type'] == 1) && (DELETE_GUEST_ACCOUNT == 'true')) {

@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: products_new.php 940 2014-04-05 10:24:17Z akausch $
+ * 	$Id: products_new.php 1115 2014-06-20 11:19:58Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -14,18 +14,14 @@
  * --------------------------------------------------------------- */
 
 include ('includes/application_top.php');
-// create smarty elements
 $smarty = new Smarty;
-// include boxes
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
-
-// include needed function
 require_once (DIR_FS_INC . 'xtc_date_long.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_vpe_name.inc.php');
 
 $breadcrumb->add(NAVBAR_TITLE_PRODUCTS_NEW, xtc_href_link(FILENAME_PRODUCTS_NEW));
 
-require (DIR_WS_INCLUDES . 'header.php');
+require_once(DIR_WS_INCLUDES . 'header.php');
 
 $fsk_lock = '';
 $group_check = '';
@@ -60,15 +56,15 @@ if ($_GET['multisort'] == 'specialprice' || $_GET['multisort'] == 'new_asc' || $
             $order_str = ' GROUP BY p.products_id ORDER BY p.products_price DESC';
             break;
         case 'manu_asc':
-            $from_str .= ' INNER JOIN ' . TABLE_MANUFACTURERS . ' AS m ON ( p.manufacturers_id = m.manufacturers_id )';
+            $from_str .= ' JOIN ' . TABLE_MANUFACTURERS . ' AS m ON ( p.manufacturers_id = m.manufacturers_id )';
             $order_str = ' GROUP BY p.products_id ORDER BY m.manufacturers_name ASC';
             break;
         case 'manu_desc':
-            $from_str .= ' INNER JOIN ' . TABLE_MANUFACTURERS . ' AS m ON ( p.manufacturers_id = m.manufacturers_id )';
+            $from_str .= ' JOIN ' . TABLE_MANUFACTURERS . ' AS m ON ( p.manufacturers_id = m.manufacturers_id )';
             $order_str = ' GROUP BY p.products_id ORDER BY m.manufacturers_name DESC';
             break;
         case 'specialprice':
-            $from_str .= " INNER JOIN " . TABLE_SPECIALS . " AS s ON (p.products_id = s.products_id) AND s.status = '1'";
+            $from_str .= " JOIN " . TABLE_SPECIALS . " AS s ON (p.products_id = s.products_id) AND s.status = '1'";
             $order_str = ' GROUP BY p.products_id ORDER BY s.specials_new_products_price DESC';
             break;
         default:
@@ -78,26 +74,18 @@ if ($_GET['multisort'] == 'specialprice' || $_GET['multisort'] == 'new_asc' || $
     $order_str = ' GROUP BY p.products_id ORDER BY p.products_date_added DESC';
 }
 
-$products_new_query_raw = "SELECT DISTINCT
-                                    p.*,
-                                    pd.*
-                                    FROM 
-										" . TABLE_PRODUCTS . " p
-                                    INNER JOIN 
-										" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
-									INNER JOIN
-										" . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON(p.products_id = p2c.products_id)
-									INNER JOIN
-										" . TABLE_CATEGORIES . " c ON(c.categories_id = p2c.categories_id AND c.categories_status = 1)
-									" . $from_str . "
-                                    WHERE 
-										p.products_status = '1'
-									AND 
-										(p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
-                                    " . $group_check . " 
-                                    " . $fsk_lock . "                                  
-                                    " . $days . " 
-                                    " . $order_str;
+$products_new_query_raw = "SELECT p.*, pd.*
+							FROM " . TABLE_PRODUCTS . " p
+							JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+							JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " p2c ON(p.products_id = p2c.products_id)
+							JOIN " . TABLE_CATEGORIES . " c ON(c.categories_id = p2c.categories_id AND c.categories_status = 1)
+							" . $from_str . "
+							WHERE p.products_status = '1'
+							AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+							" . $group_check . " 
+							" . $fsk_lock . "                                  
+							" . $days . " 
+							" . $order_str;
 
 
 if (isset($_GET['per_site']) && !empty($_GET['per_site']))
@@ -126,14 +114,14 @@ if (($listing_split->number_of_rows > 0)) {
 }
 
 if (PRODUCT_LIST_FILTER_SORT == 'true') {
-    $specials_query_raw = xtDBquery("SELECT 
-										s.products_id
-									FROM 
-										" . TABLE_SPECIALS . " AS s
-									INNER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS ptc ON(ptc.products_id = s.products_id)
-									WHERE status = '1';");
-    $count_specials = xtc_db_num_rows($specials_query_raw);
-
+	// Abfrage, ob Sonderangebote da sind
+	$specials_query_raw = xtDBquery("SELECT s.products_id
+									FROM " . TABLE_SPECIALS . " AS s
+									JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS ptc ON(ptc.products_id = s.products_id)
+									WHERE status = '1' GROUP BY s.products_id;");
+	$count_specials = xtc_db_num_rows($specials_query_raw);
+	// Abfrage, ob Hersteller da sind
+	$count_manu = xtc_db_fetch_array(xtDBquery("SELECT COUNT(manufacturers_id) AS counter FROM " . TABLE_MANUFACTURERS . ";"));
     $multisort_dropdown = xtc_draw_form('multisort', FILENAME_PRODUCTS_NEW, 'get') . "\n";
     $options = array(array('text' => MULTISORT_STANDARD));
     if (($count_specials > 0)) {
@@ -145,8 +133,10 @@ if (PRODUCT_LIST_FILTER_SORT == 'true') {
     $options[] = array('id' => 'price_desc', 'text' => MULTISORT_PRICE_DESC);
     $options[] = array('id' => 'name_asc', 'text' => MULTISORT_ABC_AZ);
     $options[] = array('id' => 'name_desc', 'text' => MULTISORT_ABC_ZA);
-    $options[] = array('id' => 'manu_asc', 'text' => MULTISORT_MANUFACTURER_ASC);
-    $options[] = array('id' => 'manu_desc', 'text' => MULTISORT_MANUFACTURER_DESC);
+	if (($count_manu['counter'] > 0)) {
+		$options[] = array('id' => 'manu_asc', 'text' => MULTISORT_MANUFACTURER_ASC);
+		$options[] = array('id' => 'manu_desc', 'text' => MULTISORT_MANUFACTURER_DESC);
+	}
     $multisort_dropdown .= xtc_draw_pull_down_menu('multisort', $options, $_GET['multisort'], 'onchange="this.form.submit()"') . "\n";
     $multisort_dropdown .= '</form>' . "\n";
     $smarty->assign('MULTISORT_DROPDOWN', $multisort_dropdown);
@@ -197,7 +187,5 @@ if (!CacheCheck()) {
 }
 
 $smarty->assign('main_content', $main_content);
-
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
-
 include ('includes/application_bottom.php');

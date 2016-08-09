@@ -26,10 +26,11 @@ $smarty->assign('BUTTON_CONTINUE', '<a href="' . xtc_href_link(FILENAME_DEFAULT)
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
-
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/ssl_check.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/ssl_check.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/ssl_check.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/ssl_check.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
-
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
-
 include ('includes/application_bottom.php');

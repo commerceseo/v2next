@@ -15,43 +15,33 @@
 
 include ('includes/application_top.php');
 $smarty = new Smarty;
-
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
-
 $breadcrumb->add(NAVBAR_TITLE_SPECIALS, xtc_href_link(FILENAME_SPECIALS));
-
-if ($_SESSION['customers_status']['customers_fsk18_display'] == '0')
+if ($_SESSION['customers_status']['customers_fsk18_display'] == '0') {
     $fsk_lock = ' AND p.products_fsk18 != 1';
-
-if (GROUP_CHECK == 'true')
+}
+if (GROUP_CHECK == 'true') {
     $group_check = " AND p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . " = 1 ";
-
-$specials_query_raw = "SELECT 
-						p.*,
-                        pd.*,
-                        s.specials_new_products_price 
-					FROM 
-						" . TABLE_PRODUCTS . " p
-					LEFT JOIN
-						" . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "') 
-					LEFT JOIN
-						" . TABLE_SPECIALS . " s ON(s.products_id = p.products_id)
-                    WHERE 
-						p.products_status = '1'
+}
+$specials_query_raw = "SELECT p.*, pd.*, s.specials_new_products_price 
+					FROM " . TABLE_PRODUCTS . " p
+					LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(p.products_id = pd.products_id AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "') 
+					LEFT JOIN " . TABLE_SPECIALS . " s ON(s.products_id = p.products_id)
+                    WHERE p.products_status = '1'
+					AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
                         " . $group_check . "
                         " . $fsk_lock . "
-                    AND 
-						s.status = '1' 
-					ORDER BY 
-						s.specials_date_added DESC";
+                    AND s.status = '1' 
+					GROUP BY p.products_id
+					ORDER BY s.specials_date_added DESC";
 
-if (isset($_GET['per_site']) && !empty($_GET['per_site']))
+if (isset($_GET['per_site']) && !empty($_GET['per_site'])) {
     $per_site = $_GET['per_site'];
-elseif (isset($_SESSION['per_site']))
+} elseif (isset($_SESSION['per_site'])) {
     $per_site = $_SESSION['per_site'];
-elseif (!isset($_SESSION['per_site']) || !isset($_GET['per_site']))
+} elseif (!isset($_SESSION['per_site']) || !isset($_GET['per_site'])) {
     $per_site = MAX_DISPLAY_SEARCH_RESULTS;
-
+}
 $_SESSION['per_site'] = $per_site;
 
 $listing_split = new splitPageResults($specials_query_raw, $_GET['page'], (int) $_SESSION['per_site']);
@@ -66,7 +56,6 @@ if (($listing_split->number_of_rows > 0)) {
     $navigation = $navigation_smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/product_navigation/products_page_navigation.html', USE_TEMPLATE_DEVMODE));
     $smarty->assign('NAVIGATION', $navigation);
 }
-
 
 $file_name = FILENAME_SPECIALS;
 
@@ -83,9 +72,9 @@ if (PRODUCT_LIST_VIEW_PER_SITE == 'true') {
 
 $module_content = array();
 $row = 0;
-if ($listing_split->number_of_rows == 0)
+if ($listing_split->number_of_rows == 0) {
     xtc_redirect(xtc_href_link(FILENAME_DEFAULT));
-
+}
 require_once (DIR_WS_INCLUDES . 'header.php');
 $specials_query = xtc_db_query($listing_split->sql_query);
 $i = 0;

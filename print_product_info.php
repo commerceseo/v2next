@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: print_product_info.php 521 2013-07-24 11:34:09Z akausch $
+ * 	$Id: print_product_info.php 1217 2014-10-01 16:26:38Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -129,4 +129,8 @@ if (is_array($mo_images)) {
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
-$smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/module/print_product_info.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/print_product_info.html')) {
+	$smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/module/print_product_info.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$smarty->display(cseo_get_usermod('base/module/print_product_info.html', USE_TEMPLATE_DEVMODE));
+}

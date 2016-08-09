@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_process.php 1270 2014-11-19 07:03:29Z akausch $
+ * 	$Id: checkout_process.php 1496 2015-10-27 07:05:26Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -62,7 +62,7 @@ if (!isset($_SESSION['sendto'])) {
     }
 }
 
-if ((xtc_not_null(MODULE_PAYMENT_INSTALLED)) && (!isset($_SESSION['payment']))) {
+if ((xtc_not_null(MODULE_PAYMENT_INSTALLED)) && (!isset($_SESSION['payment'])) && ($order->info['total'] > 0)) {
     if ($_SESSION['payment'] == 'paypalexpress') {
         xtc_redirect(xtc_href_link(FILENAME_PAYPAL_CHECKOUT, '', 'SSL'));
     } else {
@@ -96,15 +96,15 @@ $shipping_modules = new shipping($_SESSION['shipping']);
 $order = new order();
 
 if ($order->customer['firstname'] == '' && $order->customer['lastname'] == '' && $order->customer['street_address'] == '') {
-$error_messa = CHECKOUT_PAYMENT_ERROR;
+    $error_messa = CHECKOUT_PAYMENT_ERROR;
     if ($_SESSION['payment'] == 'paypalexpress') {
         xtc_redirect(xtc_href_link(FILENAME_PAYPAL_CHECKOUT, 'error_message=' . $error_messa, 'SSL', true, false));
     } else {
         if (CHECKOUT_AJAX_STAT == 'true') {
-			xtc_redirect(xtc_href_link(FILENAME_CHECKOUT, 'error_message=' . $error_messa, 'SSL', true, false));
-		} else {
-			xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, 'error_message=' . $error_messa, 'SSL', true, false));
-		}
+            xtc_redirect(xtc_href_link(FILENAME_CHECKOUT, 'error_message=' . $error_messa, 'SSL', true, false));
+        } else {
+            xtc_redirect(xtc_href_link(FILENAME_CHECKOUT_PAYMENT, 'error_message=' . $error_messa, 'SSL', true, false));
+        }
     }
 }
 
@@ -266,7 +266,9 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
                 if (($stock_left < 1) && (STOCK_ALLOW_CHECKOUT == 'false') && (STOCK_ALLOW_CHECKOUT_DEACTIVATE == 'true')) {
                     xtc_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_status = '0' WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "'");
                 }
-
+                if (($stock_left < 1) && (STOCK_DISABLE_PRODUCT == 'true')) {
+                    xtc_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_buyable = '0' WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "'");
+                }
                 if (($stock_left < 1) && (STOCK_LEVEL_SHIPPINGTIME == 'True')) {
                     xtc_db_query("UPDATE " . TABLE_PRODUCTS . " SET products_shippingtime = '" . STOCK_LEVEL_SHIPPINGTIME_ID . "' WHERE products_id = '" . xtc_get_prid($order->products[$i]['id']) . "'");
                 }
@@ -284,7 +286,7 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
             'products_price' => $order->products[$i]['price'],
             'final_price' => $order->products[$i]['final_price'],
             'products_tax' => $order->products[$i]['tax'],
-            'products_discount_made' => $order->products[$i]['discount_allowed'],
+            'products_discount_made' => ($order->products[$i]['discount_allowed'] != '' ? $order->products[$i]['discount_allowed'] : '0.00'),
             'products_quantity' => $order->products[$i]['qty'],
             'allow_tax' => $_SESSION['customers_status']['customers_status_show_price_tax'],
             'product_type' => $order->products[$i]['product_type']);
@@ -431,7 +433,7 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
                         'products_options_values' => $attributes_values['products_options_values_name'],
                         'options_values_price' => $attributes_values['options_values_price'],
                         'products_attributes_model' => $attributes_values['attributes_model'],
-                        'sortorder' => $attributes_values['sortorder'],
+                        'sortorder' => ($attributes_values['sortorder'] != '' ? $attributes_values['sortorder'] : 0),
                         'products_attributes_id' => $attributes_values['products_attributes_id'],
                         'attributes_shippingtime' => $main->getShippingStatusName($attributes_values['attributes_shippingtime']),
                         'price_prefix' => $attributes_values['price_prefix']);
@@ -565,7 +567,7 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
         }
         if (is_array($_SESSION['gratis_artikel'])) {
             foreach ($_SESSION["gratis_artikel"] as $index => $value) {
-                xtc_db_query("INSERT " . TABLE_ORDERS_PRODUCTS . " SET orders_id = '$insert_id', products_id = '$value[products_id]', products_model = '$value[products_model]', products_name = '$value[products_name]', allow_tax = '1', products_quantity = '$value[specials_gratis_max_value]', products_tax = '19', products_discount_made = '0';");
+                xtc_db_query("INSERT " . TABLE_ORDERS_PRODUCTS . " SET orders_id = '$insert_id', products_id = '$value[products_id]', products_model = '$value[products_model]', products_name = '$value[products_name]', allow_tax = '1', products_quantity = '$value[specials_gratis_max_value]', products_tax = '19', products_discount_made = '0.00';");
                 xtc_db_query("UPDATE specials_gratis SET specials_gratis_quantity = specials_gratis_quantity - $value[specials_gratis_max_value] where products_id = '$value[products_id]';");
             }
         };
@@ -612,11 +614,11 @@ if (isset($_SESSION['tmp_oID']) && is_int($_SESSION['tmp_oID'])) {
 }
 
 if (!$tmp) {
-	// Bonuspunkte Modul
-	if(MODULE_BONUS_STATUS == 'True') {
-		include ('checkout_bonus.php');
-	}
-	// Bonuspunkte Modul eof
+    // Bonuspunkte Modul
+    if (MODULE_BONUS_STATUS == 'True') {
+        include ('checkout_bonus.php');
+    }
+    // Bonuspunkte Modul eof
     $order_totals = $order_total_modules->apply_credit();
     include ('send_order.php');
 

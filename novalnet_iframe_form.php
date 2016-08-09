@@ -62,4 +62,3 @@
     $iframe_form_content = curl_exec($ch);
     curl_close($ch);
     echo $iframe_form_content;
-?>

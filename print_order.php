@@ -86,11 +86,19 @@ if ($_SESSION['customer_id'] == $order_check['customers_id']) {
     $smarty->assign('language', $_SESSION['language']);
     $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
     $smarty->caching = false;
-    $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/module/print_order.html', USE_TEMPLATE_DEVMODE));
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/print_order.html')) {
+		$smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/module/print_order.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$smarty->display(cseo_get_usermod('base/module/print_order.html', USE_TEMPLATE_DEVMODE));
+	}
 } else {
     $smarty->assign('ERROR', 'You are not allowed to view this order!');
     $smarty->assign('language', $_SESSION['language']);
     $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
     $smarty->caching = false;
-    $smarty->display(cseo_get_usermod('base/module/error_message.html', USE_TEMPLATE_DEVMODE));
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/error_message.html')) {
+		$smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/module/error_message.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$smarty->display(cseo_get_usermod('base/module/error_message.html', USE_TEMPLATE_DEVMODE));
+	}
 }

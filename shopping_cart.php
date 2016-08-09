@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: shopping_cart.php 1107 2014-06-18 07:27:22Z sbraeutig $
+ * 	$Id: shopping_cart.php 1472 2015-07-22 20:35:15Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -21,21 +21,21 @@ $access_to_vars = get_object_vars($_SESSION['cart']);
 
 if ($_GET['delete'] != '' && $_SESSION['cart']->in_cart($_GET['delete'])) {
     $_SESSION['cart']->remove($_GET['delete']);
-    xtc_redirect(FILENAME_SHOPPING_CART);
+    xtc_redirect((($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . FILENAME_SHOPPING_CART);
 }
 if ($_GET['del'] != '' && $_SESSION['cart']->in_cart($_GET['del'])) {
     $_SESSION['cart']->remove($_GET['del']);
-    xtc_redirect(FILENAME_SHOPPING_CART);
+    xtc_redirect((($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . FILENAME_SHOPPING_CART);
 }
 if ($_GET['plus'] != '' && $_SESSION['cart']->in_cart($_GET['plus'])) {
     $attributes = $access_to_vars['contents'][$_GET['plus']]['attributes']; // ASSIGN ATTRIBUTES
     $_SESSION['cart']->update_quantity($_GET['plus'], $_SESSION['cart']->get_quantity($_GET['plus']) + 1, $attributes);
-    xtc_redirect(FILENAME_SHOPPING_CART);
+    xtc_redirect((($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . FILENAME_SHOPPING_CART);
 }
 if ($_GET['minus'] != '' && $_SESSION['cart']->in_cart($_GET['minus'])) {
     $attributes = $access_to_vars['contents'][$_GET['minus']]['attributes']; // ASSIGN ATTRIBUTES
     $_SESSION['cart']->update_quantity($_GET['minus'], $_SESSION['cart']->get_quantity($_GET['minus']) - 1, $attributes);
-    xtc_redirect(FILENAME_SHOPPING_CART);
+    xtc_redirect((($request_type == 'SSL') ? HTTPS_SERVER : HTTP_SERVER) . DIR_WS_CATALOG . FILENAME_SHOPPING_CART);
 }
 
 $smarty = new Smarty;
@@ -160,7 +160,7 @@ if ($_SESSION['cart']->count_contents() > 0) {
 												AND 
 													popt.language_id = '" . (int) $_SESSION['languages_id'] . "';"));
                     $products[$i][$option]['products_options_name'] = $attributes_values['products_options_name'];
-					$products[$i][$option]['options_values_scale_price'] = $attributes_values['options_values_scale_price'];
+                    $products[$i][$option]['options_values_scale_price'] = $attributes_values['options_values_scale_price'];
                     $products[$i][$option]['options_values_id'] = $value;
                     $products[$i][$option]['products_options_values_name'] = $attributes_values['products_options_values_name'];
                     $products[$i][$option]['options_values_price'] = $attributes_values['options_values_price'];
@@ -179,9 +179,9 @@ if ($_SESSION['cart']->count_contents() > 0) {
             }
             if (isset($products[$i]['freitext'])) {
                 while (list ($option, $value) = each($products[$i]['freitext'])) {
-					while (list ($foption, $fvalue) = each($value)) {
-                    $hidden_options .= xtc_draw_hidden_field('id[' . $products[$i]['id'] . '][' . $option . ']', $value);
-                    $attributes_values = xtc_db_fetch_array(xtc_db_query("SELECT 
+                    while (list ($foption, $fvalue) = each($value)) {
+                        $hidden_options .= xtc_draw_hidden_field('id[' . $products[$i]['id'] . '][' . $option . ']', $value);
+                        $attributes_values = xtc_db_fetch_array(xtc_db_query("SELECT 
 													*
 												FROM 
 													" . TABLE_PRODUCTS_OPTIONS . " popt 
@@ -193,23 +193,23 @@ if ($_SESSION['cart']->count_contents() > 0) {
 													pa.options_values_id = poval.products_options_values_id
 												AND 
 													popt.language_id = '" . (int) $_SESSION['languages_id'] . "';"));
-                    $products[$i][$option]['products_options_name'] = $attributes_values['products_options_name'];
-					$products[$i][$option]['options_values_scale_price'] = $attributes_values['options_values_scale_price'];
-                    $products[$i][$option]['options_values_id'] = $fvalue;
-                    $products[$i][$option]['products_options_values_name'] = $attributes_values['products_options_values_name'];
-                    $products[$i][$option]['options_values_price'] = $attributes_values['options_values_price'];
-                    $products[$i][$option]['price_prefix'] = $attributes_values['price_prefix'];
-                    $products[$i][$option]['weight_prefix'] = $attributes_values['weight_prefix'];
-                    $products[$i][$option]['options_values_weight'] = $attributes_values['options_values_weight'];
-                    $products[$i][$option]['attributes_stock'] = $attributes_values['attributes_stock'];
-                    $products[$i][$option]['products_attributes_id'] = $attributes_values['products_attributes_id'];
-                    $products[$i][$option]['attributes_ean'] = $attributes_values['attributes_ean'];
-                    $products[$i][$option]['attributes_vpe_status'] = $attributes_values['attributes_vpe_status'];
-                    $products[$i][$option]['attributes_vpe'] = $attributes_values['attributes_vpe'];
-                    $products[$i][$option]['attributes_vpe_value'] = $attributes_values['attributes_vpe_value'];
-                    $products[$i][$option]['attributes_shippingtime'] = $attributes_values['attributes_shippingtime'];
-                    $products[$i][$option]['attributes_model'] = $attributes_values['attributes_model'];
-					}
+                        $products[$i][$option]['products_options_name'] = $attributes_values['products_options_name'];
+                        $products[$i][$option]['options_values_scale_price'] = $attributes_values['options_values_scale_price'];
+                        $products[$i][$option]['options_values_id'] = $fvalue;
+                        $products[$i][$option]['products_options_values_name'] = $attributes_values['products_options_values_name'];
+                        $products[$i][$option]['options_values_price'] = $attributes_values['options_values_price'];
+                        $products[$i][$option]['price_prefix'] = $attributes_values['price_prefix'];
+                        $products[$i][$option]['weight_prefix'] = $attributes_values['weight_prefix'];
+                        $products[$i][$option]['options_values_weight'] = $attributes_values['options_values_weight'];
+                        $products[$i][$option]['attributes_stock'] = $attributes_values['attributes_stock'];
+                        $products[$i][$option]['products_attributes_id'] = $attributes_values['products_attributes_id'];
+                        $products[$i][$option]['attributes_ean'] = $attributes_values['attributes_ean'];
+                        $products[$i][$option]['attributes_vpe_status'] = $attributes_values['attributes_vpe_status'];
+                        $products[$i][$option]['attributes_vpe'] = $attributes_values['attributes_vpe'];
+                        $products[$i][$option]['attributes_vpe_value'] = $attributes_values['attributes_vpe_value'];
+                        $products[$i][$option]['attributes_shippingtime'] = $attributes_values['attributes_shippingtime'];
+                        $products[$i][$option]['attributes_model'] = $attributes_values['attributes_model'];
+                    }
                 }
             }
         }
@@ -338,8 +338,13 @@ if ($_SESSION['cart']->count_contents() > 0) {
 //Bezahlsperre END
         $smarty->assign('BUTTON_RELOAD', xtc_image_submit('button_update_cart.gif', IMAGE_BUTTON_UPDATE_CART));
         $smarty->assign('BUTTON_BACK', '<a href="javascript:history.back();">' . xtc_image_button('button_back.gif', IMAGE_BUTTON_BACK) . '</a>');
-        $file = FILENAME_CHECKOUT_SHIPPING;
+        if (CHECKOUT_AJAX_STAT == 'true' && file_exists('checkout.php')) {
+            $file = FILENAME_CHECKOUT;
+        } else {
+            $file = FILENAME_CHECKOUT_SHIPPING;
+        }
         $smarty->assign('BUTTON_CHECKOUT', '<a title="' . IMAGE_BUTTON_CHECKOUT . '" href="' . xtc_href_link($file, '', 'SSL') . '">' . cseo_wk_image_button('button_checkout.gif', IMAGE_BUTTON_CHECKOUT) . '</a>');
+        $smarty->assign('BUTTON_PRINT_CART', '<a class="shipping" title="' . IMAGE_BUTTON_PRINT_CART . '" href="' . xtc_href_link('print_cart.php', '', 'SSL') . '">' . xtc_image_button('button_checkout.gif', IMAGE_BUTTON_PRINT_CART) . '</a>');
     }
 } else {
     // empty cart
@@ -350,6 +355,12 @@ if ($_SESSION['cart']->count_contents() > 0) {
     $smarty->assign('cart_empty', $cart_empty);
     $smarty->assign('BUTTON_CONTINUE', '<a href="' . xtc_href_link(FILENAME_DEFAULT) . '">' . xtc_image_button('button_continue.gif', IMAGE_BUTTON_CONTINUE) . '</a>');
 }
+// free shipping start - new code
+if ($_SESSION['MAXIMUM_CART_AMOUNT'] == true) {
+    $smarty->assign('info_message', PRODUCT_MAXIMUM_AMOUNT_EXCEEDED);
+    unset($_SESSION['MAXIMUM_CART_AMOUNT']);
+}
+// free shipping - end of code
 
 include (DIR_WS_MODULES . 'cart_specials.php');
 
@@ -369,6 +380,10 @@ if (file_exists(DIR_WS_INCLUDES . 'addons/shopping_cart_addon.php')) {
     include (DIR_WS_INCLUDES . 'addons/shopping_cart_addon.php');
 }
 
+if (file_exists(DIR_WS_MODULES . 'bonus_cart.php')) {
+	include (DIR_WS_MODULES . 'bonus_cart.php');
+}
+
 $smarty->assign('HOME', xtc_href_link(FILENAME_DEFAULT));
 $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
@@ -379,13 +394,16 @@ $cseo_shopping_cart->set_data('POST', $_POST);
 $cseo_shopping_cart->proceed();
 $cseo_extender_result_array = $cseo_shopping_cart->get_response();
 if (is_array($cseo_extender_result_array)) {
-	foreach ($cseo_extender_result_array AS $t_key => $t_value) {
-		$smarty->assign($t_key, $t_value);
-	}
+    foreach ($cseo_extender_result_array AS $t_key => $t_value) {
+        $smarty->assign($t_key, $t_value);
+    }
 }
 
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/shopping_cart.html', USE_TEMPLATE_DEVMODE));
-
+if (file_exists('templates/' . CURRENT_TEMPLATE . '/module/shopping_cart.html')) {
+    $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/shopping_cart.html', USE_TEMPLATE_DEVMODE));
+} else {
+    $main_content = $smarty->fetch(cseo_get_usermod('base/module/shopping_cart.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('checkout_site', 'true');
 $smarty->assign('main_content', $main_content);

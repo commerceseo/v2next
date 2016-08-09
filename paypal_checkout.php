@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: paypal_checkout.php 1099 2014-06-12 14:51:40Z akausch $
+ * 	$Id: paypal_checkout.php 1472 2015-07-22 20:35:15Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -104,7 +104,7 @@ if ($_SESSION['cart']->count_contents() < 1)
     xtc_redirect(xtc_href_link(FILENAME_SHOPPING_CART));
 
 // Kein Token mehr da durch Back im Browser auf die Seite
-if (!($_SESSION['nvpReqArray']['TOKEN']) OR !($_SESSION['reshash']['PAYERID'])) {
+if (!($_SESSION['nvpReqArray']['TOKEN']) OR ! ($_SESSION['reshash']['PAYERID'])) {
     unset($_SESSION['payment']);
     unset($_SESSION['nvpReqArray']);
     unset($_SESSION['reshash']);
@@ -114,6 +114,7 @@ if (!($_SESSION['nvpReqArray']['TOKEN']) OR !($_SESSION['reshash']['PAYERID'])) 
 
 if (isset($_SESSION['credit_covers']))
     unset($_SESSION['credit_covers']); //ICW ADDED FOR CREDIT CLASS SYSTEM
+
 
 
     
@@ -296,8 +297,35 @@ if (xtc_count_shipping_modules() > 0) {
         $module_smarty->assign('FREE_SHIPPING_ICON', $quotes[$i]['icon']);
     } else {
         $radio_buttons = 0;
+        //Beginn von Modul Versandsperre
+        for ($i = 0, $n = count($order->products); $i < $n; $i++) {
+            $id = $order->products[$i]['id'];
+            $forbidden_shipping_query = xtc_db_query("SELECT products_forbidden_shipping FROM " . TABLE_PRODUCTS . " WHERE products_id='$id' ");
+            if ($i == '0') {
+                $forbidden_shipping_data = xtc_db_fetch_array($forbidden_shipping_query);
+            } else {
+                $puffer = xtc_db_fetch_array($forbidden_shipping_query);
+                if ($puffer['products_forbidden_shipping'] != '') {
+                    $forbidden_shipping_data['products_forbidden_shipping'] .= "|";
+                    $forbidden_shipping_data['products_forbidden_shipping'] .= $puffer['products_forbidden_shipping'];
+                }
+            }
+        }
+        $forbidden_shipping_data = explode("|", $forbidden_shipping_data['products_forbidden_shipping']);
+        $n = sizeof($quotes);
+        foreach ($forbidden_shipping_data AS $forbidden_shipping) {
+            for ($i = 0; $i <= $n; $i++) {
+                $name = explode('.', $forbidden_shipping);
+                if ($quotes[$i]['id'] == $name[0]) {
+                    unset($quotes[$i]);
+                }
+            }
+        }
+
+        //Ende von Modul Versandsperre
         #loop through installed shipping methods...
-        for ($i = 0, $n = sizeof($quotes); $i < $n; $i++) {
+        // for ($i = 0, $n = sizeof($quotes); $i < $n; $i++) {
+        for ($i = 0; $i < $n; $i ++) {  //änderung zwecks Radiobuttons
             if (!isset($quotes[$i]['error'])) {
                 for ($j = 0, $n2 = sizeof($quotes[$i]['methods']); $j < $n2; $j++) {
                     # set the radio button to be checked if it is the method chosen
@@ -375,7 +403,7 @@ require_once (DIR_FS_INC . 'xtc_get_products_image.inc.php');
 $temp_prods = $order->products;
 
 for ($i = 0, $n = sizeof($temp_prods); $i < $n; $i++) {
-	$image = xtc_get_products_image($temp_prods[$i]['id']);
+    $image = xtc_get_products_image($temp_prods[$i]['id']);
     if ($image != '') {
         $temp_prods[$i]['image'] = '<img height="60px" src="' . DIR_WS_THUMBNAIL_IMAGES . $image . '" alt="' . $temp_prods[$i]['name'] . '" title="' . $temp_prods[$i]['name'] . '" />';
     }
@@ -388,14 +416,14 @@ for ($i = 0, $n = sizeof($temp_prods); $i < $n; $i++) {
         if ($attributes_model)
             $temp_prods[$i]['model'].=$attributes_model;
     }
-	$temp_prods[$i]['name'] = '<a href="' . xtc_href_link('checkout_product_info.php', xtc_product_link($temp_prods[$i]['id'], $temp_prods[$i]['name'])) . '" class="shipping"><b>'.$temp_prods[$i]['name'].'</b></a>';
+    $temp_prods[$i]['name'] = '<a href="' . xtc_href_link('checkout_product_info.php', xtc_product_link($temp_prods[$i]['id'], $temp_prods[$i]['name'])) . '" class="shipping"><b>' . $temp_prods[$i]['name'] . '</b></a>';
 }
 if ($temp_prods[$i]['products_short_description']) {
-	$temp_prods[$i]['products_short_description'].=strip_tags($temp_prods[$i]['products_short_description']);
+    $temp_prods[$i]['products_short_description'].=strip_tags($temp_prods[$i]['products_short_description']);
 }
 
 if ($temp_prods[$i]['vpe'] != '') {
-	$temp_prods[$i]['vpe'].=strip_tags($temp_prods[$i]['vpe']);
+    $temp_prods[$i]['vpe'].=strip_tags($temp_prods[$i]['vpe']);
 }
 
 $smarty->assign('products_data', $temp_prods);
@@ -456,8 +484,7 @@ if (DISPLAY_CONDITIONS_ON_CHECKOUT == 'true') {
         if ($shop_content_data['content_file'] == 'janolaw_agb.php') {
             include (DIR_FS_INC . 'janolaw.inc.php');
             $conditions = JanolawContent('agb', 'txt');
-        }
-        else
+        } else
             $conditions = '<div class="agbframe">' . file_get_contents(DIR_FS_DOCUMENT_ROOT . 'media/content/' . $shop_content_data['content_file']) . '</div>';
     } else {
         $conditions = '<div class="agbframe">' . $shop_content_data['content_text'] . '</div>';
@@ -500,8 +527,7 @@ if (DISPLAY_DATENSCHUTZ_ON_CHECKOUT == 'true') {
         if ($shop_content_data['content_file'] == 'janolaw_agb.php') {
             include (DIR_FS_INC . 'janolaw.inc.php');
             $conditions = JanolawContent('agb', 'txt');
-        }
-        else
+        } else
             $conditions = '<div class="agbframe">' . file_get_contents(DIR_FS_DOCUMENT_ROOT . 'media/content/' . $shop_content_data['content_file']) . '</div>';
     } else {
         $conditions = '<div class="agbframe">' . $shop_content_data['content_text'] . '</div>';
@@ -542,8 +568,7 @@ if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true') {
         if ($shop_content_data['content_file'] == 'janolaw_agb.php') {
             include (DIR_FS_INC . 'janolaw.inc.php');
             $revocation = JanolawContent('agb', 'txt');
-        }
-        else
+        } else
             $revocation = '<div class="agbframe">' . file_get_contents(DIR_FS_DOCUMENT_ROOT . 'media/content/' . $shop_content_data['content_file']) . '</div>';
     } else {
         $revocation = '<div class="agbframe">' . $shop_content_data['content_text'] . '</div>';
@@ -560,9 +585,9 @@ if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true') {
     if (DISPLAY_REVOCATION_ON_CHECKOUT == 'true') {
         $smarty->assign('REVOCATION_ON_CHECKOUT', 'true');
     }
-	$smarty->assign('REVOCATION', $revocation);
-	$smarty->assign('REVOCATION_TITLE', $shop_content_data['content_heading']);
-	$smarty->assign('REVOCATION_LINK', $main->getContentLink(REVOCATION_ID, MORE_INFO));
+    $smarty->assign('REVOCATION', $revocation);
+    $smarty->assign('REVOCATION_TITLE', $shop_content_data['content_heading']);
+    $smarty->assign('REVOCATION_LINK', $main->getContentLink(REVOCATION_ID, MORE_INFO));
 }
 
 if ($order->delivery['country_id'] !== STORE_COUNTRY && CHECKOUT_SHOW_SHIPPING == 'true') {
@@ -588,10 +613,12 @@ $smarty->assign('PAYMENT_HIDDEN', $payment_hidden);
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
-
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/checkout_paypal.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/' . CURRENT_TEMPLATE . '/module/checkout_paypal.html')) {
+    $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/checkout_paypal.html', USE_TEMPLATE_DEVMODE));
+} else {
+    $main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_paypal.html', USE_TEMPLATE_DEVMODE));
+}
 
 $smarty->assign('main_content', $main_content);
-
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
 include('includes/application_bottom.php');

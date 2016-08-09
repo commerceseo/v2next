@@ -119,8 +119,11 @@ if($_SERVER['REQUEST_METHOD'] == 'GET') {
 	$smarty->assign('orders_id', $_SESSION['tmp_oID']);
 	$smarty->assign('back_url', basename(__FILE__).'?back_button=go');
 	$smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
-	$main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_ipayment.html', USE_TEMPLATE_DEVMODE));
-
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/checkout_ipayment.html')) {
+		$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/checkout_ipayment.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_ipayment.html', USE_TEMPLATE_DEVMODE));
+	}
 	$smarty->assign('main_content', $main_content);
 	$smarty->display(CURRENT_TEMPLATE.'/index.html');
 	include ('includes/application_bottom.php');

@@ -14,14 +14,11 @@
  * --------------------------------------------------------------- */
 
 include ('includes/application_top.php');
-
 $smarty = new Smarty;
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
-
 require_once (DIR_FS_INC . 'xtc_get_download.inc.php');
 require_once (DIR_FS_INC . 'xtc_date_long.inc.php');
 require_once (DIR_FS_INC . 'xtc_image_submit.inc.php');
-
 
 if ($_GET['products_id']) {
     $cat = xtDBquery("SELECT categories_id FROM " . TABLE_PRODUCTS_TO_CATEGORIES . " WHERE products_id='" . (int) $_GET['products_id'] . "' LIMIT 1;");
@@ -31,14 +28,11 @@ if ($_GET['products_id']) {
         $cPath = xtc_input_validation(xtc_get_path($catData['categories_id']), 'cPath', '');
 }
 
-
-
 if ($_GET['action'] == 'get_download') {
     xtc_get_download($_GET['cID']);
 }
 
 include (DIR_WS_MODULES . 'product_info.php');
-
 require_once (DIR_WS_INCLUDES . 'header.php');
 
 $smarty->assign('language', $_SESSION['language']);

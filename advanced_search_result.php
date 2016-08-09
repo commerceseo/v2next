@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: advanced_search_result.php 1200 2014-09-17 06:30:45Z akausch $
+ * 	$Id: advanced_search_result.php 1270 2014-11-19 07:03:29Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -181,14 +181,10 @@ if ($error == 1 && $keyerror != 1) {
     }
 
     //where-string
-    $where_str = " WHERE 
-						p.products_status = '1' 
-					AND 
-						c.categories_status = '1' 
-					AND 
-						(p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
-					AND 
-						pd.language_id = '" . (int) $_SESSION['languages_id'] . "'" .
+    $where_str = " WHERE p.products_status = '1' 
+					AND c.categories_status = '1' 
+					AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+					AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "'" .
             $subcat_where . $att_where . $fsk_lock . $manu_check . $group_check . $tax_where . $pfrom_check . $pto_check;
 
 
@@ -274,13 +270,13 @@ if ($error == 1 && $keyerror != 1) {
     }
     if (PRODUCT_LIST_FILTER_SORT == 'true') {
 		// Abfrage, ob Sonderangebote da sind
-		$specials_query_raw = xtDBquery("SELECT 
-											s.products_id
-										FROM 
-											" . TABLE_SPECIALS . " AS s
-										INNER JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS ptc ON(ptc.products_id = s.products_id)
-										WHERE status = '1';");
+		$specials_query_raw = xtDBquery("SELECT s.products_id
+										FROM " . TABLE_SPECIALS . " AS s
+										JOIN " . TABLE_PRODUCTS_TO_CATEGORIES . " AS ptc ON(ptc.products_id = s.products_id)
+										WHERE status = '1' GROUP BY s.products_id;");
 		$count_specials = xtc_db_num_rows($specials_query_raw);
+		// Abfrage, ob Hersteller da sind
+		$count_manu = xtc_db_fetch_array(xtDBquery("SELECT COUNT(manufacturers_id) AS counter FROM " . TABLE_MANUFACTURERS . ";"));
         $multisort_dropdown = xtc_draw_form('multisort', FILENAME_ADVANCED_SEARCH_RESULT, 'get') . "\n";
         $multisort_dropdown.= xtc_draw_hidden_field('keywords', $_GET['keywords']) . "\n";
         $options = array(array('text' => MULTISORT_STANDARD));
@@ -291,11 +287,12 @@ if ($error == 1 && $keyerror != 1) {
         $options[] = array('id' => 'new_asc', 'text' => MULTISORT_NEW_ASC);
         $options[] = array('id' => 'price_asc', 'text' => MULTISORT_PRICE_ASC);
         $options[] = array('id' => 'price_desc', 'text' => MULTISORT_PRICE_DESC);
-        $options[] = array('id' => 'name_asc', 'text' => MULTISORT_ABC_AZ);
-        $options[] = array('id' => 'name_desc', 'text' => MULTISORT_ABC_ZA);
-        $options[] = array('id' => 'manu_asc', 'text' => MULTISORT_MANUFACTURER_ASC);
-        $options[] = array('id' => 'manu_desc', 'text' => MULTISORT_MANUFACTURER_DESC);
-
+		$options[] = array('id' => 'name_asc', 'text' => MULTISORT_ABC_AZ);
+		$options[] = array('id' => 'name_desc', 'text' => MULTISORT_ABC_ZA);
+		if (($count_manu['counter'] > 0)) {
+			$options[] = array('id' => 'manu_asc', 'text' => MULTISORT_MANUFACTURER_ASC);
+			$options[] = array('id' => 'manu_desc', 'text' => MULTISORT_MANUFACTURER_DESC);
+		}
         $multisort_dropdown .= xtc_draw_pull_down_menu('multisort', $options, $_GET['multisort'], 'onchange="this.form.submit()"') . "\n";
         $multisort_dropdown .= '</form>' . "\n";
         $smarty->assign('multisort', $multisort_dropdown);

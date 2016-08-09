@@ -14,14 +14,8 @@
  * --------------------------------------------------------------- */
 
 require ('includes/application_top.php');
-
-// create smarty elements
 $smarty = new Smarty;
-
-// include boxes
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
-
-// include needed functions
 require_once (DIR_FS_INC . 'xtc_random_charcode.inc.php');
 require_once (DIR_FS_INC . 'xtc_encrypt_password.inc.php');
 require_once (DIR_FS_INC . 'xtc_validate_password.inc.php');
@@ -29,8 +23,6 @@ require_once (DIR_FS_INC . 'xtc_rand.inc.php');
 
 $case = double_opt;
 $info_message = '';
-// $info_message = TEXT_PASSWORD_FORGOTTEN;
-
 if (isset($_GET['action']) && ($_GET['action'] == 'first_opt_in')) {
     $check_customer_query = xtc_db_query("SELECT customers_email_address, customers_id FROM " . TABLE_CUSTOMERS . " WHERE customers_email_address = '" . xtc_db_input($_POST['email']) . "'");
     $check_customer = xtc_db_fetch_array($check_customer_query);
@@ -71,9 +63,7 @@ if (isset($_GET['action']) && ($_GET['action'] == 'first_opt_in')) {
         } else {
             $case = first_opt_in;
             xtc_db_query("update " . TABLE_CUSTOMERS . " set password_request_key = '" . $vlcode . "' where customers_id = '" . $check_customer['customers_id'] . "'");
-
             $password_verification_subject = str_replace('{$shop_name}', STORE_NAME, $mail_data['EMAIL_SUBJECT']);
-
             xtc_php_mail($mail_data['EMAIL_ADDRESS'], $mail_data['EMAIL_ADDRESS_NAME'], $check_customer['customers_email_address'], '', '', $mail_data['EMAIL_REPLAY_ADDRESS'], $mail_data['EMAIL_REPLAY_ADDRESS_NAME'], '', '', $password_verification_subject, $html_mail, $txt_mail);
         }
     } else {
@@ -135,7 +125,11 @@ switch ($case) {
         $smarty->assign('language', $_SESSION['language']);
         $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
         $smarty->caching = false;
-        $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/password_messages.html')) {
+			$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		}else{
+			$main_content = $smarty->fetch(cseo_get_usermod('base/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		}
         break;
 
     case second_opt_in :
@@ -144,7 +138,11 @@ switch ($case) {
         $smarty->assign('language', $_SESSION['language']);
         $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
         $smarty->caching = false;
-        $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/password_messages.html')) {
+			$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		}else{
+			$main_content = $smarty->fetch(cseo_get_usermod('base/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		}
         break;
 
     case code_error :
@@ -166,7 +164,11 @@ switch ($case) {
         $smarty->assign('language', $_SESSION['language']);
         $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
         $smarty->caching = false;
-        $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/password_double_opt_in.html')) {
+			$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		}else{
+			$main_content = $smarty->fetch(cseo_get_usermod('base/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		}
         break;
 
     case wrong_mail :
@@ -188,7 +190,11 @@ switch ($case) {
         $smarty->assign('language', $_SESSION['language']);
         $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
         $smarty->caching = false;
-        $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/password_double_opt_in.html')) {
+			$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		}else{
+			$main_content = $smarty->fetch(cseo_get_usermod('base/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		}
         break;
 
     case no_account :
@@ -197,7 +203,11 @@ switch ($case) {
         $smarty->assign('language', $_SESSION['language']);
         $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
         $smarty->caching = false;
-        $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/password_messages.html')) {
+			$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		}else{
+			$main_content = $smarty->fetch(cseo_get_usermod('base/module/password_messages.html', USE_TEMPLATE_DEVMODE));
+		}
         break;
 
     case double_opt :
@@ -219,14 +229,16 @@ switch ($case) {
         $smarty->assign('language', $_SESSION['language']);
         $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
         $smarty->caching = false;
-        $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/password_double_opt_in.html')) {
+			$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		}else{
+			$main_content = $smarty->fetch(cseo_get_usermod('base/module/password_double_opt_in.html', USE_TEMPLATE_DEVMODE));
+		}
         break;
 }
 $smarty->assign('main_content', $main_content);
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
-
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
-
 include ('includes/application_bottom.php');

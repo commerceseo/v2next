@@ -213,4 +213,3 @@
 			. '&total=' . $selectedRatePlan['calculation']['total']
 			. '&apr=' . $selectedRatePlan['calculation']['anual'];
 	}
-?>

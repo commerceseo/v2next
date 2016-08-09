@@ -82,9 +82,10 @@ $smarty->assign('TEXT_HELP', $text_coupon_help);
 $smarty->assign('language', $_SESSION['language']);
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->caching = false;
-
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/popup_coupon_help.html',USE_TEMPLATE_DEVMODE));
-
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/popup_coupon_help.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/popup_coupon_help.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/popup_coupon_help.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
-
 include ('includes/application_bottom.php');

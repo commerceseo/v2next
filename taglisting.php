@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: taglisting.php 937 2014-04-04 18:14:33Z akausch $
+ * 	$Id: taglisting.php 1424 2015-02-03 15:30:26Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -14,72 +14,52 @@
  * --------------------------------------------------------------- */
 
 include ('includes/application_top.php');
-
 $smarty = new Smarty;
 $smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE . '/');
-
-require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
-
+require_once (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
 $error = 0; // reset error flag to false
 $breadcrumb->add(NAVBAR_TITLE_TAGLIST, xtc_href_link('taglisting.php', '', 'SSL'));
-
-include ('includes/header.php');
-
+require_once (DIR_WS_INCLUDES . 'header.php');
 $result = true;
 $_GET['tag'] = stripslashes(trim(urldecode($_GET['tag'])));
 if (isset($_GET['tag']) && ($_GET['tag'] != '')) {
-
     $fsk_lock = '';
-    if ($_SESSION['customers_status']['customers_fsk18_display'] == '0')
-        $fsk_lock = ' and p.products_fsk18!=1';
-
+    if ($_SESSION['customers_status']['customers_fsk18_display'] == '0') {
+        $fsk_lock = ' AND p.products_fsk18 != 1';
+	}
     $group_check = '';
-    if (GROUP_CHECK == 'true')
-        $group_check = " and p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . "=1 ";
+    if (GROUP_CHECK == 'true') {
+        $group_check = " AND p.group_permission_" . $_SESSION['customers_status']['customers_status_id'] . " = 1 ";
+	}
 
-    $listing_sql = "SELECT DISTINCT 
-						p.*,
-						pd.*,
-						m.*,
-						t2p.pID,
-						t2p.tag
-					FROM
-						tag_to_product t2p
-					LEFT JOIN
-						" . TABLE_PRODUCTS_DESCRIPTION . " pd ON pd.products_id = t2p.pID
-					LEFT JOIN
-						" . TABLE_PRODUCTS . " p ON p.products_id = t2p.pID
-						LEFT JOIN
-						" . TABLE_MANUFACTURERS . " m ON p.manufacturers_id = m.manufacturers_id
-						LEFT JOIN
-						" . TABLE_SPECIALS . " s ON p.products_id = s.products_id
-					WHERE
-						p.products_status = '1'
-					AND
-						t2p.tag = '" . urldecode($_GET['tag']) . "'
-						   " . $group_check . "
-						   " . $fsk_lock . "
-					AND
-						pd.language_id = '" . (int) $_SESSION['languages_id'] . "'";
+    $listing_sql = "SELECT p.*, pd.*, m.*, t2p.pID, t2p.tag
+					FROM tag_to_product AS t2p
+					LEFT JOIN " . TABLE_PRODUCTS_DESCRIPTION . " pd ON(pd.products_id = t2p.pID AND pd.language_id = '" . (int) $_SESSION['languages_id'] . "')
+					LEFT JOIN " . TABLE_PRODUCTS . " p ON(p.products_id = t2p.pID)
+					LEFT JOIN " . TABLE_MANUFACTURERS . " m ON(p.manufacturers_id = m.manufacturers_id)
+					LEFT JOIN " . TABLE_SPECIALS . " s ON(p.products_id = s.products_id)
+					WHERE p.products_status = '1'
+					AND (p.products_slave_in_list = '1' OR p.products_master = '1' OR ((p.products_slave_in_list = '0' OR p.products_slave_in_list = '') AND (p.products_master_article = '' OR p.products_master_article = '0')))
+					AND t2p.tag = '" . urldecode($_GET['tag']) . "'
+				   " . $group_check . "
+				   " . $fsk_lock . "
+					GROUP BY p.products_id";
 
-    $getCount = xtc_db_fetch_array(xtDBquery("SELECT
-												COUNT(pID) AS anzahl
-											FROM
-												tag_to_product
-											WHERE
-												tag = '" . $_GET['tag'] . "'"));
+    $getCount = xtDBquery("SELECT pID
+							FROM tag_to_product AS ttp
+							JOIN " . TABLE_PRODUCTS . " AS p ON(p.products_id = ttp.pID)
+							WHERE ttp.tag = '" . $_GET['tag'] . "'");
 
-    if (isset($_GET['per_site']) && !empty($_GET['per_site']))
+    if (isset($_GET['per_site']) && !empty($_GET['per_site'])) {
         $per_site = $_GET['per_site'];
-    elseif (isset($_SESSION['per_site']))
+    } elseif (isset($_SESSION['per_site'])) {
         $per_site = $_SESSION['per_site'];
-    elseif (!isset($_SESSION['per_site']) || !isset($_GET['per_site']))
+    } elseif (!isset($_SESSION['per_site']) || !isset($_GET['per_site'])) {
         $per_site = MAX_DISPLAY_SEARCH_RESULTS;
+	}
 
     $_SESSION['per_site'] = $per_site;
-
     $listing_split = new splitPageResults($listing_sql, (int) $_GET['page'], (int) $_SESSION['per_site'], 'p.products_id');
-
     $list_name = 'tagcloud';
 
     if (($listing_split->number_of_rows > 0)) {
@@ -113,8 +93,8 @@ if (isset($_GET['tag']) && ($_GET['tag'] != '')) {
     }
 
     //Nur wenn auch Treffer da sind, sonst 404
-    if ($getCount['anzahl'] > 0) {
-        $smarty->assign('TAG_COUNT', TEXT_TAG_TREFFER1 . $getCount['anzahl'] . TEXT_TAG_TREFFER2);
+    if (xtc_db_num_rows($getCount) > 0) {
+        $smarty->assign('TAG_COUNT', TEXT_TAG_TREFFER1 . xtc_db_num_rows($getCount) . TEXT_TAG_TREFFER2);
         $smarty->assign('TITLE', TEXT_TAG_HEAD . $_GET['tag']);
     } else {
         header($_SERVER["SERVER_PROTOCOL"] . ' 404 Not Found');
@@ -142,64 +122,25 @@ if (isset($_GET['tag']) && ($_GET['tag'] != '')) {
 } else {
     $error = TEXT_TAG_NOT_FOUND;
     include (DIR_WS_MODULES . FILENAME_ERROR_HANDLER);
-
     $smarty->assign('error', $error);
+	require_once (DIR_WS_CLASSES . 'class.tagcloud.php');
 
-    function kshuffle2(&$array) {
-        if (!is_array($array) || empty($array))
-            return false;
-        $tmp = array();
-        foreach ($array as $key => $value)
-            $tmp[] = array('k' => $key, 'v' => $value);
+    $data_query = xtDBquery("SELECT tag, count(tag) AS tag_anzahl
+							FROM tag_to_product
+							WHERE lID = '" . (int) $_SESSION['languages_id'] . "'
+							GROUP BY tag;");
 
-        shuffle($tmp);
-        $array = array();
-        foreach ($tmp as $entry)
-            $array[$entry['k']] = $entry['v'];
-        return true;
-    }
-
-    function printTagCloud2($tags) {
-
-        kshuffle2($tags); // Zufaellige Anzeige
-
-        $max_size = 32; // max font size in pixels
-        $min_size = 12; // min font size in pixels
-
-        $max_qty = max(array_values($tags));
-        $min_qty = min(array_values($tags));
-
-        $spread = $max_qty - $min_qty;
-        if ($spread == 0)
-            $spread = 1;
-
-        $step = ($max_size - $min_size) / ($spread);
-
-        foreach ($tags as $key => $value) {
-            $size = round($min_size + (($value - $min_qty) * $step));
-            $cloud .= '<a href="' . xtc_href_link('tag/' . urlencode($key) . '/') . '" style="color:#' . mt_rand(000000, 999999) . ';font-size:' . $size . 'px;" title="' . $value . ' Produkte wurden mit ' . $key . ' getagged" rel="follow">' . $key . '</a> ';
-        }
-        return $cloud;
-    }
-
-    $data_query = xtDBquery("SELECT
-									tag, count(tag) AS tag_anzahl
-								FROM
-									tag_to_product
-								WHERE
-									lID = '" . $_SESSION['languages_id'] . "'
-								GROUP BY
-									tag ");
-
-    if (xtc_db_num_rows($data_query)) {
+    if (xtc_db_num_rows($data_query) > 0) {
         $tag_array = array();
         while ($data = xtc_db_fetch_array($data_query)) {
-            if (!empty($data))
+            if (!empty($data)) {
                 $tag_array[$data['tag']] = $data['tag_anzahl'];
+			}
         }
     }
-    if (is_array($tag_array))
-        $tag_cloud = printTagCloud2($tag_array);
+    if (is_array($tag_array)) {
+        $tag_cloud = printTagCloudnew($tag_array);
+	}
     $smarty->loadFilter('output', 'note');
     $smarty->loadFilter('output', 'trimwhitespace');
     $smarty->assign('language', $_SESSION['language']);
@@ -208,7 +149,11 @@ if (isset($_GET['tag']) && ($_GET['tag'] != '')) {
     $smarty->assign('module_content', $tag_cloud);
     $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
     $smarty->caching = false;
-    $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/taglistings.html', USE_TEMPLATE_DEVMODE));
+	if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/taglistings.html')) {
+		$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/taglistings.html', USE_TEMPLATE_DEVMODE));
+	}else{
+		$main_content = $smarty->fetch(cseo_get_usermod('base/module/taglistings.html', USE_TEMPLATE_DEVMODE));
+	}
     $smarty->assign('main_content', $main_content);
     $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
     include ('includes/application_bottom.php');

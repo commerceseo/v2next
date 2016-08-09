@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: checkout_shipping.php 928 2014-03-31 13:56:47Z akausch $
+ * 	$Id: checkout_shipping.php 1484 2015-07-27 09:17:15Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -16,6 +16,10 @@
 include ('includes/application_top.php');
 $smarty = new Smarty;
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
+
+if (CHECKOUT_AJAX_STAT == 'true') {
+    xtc_redirect(xtc_href_link(FILENAME_CHECKOUT, '', 'SSL'));
+}
 
 require_once (DIR_FS_INC . 'xtc_address_label.inc.php');
 require_once (DIR_FS_INC . 'xtc_get_address_format_id.inc.php');
@@ -116,6 +120,26 @@ if (defined('MODULE_ORDER_TOTAL_SHIPPING_FREE_SHIPPING') && (MODULE_ORDER_TOTAL_
     $free_shipping = false;
 }
 
+// free shipping start - new code
+if ((STORE_COUNTRY == $order->delivery['country']['id'] && FREE_SHIPPING_LOCAL_ONLY == 'true') || FREE_SHIPPING_LOCAL_ONLY == 'false') {
+	$free_shipping_products_query = xtDBquery("SELECT products_id, max_free_shipping_amount FROM " . TABLE_PRODUCTS . " WHERE free_shipping ='1';");
+	$free_amount = true;
+	$free_contents = 0;
+	while ($free_shipping_products = xtc_db_fetch_array($free_shipping_products_query)) {
+		$products_id_fs = $_SESSION['cart']->in_cart_fs($free_shipping_products['products_id']);
+		if ($products_id_fs) {
+			$free_contents += $_SESSION['cart']->get_quantity_fs($products_id_fs);
+			if (($free_shipping_products['max_free_shipping_amount'] > 0) && ($_SESSION['cart']->get_quantity_fs($products_id_fs) > $free_shipping_products['max_free_shipping_amount'])) {
+				$free_amount = false;
+			}
+		}
+	}
+
+	if (($free_contents > 0) && ($free_contents == $_SESSION['cart']->count_contents()) && ($free_amount == true)) {
+		$free_shipping = true;
+	}
+}
+// free shipping - end of code
 // process the selected shipping method
 if (isset($_POST['action']) && ($_POST['action'] == 'process')) {
     if ((xtc_count_shipping_modules() > 0) || ($free_shipping == true)) {
@@ -181,35 +205,35 @@ if (xtc_count_shipping_modules() > 0) {
         $module_smarty->assign('FREE_SHIPPING_ICON', $quotes[$i]['icon']);
     } else {
         $radio_buttons = 0;
-		//Beginn von Modul Versandsperre
-		for($i = 0, $n = count($order->products);$i < $n; $i++ ) {
-			$id = $order->products[$i]['id'];
-			$forbidden_shipping_query = xtc_db_query("SELECT products_forbidden_shipping FROM " . TABLE_PRODUCTS . " WHERE products_id='$id' ");
-			if($i == '0') {
-				$forbidden_shipping_data = xtc_db_fetch_array($forbidden_shipping_query);
-			} else  {
-				$puffer = xtc_db_fetch_array($forbidden_shipping_query);
-				if($puffer['products_forbidden_shipping'] != '') {
-					$forbidden_shipping_data['products_forbidden_shipping'] .= "|";
-					$forbidden_shipping_data['products_forbidden_shipping'] .= $puffer['products_forbidden_shipping'];
-				}
-			}
-		}
-		$forbidden_shipping_data = explode("|",$forbidden_shipping_data['products_forbidden_shipping']);
-		$n = sizeof($quotes);
-		foreach($forbidden_shipping_data AS $forbidden_shipping) {
-			for ($i = 0; $i <= $n; $i++) {
-				$name = explode('.', $forbidden_shipping);
-				if($quotes[$i]['id'] == $name[0]) {
-					unset($quotes[$i]);
-				}
-			}
-		}
+        //Beginn von Modul Versandsperre
+        for ($i = 0, $n = count($order->products); $i < $n; $i++) {
+            $id = $order->products[$i]['id'];
+            $forbidden_shipping_query = xtc_db_query("SELECT products_forbidden_shipping FROM " . TABLE_PRODUCTS . " WHERE products_id='$id' ");
+            if ($i == '0') {
+                $forbidden_shipping_data = xtc_db_fetch_array($forbidden_shipping_query);
+            } else {
+                $puffer = xtc_db_fetch_array($forbidden_shipping_query);
+                if ($puffer['products_forbidden_shipping'] != '') {
+                    $forbidden_shipping_data['products_forbidden_shipping'] .= "|";
+                    $forbidden_shipping_data['products_forbidden_shipping'] .= $puffer['products_forbidden_shipping'];
+                }
+            }
+        }
+        $forbidden_shipping_data = explode("|", $forbidden_shipping_data['products_forbidden_shipping']);
+        $n = sizeof($quotes);
+        foreach ($forbidden_shipping_data AS $forbidden_shipping) {
+            for ($i = 0; $i <= $n; $i++) {
+                $name = explode('.', $forbidden_shipping);
+                if ($quotes[$i]['id'] == $name[0]) {
+                    unset($quotes[$i]);
+                }
+            }
+        }
 
-		//Ende von Modul Versandsperre
+        //Ende von Modul Versandsperre
         #loop through installed shipping methods...
         // for ($i = 0, $n = sizeof($quotes); $i < $n; $i++) {
-		for ($i = 0 ; $i < $n; $i ++) {
+        for ($i = 0; $i < $n; $i ++) {
             if (!isset($quotes[$i]['error'])) {
                 for ($j = 0, $n2 = sizeof($quotes[$i]['methods']); $j < $n2; $j++) {
                     # set the radio button to be checked if it is the method chosen
@@ -255,14 +279,17 @@ $cseo_checkout->set_data('POST', $_POST);
 $cseo_checkout->proceed();
 $cseo_extender_result_array = $cseo_checkout->get_response();
 if (is_array($cseo_extender_result_array)) {
-	foreach ($cseo_extender_result_array AS $t_key => $t_value) {
-		$smarty->assign($t_key, $t_value);
-	}
+    foreach ($cseo_extender_result_array AS $t_key => $t_value) {
+        $smarty->assign($t_key, $t_value);
+    }
 }
 
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/checkout_shipping.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/' . CURRENT_TEMPLATE . '/module/checkout_shipping.html')) {
+    $main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/checkout_shipping.html', USE_TEMPLATE_DEVMODE));
+} else {
+    $main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_shipping.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
 
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
-
 include ('includes/application_bottom.php');

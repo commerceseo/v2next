@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: logoff.php 637 2013-09-26 18:25:55Z akausch $
+ * 	$Id: logoff.php 1270 2014-11-19 07:03:29Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -70,10 +70,13 @@ xtc_redirect(xtc_href_link(FILENAME_DEFAULT, '', 'NONSSL'));
 
 $smarty->assign('BUTTON_CONTINUE', '<a href="' . xtc_href_link(FILENAME_DEFAULT) . '">' . xtc_image_button('button_continue.gif', IMAGE_BUTTON_CONTINUE) . '</a>');
 $smarty->assign('language', $_SESSION['language']);
-$smarty->assign('main_content', $main_content);
-
+$smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->caching = false;
-$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE . '/module/logoff.html', USE_TEMPLATE_DEVMODE));
-
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/logoff.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/logoff.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/logoff.html', USE_TEMPLATE_DEVMODE));
+}
+$smarty->assign('main_content', $main_content);
 $smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/index.html', USE_TEMPLATE_DEVMODE));
 include ('includes/application_bottom.php');

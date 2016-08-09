@@ -1,7 +1,7 @@
 <?php
 
 /* -----------------------------------------------------------------
- * 	$Id: print_wish_list.php 659 2013-10-08 16:48:08Z akausch $
+ * 	$Id: print_cart.php 1200 2014-09-17 06:30:45Z akausch $
  * 	Copyright (c) 2011-2021 commerce:SEO by Webdesign Erfurt
  * 	http://www.commerce-seo.de
  * ------------------------------------------------------------------
@@ -15,7 +15,7 @@
 
 $cart_empty = false;
 require("includes/application_top.php");
-$_SESSION['wishList']->restore_contents();
+// $_SESSION['cart']->restore_contents();
 // create smarty elements
 $smarty = new Smarty;
 // include needed functions
@@ -24,30 +24,26 @@ require_once(DIR_FS_INC . 'xtc_image_button.inc.php');
 require_once(DIR_FS_INC . 'xtc_image_submit.inc.php');
 require_once(DIR_FS_INC . 'xtc_recalculate_price.inc.php');
 $smarty->assign('tpl_path', 'templates/' . CURRENT_TEMPLATE);
-
 include(DIR_WS_MODULES . 'gift_cart.php');
 
-if ($_SESSION['wishList']->count_contents() > 0) {
-
+if ($_SESSION['cart']->count_contents() > 0) {
     $hidden_options = '';
     $_SESSION['any_out_of_stock'] = 0;
-
-    $products = $_SESSION['wishList']->get_products();
+    $products = $_SESSION['cart']->get_products();
     for ($i = 0, $n = sizeof($products); $i < $n; $i++) {
         // Push all attributes information in an array
         if (isset($products[$i]['attributes'])) {
             while (list($option, $value) = each($products[$i]['attributes'])) {
                 $hidden_options.= xtc_draw_hidden_field('id[' . $products[$i]['id'] . '][' . $option . ']', $value);
-                $attributes = xtc_db_query("select *
-                                      from " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa
-                                      where pa.products_id = '" . $products[$i]['id'] . "'
-                                       and pa.options_id = '" . $option . "'
-                                       and pa.options_id = popt.products_options_id
-                                       and pa.options_values_id = '" . $value . "'
-                                       and pa.options_values_id = poval.products_options_values_id
-                                       and popt.language_id = '" . (int) $_SESSION['languages_id'] . "'
-                                       and poval.language_id = '" . (int) $_SESSION['languages_id'] . "'");
-                $attributes_values = xtc_db_fetch_array($attributes);
+                $attributes_values = xtc_db_fetch_array(xtc_db_query("SELECT *
+                                      FROM " . TABLE_PRODUCTS_OPTIONS . " popt, " . TABLE_PRODUCTS_OPTIONS_VALUES . " poval, " . TABLE_PRODUCTS_ATTRIBUTES . " pa
+                                      WHERE pa.products_id = '" . $products[$i]['id'] . "'
+                                       AND pa.options_id = '" . $option . "'
+                                       AND pa.options_id = popt.products_options_id
+                                       AND pa.options_values_id = '" . $value . "'
+                                       AND pa.options_values_id = poval.products_options_values_id
+                                       AND popt.language_id = '" . (int) $_SESSION['languages_id'] . "'
+                                       AND poval.language_id = '" . (int) $_SESSION['languages_id'] . "';"));
 
                 $products[$i][$option]['products_options_name'] = $attributes_values['products_options_name'];
                 $products[$i][$option]['options_values_id'] = $value;
@@ -64,25 +60,20 @@ if ($_SESSION['wishList']->count_contents() > 0) {
     }
 
     $smarty->assign('HIDDEN_OPTIONS', $hidden_options);
-    require(DIR_WS_MODULES . 'order_details_print_wishlist.php');
-
+    require(DIR_WS_MODULES . 'order_details_print_cart.php');
     $_SESSION['allow_checkout'] = 'true';
-
-    $smarty->assign('SHIPPING_INFO', '<a href="' . xtc_href_link(FILENAME_POPUP_CONTENT, 'coID=' . SHIPPING_INFOS) . '"> ' . SHIPPING_COSTS . '</a>');
+    $smarty->assign('SHIPPING_INFO', SHIPPING_COSTS);
     $header = '<!DOCTYPE html>
 	<html lang ="' . HTML_PARAMS . '">
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=' . $_SESSION['language_charset'] . '" />
 	';
-
     $smarty->assign('HEADER', $header);
     $smarty->assign('STORE_OWNER', nl2br(STORE_NAME_ADDRESS));
-
-
-    if ($_GET['info_message'])
+    if ($_GET['info_message']) {
         $smarty->assign('info_message', str_replace('+', ' ', $_GET['info_message']));
+	}
 } else {
-
     // empty cart
     $cart_empty = true;
     if ($_GET['info_message'])
@@ -94,8 +85,8 @@ if ($_SESSION['wishList']->count_contents() > 0) {
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
-if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/print_wish_list.html')) {
-	$smarty->display(cseo_get_usermod(CURRENT_TEMPLATE . '/module/print_wish_list.html', USE_TEMPLATE_DEVMODE));
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/print_cart.html')) {
+	$smarty->display(CURRENT_TEMPLATE.'/module/print_cart.html', USE_TEMPLATE_DEVMODE);
 }else{
-	$smarty->display(cseo_get_usermod('base/module/print_wish_list.html', USE_TEMPLATE_DEVMODE));
+	$smarty->display('base/module/print_cart.html');
 }

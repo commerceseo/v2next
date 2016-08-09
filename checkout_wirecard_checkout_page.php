@@ -64,9 +64,11 @@ $smarty->assign('MODULE_BUTTONS', $payment_button);
 $smarty->assign('DEVMODE', USE_TEMPLATE_DEVMODE);
 $smarty->assign('language', $_SESSION['language']);
 $smarty->caching = false;
-
-$main_content = $smarty->fetch('base/module/checkout_wirecard_checkout_page.html');
-
+if (file_exists('templates/'.CURRENT_TEMPLATE.'/module/checkout_wirecard_checkout_page.html')) {
+	$main_content = $smarty->fetch(cseo_get_usermod(CURRENT_TEMPLATE.'/module/checkout_wirecard_checkout_page.html', USE_TEMPLATE_DEVMODE));
+}else{
+	$main_content = $smarty->fetch(cseo_get_usermod('base/module/checkout_wirecard_checkout_page.html', USE_TEMPLATE_DEVMODE));
+}
 $smarty->assign('main_content', $main_content);
 
 $smarty->display(CURRENT_TEMPLATE . '/index.html');

@@ -27,13 +27,13 @@ if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
         $postarray = array();
         foreach ($_POST as $key => $value) {
             if ($key == 'email_address' || $key == 'password') {
-                $postarray[$key] = xtc_db_prepare_input($value);
+                $postarray[$key] = xtc_db_input($value);
             } else {
                 // die('Bad Value');
             }
         }
-        $email = xtc_db_prepare_input($postarray['email_address']);
-        $password = xtc_db_prepare_input($postarray['password']);
+        $email = xtc_db_input($postarray['email_address']);
+        $password = xtc_db_input($postarray['password']);
         $check_login = $login->check_login('login', $email, $password);
     }
 }

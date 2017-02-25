@@ -42,8 +42,8 @@ class login_ORIGINAL {
         require_once (DIR_FS_INC . 'xtc_validate_email.inc.php');
 
         if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
-            $email_address = xtc_db_prepare_input($email);
-            $password = xtc_db_prepare_input($password);
+            $email_address = xtc_db_input($email);
+            $password = xtc_db_input($password);
             if (xtc_validate_email($email)) {
 				$check_customer_query = xtc_db_query("SELECT  * FROM " . TABLE_CUSTOMERS . " WHERE customers_email_address = '" . $email_address . "' AND account_type = '0';");
 			}
@@ -56,7 +56,7 @@ class login_ORIGINAL {
 									intrusions 
 									(name , badvalue , page , tags , ip , ip2 , impact , origin , created )
 									VALUES 
-									('" . $email_address . "', '" . $password . "', '" . $_SERVER['REQUEST_URI'] . "', 'login', '" . $_SERVER['HTTP_CLIENT_IP'] . "', '" . $_SERVER['REMOTE_ADDR'] . "', '1', '', now());");
+									('" . $email_address . "', '" . $password . "', '" . xtc_db_input($_SERVER['REQUEST_URI']) . "', 'login', '" . xtc_db_input($_SERVER['HTTP_CLIENT_IP']) . "', '" . xtc_db_input($_SERVER['REMOTE_ADDR']) . "', '1', '', now());");
 				}
             } else {
                 $check_customer = xtc_db_fetch_array($check_customer_query);

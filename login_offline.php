@@ -16,28 +16,20 @@
 include ('includes/application_top.php');
 
 if (DOWN_FOR_MAINTENANCE == 'true') {
-    // header("HTTP/1.1 503 Service Temporarily Unavailable");
-    // header("Status: 503 Service Temporarily Unavailable");
     if (isset($_SESSION['customer_id'])) {
         xtc_redirect(xtc_href_link(FILENAME_DEFAULT, '', 'SSL'));
     }
     $smarty = new Smarty;
     require_once (DIR_FS_INC . 'xtc_validate_password.inc.php');
     require_once (DIR_FS_INC . 'xtc_write_user_info.inc.php');
-
-    // redirect the customer to a friendly cookie-must-be-enabled page if cookies are disabled (or the session has not started)
     if ($session_started == false) {
         xtc_redirect(xtc_href_link(FILENAME_COOKIE_USAGE));
     }
-
     if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
-        $email_address = xtc_db_prepare_input($_POST['email_address']);
-        $password = xtc_db_prepare_input($_POST['password']);
+        $email_address = xtc_db_input($_POST['email_address']);
+        $password = xtc_db_input($_POST['password']);
 
-        $check_customer_query = xtc_db_query("SELECT *
-												FROM " . TABLE_CUSTOMERS . " 
-												WHERE customers_email_address = '" . xtc_db_input($email_address) . "' 
-												AND account_type = '0'");
+        $check_customer_query = xtc_db_query("SELECT * FROM " . TABLE_CUSTOMERS . " WHERE customers_email_address = '" . xtc_db_input($email_address) . "' AND account_type = '0'");
         if (!xtc_db_num_rows($check_customer_query)) {
             $_GET['login'] = 'fail';
             $info_message = TEXT_NO_EMAIL_ADDRESS_FOUND;
@@ -85,9 +77,7 @@ if (DOWN_FOR_MAINTENANCE == 'true') {
                     xtc_session_recreate();
                 }
 
-                $check_country_query = xtc_db_query("select entry_country_id, entry_zone_id from " . TABLE_ADDRESS_BOOK . " where customers_id = '" . (int) $check_customer['customers_id'] . "' and address_book_id = '" . $check_customer['customers_default_address_id'] . "'");
-                $check_country = xtc_db_fetch_array($check_country_query);
-
+                $check_country = xtc_db_fetch_array(xtc_db_query("select entry_country_id, entry_zone_id from " . TABLE_ADDRESS_BOOK . " where customers_id = '" . (int) $check_customer['customers_id'] . "' and address_book_id = '" . $check_customer['customers_default_address_id'] . "';"));
                 $_SESSION['customer_gender'] = $check_customer['customers_gender'];
                 $_SESSION['customer_first_name'] = $check_customer['customers_firstname'];
                 $_SESSION['customer_last_name'] = $check_customer['customers_lastname'];
@@ -96,9 +86,7 @@ if (DOWN_FOR_MAINTENANCE == 'true') {
                 $_SESSION['customer_default_address_id'] = $check_customer['customers_default_address_id'];
                 $_SESSION['customer_country_id'] = $check_country['entry_country_id'];
                 $_SESSION['customer_zone_id'] = $check_country['entry_zone_id'];
-
                 $date_now = date('Ymd');
-
                 xtc_write_user_info((int) $_SESSION['customer_id']);
                 $_SESSION['cart']->restore_contents();
                 $_SESSION['wishList']->restore_contents();

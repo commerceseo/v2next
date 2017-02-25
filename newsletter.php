@@ -52,10 +52,10 @@ if (isset($_GET['action']) && (($_GET['action'] == 'process') || ($_GET['action'
                 if (!xtc_db_num_rows($check_mail_query)) {
 
                     if (isset($_SESSION['customer_id'])) {
-                        $customers_id = $_SESSION['customer_id'];
-                        $customers_status = $_SESSION['customers_status']['customers_status_id'];
-                        $customers_firstname = $_SESSION['customer_first_name'];
-                        $customers_lastname = $_SESSION['customer_last_name'];
+                        $customers_id = (int) $_SESSION['customer_id'];
+                        $customers_status = (int) $_SESSION['customers_status']['customers_status_id'];
+                        $customers_firstname = xtc_db_input($_SESSION['customer_first_name']);
+                        $customers_lastname = xtc_db_input($_SESSION['customer_last_name']);
                     } else {
                         $check_customer_mail_query = xtc_db_query("select customers_id, customers_status, customers_firstname, customers_lastname, customers_email_address from " . TABLE_CUSTOMERS . " where customers_email_address = '" . xtc_db_input($_POST['email']) . "'");
                         if (!xtc_db_num_rows($check_customer_mail_query)) {
@@ -65,10 +65,10 @@ if (isset($_GET['action']) && (($_GET['action'] == 'process') || ($_GET['action'
                             $customers_lastname = '';
                         } else {
                             $check_customer = xtc_db_fetch_array($check_customer_mail_query);
-                            $customers_id = $check_customer['customers_id'];
-                            $customers_status = $check_customer['customers_status'];
-                            $customers_firstname = $check_customer['customers_firstname'];
-                            $customers_lastname = $check_customer['customers_lastname'];
+                            $customers_id = (int) $check_customer['customers_id'];
+                            $customers_status = (int) $check_customer['customers_status'];
+                            $customers_firstname = xtc_db_input($check_customer['customers_firstname']);
+                            $customers_lastname = xtc_db_input($check_customer['customers_lastname']);
                         }
                     }
 
@@ -110,10 +110,10 @@ if (isset($_GET['action']) && (($_GET['action'] == 'process') || ($_GET['action'
             $check_mail_query = xtc_db_query("select customers_email_address, mail_status from " . TABLE_NEWSLETTER_RECIPIENTS . " where customers_email_address = '" . xtc_db_input($_POST['email']) . "'");
             if (!xtc_db_num_rows($check_mail_query)) {
                 if (isset($_SESSION['customer_id'])) {
-                    $customers_id = $_SESSION['customer_id'];
-                    $customers_status = $_SESSION['customers_status']['customers_status_id'];
-                    $customers_firstname = $_SESSION['customer_first_name'];
-                    $customers_lastname = $_SESSION['customer_last_name'];
+                    $customers_id = (int) $_SESSION['customer_id'];
+                    $customers_status = (int) $_SESSION['customers_status']['customers_status_id'];
+                    $customers_firstname = xtc_db_input($_SESSION['customer_first_name']);
+                    $customers_lastname = xtc_db_input($_SESSION['customer_last_name']);
                 } else {
                     $check_customer_mail_query = xtc_db_query("select customers_id, customers_status, customers_firstname, customers_lastname, customers_email_address from " . TABLE_CUSTOMERS . " where customers_email_address = '" . xtc_db_input($_POST['email']) . "'");
                     if (!xtc_db_num_rows($check_customer_mail_query)) {
@@ -123,10 +123,10 @@ if (isset($_GET['action']) && (($_GET['action'] == 'process') || ($_GET['action'
                         $customers_lastname = '';
                     } else {
                         $check_customer = xtc_db_fetch_array($check_customer_mail_query);
-                        $customers_id = $check_customer['customers_id'];
-                        $customers_status = $check_customer['customers_status'];
-                        $customers_firstname = $check_customer['customers_firstname'];
-                        $customers_lastname = $check_customer['customers_lastname'];
+                        $customers_id = (int) $check_customer['customers_id'];
+                        $customers_status = (int) $check_customer['customers_status'];
+                        $customers_firstname = xtc_db_input($check_customer['customers_firstname']);
+                        $customers_lastname = xtc_db_input($check_customer['customers_lastname']);
                     }
                 }
                 $sql_data_array = array('customers_email_address' => xtc_db_input($_POST['email']),

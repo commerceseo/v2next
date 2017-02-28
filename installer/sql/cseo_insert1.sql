@@ -1710,4 +1710,4 @@ INSERT INTO log_outputs (log_output_id, name) VALUES (7, 'function_data');
 
 
 #database Version
-INSERT INTO database_version VALUES ('commerce:seo v2next 2.5.16 CE');
+INSERT INTO database_version VALUES ('commerce:seo v2next 2.5.17 CE');

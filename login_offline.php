@@ -26,8 +26,8 @@ if (DOWN_FOR_MAINTENANCE == 'true') {
         xtc_redirect(xtc_href_link(FILENAME_COOKIE_USAGE));
     }
     if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
-        $email_address = xtc_db_input($_POST['email_address']);
-        $password = xtc_db_input($_POST['password']);
+        $email_address = xtc_db_prepare_input($_POST['email_address']);
+        $password = xtc_db_prepare_input($_POST['password']);
 
         $check_customer_query = xtc_db_query("SELECT * FROM " . TABLE_CUSTOMERS . " WHERE customers_email_address = '" . xtc_db_input($email_address) . "' AND account_type = '0'");
         if (!xtc_db_num_rows($check_customer_query)) {
@@ -54,7 +54,7 @@ if (DOWN_FOR_MAINTENANCE == 'true') {
             }
 
             if (!empty($_POST["codeanwser"])) {
-                if (!mb_strtolower($antispam_query['answer'], 'UTF-8') == mb_strtolower($_POST["codeanwser"], 'UTF-8')) {
+                if (!mb_strtolower($antispam_query['answer'], 'UTF-8') == mb_strtolower(xtc_db_prepare_input($_POST["codeanwser"]), 'UTF-8')) {
                     xtc_db_query("update " . TABLE_CUSTOMERS . " SET login_tries = login_tries+1, login_time = now() WHERE customers_email_address = '" . xtc_db_input($email_address) . "'");
                     if (!xtc_validate_password($password, $check_customer['customers_password']) || $check_customer['customers_email_address'] != $email_address) {
                         $info_message = TEXT_LOGIN_ERROR;

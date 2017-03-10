@@ -26,7 +26,7 @@ $breadcrumb->add('Hashtag', xtc_href_link('hashtags.php', '', 'SSL'));
 include ('includes/header.php');
 
 $result = true;
-$_GET['hashtags'] = stripslashes(trim(urldecode($_GET['hashtags'])));
+$_GET['hashtags'] = stripslashes(trim(urldecode(xtc_db_prepare_input($_GET['hashtags']))));
 if (isset($_GET['hashtags']) && ($_GET['hashtags'] != '')) {
 
     $fsk_lock = '';

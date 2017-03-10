@@ -21,7 +21,7 @@ $error = 0; // reset error flag to false
 $breadcrumb->add(NAVBAR_TITLE_TAGLIST, xtc_href_link('taglisting.php', '', 'SSL'));
 require_once (DIR_WS_INCLUDES . 'header.php');
 $result = true;
-$_GET['tag'] = stripslashes(trim(urldecode($_GET['tag'])));
+$_GET['tag'] = stripslashes(trim(urldecode(xtc_db_prepare_input($_GET['tag']))));
 if (isset($_GET['tag']) && ($_GET['tag'] != '')) {
     $fsk_lock = '';
     if ($_SESSION['customers_status']['customers_fsk18_display'] == '0') {

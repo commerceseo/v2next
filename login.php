@@ -23,18 +23,8 @@ $smarty = new Smarty;
 $login = new login();
 //Login checken und ebenfalls Smary holen wegen Antispam
 if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
-    if (isset($_POST) && ($_POST['email_address'] != '') && ($_POST['password'] != '')) {
-        $postarray = array();
-        foreach ($_POST as $key => $value) {
-            if ($key == 'email_address' || $key == 'password') {
-                $postarray[$key] = xtc_db_input($value);
-            } else {
-                // die('Bad Value');
-            }
-        }
-        $email = xtc_db_input($postarray['email_address']);
-        $password = xtc_db_input($postarray['password']);
-        $check_login = $login->check_login('login', $email, $password);
+		// filtern findet nun in der klasse statt marco fix
+        $check_login = $login->check_login('login', $_POST['email_address'], $_POST['password']);
     }
 }
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');

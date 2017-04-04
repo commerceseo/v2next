@@ -24,8 +24,7 @@ $login = new login();
 //Login checken und ebenfalls Smary holen wegen Antispam
 if (isset($_GET['action']) && ($_GET['action'] == 'process')) {
 		// filtern findet nun in der klasse statt marco fix
-        $check_login = $login->check_login('login', $_POST['email_address'], $_POST['password']);
-    }
+	$check_login = $login->check_login('login', $_POST['email_address'], $_POST['password']);
 }
 require (DIR_FS_CATALOG . 'templates/' . CURRENT_TEMPLATE . '/source/boxes.php');
 
